@@ -1,0 +1,42 @@
+<div>
+   <span class="accessItemCell">
+      <b class="Preparation{{ item_item.child.sPreparationState }} accessTitle" title="{{item_item.child.strings[0].sTitle}}"><b ng-click="toggleItemExpanded();" style="cursor:pointer;" ng-show="hasChildren(item_item.child)">[<span ng-if="itemIsExpanded">-</span><span ng-if="!itemIsExpanded">+</span>]</b> {{item_item.child.strings[0].sTitle}}</b>
+      <!--<span ng-controller="GenericDialogCtrl">
+         <span ng-include='"tabs/validationCategoryDialog.html"'></span>
+         </span>-->
+         <a href="#" class="Category{{ item_item.sCategory }}" ng-click="showGenDialog('tabs/validationCategoryDialog.html' , 'items_items', 'item_item', item_item)" style="text-align:center; width:20px;display: block;float: left;" title="{{ categoryNames[item_item.sCategory] }}">{{ smallCategoryNames[item_item.sCategory] }}</a>
+      &nbsp;
+      <span ng-controller="AccessModeCtrl">
+         <span ng-switch="item_item.bAccessRestricted">
+            <span ng-switch-when=0>
+               <a href="#" class="btn btn-xs btn-success" ng-click="open()" title="Accessible"><i class="glyphicon glyphicon-ok"></i></a>
+            </span>
+            <span ng-switch-when=1>
+               <a href="#" class="btn btn-xs btn-danger" ng-click="open()" title="Restreint"><i class="glyphicon glyphicon-lock"></i></a>
+            </span>
+         </span>
+         <span ng-switch="item_item.bAlwaysVisible">
+            <span ng-switch-when=1>
+               <a href="#" class="btn btn-xs btn-success" ng-click="open()" title="Toujours visible"><i class="glyphicon glyphicon-eye-open"></i></a>
+            </span>
+            <span ng-switch-when=0>
+               <a href="#" class="btn btn-xs btn-danger" ng-click="open()" title="Caché si inaccessible"><i class="glyphicon glyphicon-eye-close"></i></a>
+            </span>
+         </span>
+      </span>
+      <span style="font-size:12px;">
+         <span title="Type de validation">Val.&nbsp;:</span>
+         <a href="#" ng-click="showGenDialog('tabs/validationTypeDialog.html' , 'items', 'item', item_item.child)">
+         {{ validationTypesNames[item_item.child.sValidationType] }}
+         </a>
+   </span>
+   </span>
+   <span ng-show="group_group != undefined" ng-include='"tabs/items_access_cell.html"' class="accessCell">
+   </span>
+   <span ng-repeat="group_group in group_group.child.children | manageableGroups" class="accessCell">
+      <span ng-include='"tabs/items_access_cell.html"'></span>
+   </span>
+</div>
+<span ng-if="itemIsExpanded" ng-repeat="item_item in item_item.child.children" class="itemLevel">
+   <span ng-init="itemIsExpanded = false;" ng-include='"tabs/items_access_rows.html"'/>
+</span>

@@ -1,0 +1,22 @@
+<div>
+   <div class="modal-header">
+      <h3>{{ group_item.item.strings[0].sTitle }}</h3>
+      Accès donné au groupe <b>{{ group_item.group.sName }}</b>
+   </div>
+   <div class="modal-body">
+      <form>
+         <field model="group_item" field="groups_items.sPartialAccessDate" />
+         <field model="group_item" field="groups_items.sFullAccessDate" />
+         <field model="group_item" field="groups_items.sAccessReason" />
+         <field model="group_item" field="groups_items.sAccessSolutionsDate" />
+         <div ng-if="group_item.item.bOwnerAccess">
+            <field model="group_item" field="groups_items.bOwnerAccess" />
+            <field model="group_item" field="groups_items.bManagerAccess" />
+         </div>
+      </form>
+   </div>
+   <div class="modal-footer">
+      <button class="btn btn-primary" ng-click="checkGroupItem()">Valider</button>
+      <button class="btn btn-warning cancel" ng-click="cancel()">Annuler</button>
+   </div>
+</div>

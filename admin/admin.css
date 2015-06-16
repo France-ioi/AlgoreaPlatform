@@ -1,0 +1,158 @@
+.accessTitleCell, .accessCell, .accessItemCell {
+   width:120px;
+   height: 50px;
+   border: solid black 1px;
+   display: inline-block;
+   vertical-align: top;
+   padding-right: 40px;
+   margin: auto;
+}
+
+.accessTitle{
+   height:20px;
+   line-height:20px;
+   overflow:hidden;
+   text-overflow:ellipsis;
+   white-space: nowrap;
+   /* width: 50px; */
+   display: block;
+}
+
+.accessGroupName {
+   height:20px;
+   line-height:20px;
+   overflow:hidden;
+   text-overflow:ellipsis;
+   white-space: nowrap;
+   width: 100px;
+   padding-right: 0px;
+   display: block;
+}
+
+.accessGroupNameChild {
+   line-height:20px;
+   overflow:hidden;
+   text-overflow:ellipsis;
+   white-space: nowrap;
+   padding-right: 0px;
+}
+
+.accessItemCell {
+   padding-right: 40px;
+   width: 270px;
+   overflow:hidden;
+}
+
+.accessParams {
+   font-size: 0.9em;
+}
+
+.itemLevel .accessItemCell, .itemLevel .accessCell {
+   padding-left: 15px;
+   padding-right: 25px;
+}
+
+.itemLevel .itemLevel .accessItemCell, .itemLevel .itemLevel .accessCell {
+   padding-left: 30px;
+   padding-right: 10px;
+}
+
+.CategoryUndefined, .CategoryCourse, .CategoryDiscovery, .CategoryApplication, .CategoryValidation, .CategoryChallenge {
+  color: white;
+  font-size: 0.85em;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  padding: 0 2px 0 2px;
+}
+
+.CategoryUndefined {
+  color: black;
+  background-color: #A0A0A0;
+}
+
+.CategoryCourse {
+  background-color: #009696;
+}
+.CategoryDiscovery {
+  background-color: blue;
+}
+.CategoryApplication {
+  background-color: #646464;
+}
+.CategoryValidation {
+  background-color: green;
+}
+.CategoryChallenge {
+  background-color: black;
+}
+
+.PreparationNotReady {
+  color: red;
+}
+
+.PreparationReviewing {
+  color: orange;
+}
+
+.PreparationReady {
+  color: black;
+}
+
+.loginCentered {
+   height: 300px;
+   width: 250px;
+   margin: auto;
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   top: 0;
+   right: 0;
+   text-align:center;
+}
+.loginCorner {
+   height: 75px;
+   width: 250px;
+   position: absolute;
+   top: 20px;
+   right: 20px;
+   text-align:center;
+}
+.loginFrame {
+   width: 250px;
+   border: 0px solid;
+   box-shadow: 0px 0px 0px;
+}
+
+.dynatree-active > a > .dynatree-owner {
+   color: white;
+}
+
+.dynatree-active > a > .dynatree-manager {
+   color: white;
+}
+
+.dynatree-owner {
+   color: blue;
+}
+
+.dynatree-manager {
+   color: green;
+}
+
+.iframe-task {
+   width:800px;
+   margin: auto;
+   border: 0px;
+   display: block;
+   overflow: auto;
+   height: 500px;
+}
+.iframe-course {
+   width: 100%;
+   min-width:600px;
+   margin: auto;
+   border: 0px;
+   display: block;
+   overflow:auto;
+   height: 500px;
+}

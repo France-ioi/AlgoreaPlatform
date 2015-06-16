@@ -1,0 +1,2 @@
+ALTER TABLE  `users` ADD  `idGroupSelf` BIGINT NOT NULL AFTER  `nbHelpGiven` , ADD  `idGroupOwned` BIGINT NOT NULL AFTER  `idGroupSelf` , ADD  `idGroupAccess` BIGINT NOT NULL AFTER  `idGroupOwned`;
+ALTER TABLE  `history_users` ADD  `idGroupSelf` BIGINT NOT NULL AFTER  `nbHelpGiven` , ADD  `idGroupOwned` BIGINT NOT NULL AFTER  `idGroupSelf` , ADD  `idGroupAccess` BIGINT NOT NULL AFTER  `idGroupOwned`;

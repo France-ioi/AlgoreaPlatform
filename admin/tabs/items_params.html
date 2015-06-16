@@ -1,0 +1,29 @@
+<div><p ng-hide="group_item.bCachedMangerAccess || group_item.bOwnerAccess"><strong>Attention:</strong>Vous n'avez accès à cet item qu'en lecture</p></div>
+<form>
+  <!- {{items.ID}} -->
+   <label class="control-label col-xs-4">Type :</label>
+   <div class="col-xs-8">
+     <span ng-if="item && item.sType == 'Root'">{{models.items.fields.sType.values[item.sType].label}}</span>
+     <select ng-if="item && item.sType != 'Root'" ng-model="item.sType" class="form-control">
+       <option ng-value="key" ng-repeat="(key, value) in models.items.fields.sType.values" ng-selected="item.sType == key" ng-if="key != 'Root'">{{value.label}}</option>
+     </select>
+   </div>
+   <field model="item" field="items.sUrl" />
+   <field model="item" field="items.bUsesAPI" />
+   <field model="item" field="items.idPlatform" />
+   <field model="item" field="items.bShowDifficulty" />
+   <field model="item" field="items.bShowSource" />
+   <field model="item" field="items.sPreparationState" />
+   <field model="item" field="items.idItemUnlocked" />
+   <field model="item" field="items.sSupportedLangProg" />
+   <field model="item" field="items.sAccessOpenDate" />
+   <field model="item" field="items.sDuration" />
+   <field model="item" field="items.sEndContestDate" />
+   <field model="item" field="items.sContestPhase" />
+   <field model="item" field="items.iLevel" />
+   <field model="item" field="items.bNoScore" />
+   <p  ng-show="group_item.bCachedMangerAccess || group_item.bOwnerAccess">
+      <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)">Reset</a>
+      <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)">Enregistrer</a>
+   </p>
+</form>

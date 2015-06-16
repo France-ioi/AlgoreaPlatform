@@ -1,0 +1,18 @@
+<div modal="shouldBeOpen" close="close()" options="opts">
+   <div class="modal-header">
+      <h3>Recherche d'items</h3>
+   </div>
+   <div class="modal-body">
+   <form>
+      <field model="searchItems" field="items.sType" />
+      <field model="searchItems" field="items.sTextId" />
+      <field model="searchItems" field="items_strings.sTitle" />
+      <field model="searchItems" field="items_strings.sSubtitle" />
+      <field model="searchItems" field="items_strings.sDescription" />
+   </form>                
+   </div>
+   <div class="modal-footer">
+      <button class="btn btn-primary" ng-click="search()">Rechercher</button>
+      <button class="btn btn-warning cancel" ng-click="close()">Annuler</button>
+   </div>
+</div>

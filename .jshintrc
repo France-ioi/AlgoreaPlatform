@@ -1,0 +1,21 @@
+{
+   "devel":true,
+   "browser": true,
+   "globals":{
+      "angular": true,
+      "config": true,
+      "ModelsManager": true,
+      "task": true,
+      "TaskProxyManager": true,
+      "Platform": true,
+      "SyncQueue": true,
+      "models": true,
+      "TreeView": true,
+      "objectHasProperties": true
+   },
+   "trailing": true,
+   "undef":true,
+   "unused":true,
+   "indent":3,
+   "jquery": true
+}

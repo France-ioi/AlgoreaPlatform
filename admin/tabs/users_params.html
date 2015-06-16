@@ -1,0 +1,41 @@
+<form>
+   <field model="user" field="users.sLogin" />
+   <field model="user" field="users.sOpenIdIdentity" />
+   <field model="user" field="users.sRecover" />
+   <field model="user" field="users.sRegistrationDate" />
+   <field model="user" field="users.sEmail" />
+   <field model="user" field="users.sEmailVerified" />
+   <field model="user" field="users.sCountryCode" />
+   <field model="user" field="users.sTimeZone" />
+   <field model="user" field="users.sBirthDate" />
+   <field model="user" field="users.iGraduationYear" />
+   <field model="user" field="users.sSex" />
+   <field model="user" field="users.sAddress" />
+   <field model="user" field="users.sZipCode" />
+   <field model="user" field="users.sCity" />
+   <field model="user" field="users.sLandLineNumber" />
+   <field model="user" field="users.sCellPhoneNumber" />
+   <field model="user" field="users.sDefaultLanguage" />
+   <field model="user" field="users.bNotifyNews" />
+   <field model="user" field="users.sNotify" />
+   <field model="user" field="users.bPublicFirstName" />
+   <field model="user" field="users.bPublicLastName" />
+   <field model="user" field="users.sFreeText" />
+   <field model="user" field="users.sWebSite" />
+   <field model="user" field="users.bPhotoAutoload" />
+   <field model="user" field="users.sLangProg" />
+   <field model="user" field="users.sLastLoginDate" />
+   <field model="user" field="users.sLastActivityDate" />
+   <field model="user" field="users.sLastIP" />
+   <field model="user" field="users.bBasicEditorMode" />
+   <field model="user" field="users.nbSpacesForTab" />
+   <field model="user" field="users.iStepLevelInSite" />
+   <field model="user" field="users.bIsAdmin" />
+   <field model="user" field="users.bNoRanking" />
+   <field model="user" field="users.nbHelpGiven" />
+
+   <p>
+      <a class="btn btn-warning" ng-click="resetObjectChanges('users', user)" ng-disabled="!hasObjectChanged('users', user)">Reset</a>
+      <a class="btn btn-primary" ng-click="saveObject('users', user)" ng-disabled="!hasObjectChanged('users', user)">Enregistrer</a>
+   </p>
+</form>

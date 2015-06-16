@@ -1,0 +1,29 @@
+<h3>Communauté</h3>
+<h4><a ui-sref="groupRequests">Mes groupes</a></h4>
+<div ng-controller="groupRequestsController" class="community">
+   <span ng-init="rightPanel = true;"></span>
+   <ul ng-if="!loading" class="list-group">
+      <li ng-repeat="mygroupgroup in getMyUnreadGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" class="list-group-item">
+         {{mygroupgroup.sStatusDate | date}}: 
+         <span ng-switch="mygroupgroup.sType">
+            <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+            <span ng-switch-when="requestRefused">vous avez été refusé dans le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+            <span ng-switch-when="invitationSent">vous avez été invité au groupe <strong>{{mygroupgroup.parent.sName}} (<a href="#" ng-click="acceptInvitation(mygroupgroup)">accepter</a> / <a href="#" ng-click="refuseInvitation(mygroupgroup)">refuser</a>)</strong></span>
+            <span ng-switch-when="requestSent">vous avez demandé de rejoindre le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+            <span ng-switch-when="left">vous avez quitté le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+            <span ng-switch-when="removed">vous avez été supprimé du groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+            <span ng-switch-default>vous avez rejoint le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+         </span>
+      </li>
+   </ul>
+   <button class="btn btn-info" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength">Marquer comme lu</button>
+</div>
+<h4>Événements</h4>
+<div class="community"  ng-controller="communityController">
+   <table>
+      <tr ng-repeat="event in events">
+         <td valign="top" style="padding-right:5px;">{{event.time}}</td>
+         <td><strong>{{event.user}}</strong> {{event.typestr}}<br>{{event.itemstr}}</td>
+      </tr>
+   </table>
+</div>

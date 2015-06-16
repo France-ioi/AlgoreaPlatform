@@ -1,0 +1,2 @@
+ALTER TABLE  `items` CHANGE  `sType`  `sType` ENUM(  'Root',  'Category',  'Level',  'Chapter',  'GenericChapter',  'staticChapter',  'Section',  'Task',  'Course',  'ContestChapter', 'LimitedTimeChapter' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE  `history_items` CHANGE  `sType`  `sType` ENUM(  'Root',  'Category',  'Level',  'Chapter',  'GenericChapter',  'staticChapter',  'Section',  'Task',  'Course',  'ContestChapter', 'LimitedTimeChapter' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;

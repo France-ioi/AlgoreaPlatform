@@ -1,0 +1,12 @@
+<div ng-if="item && item.sType == 'Task'"  ng-controller="taskController">
+   <div tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task">
+      <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
+   </div>
+   <div include-task task-name="task-preview" user-item-var="my_user_item" read-only="true"></div>
+</div>
+<div ng-if="item && item.sType == 'Course'"  ng-controller="courseController">
+   <div include-course read-only="true"></div>
+</div>
+<div ng-if="!item || (item.sType != 'Course' && item.sType != 'Task')">
+   Vous devez sélectionner un exercice ou un cours pour pouvoir l'afficher.
+</div>

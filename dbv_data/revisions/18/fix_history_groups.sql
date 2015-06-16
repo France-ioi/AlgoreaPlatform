@@ -1,0 +1,1 @@
+ALTER TABLE  `history_groups` ADD  `iNextVersion` INT NOT NULL AFTER  `iVersion` , ADD  `bDeleted` BOOLEAN NOT NULL AFTER  `iNextVersion`;

@@ -1,0 +1,19 @@
+<div class="threadInIndex" ng-class="{threadInIndexSelected: thread.bIsInSelection, threadInIndexReadOnly: !accessible}" ng-controller="forumIndexThreadController"  ng-click="goToThread(thread.ID)">
+   <div class="threadInIndexCheckBox threadInIndexCell"><input type="checkbox" ng-model="thread.bIsInSelection" ng-click="$event.stopPropagation()"></div>
+   <div class="threadInIndexFavorite threadInIndexCell">
+      <button type="button" class="transparentButton btn-lg" ng-model="user_thread.bStarred" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0" ng-click="saveUserThread($event);">
+         <span class="glyphicon glyphicon-star" ng-show="user_thread.bStarred"></span>
+         <span class="glyphicon " ng-class="{'glyphicon-star': hover, 'glyphicon-star-empty': !hover}" ng-mouseenter="hover=true" ng-mouseleave="hover=false" ng-hide="user_thread.bStarred"></span>
+      </button>
+      <!--<input type="checkbox" ng-model="user_thread.bStarred">-->
+   </div>   
+   <div class="threadInIndexUser threadInIndexCell">
+      <span>{{thread.sUserCreatedLogin}}</span>
+   </div>
+   <div class="threadInIndexMessage threadInIndexCell">
+      <div class="threadInIndexDoNotOverflow clamped clamped-2" title="{{accessibiltyMessage}}">
+         <strong>{{thread.sTitle}}</strong>
+         <span ng-bind="thread.sMessage" style="height:50px;"></span>
+      </div>
+   </div>
+</div>

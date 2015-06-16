@@ -1,0 +1,16 @@
+<div modal="shouldBeOpen" close="close()" options="opts">
+   <div class="modal-header">
+      <h3>Recherche de groupes</h3>
+   </div>
+   <div class="modal-body">
+   <form>
+      <field model="searchGroups" field="groups.sType" />
+      <field model="searchGroups" field="groups.sName" />
+      <field model="searchGroups" field="groups.sDescription" />
+   </form>                
+   </div>
+   <div class="modal-footer">
+      <button class="btn btn-primary" ng-click="search()">Rechercher</button>
+      <button class="btn btn-warning cancel" ng-click="close()">Annuler</button>
+   </div>
+</div>

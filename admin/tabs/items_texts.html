@@ -1,0 +1,12 @@
+<form>
+   <field model="item_strings" field="items_strings.sTitle" />
+   <field model="item_strings" field="items_strings.sSubtitle" />
+   <field model="item_strings" field="items_strings.sTranslator" />
+   <field model="item_strings" field="items_strings.sDescription" />
+   <field model="item_strings" field="items_strings.sEduComment" />
+   <field model="item_strings" field="items_strings.sRankingComment" />
+   <p>
+      <a class="btn btn-warning" ng-click="resetObjectChanges('items_strings', item_strings)" ng-disabled="!hasObjectChanged('items_strings', item_strings)">Reset</a>
+      <a class="btn btn-primary" ng-click="saveObject('items_strings', item_strings)" ng-disabled="!hasObjectChanged('items_strings', item_strings)">Enregistrer</a>
+   </p>
+</form>

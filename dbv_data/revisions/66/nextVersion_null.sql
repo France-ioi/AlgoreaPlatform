@@ -1,0 +1,9 @@
+ALTER TABLE  `history_groups` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_groups_groups` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_groups_items` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_items` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_items_items` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_items_strings` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_languages` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_users` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE  `history_users_items` CHANGE  `iNextVersion`  `iNextVersion` INT( 11 ) NULL DEFAULT NULL;

@@ -1,0 +1,12 @@
+<div ng-controller="taskController">
+  <div ng-if="!layout.west_is_open">
+    <h2>{{strings.sTitle}}</h2>
+    <div tabset justified="true">
+       <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active">
+       </li>
+    </div>
+  </div>
+  <div ng-include="'forum/thread.html'" ng-show="showForum"></div>
+  <div ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
+  <div ng-show="taskLoaded && !showForum" include-task></div>
+</div>
