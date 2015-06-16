@@ -9,6 +9,8 @@
         "jquery-ui": "latest",
         "jquery.layout": "latest",
         "dynatree": "latest",
-        "jQuery-contextMenu": "latest"
+        "jQuery-contextMenu": "latest",
+        "angular-i18n": "latest",
+        "angular-sanitize": "latest"
     }
 }
