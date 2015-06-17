@@ -2,5 +2,6 @@ vendor/
 bower_components/
 logs/
 config_local.php
-nginx.log
 .htpasswd
+node_modules/
+dist/
