@@ -21,13 +21,13 @@ app.directive('field', function() {
             }
          };
       },
-      templateUrl: "../commonFramework/angularDirectives/formField.html",
+      templateUrl: ((typeof compiled !== 'undefined' && compiled)?'':"../")+"commonFramework/angularDirectives/formField.html",
       replace: true
    };
 });
 
 angular.module('algorea')
-   .controller('adminCtrl', function($scope, $rootScope, loginService, $sce, $location, $timeout) {
+   .controller('adminCtrl', ['$scope', '$rootScope', 'loginService', '$sce', '$location', '$timeout', function($scope, $rootScope, loginService, $sce, $location, $timeout) {
       $scope.userLogged = false;
       $scope.loginReady = false;
       $scope.loginClass = 'loginCentered';
@@ -62,10 +62,10 @@ angular.module('algorea')
          $scope.loginInnerHtml = '';
          $timeout(function() {});
       });
-   });
+   }]);
 
 angular.module('algorea')
-   .controller('ItemsCtrl', function($scope, $modal, loginService) {
+   .controller('ItemsCtrl', ['$scope', '$modal', 'loginService', function($scope, $modal, loginService) {
       $scope.models = models;
       $scope.inForum = true;// TODO: used by tasks, should be better
       $scope.accessManager = AccessManager;
@@ -744,10 +744,10 @@ angular.module('algorea')
          }
          $scope.$apply();
       });
-   });
+   }]);
 
 angular.module('algorea')
-   .controller('ItemsSearchCtrl', function($scope) {
+   .controller('ItemsSearchCtrl', ['$scope', function($scope) {
       $scope.searchItems = {
          sTextId: "",
          sTitle: "",
@@ -773,10 +773,10 @@ angular.module('algorea')
          backdropFade: true,
          dialogFade: true
       };
-   });
+   }]);
 
 angular.module('algorea')
-   .controller('GroupsSearchCtrl', function($scope) {
+   .controller('GroupsSearchCtrl', ['$scope', function($scope) {
       $scope.searchGroups = {
          sName: "",
          sType: "",
@@ -800,10 +800,10 @@ angular.module('algorea')
          backdropFade: true,
          dialogFade: true
       };
-   });
+   }]);
 
 angular.module('algorea')
-   .controller('AccessModeCtrl', function($scope, $modal) {
+   .controller('AccessModeCtrl', ['$scope', function($scope, $modal) {
       $scope.shouldBeOpen = false;
       $scope.data = {
          bAccessRestricted: true,
@@ -825,11 +825,11 @@ angular.module('algorea')
          backdropFade: true,
          dialogFade: true
       };
-   });
+   }]);
 
 
 angular.module('algorea')
-   .controller('GenericDialogCtrl', function($scope) {
+   .controller('GenericDialogCtrl', ['$scope', function($scope) {
       $scope.shouldBeOpen = false;
       $scope.open = function(modelName, recordID) {
          $scope.modelName = modelName;
@@ -851,10 +851,10 @@ angular.module('algorea')
          backdropFade: true,
          dialogFade: true
       };
-   });
+   }]);
 
 angular.module('algorea')
-   .controller('AccessDialogCtrl', function($scope, $controller) {
+   .controller('AccessDialogCtrl', ['$scope', '$controller', function($scope, $controller) {
       $controller('GenericDialogCtrl', {
          $scope: $scope
       });
@@ -905,7 +905,7 @@ angular.module('algorea')
             ModelsManager.updated("groups_items", groupItem.ID);
          }
       };
-   });
+   }]);
 
 
 var AccessManager = {
@@ -1120,7 +1120,7 @@ function createGroupItem(idGroup, idItem, doNotInsert) {
 
 
 angular.module('algorea')
-   .controller('GenDialogCtrl', function($scope, $modalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess) {
+   .controller('GenDialogCtrl', ['$scope', '$modalInstance', 'modelName', 'recordName', 'record', 'group_group', 'item_item', 'canRemoveAccess', function($scope, $modalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess) {
       $scope.freshlyCreated = false;
       $scope.canRemoveAccess = canRemoveAccess;
       if (!record && modelName === 'groups_items') {
@@ -1160,4 +1160,4 @@ angular.module('algorea')
          $modalInstance.close();
          AccessManager.resetAccess();
       };
-   });
+   }]);

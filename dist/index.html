@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr" ng-app="algorea"  ng-controller="navigationController">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Algorea : l’algorithmique par la pratique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <script>
+      var rootUrl = '/';
+    </script>
+    <script type="text/javascript" src="config.js.php"></script>
+    <link rel="stylesheet" href="vendor.css">
+    <link rel="stylesheet" href="algorea.css">
+    <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div ng-controller="layoutController" id="layoutContainer">
+<div class="ui-layout-north">
+  <div class="navbar" role="navigation">
+    <div class="container navbar-container">
+      <div class="navbar-inner">
+        <a class="navbar-brand" href="#"><img max-height="40px" alt="France IOI" src="images/logoioi-invert.png"></a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#decouvrir">Découvrir</a></li>
+          <li ui-sref-active="active"><a ui-sref="contents">Progresser</a></li>
+          <li ui-sref-active="active"><a ui-sref="forum">S&rsquo;entraider<!-- <span class="badge" style="margin-left:5px;">5</span>--></a></li>
+          <li><a href="#concours">Concourir</a></li>
+          <li><a href="#enseigner">Enseigner</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li id="userinfocontainer" ng-controller="userController">
+             <div ng-include="'login/userbox.html'"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" style="margin-top:-20px;">
+    <div class="jumbotron">
+      <h1>Algo<span class="titre-principal-fin">réα</span></h1>
+      <p id="subtitle">L&rsquo;algorithmique par la pratique</p>
+    </div>
+  </div>
+  <div ui-view="breadcrumbs" autoscroll="false"></div>
+</div>
+
+<div class="ui-layout-west">
+  <div class="fixed-scrollbar" id="scrollbar-left" onscroll="updateScrollBarLeft()"><div class="inner-scrollbar" id="inner-scrollbar-left"></div></div>
+  <div id="display-left">
+    <div class="content" id="content-left">
+      <div ui-view="left" autoscroll="false"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ui-layout-center">
+  <div view-button></div>
+  <div class="fixed-scrollbar" id="scrollbar-right" onscroll="updateScrollBarRight()"><div class="inner-scrollbar" id="inner-scrollbar-right"></div></div>
+  <div id="display-right">
+    <div class="content" id="content-right">
+      <div ui-view="right" autoscroll="false"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ui-layout-east">
+  <div ng-include="'community/view.html'"></div>
+</div>
+</div>
+
+<script src="vendor.js"></script>
+<script src="algorea.js"></script>
+<script src="templates.js"></script>
+</body>
+</html>

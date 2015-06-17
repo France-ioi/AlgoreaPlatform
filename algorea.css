@@ -106,7 +106,7 @@ body {
    overflow: hidden;
    border:0px;
    background-color:rgb(2, 118, 196);
-   background-image: url(/assets/img/background-top.png);
+   background-image: url(images/background-top.png);
    background-position: center;
 }
 /* Navigation bar */
@@ -241,7 +241,7 @@ body {
    overflow: hidden !important;
    border:0px;
    background-color:rgb(238, 238, 244);
-   background-image: url(/assets/img/background-right.png);
+   background-image: url(images/background-right.png);
    background-position: center;
 }
 .community {

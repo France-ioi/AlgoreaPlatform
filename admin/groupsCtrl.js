@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('algorea')
-.controller('groupInvitationCtrl', function($scope, $http) {
+.controller('groupInvitationCtrl', ['$scope', '$http', function($scope, $http) {
    $scope.error = null;
    $scope.invitationError = null;
    $scope.newInvitationOpened = false;
@@ -101,7 +101,7 @@ angular.module('algorea')
       invitation.sStatusDate = new Date();
       ModelsManager.insertRecord('groups_groups', invitation);
    };
-});
+}]);
 
 angular.module('algorea').
   filter('byInvitation', function() {

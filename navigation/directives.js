@@ -8,9 +8,9 @@ angular.module('algorea')
       template: function(element, attrs) {
         if (attrs.from == 'menu') {
            return '<div class="sbc-{{activityClass}} sbc-{{activityClass}}-{{lastClass}} sbc-{{distanceClass}}">' +
-                  '  <a ng-if="leftLink" class="sbc-left-arrow" ui-sref="{{leftLink}}"><img src="assets/img/arrow-left.png"></a>' +
+                  '  <a ng-if="leftLink" class="sbc-left-arrow" ui-sref="{{leftLink}}"><img src="images/arrow-left.png"></a>' +
                   '  <span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
-                  '  <a ng-if="rightLink" class="sbc-right-arrow" ui-sref="{{rightLink}}"><img src="assets/img/arrow-right.png"></a>' +
+                  '  <a ng-if="rightLink" class="sbc-right-arrow" ui-sref="{{rightLink}}"><img src="images/arrow-right.png"></a>' +
                   '  <a ng-if="!active" class="fillparent" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a>' +
                   '</div>';
         } else {

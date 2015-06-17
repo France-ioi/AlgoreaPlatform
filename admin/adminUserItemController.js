@@ -1,5 +1,5 @@
 angular.module('algorea')
-   .controller('adminUserItemController', function($scope) {
+   .controller('adminUserItemController', ['$scope', function($scope) {
    $scope.user_item = null;
    $scope.getItemStatusForGroup = function(group, item) {
       console.error('get item status for item '+item.ID);
@@ -28,4 +28,4 @@ angular.module('algorea')
    $scope.$on('admin.groupSelected', function() {
       $scope.getItemStatusForGroup($scope.group_group.child, $scope.item_item.child);
    });
-});
+}]);
