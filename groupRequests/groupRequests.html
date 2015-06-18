@@ -69,7 +69,7 @@
                <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)">Annuler</button>
             </div>
             <div ng-if="mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'direct' ">
-               <button class="btn btn-default" ng-click="leaveGroup(mygroupgroup)">Quitter le groupe</button>
+               <button class="btn btn-default" confirm="leaveGroup(mygroupgroup)" rel="Êtes-vous sûr de vouloir quitter le groupe {{group_group.parent.sName}} ?'">Quitter le groupe</button>
             </div>
          </td>
       </tr>
