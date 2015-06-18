@@ -24,7 +24,7 @@ angular.module('algorea')
    };
    $scope.printType = function(type) {
       return models.groups_groups.fields.sType.values[type].label;
-   }
+   };
    $scope.cancelInvitation = function(group_group) {
       ModelsManager.deleted('groups_groups', group_group.ID);
    };
@@ -113,7 +113,7 @@ angular.module('algorea').
          }
       });
       return out;
-    }
+    };
   });
 
 angular.module('algorea').
@@ -126,5 +126,5 @@ angular.module('algorea').
          }
       });
       return out;
-    }
+    };
   });

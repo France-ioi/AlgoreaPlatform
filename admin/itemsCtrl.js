@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('algorea', ['ui.bootstrap', 'ngSanitize', 'franceIOILogin']);
+var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize']);
 
 app.directive('field', function() {
    return {
@@ -14,13 +14,13 @@ app.directive('field', function() {
          scope.field = models[parts[0]].fields[parts[1]];
          scope.fieldname = parts[1];
       },
-      controller: function($scope) {
+      controller: ['$scope', function($scope) {
          $scope.clear = function() {
             if ($scope.field.type == "jsdate") {
                $scope.model[$scope.fieldname] = null;
             }
          };
-      },
+      }],
       templateUrl: ((typeof compiled !== 'undefined' && compiled)?'':"../")+"commonFramework/angularDirectives/formField.html",
       replace: true
    };
@@ -167,11 +167,11 @@ angular.module('algorea')
             if (!that.canRemoveAccess) {return false;}
             angular.forEach(child.child.group_items, function(group_item) {
                if (group_item.idGroup == to_group.ID &&
-                     (group_item.sFullAccessDate
-                      || group_item.sPartialAccessDate
-                      || group_item.sSolutionAccessDate
-                      || group_item.bManagerAccess
-                      || group_item.bOwnerAccess)) {
+                     (group_item.sFullAccessDate ||
+                        group_item.sPartialAccessDate ||
+                        group_item.sSolutionAccessDate ||
+                        group_item.bManagerAccess ||
+                        group_item.bOwnerAccess)) {
                   console.error('cannot remove access because of '+child.child.ID);
                   that.canRemoveAccess = false;
                   return false;
@@ -262,7 +262,7 @@ angular.module('algorea')
          } else {
             ModelsManager.deleteRecord('groups_groups', groupGroup.ID);
          }
-      }
+      };
 
       // mechanism to load grand children
       var loadGrandChildrenOf = [];
@@ -432,6 +432,7 @@ angular.module('algorea')
 
       $scope.checkUserRight = function(recordID, recordModel, action) {
          var record = ModelsManager.getRecord(recordModel, recordID);
+         var group_item;
          if (!record) return false;
          if (recordModel == 'items_items') {
             if (action == 'delete' && (record.parent.ID == config.CustomProgressItemId || record.parent.ID == config.CustomContestRootItemId)) {
@@ -441,11 +442,11 @@ angular.module('algorea')
                return true;
             }
             if (action == 'delete') {
-               var group_item = getGroupItem($scope.loginData.idGroupSelf, record.parent.ID);
+               group_item = getGroupItem($scope.loginData.idGroupSelf, record.parent.ID);
                return group_item && group_item.bOwnerAccess;
             }
             if (action == 'insert') {
-               var group_item = getGroupItem($scope.loginData.idGroupSelf, record.child.ID);
+               group_item = getGroupItem($scope.loginData.idGroupSelf, record.child.ID);
                return group_item && (group_item.bOwnerAccess || group_item.bManagerAccess);
             }
             return true;
@@ -803,7 +804,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('AccessModeCtrl', ['$scope', function($scope, $modal) {
+   .controller('AccessModeCtrl', ['$scope', function($scope) {
       $scope.shouldBeOpen = false;
       $scope.data = {
          bAccessRestricted: true,
