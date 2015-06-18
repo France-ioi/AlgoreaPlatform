@@ -2,7 +2,7 @@
   "name": "AlgoreaPlatform",
   "dependencies": {
     "bootstrap": "latest",
-    "jquery": "latest",
+    "jquery": "1.*",
     "angular": "latest",
     "angular-bootstrap": "latest",
     "angular-ui-router": "0.2.13",

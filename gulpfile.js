@@ -17,8 +17,8 @@ var minifyCSS = require('gulp-minify-css');
 var sourcemaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-//var jshint = require('gulp-jshint');
-//var stylish = require('jshint-stylish');
+var jshint = require('gulp-jshint');
+var stylish = require('jshint-stylish');
 var mainBowerFiles = require('main-bower-files');
 
 gulp.task('css', function() {
@@ -51,9 +51,9 @@ gulp.task('js', function() {
 });
 
 gulp.task('admin-js', function() {
-  return gulp.src(['ext/inheritance.js','shared/models.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','commonFramework/treeview/*.js','login/service.js','admin/itemsCtrl.js','task/*.js','admin/adminUserItemController.js', 'admin/groupsCtrl.js'])
-//    .pipe(jshint())
-//    .pipe(jshint.reporter('jshint-stylish'))
+  return gulp.src(['ext/inheritance.js','shared/models.js','shared/utils.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','commonFramework/treeview/*.js','login/service.js','admin/itemsCtrl.js','admin/adminUserItemController.js', 'admin/groupsCtrl.js','task/*.js'])
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'))
 //    .pipe(sourcemaps.init())
     .pipe(uglify())
 //    .pipe(sourcemaps.write())
@@ -79,14 +79,17 @@ gulp.task('images', function () {
 });
 
 gulp.task('vendor-js', function() {
-  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "angular-i18n": {"main": ['angular-locale_fr-fr.js']}}})) // exclude bootstrap from included js
+  // exclude bootstrap from included js, include fr_fr locale
+  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "angular-i18n": {"main": ['angular-locale_fr-fr.js']}}})) 
     .pipe(uglify())
     .pipe(concat('vendor.js'))
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('vendor-css', function() {
-  return gulp.src(mainBowerFiles([['**/*.css']]))
+  console.log(mainBowerFiles());
+  console.log(mainBowerFiles({"filter": '**/*.css', "overrides": {"dynatree": {"main": ['dist/skin/ui.dynatree.css']}, "bootstrap": {"main": ['dist/css/bootstrap.css']}}}));
+  return gulp.src(mainBowerFiles({"filter": '**/*.css', "overrides": {"dynatree": {"main": ['dist/skin/ui.dynatree.css']}, "bootstrap": {"main": ['dist/css/bootstrap.css']}}}))
     .pipe(minifyCSS())
     .pipe(concat('vendor.css'))
     .pipe(gulp.dest('dist'));
@@ -97,7 +100,12 @@ gulp.task('vendor-fonts', function() {
     .pipe(gulp.dest('dist/fonts'));
 });
 
-gulp.task('vendor-images', function() {
+gulp.task('dynatree-images', function() {
+  return gulp.src('bower_components/dynatree/dist/skin/*.gif')
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('vendor-images', ['dynatree-images'], function() {
   return gulp.src(mainBowerFiles([['**/images/*.png']]))
     .pipe(gulp.dest('dist/images'));
 });
