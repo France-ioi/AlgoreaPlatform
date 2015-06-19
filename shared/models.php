@@ -251,6 +251,7 @@ $tablesModels = array (
       "fields" => array(
           "idUser"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
           "idItem"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
+          "idGroup"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
           "iScore"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "iScoreComputed"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "iScoreDiffManual"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
@@ -325,6 +326,7 @@ $viewsModels = array(
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
          "users" => array('type' => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "users"),
          "myInvitationsLeft" => array("type" => "LEFT", "dstField" => "idGroupParent", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_groups"),
+         "myInvitations" => array("dstField" => "idGroupParent", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_groups"),
          "myGroupDescendantsLeft" => array("type" => "LEFT", "dstField" => "idGroupChild", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_ancestors"),
       ),
       "fields" => array(
@@ -652,6 +654,10 @@ $viewsModels = array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
             "condition"  => '((`[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf) AND (`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned))',
          ),
+         "mine" => array(
+            "joins" => array(),
+            "condition"  => '`users_answers`.`idUser` = :idUser',
+         ),
       ),
    ),
    "users_items" => array(
@@ -662,10 +668,12 @@ $viewsModels = array(
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfUserDescendants" => array("srcTable" => "users_items", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUser"),
          "selfGroupDescendants" => array("srcTable" => "selfUserDescendants", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
+         "selfGroupDescendantsDirect" => array("srcTable" => "users_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupChild"),
       ),
       "fields" => array(
           "idUser"                => array(),
           "idItem"                => array(),
+          "idGroup"               => array(),
           "iScore"                => array(),
           "iScoreComputed"        => array(),
           "iScoreDiffManual"      => array(),
@@ -693,6 +701,14 @@ $viewsModels = array(
          "accessible" => array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
             "condition"  => '((`[PREFIX]groups_items`.`bCachedManagerAccess` = 1 OR `[PREFIX]groups_items`.`bOwnerAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf) AND (`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned))',
+         ),
+         "mineAndDescendants" => array(
+            "joins" => array("selfGroupDescendantsDirect"),
+            "condition"  => '(`[PREFIX]selfGroupDescendantsDirect`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)',
+         ),
+         "mine" => array(
+            "joins" => array(),
+            "condition"  => '`users_answers`.`idUser` = :idUser',
          ),
       ),
    ),

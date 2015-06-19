@@ -40,7 +40,20 @@ function cleanTempUsers($db) {
    $db->exec($query);
 }
 
+function generateGroupVersion() {
+   $query = 'insert ignore into `groups_versions` (`idGroup`, `iVersion`) select `groups`.`ID`, MAX(`groups_items`.`iVersion`) from `groups` join `groups_items` on `groups_items`.`idGroup` = `groups`.`ID` group by `groups`.`ID` on duplicate key update `iVersion` = VALUES(`iVersion`);';
+   echo $query."\n";
+   $db->exec($query);
+}
+
+function generateUserItemGroup() {
+   $query = 'update users_items join users on users.ID = users_items.idUser set users_items.idGroup = users.idGroupSelf;';
+   echo $query."\n";
+   $db->exec($query);
+}
+
 #cleanTempUsers($db);
+#generateGroupVersion();
 
 $db->exec('truncate groups_ancestors');
 $db->exec('update groups_propagate set sAncestorsComputationState = \'todo\';');

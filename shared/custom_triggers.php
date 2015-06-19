@@ -99,6 +99,14 @@ function addCustomTriggers(&$triggers) {
    $triggers["groups_items"]["BEFORE UPDATE"][] = $queryResetAccessNew;
    $triggers["groups_items"]["AFTER DELETE"][] = "DELETE FROM groups_items_propagate where ID = OLD.ID ";
    //$triggers["groups_items"]["AFTER INSERT"][] = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, `sPropagateAccess`) VALUES (NEW.`ID`, 'self') ON DUPLICATE KEY UPDATE `sPropagateAccess`='self' ";
+   // filling groups_versions with last version of groups_items for the groups
+#   $triggers["groups_items"]["AFTER INSERT"][] = "SELECT `iVersion` INTO @curVersion FROM `synchro_version`; INSERT IGNORE INTO `groups_versions` (`idGroup`, `iVersion`) SELECT `descendants`.`ID`, @curVersion FROM `groups_ancestors` as `descendants` WHERE `descendants`.`idGroupAncestor` = NEW.`ID` ON DUPLICATE KEY UPDATE `iVersion`=@curVersion ";
+#   $triggers["groups_items"]["AFTER DELETE"][] = "SELECT `iVersion` INTO @curVersion FROM `synchro_version`; INSERT IGNORE INTO `groups_versions` (`idGroup`, `iVersion`) SELECT `descendants`.`ID`, @curVersion FROM `groups_ancestors` as `descendants` WHERE `descendants`.`idGroupAncestor` = OLD.`ID` ON DUPLICATE KEY UPDATE `iVersion`=@curVersion ";
+#   $triggers["groups_items"]["AFTER UPDATE"][] = "SELECT `iVersion` INTO @curVersion FROM `synchro_version`; INSERT IGNORE INTO `groups_versions` (`idGroup`, `iVersion`) SELECT `descendants`.`ID`, @curVersion FROM `groups_ancestors` as `descendants` WHERE `descendants`.`idGroupAncestor` = NEW.`ID` ON DUPLICATE KEY UPDATE `iVersion`=@curVersion ";
+   $triggers["groups_items"]["AFTER INSERT"][] = "SELECT `iVersion` INTO @curVersion FROM `synchro_version`; INSERT IGNORE INTO `groups_versions` (`idGroup`, `iVersion`) VALUES (NEW.`ID`, @curVersion) ON DUPLICATE KEY UPDATE `iVersion`=@curVersion ";
+   $triggers["groups_items"]["AFTER DELETE"][] = "SELECT `iVersion` INTO @curVersion FROM `synchro_version`; INSERT IGNORE INTO `groups_versions` (`idGroup`, `iVersion`) VALUES (OLD.`ID`, @curVersion) ON DUPLICATE KEY UPDATE `iVersion`=@curVersion ";
+   $triggers["groups_items"]["AFTER UPDATE"][] = "SELECT `iVersion` INTO @curVersion FROM `synchro_version`; INSERT IGNORE INTO `groups_versions` (`idGroup`, `iVersion`) VALUES (NEW.`ID`, @curVersion) ON DUPLICATE KEY UPDATE `iVersion`=@curVersion ";
+
    $triggers["groups"]["AFTER DELETE"][] = "DELETE FROM groups_propagate where ID = OLD.ID ";
    $triggers["groups"]["AFTER INSERT"][] = "INSERT IGNORE INTO `groups_propagate` (`ID`, `sAncestorsComputationState`) VALUES (NEW.`ID`, 'todo') ";
    $triggers["items"]["AFTER DELETE"][] = "DELETE FROM items_propagate where ID = OLD.ID ";

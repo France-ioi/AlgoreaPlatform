@@ -266,7 +266,7 @@ function syncAddCustomClientChanges($db, $minServerVersion, &$clientChanges) {
    }
 }
 
-function getItemsFromAncestors ($params, &$requests, $db){
+function getItemsFromAncestors ($params, &$requests, $db, $groupsItemsUpdated){
    $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
    array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
    $requests["items_items"]["model"]["joins"]["items_ancestors"] = array("srcTable" => "items_items", "srcField" => "idItemChild", "dstField" => "idItemChild");
@@ -340,6 +340,12 @@ function getItemsFromAncestors ($params, &$requests, $db){
       );
       $requests[$table]["filters"]["idItemParent"] = true;
    }
+   if (!$groupsItemsUpdated) {
+      unset($requests['items']);
+      unset($requests['items_strings']);
+      unset($requests['items_items']);
+      unset($requests['groups_items']);
+   }
 }
 
 function getMyGroupsItems ($params, &$requests) {
@@ -368,8 +374,8 @@ function getGroups ($params, &$requests) {
    $idRootOwned = $config->shared->RootAdminGroupId;
    $requests['groups']["model"]["fields"]["sType"]["groupBy"] = "`groups`.`ID`";
    $requests["groups"]["model"]["filters"]["MyGroupsWrite"] = array(
-      "joins" => array("myInvitationsLeft", "myGroupDescendantsLeft"),
-      "condition"  => "`[PREFIX]groups`.`sType` != 'UserSelf' AND `[PREFIX]groups`.`sType` != 'UserAdmin' AND `[PREFIX]groups`.`sType` != 'Root' AND `[PREFIX]groups`.`sType` != 'RootSelf'  AND `[PREFIX]groups`.`sType` != 'RootAdmin' AND (`[PREFIX]myInvitationsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)",
+      "joins" => array("myGroupDescendantsLeft"),
+      "condition"  => "`[PREFIX]groups`.`sType` != 'UserSelf' AND `[PREFIX]groups`.`sType` != 'UserAdmin' AND `[PREFIX]groups`.`sType` != 'Root' AND `[PREFIX]groups`.`sType` != 'RootSelf'  AND `[PREFIX]groups`.`sType` != 'RootAdmin' AND (`[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)",
    );
    $requests["groups"]["filters"]["MyGroupsWrite"] = array(
       'values' => array(
@@ -378,16 +384,13 @@ function getGroups ($params, &$requests) {
       ),
       'modes' => array('insert' => true, 'update' => true, 'delete' => true),
    );
-   $requests["groups"]['filters']['addUserID'] = array('modes' => array('select' => true));
-   array_push($requests["groups"]["fields"], 'idUser');
-   $requests["groups"]['model']['fields']['idUser'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`ID`');
-   $requests["groups"]["model"]["filters"]["MineAndInvitations"] = array(
-      "joins" => array("myInvitationsLeft"),
-      "condition"  => "`[PREFIX]myInvitationsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupSelf",
+   // we only take invitations here, self, ancestors, descendants and descendants ancestors are in syncRequests/
+   $requests["groups"]["model"]["filters"]["invitations"] = array(
+      "joins" => array("myInvitations"),
+      "condition"  => "`[PREFIX]myInvitations`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf",
    );
-   $requests["groups"]["filters"]["MineAndInvitations"] = array(
+   $requests["groups"]["filters"]["invitations"] = array(
       'values' => array(
-         'idGroupOwned' => $_SESSION['login']['idGroupOwned'], // TODO: vérifier pour les tempUsers
          'idGroupSelf'  => $_SESSION['login']['idGroupSelf'],
       ),
       'modes' => array('select' => true),
@@ -506,7 +509,7 @@ function filterUsers(&$requests) {
 #   }
 }
 
-function algoreaCustomRequest($params, &$requests, $db) {
+function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
    if (!isset($_SESSION)) {
       session_start();
    }
@@ -546,6 +549,10 @@ function algoreaCustomRequest($params, &$requests, $db) {
          //unset($requests["threads"]);
          unset($requests["messages"]);
       }
+      $query = 'SELECT `iVersion` FROM `groups_versions` WHERE `idGroup` = :idGroup';
+      $stmt = $db->prepare('SELECT MAX(groups_versions.`iVersion`) as `maxIVersion` FROM `groups_versions` JOIN `groups_ancestors` as `ancestors` ON `ancestors`.idGroupAncestor = groups_versions.idGroup WHERE ancestors.`idGroupChild` = :idGroupSelf');
+      $stmt->execute(array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
+      $lastImportantChangeVersion = $stmt->fetchColumn();
       $requests['users_items']['readOnly'] = true;
       //$requests['threads']['debug'] = true;
       //$requests["threads"]["debugLogFunction"] = myDebugFunction;
@@ -555,12 +562,20 @@ function algoreaCustomRequest($params, &$requests, $db) {
       //$requests['items_ancestors']['filters']['accessible'] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
       unset($requests["groups_ancestors"]);
       getGroups($params, $requests);
+      $groupsItemsUpdated = true;
+      //echo "lastImportantChangeVersion: $lastImportantChangeVersion minServerVersion = ".$minServerVersion;
+      //exit();
+      if ($minServerVersion && $lastImportantChangeVersion && $lastImportantChangeVersion < $minServerVersion) {
+         $groupsItemsUpdated = false;
+      }
+      $debugStr = "lastImportantChangeVersion = ".$lastImportantChangeVersion.", minServerVersion = ".$minServerVersion.", groupsItemsUpdated = ".$groupsItemsUpdated."\n";
+      file_put_contents('/tmp/groupItemsUpdated.txt', date(DATE_RFC822).'  '.$debugStr, FILE_APPEND);
       switch ($params["requests"]["algorea"]['type']) {
          case 'getItemsFromAncestors':
-            getItemsFromAncestors($params, $requests, $db);
+            getItemsFromAncestors($params, $requests, $db, $groupsItemsUpdated);
             break;
          case 'expandedItems':
-            setupExpandedItemsRequests($params, $requests);
+            setupExpandedItemsRequests($params, $requests, $groupsItemsUpdated);
             break;
          default:
             //setupExpandedItemsRequests($params, $requests);
@@ -570,7 +585,7 @@ function algoreaCustomRequest($params, &$requests, $db) {
    }
 }
 
-function setupExpandedItemsRequests($params, &$requests) {
+function setupExpandedItemsRequests($params, &$requests, $groupsItemsUpdated) {
    global $config, $db;
    $requests["items"]["model"]["joins"]["items_items"] = array("srcTable" => "items", "srcField" => "ID", "dstField" => "idItemChild");
    $requests["items"]["model"]["fields"]["sType"]["groupBy"] = "`items`.`ID`"; // Could be added to any field. TODO : fix group by system
@@ -596,9 +611,9 @@ function setupExpandedItemsRequests($params, &$requests) {
       $requests["groups_items"]["model"]["fields"]["sType"]["groupBy"] = "`groups_items`.`ID`";
       //$requests['debugLogFunction'] = myDebugFunction;
       //$requests["groups_items"]["debugLogFunction"] = myDebugFunction;
-      $requests["users_items"]["model"]["joins"]["items_items"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
-      $requests["users_items"]["filters"]["accessible"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
-      $requests["users_items"]["model"]["fields"]["sType"]["groupBy"] = "`users_items`.`ID`";
+      $requests["users_items"]["model"]["joins"]["items_items"] = array("srcTable" => "users_items", "srcField" => "idItem", "dstField" => "idItemChild");
+      $requests["users_items"]["filters"]["mineAndDescendants"] = array('modes' => array('select' => true), "values" => array("idGroupOwned" => $_SESSION['login']['idGroupOwned']));
+      $requests["users_items"]["readOnly"] = true;
       //$requests["users_items"]["debugLogFunction"] = myDebugFunction;
 /*      $requests["users_answers"]["model"]["joins"]["items_items"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
       $requests["users_answers"]["filters"]["accessible"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
@@ -686,6 +701,12 @@ function setupExpandedItemsRequests($params, &$requests) {
          //$requests['zero_'.$table]["debug"] = true;
       }
    }
+   if (!$groupsItemsUpdated) {
+      unset($requests['items']);
+      unset($requests['items_strings']);
+      unset($requests['items_items']);
+      unset($requests['groups_items']);
+   }
 }
 
 function setupGroupsItemsRequests(&$requests) {
@@ -700,10 +721,10 @@ function setupGroupsItemsRequests(&$requests) {
    }
 }
 
-function getSyncRequests($params) {
+function getSyncRequests($params, $minServerVersion) {
    global $db;
    $requests = syncGetTablesRequests();
-   algoreaCustomRequest($params, $requests, $db);
+   algoreaCustomRequest($params, $requests, $db, $minServerVersion);
 
    return $requests;
 }
