@@ -353,8 +353,8 @@ $viewsModels = array(
          "myGroupDescendants" => array("dstField" => "idGroupChild", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "groups_ancestors"),
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
          "myGroupAncestors" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "groups_ancestors"),
-         "userInviting" => array('type' => 'LEFT', "dstField" => "ID", "srcField" => "idUserInviting", "srcTable" => "groups_groups", "dstTable" => "users"),
-         "users" => array("type" => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users"),
+         "userInviting" => array(/*'type' => 'LEFT', */"dstField" => "ID", "srcField" => "idUserInviting", "srcTable" => "groups_groups", "dstTable" => "users", "ignoreHistory" => true),
+         "users" => array("type" => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users", "ignoreHistory" => true),
       ),
       "fields" => array(
          "idGroupParent" => array(),
@@ -374,7 +374,7 @@ $viewsModels = array(
             "condition"  => '(`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf AND `[PREFIX]groups_groups`.`idGroupParent` != :[PREFIX_FIELD]idRootSelf) OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned',
          ),
          "addLogin" => array(
-            "joins" => array("users", "userInviting"),
+            "joins" => array(/*"users", */"userInviting"),
             "ignoreValue" => true,
          ),
       ),
@@ -575,7 +575,7 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
          "groups_items" =>  array("srcTable" => "threads", "srcField" => "idItem", "dstField" => "idItem"),
-         "users" =>  array("srcTable" => "threads", "srcField" => "idUserCreated", "dstField" => "ID", "dstTable" => "users"),
+         "users" =>  array("srcTable" => "threads", "srcField" => "idUserCreated", "dstField" => "ID", "dstTable" => "users", "ignoreHistory" => true),
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfUserDescendants" => array("srcTable" => "threads", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUserCreated"),
          "selfGroupDescendants" => array("srcTable" => "selfUserDescendants", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),

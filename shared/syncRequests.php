@@ -398,9 +398,9 @@ function getGroups ($params, &$requests) {
 
    $requests["groups_groups"]['filters']['addLogin'] = array('modes' => array('select' => true));
    array_push($requests["groups_groups"]["fields"], 'sChildLogin');
-   $requests["groups_groups"]['model']['fields']['sChildLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`sLogin`');
+   $requests["groups_groups"]['model']['fields']['sChildLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'tableName' => 'users', 'sql' => '`users`.`sLogin`');
    array_push($requests["groups_groups"]["fields"], 'sUserInvitingLogin');
-   $requests["groups_groups"]['model']['fields']['sUserInvitingLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`userInviting`.`sLogin`');
+   $requests["groups_groups"]['model']['fields']['sUserInvitingLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('userInviting'), 'sql' => '`userInviting`.`sLogin`');
    if (!$_SESSION['login']['tempUser']) {
       $requests['groups_groups']['filters']['invitationsAndDescendantsRead'] = array('modes' => array('select' => true), 'values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idGroupOwned' => $_SESSION['login']['idGroupOwned']));
       //$requests['groups_groups']['filters']['invitationsAndDescendantsWrite'] = array('modes' => array('insert' => true, 'update' => true, 'delete' => true), 'values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idRootSelf' => $idRootSelf, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']));
