@@ -354,7 +354,7 @@ $viewsModels = array(
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
          "myGroupAncestors" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "groups_ancestors"),
          "userInviting" => array(/*'type' => 'LEFT', */"dstField" => "ID", "srcField" => "idUserInviting", "srcTable" => "groups_groups", "dstTable" => "users", "ignoreHistory" => true),
-         "users" => array("type" => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users", "ignoreHistory" => true),
+         "users" => array(/*"type" => 'LEFT', */"dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users", "ignoreHistory" => true),
       ),
       "fields" => array(
          "idGroupParent" => array(),

@@ -8,12 +8,15 @@ class Listeners {
       $hasChanges = true;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
-         $query = "UPDATE `users_items` as `parent` SET `sAncestorsComputationState` = 'processing' WHERE `sAncestorsComputationState` = 'todo' AND `parent`.`idItem` NOT IN
-         (SELECT `idItemChild` FROM (
-            SELECT `items_items`.`idItemChild`
-            FROM `items_items`
-            JOIN `users_items` as `children` ON (`children`.`idItem` = `items_items`.`idItemParent`)
-            WHERE `children`.`sAncestorsComputationState` <> 'done') as `notready`)";
+         $query = "update users_items join 
+            (select parents.ID from users_items as parents
+            join items_items on items_items.idItemParent = parents.idItem
+            left join users_items as sons on sons.idItem = items_items.idItemChild and sons.idUser = parents.idUser
+            where parents.sAncestorsComputationState = 'todo'
+            group by parents.ID
+            having SUM(IF(sons.sAncestorsComputationState <> 'done', 1,0)) = 0) todo_with_children_all_done
+            on todo_with_children_all_done.ID = users_items.ID
+            set `sAncestorsComputationState` = 'processing';";
          $db->exec($query);
         /* For every object marked as 'processing', we compute all the caracteristics based on the children:
               * sLastActivityDate as the max of children's
