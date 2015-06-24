@@ -161,6 +161,7 @@ angular.module('algorea')
          newThread.sLastActivityDate = new Date();
          $scope.thread = newThread;
          $scope.createEmptyNewMessage();
+         itemService.syncInRequest('threads', $scope.thread.ID);
          $scope.loading = false;
       });
    }
@@ -184,12 +185,14 @@ angular.module('algorea')
          if (!$scope.thread) {
             startNewThread($scope.item);
          } else {
+            itemService.syncInRequest('threads', $scope.thread.ID);
             fetchThread($scope.thread.ID);
          }
       } else {
-         if ($state.current.name == 'newThread') {
+         if ($state.current.name == 'newThread' && !$scope.thread) {
             startNewThread();
          } else {
+            itemService.syncInRequest('threads', $state.params.idThread);
             fetchThread($state.params.idThread);
          }
       }
@@ -199,6 +202,9 @@ angular.module('algorea')
    itemService.onNewLoad(initThread);
    $scope.$on('algorea.reloadView', function() {
       $timeout(initThread);
+   });
+   $scope.$on('$destroy', function() {
+      itemService.unSyncInRequest('threads', $scope.thread.ID);
    });
    // TODO: launch initThread on ModelsManager.addListener('threads', 'updated', 'forumThreadController', callback); ?
    $scope.isFieldEditable = function(field) {

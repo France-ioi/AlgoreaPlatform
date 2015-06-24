@@ -8,6 +8,7 @@ angular.module('algorea')
       ModelsManager.init(models);
       SyncQueue.init(ModelsManager);
       SyncQueue.requests = {algorea: {type: 'getAllLevels'}, loginData: {}};
+      SyncQueue.requestSets = {};
       var callbacks = {};
       var userCallback = null;
       var syncDone = 0;
@@ -22,6 +23,7 @@ angular.module('algorea')
             setInterval(SyncQueue.planToSend, 15000);
          }
       }
+      var requestQueue = [];
       SyncQueue.planToSend();
       setSyncInterval();
       function syncStartListener(data) {
@@ -38,7 +40,7 @@ angular.module('algorea')
                SyncQueue.resetSync = true;
             }
          }
-      };
+      }
 //      $rootScope.$on('$stateChangeSuccess', function() {
 //         var oldIds = idsToSync;
 //         var newIds = 
@@ -146,6 +148,16 @@ angular.module('algorea')
       SyncQueue.addSyncEndListeners("ItemsService", syncEndListener);
       SyncQueue.addSyncStartListeners("ItemsService", syncStartListener);
       return {
+         syncInRequest: function(requestName, idThread) {
+            if (!requestName || !idThread) return;
+            if (!SyncQueue.requests[requestName]) {
+               SyncQueue.requests[requestName] = {};
+            }
+            SyncQueue.requests[requestName][idThread] = {idThread:idThread, resetMinVersion: true};
+         },
+         unSyncInRequest: function (requestName, idThread) {
+            delete SyncQueue.requests[requestName][idThread];
+         },
          getItem: function(ID) {
             return ModelsManager.getRecord('items', ID);
          },

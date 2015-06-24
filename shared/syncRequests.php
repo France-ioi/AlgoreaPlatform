@@ -267,8 +267,6 @@ function syncAddCustomClientChanges($db, $minServerVersion, &$clientChanges) {
 }
 
 function getItemsFromAncestors ($params, &$requests, $db, $groupsItemsUpdated){
-   $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
-   array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
    $requests["items_items"]["model"]["joins"]["items_ancestors"] = array("srcTable" => "items_items", "srcField" => "idItemChild", "dstField" => "idItemChild");
    $requests["items_items"]["model"]["fields"]["sType"]["groupBy"] = "`items_items`.`ID`"; // Could be added to any field. TODO : fix group by system
    $requests["items_items"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
@@ -279,19 +277,6 @@ function getItemsFromAncestors ($params, &$requests, $db, $groupsItemsUpdated){
 
    $requests["groups_items"]["model"]["joins"]["items_ancestors"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
    $requests["groups_items"]["model"]["fields"]["sType"]["groupBy"] = "`groups_items`.`ID`"; // Could be added to any field. TODO : fix group by system
-
-   $requests["messages"]["model"]["joins"]["threads"] = array("srcTable" => "messages", "srcField" => "idThread", "dstField" => "ID");
-   $requests["messages"]["model"]["joins"]["users"] = array("srcTable" => "messages", "srcField" => "idUser", "dstField" => "ID");
-   $requests["messages"]["model"]["joins"]["users_items"] = array("srcTable" => "threads", "srcField" => "idItem", "dstField" => "idItem");
-   $requests["messages"]["model"]["filters"]["idUser"] = array(
-      "joins" => array("users_items", "threads", "users"),
-      "condition"  => "((`[PREFIX]users_items`.`idUser` = :[PREFIX_FIELD]idUser and `[PREFIX]users_items`.`bValidated` = 1) or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
-      "readOnly" => true
-   );
-   $requests["messages"]["filters"]["idUser"] = $_SESSION['login']['ID'];
-   array_push($requests["messages"]["fields"], 'sLogin');
-   $requests["messages"]['model']['fields']['sLogin'] = array('sql' => '`users`.`sLogin`', 'readOnly' => true);
-   $requests["messages"]["debug"] = true;
 
    array_push($requests["items"]["fields"], 'bGrayedAccess');
    $requests["items"]['model']['fields']['bGrayedAccess'] = array('sql' => 'IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0)');
@@ -417,11 +402,8 @@ function getAllLevels ($params, &$requests){
    $idRootItem = $config->shared->OfficialProgressItemId;
    $idRootIndexItem = $config->shared->DiscoverRootItemId;
    $idRootCustomItem = $config->shared->CustomProgressItemId;
-   unset($requests['messages']);
    //unset($requests['threads']);
 #   $requests['threads']['fields']
-   $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
-   array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
    $requests["items_items"]["model"]["filters"]["getAllLevels"] = array(
       "joins" => array(),
       "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem.")",
@@ -529,10 +511,6 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
             "condition"  => "`[PREFIX]filters`.`idUser` = :[PREFIX_FIELD]idUser",
          );
          $requests["filters"]["filters"]["idUser"] = $_SESSION['login']['ID'];
-         $requests["users_threads"]["model"]["filters"]["idUser"] = array(
-            "condition"  => "`[PREFIX]users_threads`.`idUser` = :[PREFIX_FIELD]idUser",
-         );
-         $requests["users_threads"]["filters"]["idUser"] = $_SESSION['login']['ID'];
          if(isset($requests['users_answers'])) {
             $requests["users_answers"]["model"]["filters"]["idUser"] = array(
                "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser",
@@ -569,7 +547,6 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
          $groupsItemsUpdated = false;
       }
       $debugStr = "lastImportantChangeVersion = ".$lastImportantChangeVersion.", minServerVersion = ".$minServerVersion.", groupsItemsUpdated = ".$groupsItemsUpdated."\n";
-      file_put_contents('/tmp/groupItemsUpdated.txt', date(DATE_RFC822).'  '.$debugStr, FILE_APPEND);
       switch ($params["requests"]["algorea"]['type']) {
          case 'getItemsFromAncestors':
             getItemsFromAncestors($params, $requests, $db, $groupsItemsUpdated);
@@ -582,7 +559,81 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
             getAllLevels($params, $requests);
             break;
       }
+      if (isset($params['requests']['threads']) && count($params['requests']['threads'])) {
+         getThreads($params, $requests, $groupsItemsUpdated);
+      } else {
+         unset($request['threads']);
+         unset($request['users_threads']);
+         unset($request['messages']);
+      }
    }
+}
+
+function getThreads($params, &$requests, $groupsItemsUpdated) {
+   global $db;
+   $requests["users_threads"]["model"]["filters"]["idUser"] = array(
+      "condition"  => "`[PREFIX]users_threads`.`idUser` = :[PREFIX_FIELD]idUser",
+   );
+   $requests["users_threads"]["filters"]["idUser"] = $_SESSION['login']['ID'];
+   $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
+   array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
+   $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
+   array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
+
+   $requests["messages"]["model"]["joins"]["users_items"] = array("srcTable" => "threads", "srcField" => "idItem", "dstField" => "idItem");
+   $requests["messages"]["model"]["filters"]["idUser"] = array(
+      "joins" => array("users_items", "threads", "users"),
+      "condition"  => "((`[PREFIX]users_items`.`idUser` = :[PREFIX_FIELD]idUser and `[PREFIX]users_items`.`bValidated` = 1) or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
+      "readOnly" => true
+   );
+   $requests["messages"]["filters"]["idUser"] = $_SESSION['login']['ID'];
+   array_push($requests["messages"]["fields"], 'sLogin');
+   $requests["messages"]['model']['fields']['sLogin'] = array('sql' => '`users`.`sLogin`', 'readOnly' => true);
+   $requests["messages"]["debug"] = true;
+   
+   $condition = "(";
+   $first = true;
+   $has_zero_version = false; // TODO: handle different versions
+   foreach ($params["requests"]["threads"] as $ID => $expandedItem) {
+      if (!$first) {
+         $condition .= ' OR ';
+      }
+      $first = false;
+      $condition .= '`[PREFIX]threads`.`ID` = '.$db->quote($ID);
+      if (intval($expandedItem['minVersion']) == 0) {
+         $has_zero_version = true;
+      }
+   }
+   $condition .= ')';
+
+   if ($has_zero_version) {
+      $requests['messages']["minVersion"] = 0;
+      $requests['users_threads']["minVersion"] = 0;
+      $requests['threads']["minVersion"] = 0;
+   }
+   
+   $requests['threads']['model']["filters"]["idThread"] = array(
+      "joins" => array(),
+      "condition" => $condition,
+   );
+   $requests['threads']["filters"]["idThread"] = array('modes' => array('select' => true), 'values' => array());
+   $requests['users_threads']['model']["filters"]["idThread"] = array(
+      "joins" => array('threads'),
+      "condition" => $condition,
+   );
+   $requests['users_threads']["filters"]["idThread"] = array('modes' => array('select' => true), 'values' => array());
+   $requests['messages']['model']["filters"]["idThread"] = array(
+      "joins" => array('threads'),
+      "condition" => $condition,
+   );
+   $requests['messages']["filters"]["idThread"] = array('modes' => array('select' => true), 'values' => array());
+   $requests['users_answers']['model']["filters"]["mineOrThread"] = array(
+      "joins" => array('threads'),
+      "condition" => '([PREFIX]users_answers.idUser = :[PREFIX_FIELD]idUser OR ([PREFIX]threads.idUserCreated = [PREFIX]users_answers.idUser AND '.$condition.'))',
+   );
+   $requests['users_answers']["filters"]["mineOrThread"] = array('modes' => array('select' => true), 'values' => array("idUser" => $_SESSION['login']['ID']));
+   unset($requests['users_answers']["filters"]["mine"]);
+   unset($requests['users_answers']["filters"]["idUser"]);
 }
 
 function setupExpandedItemsRequests($params, &$requests, $groupsItemsUpdated) {

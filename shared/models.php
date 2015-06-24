@@ -555,6 +555,8 @@ $viewsModels = array(
       "mainTable" => "messages",
       "adminOnly" => false,
       "joins" => array(
+         "threads" =>  array("srcTable" => "messages", "srcField" => "idThread", "dstField" => "ID", "dstTable" => "threads", "ignoreHistory" => true),
+         "users" =>  array("srcTable" => "messages", "srcField" => "idUser", "dstField" => "ID", "ignoreHistory" => true),
       ),
       "fields" => array(
           "idThread"        => array(),
@@ -633,6 +635,7 @@ $viewsModels = array(
       "mainTable" => "users_answers",
       "adminOnly" => false,
       "joins" => array(
+         "threads" =>  array("srcTable" => "users_answers", "srcField" => "idItem", "dstField" => "idItem"),
          "groups_items" =>  array("srcTable" => "users_answers", "srcField" => "idItem", "dstField" => "idItem"),
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfUserDescendants" => array("srcTable" => "users_answers", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUser"),
@@ -716,6 +719,7 @@ $viewsModels = array(
       "mainTable" => "users_threads",
       "adminOnly" => false,
       "joins" => array(
+         "threads" =>  array("srcTable" => "users_threads", "srcField" => "idThread", "dstField" => "ID", "ignoreHistory" => true),
       ),
       "fields" => array(
           "idUser"         => array(),
