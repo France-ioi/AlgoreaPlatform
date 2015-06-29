@@ -236,7 +236,7 @@ angular.module('algorea')
             if (!scope.item.bUsesAPI) {
                return;
             }
-            scope.task = TaskProxyManager.getTaskProxy(scope.taskName, true);
+            scope.task = TaskProxyManager.getTaskProxy(scope.taskName, function() {}, true);
             scope.task.unloaded = false;
             scope.platform = new Platform(scope.task);
             scope.platform.openUrl = function(sTextId) {
