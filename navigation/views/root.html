@@ -1,2 +1,4 @@
-<h2>{{strings.sTitle}}</h2>
-<div ng-repeat="item in getChildren() track by item.ID" display-item from="parent"></div>
+<div class="main-titlebar" ng-include="'navigation/views/menubar.html'"></div>
+<div class="main-area">
+   <div ng-include="'navigation/views/children-list.html'">
+</div>

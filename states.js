@@ -21,7 +21,7 @@ angular.module('algorea')
             },
             views: {
                'left': {
-                   template: '<div display-item></div>',
+                   template: '<div class="sidebar-left-content" ng-include="\'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {

@@ -1,11 +1,6 @@
-<div ng-if="panel!='right'">
-   <h4 style="text-align:center;"><span ng-if="item_status() == 'validated'" class="glyphicon glyphicon-ok" style="color:#3c763d;" title="validé le {{get_formatted_date(user_item.sValidationDate)}}"></span> {{strings.sTitle}}<br><small>{{strings.sSubtitle}}</small></h4>
-</div>
+<div class="main-titlebar" ng-include="'navigation/views/menubar.html'"></div>
 
-<div ng-if="panel=='right'">
-   <h2 style="text-align:center;"><span ng-if="item_status() == 'validated'" class="glyphicon glyphicon-ok" style="color:#3c763d;" title="validé le {{get_formatted_date(user_item.sValidationDate)}}"></span>{{strings.sTitle}}<br><small>{{strings.sSubtitle}}</small></h2>
-</div>
-
-<div class="sons-from-parent sons-from-parent-{{panel}}" ng-class="{'sons-from-parent-large': (panel == 'right' && !right_is_small || panel == 'left' && !left_is_small)}">
-   <div ng-repeat="item in children track by item.ID" display-item from="parent"></div>
+<div class="main-area">
+   <div ng-bind-html="strings.sDescription"></div>
+   <div ng-include="'navigation/views/children-list.html'">
 </div>

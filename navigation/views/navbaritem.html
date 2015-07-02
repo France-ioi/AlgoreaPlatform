@@ -1,0 +1,28 @@
+<div class="sidebar-left-item" ng-controller="leftNavItemController" ng-class="backgroundClass" ng-if="!item.private_showpres">
+   <div class="sidebar-left-item-content-container">
+      <div class="sidebar-left-item-content">
+         <div class="sidebar-left-item-contents-icon1">
+            <span class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
+         </div>
+         <div class="sidebar-left-item-contents-text">
+            <a ui-sref="{{item.private_sref}}" class="{{linkClass}} item-link">{{item.strings[0].sTitle}}</a>
+         </div>
+      </div>
+   </div>
+   <div class="sidebar-left-item-final-icons-container">
+      <div class="sidebar-left-item-final-icons">
+         <div class="sidebar-left-item-final-icon1" ng-if="item.idItemUnlocked && item.idItemUnlocked != 0">
+            <span class="material-icons">vpn_key</span>
+         </div>
+         <div class="sidebar-left-item-final-icon2" ng-if="!item.bGrayedAccess">
+            <span class="material-icons">star</span>
+         </div>
+         <div class="sidebar-left-item-final-icon2" ng-if="item.bGrayedAccess">
+            <span class="material-icons">lock</span>
+         </div>
+      </div>
+   </div>
+</div>
+<div ng-if="item.private_showpres">
+   présentation !
+</div>

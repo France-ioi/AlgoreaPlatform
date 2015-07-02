@@ -1,11 +1,1 @@
-Exercice<br>
-<div class="sbc-oneline" title="{{strings.sTitle}}">
-   <span ng-switch="item_status()">
-      <span ng-switch-when="not tried" class="glyphicon glyphicon-eye-open" title="vu le {{get_formatted_date(user_item.sLastActivityDate)}}"></span>
-      <span ng-switch-when="validated" class="glyphicon glyphicon-ok" style="color:#3c763d;"></span>
-      <span ng-switch-when="validated-ol" class="glyphicon glyphicon-ok" style="color:#aaaaaa;"></span>
-      <span ng-switch-when="failed" class="glyphicon glyphicon-remove" style="color:#ff0000;"></span>
-   </span>
-   {{strings.sTitle}}
-</div>
- <img ng-if="user_item.nbTaskWithHelp" src="assets/img/bulb.png" title="Un conseil a été demandé">
+<div class="sbc-oneline" title="{{strings.sTitle}}">{{strings.sTitle}}</div>

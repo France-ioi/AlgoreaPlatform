@@ -1,11 +1,14 @@
-<div ng-controller="taskController">
-    <h2><span ng-if="item_status() == 'validated'" class="glyphicon glyphicon-ok" style="color:#3c763d;" title="validé le {{get_formatted_date(user_item.sValidationDate)}}"></span> {{strings.sTitle}}</h2>
-    <div tabset justified="true" ng-show="taskLoaded || showForum">
-       <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active">
-       </li>
-    </div>
+<div class="main-titlebar" ng-include="'navigation/views/menubar.html'"></div>
+<div ng-controller="taskController" class="main-area main-area-task">
+   <div class="first-task">
+       <div tabset justified="true" ng-show="taskLoaded || showForum" id="task-tabs">
+          <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active">
+          </li>
+       </div>
 
-  <div ng-include="'forum/thread.html'" ng-show="showForum" ng-controller="forumThreadController"></div>
-  <div ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
-  <div ng-show="taskLoaded && !showForum" include-task></div>
+     <div ng-include="'forum/thread.html'" ng-show="showForum" ng-controller="forumThreadController"></div>
+     <div ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
+     <div ng-show="taskLoaded && !showForum" include-task></div>
+  </div>
+  <div ng-show="taskLoaded && !showForum" include-task task-name="task-answers" ng-if="hasEditor" class="second-task"></div>
 </div>

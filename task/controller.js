@@ -141,6 +141,10 @@ angular.module('algorea')
          $scope.hideSolution();
       }
       $scope.setViews(taskViews);
+      if (platformViews.editor) {
+         $scope.hasEditor = true;
+         delete platformViews.editor;
+      }
       var scopeViews = [];
       var scopeViewsIndex = [];
       angular.forEach(platformViews, function(platformView, platformViewName) {
@@ -187,12 +191,17 @@ angular.module('algorea')
      }
      return false;
    };
+   $scope.openSeparateEditor = function() {
+      $scope.showEditor = true;
+   }
    $scope.selectTab = function(tabname, fromURL) {
       if (!tabname) {
          return;
       }
       if (tabname == $scope.resolutionViewName && !this.pathParams.itemsOnBothSides) {
-         return this.goToResolution();
+         //return this.goToResolution();
+         $scope.openSeparateEditor();
+         return;
       }
       if (tabname != $scope.currentView) {
          if (!$scope.inForum && !fromURL) {

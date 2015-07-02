@@ -248,6 +248,7 @@ angular.module('algorea')
                }
             };
             TaskProxyManager.setPlatform(scope.task, scope.platform);
+            console.error(TaskProxyManager);
             scope.platform.showView = function(view) {};
             scope.platform.updateHeight = function(height) {
                scope.updateHeight(height);

@@ -102,7 +102,7 @@ angular.module('algorea')
          });
          return res;
       };
-      $scope.getItem = function() {
+      $scope.getItem = function(callback) {
          var that = this;
          itemService.getAsyncRecord('items', that.pathParams.currentItemID, function(item){
             if (!item) {
@@ -120,23 +120,11 @@ angular.module('algorea')
                that.item_item = {};
             }
             itemService.onSeen(item);
+            if(callback) {
+               callback(item);
+            }
          });
       };
-}]);
-
-angular.module('algorea')
-   .controller('leftNavigationController', ['$scope', 'pathService', function ($scope, pathService) {
-      $scope.panel = 'left';
-      $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
-      $scope.localInit = function() {
-         $scope.getPathParams();
-         $scope.item = {ID: 0};
-         $scope.getItem();
-      };
-      $scope.localInit();
-      $scope.$on('syncResetted', function() {
-         $scope.localInit();
-      });
 }]);
 
 angular.module('algorea')
@@ -152,6 +140,120 @@ angular.module('algorea')
       $scope.$on('syncResetted', function() {
          $scope.localInit();
       });
+}]);
+
+angular.module('algorea')
+   .controller('leftNavigationController', ['$scope', 'pathService', 'itemService', '$rootScope', function ($scope, pathService, itemService, $rootScope) {
+      $scope.panel = 'left';
+      $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
+      $scope.itemsList = [];
+      function getItemsRec(item, depth, relativePath, maxDepth) {
+         if (depth) {
+            relativePath = relativePath+'/'+item.ID;
+         }
+         item.private_sref = pathService.getSref($scope.panel, depth, $scope.pathParams, relativePath);
+         $scope.itemsList.push(item);
+         if (depth == maxDepth) {
+            return;
+         }
+         var children = itemService.getChildren(item)
+         angular.forEach(children, function(child) {
+            getItemsRec(child, depth+1, relativePath, maxDepth);
+         });
+      }
+      function getLeftItems(item) {
+         $scope.itemList = [];
+         //var maxDepth = parseInt($scope.pathParams.selr) - parseInt($scope.pathParams.sell) + 1;
+         if (item.sType == 'Presentation') {
+            $scope.itemList = [item];
+            return;
+         }
+         var maxDepth = 1;
+         $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
+         getItemsRec(item, 0, '', maxDepth);
+      };
+      $scope.localInit = function() {
+         $scope.getPathParams();
+         $scope.item = {ID: 0};
+         $scope.getItem(getLeftItems);
+      };
+      $scope.localInit();
+      $scope.$on('syncResetted', function() {
+         $scope.localInit();
+      });
+      $scope.$on('algorea.reloadView', function(event, viewName){
+         if (viewName == 'right') {
+            $scope.getPathParams();
+            $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
+         }
+      });
+}]);
+
+angular.module('algorea')
+   .controller('leftNavItemController', ['$scope', 'pathService', 'itemService', function ($scope, pathService, itemService) {
+   function init() {
+      var item = $scope.item;
+      var type_iconName = {
+         'Root': 'list',
+         'Task': 'keyboard',
+         'Chapter': 'folder',
+         'Course': 'assignment',
+         'Presentation': 'speaker_notes',
+         'Level': 'folder',
+         'Section': 'folder',
+      };
+      var user_item = itemService.getUserItem(item);
+      if (item.sType == 'Task') {
+         if (!user_item) {
+            $scope.mainIconTitle = '';
+            $scope.mainIconClass = "unvisited-item-icon";
+            $scope.mainIconName = 'keyboard';
+         } else if (user_item.bValidated) {
+            $scope.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
+            $scope.mainIconClass = "validated-item-icon";
+            $scope.mainIconName = 'check_circle';
+         } else if (user_item.nbTasksTried) {
+            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+            $scope.mainIconClass = "failed-item-icon";
+            $scope.mainIconName = 'cancel';
+         } else if (user_item.sLastActivityDate) {
+            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+            $scope.mainIconClass = "visited-item-icon";
+            $scope.mainIconName = 'keyboard';
+         } else {
+            $scope.mainIconTitle = '';
+            $scope.mainIconClass = "unvisited-item-icon";
+            $scope.mainIconName = 'keyboard';
+         }
+      } else {
+         $scope.mainIconName = type_iconName[item.sType];
+         if (user_item && user_item.sLastActivityDate) {
+            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+            $scope.mainIconClass = "visited-item-icon";
+         } else {
+            $scope.mainIconTitle = '';
+            $scope.mainIconClass = "unvisited-item-icon";
+         }
+      }
+      if (item.ID == $scope.currentActiveId) {
+         $scope.mainIconClass = "active-item-icon";
+         $scope.linkClass = "active-item-link";
+         $scope.backgroundClass = "active-item-background";
+      } else {
+         $scope.backgroundClass = "inactive-item-background";
+         if (user_item && user_item.sLastActivityDate) {
+            $scope.linkClass = "visited-item-link";
+         } else {
+            $scope.linkClass = "unvisited-item-link";
+         }
+      }
+   }
+   init();
+   $scope.$on('algorea.reloadView', function(event, viewName){
+      if (viewName == 'right') {
+         init();
+      }
+   });
 }]);
 
 angular.module('algorea')
