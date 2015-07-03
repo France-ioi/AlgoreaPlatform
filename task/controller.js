@@ -143,7 +143,7 @@ angular.module('algorea')
       $scope.setViews(taskViews);
       if (platformViews.editor) {
          $scope.hasEditor = true;
-         delete platformViews.editor;
+//         delete platformViews.editor;
       }
       var scopeViews = [];
       var scopeViewsIndex = [];
@@ -180,9 +180,9 @@ angular.module('algorea')
    };
    // TODO: this should go to a service, along with task building functions in the directive
    $scope.getString = function(viewName, viewString) {
-     if (! $scope.inForum && this.panel=='right' && ! this.pathParams.itemsOnBothSides && viewName == $scope.resolutionViewName) {
-        return viewString+" >>";
-     }
+//     if (! $scope.inForum && this.panel=='right' && ! this.pathParams.itemsOnBothSides && viewName == $scope.resolutionViewName) {
+//        return viewString+" >>";
+//     }
      return viewString;
    };
    $scope.isDisabled = function(view) {
@@ -198,11 +198,11 @@ angular.module('algorea')
       if (!tabname) {
          return;
       }
-      if (tabname == $scope.resolutionViewName && !this.pathParams.itemsOnBothSides) {
-         //return this.goToResolution();
-         $scope.openSeparateEditor();
-         return;
-      }
+//      if (tabname == $scope.resolutionViewName && !this.pathParams.itemsOnBothSides) {
+//         //return this.goToResolution();
+//         $scope.openSeparateEditor();
+//         return;
+//      }
       if (tabname != $scope.currentView) {
          if (!$scope.inForum && !fromURL) {
             var params = {

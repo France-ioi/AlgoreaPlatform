@@ -76,7 +76,23 @@
 
 .sidebar-left-item-contents-text {
    flex: 1 1 auto;
-   padding-bottom:10px;
+   display:flex;
+   flex-direction:column;
+   justify-content:center;
+}
+
+.sidebar-left-main-item {
+  font-size: 25px;
+  flex: 0 1 auto;
+  color: #0f4a6d;
+  padding-left: 45px;
+  padding-top: 5px;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+.sidebar-left-toggled .sidebar-left-main-item {
+   padding-left:5px;
 }
 
 .sidebar-left-toggled .sidebar-left-item-contents-text {
@@ -89,6 +105,13 @@
    }
    .sidebar-left-item-contents-text {
       display:none;
+   }
+   
+   .sidebar-left-toggled .sidebar-left-main-item {
+      padding-left:45px;
+   }
+   .sidebar-left-main-item {
+      padding-left:5px;
    }
 }
 

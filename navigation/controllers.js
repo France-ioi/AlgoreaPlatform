@@ -31,8 +31,6 @@ angular.module('algorea')
             type = 'error';
          } else if (this.item.ID == 0) {
             type = 'loading';
-         } else if (type == 'task' && this.panel == 'right' && this.pathParams.itemsOnBothSides) {
-            type = 'task-right';
          }
          return this.viewsBaseUrl+type+suffix+'.html';
       };
@@ -162,6 +160,7 @@ angular.module('algorea')
          });
       }
       function getLeftItems(item) {
+         $scope.leftParentItemId = item.ID;
          $scope.itemList = [];
          //var maxDepth = parseInt($scope.pathParams.selr) - parseInt($scope.pathParams.sell) + 1;
          if (item.sType == 'Presentation') {
@@ -193,6 +192,8 @@ angular.module('algorea')
    .controller('leftNavItemController', ['$scope', 'pathService', 'itemService', function ($scope, pathService, itemService) {
    function init() {
       var item = $scope.item;
+      $scope.item_item = $scope.selectItemItem(item, $scope.leftParentItemId);
+      console.error($scope.leftParentItemId);
       var type_iconName = {
          'Root': 'list',
          'Task': 'keyboard',
@@ -251,6 +252,11 @@ angular.module('algorea')
    init();
    $scope.$on('algorea.reloadView', function(event, viewName){
       if (viewName == 'right') {
+         init();
+      }
+   });
+   $scope.$on('algorea.itemTriggered', function(event, itemId){
+      if (itemId == $scope.item.ID) {
          init();
       }
    });

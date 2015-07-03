@@ -2,7 +2,7 @@
 <div ng-controller="taskController" class="main-area main-area-task">
    <div class="first-task">
        <div tabset justified="true" ng-show="taskLoaded || showForum" id="task-tabs">
-          <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active">
+          <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active" class="task-tab">
           </li>
        </div>
 
@@ -10,5 +10,5 @@
      <div ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
      <div ng-show="taskLoaded && !showForum" include-task></div>
   </div>
-  <div ng-show="taskLoaded && !showForum" include-task task-name="task-answers" ng-if="hasEditor" class="second-task"></div>
+<!--  <div ng-show="taskLoaded && !showForum" include-task task-name="task-answers" ng-if="hasEditor" class="second-task"></div>-->
 </div>

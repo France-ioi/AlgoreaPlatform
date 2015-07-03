@@ -28,15 +28,38 @@ body {
    margin:auto;
 }
 
+.nav-tabs.nav-justified>li>a {
+   border-top:0px;
+   border-left:0px;
+   border-right:0px;
+   border-bottom:2px solid #f8f8f8!important;
+}
+
+.task-tab {
+   border: 0px;
+}
+
+.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover {
+   border-bottom: 4px solid #2aa3ff !important;
+   border-left:0px;
+   border-right:0px;
+   border-top:0px;
+}
+
+.nav-tabs>li>a:hover {
+   background-color: none!important;
+}
+
 .main-titlebar {
    color: #0f4a6d;
    display:flex;
    flex-wrap:wrap;
    background: #e8e8e8;
+   height:74px;
 }
 
 .main-titlebar-item {
-   line-height:75px;
+   line-height:74px;
    vertical-align:center;
 }
 
@@ -130,11 +153,15 @@ body {
    flex: 6 1 auto;
    display:flex;
    flex-direction:column;
+   justify-content:space-between
 }
 
 .children-item {
-   flex: 1 0 auto;
+   flex: 1 0 50px;
    border-bottom:1px solid #cecece;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
 }
 
 
