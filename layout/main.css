@@ -24,7 +24,7 @@ body {
    flex: 1 0 auto;
 }
 
-#task-tabs {
+.task-tabs {
    width:800px;
    margin:auto;
 }
@@ -165,4 +165,15 @@ body {
    display: flex;
    flex-direction: column;
    justify-content: center;
+}
+
+.forum-in-task {
+   width:800px;
+   margin-left:auto;
+   margin-right:auto;
+}
+
+.item-from-parent-icon {
+   position:relative;
+   top:4px;
 }
