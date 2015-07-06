@@ -35,12 +35,15 @@ angular.module('algorea')
 
       },
       toggleLeft: function() {
-         console.error('je toggle left!');
          $('#sidebar-left').toggleClass('sidebar-left-toggled');
+         $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
+         $scope.layout.refreshSizes();
       },
       toggleRight: function() {
          $('#sidebar-right').toggleClass('sidebar-right-toggled');
          $('#main-titlebar-community').toggleClass('main-titlebar-community-toggled');
+         $('.main-right-arrow').toggleClass('main-right-arrow-toggled');
+         $scope.layout.refreshSizes();
       },
       setRightIcon: function() {
          if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
@@ -142,12 +145,6 @@ angular.module('algorea')
 
       }
     };
-    $scope.leftMinWidth = nonTaskMinWidth;
-    $scope.rightMinWidth = nonTaskMinWidth;
-    $scope.layout.leftIsTask = function(leftIsTask) {
-       $scope.leftMinWidth = leftIsTask ? taskMinWidth : nonTaskMinWidth;
-       $('#content-left').css('min-width', $scope.leftMinWidth);
-    };
    var lastRightIsTask;
    $scope.layout.rightIsTask = function(rightIsTask) {
       if (rightIsTask == lastRightIsTask) {
@@ -172,6 +169,7 @@ angular.module('algorea')
             $scope.layout.toggleMenu();
          }
        }
+       $scope.layout.refreshSizes();
     };
     var isCurrentlyOnePage;
     $scope.layout.isOnePage = function(isOnePage) {
@@ -209,14 +207,40 @@ angular.module('algorea')
           return $timeout(later, timeout, apply);
        };
     }
+    $scope.layout.separateEditorOK = false;
+    var lastSeparateEditorOK = false;
+    $scope.layout.refreshSizes = function() {
+       if (lastRightIsTask) { // things are handled automatically for everything but the task layout
+          console.error('refreshSizes');
+          var availableMainWidth = $('#main-area').width();
+          console.error(availableMainWidth);
+          var minWidth = $('#task-right').css('min-width');
+          if (!minWidth) {minWidth = '0px';}
+          minWidth = parseInt(minWidth.slice(0,-2));
+          if (!minWidth) {minWidth = 800;}
+          console.error(minWidth);
+          console.error(availableMainWidth - 2*minWidth);
+          if (availableMainWidth - 2*minWidth > 40) {
+            $scope.layout.separateEditorOK = true;
+          } else {
+            $scope.layout.separateEditorOK = false;
+          }
+         if (lastSeparateEditorOK != $scope.layout.separateEditorOK) {
+            $timeout($rootScope.apply);
+         }
+         lastSeparateEditorOK = $scope.layout.separateEditorOK;
+       } else {
+         $scope.layout.separateEditorOK = false;
+       }
+    };
     // resizing on window resizing (tamed)
     $window.onresize = debounce($scope.layout.refreshSizes, 200, false);
     // function to be called at sync end by the service (it's alive. It's alive...)
-    $rootScope.refreshSizes = function() {
-    };
+    $rootScope.refreshSizes = $scope.layout.refreshSizes;
     // resizing on state change
     $rootScope.$on('$viewContentLoaded', function() {
-       $timeout($rootScope.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
+       $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
     $interval($scope.layout.refreshSizes, 1000);
+    $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
 }]);

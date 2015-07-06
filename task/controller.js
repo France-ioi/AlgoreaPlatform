@@ -151,6 +151,7 @@ angular.module('algorea')
          scopeViewsIndex[platformViewName] = scopeViews.push({
             string:    $scope.getString(platformViewName, platformView.tabString),
             name:      platformViewName,
+            id:        $scope.taskName+'-'+platformViewName,
             active:    $scope.isActive(platformViewName),
             disabled:  $scope.isDisabled(platformViewName),
             taskViews: platformView.taskViews,

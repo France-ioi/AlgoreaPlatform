@@ -142,6 +142,13 @@ angular.module('algorea')
       scope.taskLoaded = true;
       scope.task.load(views, function() {
          //scope.taskLoaded = true;
+         scope.task.getMetaData(function(metaData) {
+            scope.metaData = metaData;
+            if (metaData.minWidth) {
+               elem.css('min-width',metaData.minWidth+'px');
+               $rootScope.$broadcast('layout.taskLayoutChange');
+            }
+         });
          scope.task.getViews(function(views) {
             scope.setTabs(views);
          });
