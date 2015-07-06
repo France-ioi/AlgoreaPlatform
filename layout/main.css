@@ -5,6 +5,7 @@ body {
 
 .main-area {
    padding:20px;
+   position:relative;
 }
 
 .main-area-task {
@@ -163,5 +164,3 @@ body {
    flex-direction: column;
    justify-content: center;
 }
-
-

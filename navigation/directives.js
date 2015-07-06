@@ -9,7 +9,9 @@ angular.module('algorea')
         if (attrs.from == 'menu') {
            return '<span class="breadcrumbs-item-{{activityClass}} breadcrumbs-{{activityClass}}-{{lastClass}} breadcrumbs-{{distanceClass}}">' +
                   '  <span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
-                  '  <a ng-if="!active" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a>';
+                  '  <a ng-if="!active" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a>'+
+                  '  <div ng-if="rightLink" class="main-right-arrow material-icons" ui-sref="{{rightLink}}">forward</div>'+
+                  '  <div ng-if="leftLink" class="main-left-arrow material-icons" ui-sref="{{leftLink}}">forward</div>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,
             * but Angular doesn't provide a way to select a templateUrl based on scope:
