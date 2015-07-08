@@ -1,4 +1,3 @@
-<div class="item-from-parent bg-{{activityClass}}">
-   <div class="from-parent-icon"><span class="glyphicon glyphicon-task"></span></div>
-   <div class="from-parent-link"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></div>
-</div>
+<span class="material-icons">list</span> 
+<span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>
+<span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span>

@@ -10,21 +10,6 @@ angular.module('algorea')
   };
 });
 
-var display_right = $('#display-right');
-var scrollbar_right = $('#scrollbar-right');
-var scrollbar_inner_right = $('#inner-scrollbar-right');
-var display_left = $('#display-left');
-var scrollbar_left = $('#scrollbar-left');
-var scrollbar_inner_left = $('#inner-scrollbar-left');
-function updateScrollBarRight() {
-   scrollbar_inner_right.width(display_right.prop('scrollWidth'));
-   display_right.prop('scrollLeft', scrollbar_right.scrollLeft());
-}
-function updateScrollBarLeft() {
-   scrollbar_inner_left.width(display_left.prop('scrollWidth'));
-   display_left.prop('scrollLeft', scrollbar_left.scrollLeft());
-}
-
 angular.module('algorea')
   .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', function ($scope, $window, $timeout, $rootScope, $interval) {
     var pane_west = $('.ui-layout-west');
@@ -35,127 +20,156 @@ angular.module('algorea')
     // $scope.layout will be accesset and set by viewButton directive in a subscope, so
     // it must be an object, or prototypal inheritance will mess everything
     $scope.layout = {
-      global: $('#layoutContainer').layout({
-          // http://layout.jquery-dev.net/documentation.cfm#List_of_Options
-          north__slidable: false,
-          west__slidable:  false,
-          east__slidable:  true,
-          east__size:     "20%",
-          north__size:     153,
-          north__maxSize:  153,
-          east__maxSize:  "30%",
-          west__size:  406,
-          north__togglerLength_open:   0,
-          east__togglerLength_closed: "100%",
-          west__togglerLength_closed: "100%",
-          north__spacing_closed: 0,
-          north__spacing_open:   4,
-          north__showOverflowOnHover: true,
-          west__onopen: function() {$scope.layout.west_is_open = true; $scope.$apply(); $scope.layout.refreshSizes();},
-          west__onclose: function() {$scope.layout.west_is_open = false; $scope.$apply(); $timeout($scope.layout.refreshSizes, 500); },
-          center__onresize: function() {$scope.layout.tablesResized(); $scope.layout.refreshSizes();},
-          maskContents:true,
-      }),
       west_is_open : true,
       tablesResized: function() {
-         var width_right= $('#content-right').width();
-         var width_left= $('#content-left').width();
-         if (width_right > 500) {
-            $rootScope.right_is_small = false;
-            $('#content-right .sons-from-parent').toggleClass('sons-from-parent-large', true);
-            $('#content-right .sons-from-parent').toggleClass('sons-from-parent-small', false);
-         } else {
-            $rootScope.right_is_small = true;
-            $('#content-right .sons-from-parent').toggleClass('sons-from-parent-small', true);
-            $('#content-right .sons-from-parent').toggleClass('sons-from-parent-large', false);
-         }
-         if (width_left > 500) {
-            $rootScope.left_is_small = false;
-            $('#content-left .sons-from-parent').toggleClass('sons-from-parent-large', true);
-            $('#content-left .sons-from-parent').toggleClass('sons-from-parent-small', false);
-         } else {
-            $rootScope.left_is_small = true;
-            $('#content-left .sons-from-parent').toggleClass('sons-from-parent-small', true);
-            $('#content-left .sons-from-parent').toggleClass('sons-from-parent-large', false);
-         }
       },
       refreshSizes : function() {
-         // hackish, inspired from
-         // http://layout.jquery-dev.net/demos/flexible_height_columns.html
-         var old_height = container.height();
-         var content_left = $('#content-left');
-         var content_right = $('#content-right');
-         var display_left = $('#display-left');
-         var display_right = $('#display-right');
-         // first updating scrollbars
-         var width_center = content_right.outerWidth();
-         var width_west = content_left.outerWidth();
-         if (width_center > $scope.rightMinWidth) {
-            scrollbar_right.hide();
-         } else {
-            scrollbar_right.show();
-            scrollbar_right.css('left', pane_center.position().left);
-            scrollbar_right.width(pane_center.width());
-            updateScrollBarRight();
-         }
-         if (width_west > $scope.leftMinWidth) {
-            scrollbar_left.hide();
-         } else {
-            scrollbar_left.show();
-            scrollbar_left.css('left', pane_west.position().left);
-            scrollbar_left.width(pane_west.width());
-            updateScrollBarLeft();
-         }
-         var height_west = content_left.outerHeight();
-         var height_center = content_right.outerHeight();
-         var top_height;
-         if ($scope.layout.global.state.north.isClosed) {
-            top_height = $scope.layout.global.options.north.spacing_closed;
-         } else {
-            top_height = $scope.layout.global.state.north.outerHeight+$scope.layout.global.options.north.spacing_open;
-         }
-         var max_pane_height = Math.max($window.innerHeight - top_height, Math.max(content_right.outerHeight(), content_left.outerHeight()));
-         var new_height = Math.max($window.innerHeight, top_height + Math.max(height_center, height_west));
-         display_left.height(max_pane_height - (pane_west.outerHeight() - pane_west.height()));
-         display_right.height(max_pane_height + pane_center.height() - pane_center.outerHeight());
-         if (new_height != old_height) {
-            container.height(new_height);
-            $scope.layout.global.resizeAll();
-         }
+
       },
       buttonClass: "fullscreen",
       state: "normal",
       goFullscreen: function() {
-        this.global.options.east.spacing_closed = 0;
-        this.global.close('north');
-        this.global.close('east');
+
       },
       goNormal: function() {
-        this.global.options.east.spacing_closed = 6;
-        this.global.open('north');
-        this.global.open('east');
+
       },
+      toggleLeft: function() {
+         $('#sidebar-left').toggleClass('sidebar-left-toggled');
+         $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
+         $scope.layout.refreshSizes();
+      },
+      toggleRight: function() {
+         $('#sidebar-right').toggleClass('sidebar-right-toggled');
+         $('#main-titlebar-community').toggleClass('main-titlebar-community-toggled');
+         $('.main-right-arrow').toggleClass('main-right-arrow-toggled');
+         $scope.layout.refreshSizes();
+      },
+      setRightIcon: function() {
+         if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
+            $('#main-titlebar-community').addClass('main-titlebar-community-toggled');
+         }
+      },
+      toggleMenu: function() {
+         $('#menu').toggleClass('menu-toggled');
+         $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
+      },
+      closeMenu: function() {
+         $scope.layout.menuOpen = false;
+         if ($(window).width() < 1100) {
+            if ($('#menu').hasClass('menu-toggled')) {
+               $scope.layout.toggleMenu();
+            }
+         } else {
+            if (!$('#menu').hasClass('menu-toggled')) {
+               $scope.layout.toggleMenu();
+            }
+         }
+      },
+      closeRight: function() {
+         $scope.layout.rightOpen = false;
+         if ($(window).width() < 1100) {
+            if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               console.error('toggle right in closeRight');
+               $scope.layout.toggleRight();
+            }
+         } else {
+            if (!$('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               $scope.layout.toggleRight();
+            }
+         }
+      },
+      closeLeft: function() {
+         $scope.layout.leftOpen = false;
+         if ($(window).width() < 1100) {
+            if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
+               $scope.layout.toggleLeft();
+            }
+         } else {
+            if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
+               $scope.layout.toggleLeft();
+            }
+         }
+      },
+      openMenu: function() {
+         $scope.layout.menuOpen = true;
+         if ($(window).width() < 1100) {
+            if (!$('#menu').hasClass('menu-toggled')) {
+               $scope.layout.toggleMenu();
+            }
+         } else {
+            if ($('#menu').hasClass('menu-toggled')) {
+               $scope.layout.toggleMenu();
+            }
+         }
+      },
+      openRight: function() {
+         $scope.layout.rightOpen = true;
+         if ($(window).width() < 1100) {
+            if (!$('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               $scope.layout.toggleRight();
+            }
+         } else {
+            if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               $scope.layout.toggleRight();
+            }
+         }
+      },
+      openLeft: function() {
+         $scope.layout.leftOpen = true;
+         if ($(window).width() < 1100) {
+            if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
+               $scope.layout.toggleLeft();
+            }
+         } else {
+            console.error('pouet');
+            if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
+               console.error('je trouve la classe toggled');
+               $scope.layout.toggleLeft();
+            }
+         }
+      },
+      closeIfOpen: function() {
+         if ($scope.layout.leftOpen) {
+            $scope.layout.closeLeft();
+         }
+         if ($scope.layout.menuOpen) {
+            $scope.layout.closeMenu();
+         }
+      }
     };
     $scope.toggleFullscreen = function() {
       if ($scope.layout.state == "normal") {
-        $scope.layout.buttonClass = "resize-small";
-        $scope.layout.state = "fullscreen";
-        $scope.layout.goFullscreen();
+
       } else {
-        $scope.layout.buttonClass = "fullscreen";
-        $scope.layout.state = "normal";
-        $scope.layout.goNormal();
+
       }
     };
-    $scope.leftMinWidth = nonTaskMinWidth;
-    $scope.rightMinWidth = nonTaskMinWidth;
-    $scope.layout.leftIsTask = function(leftIsTask) {
-       $scope.leftMinWidth = leftIsTask ? taskMinWidth : nonTaskMinWidth;
-       $('#content-left').css('min-width', $scope.leftMinWidth);
-    };
-    $scope.layout.rightIsTask = function(rightIsTask) {
-       $scope.rightMinWidth = rightIsTask ? taskMinWidth : nonTaskMinWidth;
-       $('#content-right').css('min-width', $scope.rightMinWidth);
+   var lastRightIsTask;
+   $scope.layout.rightIsTask = function(rightIsTask) {
+      if (rightIsTask == lastRightIsTask) {
+         return;
+      }
+      lastRightIsTask = rightIsTask;
+       if (rightIsTask) {
+         $scope.layout.closeMenu();
+         $scope.layout.closeLeft();
+         $scope.layout.closeRight();
+       } else if ($(window).width() > 1100) {
+         $scope.layout.leftOpen = false;
+         $scope.layout.rightOpen = false;
+         $scope.layout.menuOpen = false;
+         if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
+            $scope.layout.toggleLeft();
+         }
+         if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
+            $scope.layout.toggleRight();
+         }
+         if ($('#menu').hasClass('menu-toggled')) {
+            $scope.layout.toggleMenu();
+         }
+       }
+       $scope.layout.refreshSizes();
     };
     var isCurrentlyOnePage;
     $scope.layout.isOnePage = function(isOnePage) {
@@ -163,12 +177,14 @@ angular.module('algorea')
           return;
        }
        if (isOnePage) {
-          $scope.layout.global.options.west.spacing_closed = 0;
-          $scope.layout.global.close('west');
+//          $scope.layout.global.options.west.spacing_closed = 0;
+//          $scope.layout.global.close('west');
+          $('#sidebar-left').css('display', 'none');
           isCurrentlyOnePage = isOnePage;
        } else {
-          $scope.layout.global.options.west.spacing_closed = 6;
-          $scope.layout.global.open('west');
+//          $scope.layout.global.options.west.spacing_closed = 6;
+//          $scope.layout.global.open('west');
+          $('#sidebar-left').css('display', 'flex');
           isCurrentlyOnePage = isOnePage;
        }
     };
@@ -191,16 +207,40 @@ angular.module('algorea')
           return $timeout(later, timeout, apply);
        };
     }
+    $scope.layout.separateEditorOK = false;
+    var lastSeparateEditorOK = false;
+    $scope.layout.refreshSizes = function() {
+       if (lastRightIsTask) { // things are handled automatically for everything but the task layout
+          console.error('refreshSizes');
+          var availableMainWidth = $('#main-area').width();
+          console.error(availableMainWidth);
+          var minWidth = $('#task-right').css('min-width');
+          if (!minWidth) {minWidth = '0px';}
+          minWidth = parseInt(minWidth.slice(0,-2));
+          if (!minWidth) {minWidth = 800;}
+          console.error(minWidth);
+          console.error(availableMainWidth - 2*minWidth);
+          if (availableMainWidth - 2*minWidth > 40) {
+            $scope.layout.separateEditorOK = true;
+          } else {
+            $scope.layout.separateEditorOK = false;
+          }
+         if (lastSeparateEditorOK != $scope.layout.separateEditorOK) {
+            $timeout($rootScope.apply);
+         }
+         lastSeparateEditorOK = $scope.layout.separateEditorOK;
+       } else {
+         $scope.layout.separateEditorOK = false;
+       }
+    };
     // resizing on window resizing (tamed)
     $window.onresize = debounce($scope.layout.refreshSizes, 200, false);
     // function to be called at sync end by the service (it's alive. It's alive...)
-    $rootScope.refreshSizes = function() {
-      $scope.layout.refreshSizes();
-      $scope.layout.tablesResized();
-    };
+    $rootScope.refreshSizes = $scope.layout.refreshSizes;
     // resizing on state change
     $rootScope.$on('$viewContentLoaded', function() {
-       $timeout($rootScope.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
+       $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
     $interval($scope.layout.refreshSizes, 1000);
+    $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
 }]);

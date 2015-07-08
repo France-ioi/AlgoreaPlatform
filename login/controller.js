@@ -3,7 +3,7 @@
 angular.module('algorea')
    .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout) {
       $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html#'+$location.absUrl());
-      $scope.innerHtml = "retrieving login...";
+      $scope.innerHtml = "chargement...";
       $scope.loggedIn = false;
       $scope.frameHidden = true;
       $scope.userinfoClass = 'userinfo-closed';
@@ -12,13 +12,13 @@ angular.module('algorea')
       loginService.bindScope($rootScope);
       $scope.$on('login.login', function(event, data) {
          $scope.innerHtml = data.login;
-         $scope.infoWord = '(infos)';
          $scope.loggedIn = true;
          $scope.tempUser = data.tempUser;
          if (data.tempUser) {
             $scope.loginFrameClass = 'loginFrame-login';
-            $scope.innerHtml = "login";
+            $scope.innerHtml = "Se connecter";
          } else {
+            $scope.infoWord = '(infos)';
             $scope.loginFrameClass = 'loginFrame-logout';
          }
          itemService.syncWithNewLogin(data.login, data.loginData);

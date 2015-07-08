@@ -1,29 +1,33 @@
-<h3>Communauté</h3>
-<h4><a ui-sref="groupRequests">Mes groupes</a></h4>
-<div ng-controller="groupRequestsController" class="community">
-   <span ng-init="rightPanel = true;"></span>
-   <ul ng-if="!loading" class="list-group">
-      <li ng-repeat="mygroupgroup in getMyUnreadGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" class="list-group-item">
-         {{mygroupgroup.sStatusDate | date}}: 
-         <span ng-switch="mygroupgroup.sType">
-            <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-            <span ng-switch-when="requestRefused">vous avez été refusé dans le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-            <span ng-switch-when="invitationSent">vous avez été invité au groupe <strong>{{mygroupgroup.parent.sName}} (<a href="#" ng-click="acceptInvitation(mygroupgroup)">accepter</a> / <a href="#" ng-click="refuseInvitation(mygroupgroup)">refuser</a>)</strong></span>
-            <span ng-switch-when="requestSent">vous avez demandé de rejoindre le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-            <span ng-switch-when="left">vous avez quitté le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-            <span ng-switch-when="removed">vous avez été supprimé du groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-            <span ng-switch-default>vous avez rejoint le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-         </span>
-      </li>
-   </ul>
-   <button class="btn btn-info" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength">Marquer comme lu</button>
+<div id="sidebar-right-title" class="sidebar-right-item sidebar-right-title" ng-click="layout.toggleRight()">
+   <span class="material-icons sidebar-right-title-icon">forum</span> Communauté
 </div>
-<h4>Événements</h4>
-<div class="community"  ng-controller="communityController">
-   <table>
-      <tr ng-repeat="event in events">
-         <td valign="top" style="padding-right:5px;">{{event.time}}</td>
-         <td><strong>{{event.user}}</strong> {{event.typestr}}<br>{{event.itemstr}}</td>
-      </tr>
-   </table>
+<div class="sidebar-right-item sidebar-right-subtitle">
+   <span class="material-icons sidebar-right-subtitle-icon">group</span> <strong><a ui-sref="groupRequests">Mes groupes</a></strong>
+</div>
+<div ng-controller="groupRequestsController" class="community">
+   <span style="display:none;" ng-init="rightPanel = true;"></span>
+   <div class="sidebar-right-item " ng-repeat="mygroupgroup in getMyUnreadGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" class="list-group-item">
+         <span class="material-icons sidebar-right-item-left-icon">group_add</span>
+         <p class="sidear-right-item-text">
+            {{mygroupgroup.sStatusDate | date}}: 
+            <span ng-switch="mygroupgroup.sType">
+               <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="requestRefused">vous avez été refusé dans le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="invitationSent">vous avez été invité au groupe <strong>{{mygroupgroup.parent.sName}} (<a href="#" ng-click="acceptInvitation(mygroupgroup)">accepter</a> / <a href="#" ng-click="refuseInvitation(mygroupgroup)">refuser</a>)</strong></span>
+               <span ng-switch-when="requestSent">vous avez demandé de rejoindre le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="left">vous avez quitté le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="removed">vous avez été supprimé du groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-default>vous avez rejoint le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+            </span>
+         </p>
+   </div>
+   <div class="sidebar-right-item"  ng-if="!loading && unreadParentsLength">
+      <button class="btn btn-info" ng-click="markAllAsRead()">Marquer comme lu</button>
+   </div>
+</div>
+<div class="sidebar-right-item sidebar-right-subtitle">
+   <span class="material-icons sidebar-right-subtitle-icon">forum</span> <strong>Événements</strong>
+</div>
+<div class="sidebar-right-item" ng-repeat="event in events">
+   <span class="material-icons" class="sidebar-right-item-left-icon">chat_bubble</span><p class="sidear-right-item-text"> {{event.time}}<br>{{event.user}} {{event.typestr}}<br>{{event.itemstr}}</p>
 </div>

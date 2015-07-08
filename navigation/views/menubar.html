@@ -1,0 +1,13 @@
+<div class="main-titlebar-icon main-titlebar-item main-titlebar-icon material-icons">
+   <span ng-if="item.sType == 'Root'">list</span>
+   <span ng-if="item.sType == 'Task'">keyboard</span>
+   <span ng-if="item.sType == 'Chapter'">folder</span>
+   <span ng-if="item.sType == 'Course'">assignment</span>
+   <span ng-if="item.sType == 'Presentation'">speaker_notes</span>
+   <span ng-if="item.sType == 'Level'">folder</span>
+   <span ng-if="item.sType == 'Section'">folder</span>
+</div>
+<div class="main-titlebar-titles main-titlebar-item"><span class="main-titlebar-title1">{{strings.sTitle}}</span><br>{{strings.sSubtitle}}</div>
+<div class="main-titlebar-icon1 main-titlebar-item" ng-if="item.idItemUnlocked && item.idItemUnlocked != 0">{{item.idItemUnlocked}}<span class="material-icons">vpn_key</span></div>
+<div class="main-titlebar-icon2 main-titlebar-item" ng-if="item_item.sCategory == 'Challenge'"><span class="material-icons">star</span></div>
+<div id="main-titlebar-community" class="main-titlebar-community main-titlebar-item" ng-click="layout.toggleRight()" ng-init="layout.setRightIcon();"><span class="material-icons">forum</span></div>

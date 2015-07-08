@@ -29,7 +29,7 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-  .directive('buildTask', ['$location', '$sce', '$http', '$timeout', function ($location, $sce, $http, $timeout) {
+  .directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', function ($location, $sce, $http, $timeout, $rootScope) {
     function loadTask(scope) {
       scope.loadedUserItemID = scope.user_item.ID;
       scope.task = TaskProxyManager.getTaskProxy(scope.taskName, true);
@@ -44,6 +44,7 @@ angular.module('algorea')
          scope.updateHeight(height);
       };
       scope.platform.askHint = function() {
+         $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
          $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken}, {responseType: 'json'}).success(function(postRes) {
             if ( ! postRes.result) {
@@ -60,6 +61,7 @@ angular.module('algorea')
          });
       };
       scope.platform.validate = function(mode) {
+         $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          if (scope.loadedUserItemID != scope.user_item.ID) return;
          var validateUserItemID = scope.user_item.ID;
          if (mode == 'cancel') {
@@ -121,6 +123,7 @@ angular.module('algorea')
                   scope.user_item.bValidated = true;
                   scope.user_item.sValidationDate = new Date();
                   ModelsManager.updated('users_items', scope.user_item.ID, false, true);
+                  $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                   scope.task.updateToken(postRes.sToken, function() {
                      scope.task.getViews(function(views) {
                         scope.showSolution();
@@ -139,6 +142,13 @@ angular.module('algorea')
       scope.taskLoaded = true;
       scope.task.load(views, function() {
          //scope.taskLoaded = true;
+         scope.task.getMetaData(function(metaData) {
+            scope.metaData = metaData;
+            if (metaData.minWidth) {
+               elem.css('min-width',metaData.minWidth+'px');
+               $rootScope.$broadcast('layout.taskLayoutChange');
+            }
+         });
          scope.task.getViews(function(views) {
             scope.setTabs(views);
          });
@@ -248,6 +258,7 @@ angular.module('algorea')
                }
             };
             TaskProxyManager.setPlatform(scope.task, scope.platform);
+            console.error(TaskProxyManager);
             scope.platform.showView = function(view) {};
             scope.platform.updateHeight = function(height) {
                scope.updateHeight(height);

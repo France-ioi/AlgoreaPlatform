@@ -1,0 +1,247 @@
+.menu {
+   display: flex;
+   min-height:75px;
+   font-family: 'Roboto', sans-serif;
+   font-size:17.5pt;
+   justify-content: center;
+   width:100%;
+}
+
+.menu-toggled {
+   display:none !important;
+}
+
+/*@media all and (max-width: 1100px) {*/
+/*   .menu {*/
+/*      display: none;*/
+/*   }*/
+/*   .menu-toggled {*/
+/*      display:flex !important;*/
+/*   }*/
+/*}*/
+
+#menu-logo {
+   flex: 0 0 325px;
+   background:#82bf2b;
+   color:white;
+   border:0px;
+}
+
+#menu-else {
+   flex: 1 1 auto;
+   display:flex;
+   flex-direction:row;
+   flex-wrap:wrap;
+   justify-content:space-between;
+}
+
+.menu-item {
+   display:flex;
+   flex-direction:column;
+   background: #e8e8e8;
+   flex-grow:1;
+   flex-shrink:0;
+   flex-basis:140px;
+   justify-content:space-around;
+   border-left: 1px solid #d9d9d9;
+   border-right: 1px solid #d9d9d9;
+   color: #5d5d5d;
+   cursor:pointer;
+}
+
+.menu-item-content {
+   text-align: center;
+}
+
+#userinfo {
+   position: relative;
+   overflow:visible;
+   text-align:center;
+   flex: 0 0 258px;
+   background:#878787;
+   color:white;
+   border:0px;
+}
+#loginFrame {
+   z-index:5;
+   position: absolute;
+   margin-left:auto;
+   margin-right:auto;
+   top:50px;
+   right:0px;
+   background:#878787;
+   width:260px;
+   overflow: hidden;
+   border: 0px solid;
+   box-shadow:         0px 0px 0px;
+}
+
+@media all and (max-width: 1100px)  and (min-width: 700px) {
+   .menu-item {
+   flex-basis:200px;
+   }
+   #menu-logo {
+      flex-basis:250px;
+   }
+   .menu {
+      align-items: stretch;
+   }
+   .menu-item-content {
+   }
+   #loginFrame {
+      width:160px;
+      top:32px;
+   }
+   #userinfo {
+   flex-basis:200px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+   }
+   #userinfocontainer {
+   flex-basis:200px;
+   }
+}
+
+@media all and (max-width: 700px) {
+   #menu-logo {
+      flex-basis:37px;
+      width:100%;
+   }
+   .menu {
+      flex-direction:column;
+   }
+   #loginFrame {
+      width:160px;
+      top:32px;
+   }
+}
+
+.menu-item-icon {
+   position:relative;
+   top:4px;
+}
+
+.menu-item-active {
+   background: #2aa3ff !important;
+   color:white !important;
+}
+
+.menu-item-login {
+   background: #878787 !important;
+   color:white !important;
+}
+
+#breadcrumbs {
+   background:#2aa3ff;
+   font-size:12pt;
+   display: flex;
+   justify-content: flex-start;
+   width:100%;
+   flex-wrap:wrap;
+}
+
+.breadcrumbs-item {
+   height:25px;
+   background:#2aa3ff;
+   flex-grow:0;
+   flex-shrink:0;
+   flex-basis:auto;
+   padding-right:10px;
+}
+
+.breadcrumbs-after-selected a {
+   color: gray!important;
+}
+
+.breadcrumbs-item-active {
+   color:white;
+}
+
+#breadcrumbs a {
+   color:black;
+}
+
+#breadcrumbs>div>span>a:after
+{
+  content: '>';
+}
+#breadcrumbs>div>span>span:after
+{
+  content: '>';
+}
+#breadcrumbs>div:last-child>span>a:after
+{
+  content: '';
+}
+#breadcrumbs>div:last-child>span>span:after
+{
+  content: '';
+}
+
+.loginFrame-login {
+   height:155px;
+}
+.loginFrame-logout {
+   height:85px;
+}
+.userInfosLink {
+   color: rgb(2, 118, 196) !important;
+}
+
+.main-right-arrow {
+   position:fixed;
+   right:260px;
+   bottom:0px;
+   height:32px;
+   width:32px;
+   background:#2aa3ff;
+   color:white;
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+   z-index:2;
+   text-align:center;
+   display:flex !important;
+   flex-direction:column;
+   justify-content:space-around;
+   cursor:pointer;
+}
+
+.main-right-arrow-toggled {
+   right:0px !important;
+}
+
+.main-left-arrow {
+   position:fixed;
+   transform: rotate(180deg);/* hack to get the arrow in the desired direction */
+   left:325px;
+   bottom:0px;
+   height:32px;
+   width:32px;
+   background:#2aa3ff;
+   color:white;
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+   z-index:2;
+   text-align:center;
+   cursor:pointer;
+   display:flex!important;
+   flex-direction:column;
+   justify-content:space-around;
+}
+
+.main-left-arrow-toggled {
+   left:82px !important;
+}
+
+@media all and (max-width: 1100px) and (min-width: 700px) {
+   .main-left-arrow {
+      left:82px;
+   }
+   .main-left-arrow-toggled {
+      left:325px !important;
+   }
+   .main-right-arrow {
+      right:0px;
+   }
+   .main-right-arrow-toggled {
+      right:260px !important;
+   }
+}

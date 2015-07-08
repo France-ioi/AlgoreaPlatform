@@ -264,6 +264,7 @@ angular.module('algorea')
             if (user_item) {
                user_item.sLastActivityDate = new Date();
                ModelsManager.updated('users_items', user_item.ID, false, true);
+               $rootScope.$broadcast('algorea.itemTriggered', item.ID);
             }
          },
          getItemTypeStr: function(item) {
