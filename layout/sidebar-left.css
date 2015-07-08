@@ -35,7 +35,7 @@
    color:white;
 }
 
-@media all and (max-width: 1100px) {
+@media all and (max-width: 1100px) and (min-width: 700px) {
    .sidebar-left {
       flex: 0 0 82px;
    }
@@ -99,7 +99,7 @@
    display:none;
 }
 
-@media all and (max-width: 1100px) {
+@media all and (max-width: 1100px) and (min-width: 700px) {
    .sidebar-left-toggled  .sidebar-left-item-contents-text{
       display:block;
    }
@@ -136,7 +136,7 @@
    justify-content:space-around;
 }
 
-@media all and (max-width: 1100px) {
+@media all and (max-width: 1100px) and (min-width: 700px) {
    .sidebar-left-toggled .sidebar-left-item-final-icons {
       flex: 0 1 24px;
       padding-right:5px;

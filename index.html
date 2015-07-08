@@ -46,7 +46,7 @@
             <div id="menu-item5" class="menu-item">
                <div class="menu-item-content"><span class="material-icons menu-item-icon">school</span> Enseigner</div>
             </div>
-            <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
+            <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController" ng-mouseover="showFrame()" ng-mouseleave="hideFrame()" ng-click="toggleFrame()">
                <div class="menu-item-content" ng-include="'login/userbox.html'"></div>
             </div>
          </div>

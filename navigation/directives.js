@@ -29,6 +29,10 @@ angular.module('algorea')
                scope.lastClass = (scope.depth+1 == scope.pathParams.path.length) ? 'last' : 'not-last'; // IE8 doesn't support the :not(:last-child) selector...
                scope.active = (scope.depth+1 == scope.pathParams.selr);
                scope.activityClass = scope.active ? "active" : "inactive";
+               scope.distanceClass = 'before-selected';
+               if (scope.depth+1 > scope.pathParams.selr) {
+                  scope.distanceClass = 'after-selected';
+               }
                // left and right arrows on the (active) tab corresponding to the right panel
                if (scope.active) {
                   var brothers = itemService.getBrothersFromParent(scope.pathParams.path[scope.depth-1]);

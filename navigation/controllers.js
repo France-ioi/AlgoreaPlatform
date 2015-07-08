@@ -145,31 +145,20 @@ angular.module('algorea')
       $scope.panel = 'left';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
       $scope.itemsList = [];
-      function getItemsRec(item, depth, relativePath, maxDepth) {
-         if (depth) {
-            relativePath = relativePath+'/'+item.ID;
-         }
-         item.private_sref = pathService.getSref($scope.panel, depth, $scope.pathParams, relativePath);
-         $scope.itemsList.push(item);
-         if (depth == maxDepth) {
-            return;
-         }
-         var children = itemService.getChildren(item)
-         angular.forEach(children, function(child) {
-            getItemsRec(child, depth+1, relativePath, maxDepth);
-         });
-      }
       function getLeftItems(item) {
          $scope.leftParentItemId = item.ID;
          $scope.itemList = [];
-         //var maxDepth = parseInt($scope.pathParams.selr) - parseInt($scope.pathParams.sell) + 1;
          if (item.sType == 'Presentation') {
             $scope.itemList = [item];
             return;
          }
-         var maxDepth = 1;
+         var children = itemService.getChildren(item);
+         angular.forEach(children, function(child) {
+            child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '/'+child.ID);
+            $scope.itemsList.push(child);
+         });
          $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
-         getItemsRec(item, 0, '', maxDepth);
+         $scope.currentLeftItemTitle = item.strings[0].sTitle;
       };
       $scope.localInit = function() {
          $scope.getPathParams();

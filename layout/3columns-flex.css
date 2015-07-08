@@ -58,7 +58,7 @@ headerContainer {
  }
 
 /* Too narrow to support three columns */
-@media all and (max-width: 875px) {
+@media all and (max-width: 700px) {
 
  header {
    position:initial;
