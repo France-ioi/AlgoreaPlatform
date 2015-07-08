@@ -92,39 +92,40 @@ angular.module('algorea')
          }
       },
       openMenu: function() {
-         $scope.layout.menuOpen = true;
          if ($(window).width() < 1100) {
             if (!$('#menu').hasClass('menu-toggled')) {
+               $scope.layout.menuOpen = true;
                $scope.layout.toggleMenu();
             }
          } else {
             if ($('#menu').hasClass('menu-toggled')) {
+               $scope.layout.menuOpen = true;
                $scope.layout.toggleMenu();
             }
          }
       },
       openRight: function() {
-         $scope.layout.rightOpen = true;
          if ($(window).width() < 1100) {
             if (!$('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               $scope.layout.rightOpen = true;
                $scope.layout.toggleRight();
             }
          } else {
             if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               $scope.layout.rightOpen = true;
                $scope.layout.toggleRight();
             }
          }
       },
       openLeft: function() {
-         $scope.layout.leftOpen = true;
          if ($(window).width() < 1100) {
             if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
+               $scope.layout.leftOpen = true;
                $scope.layout.toggleLeft();
             }
          } else {
-            console.error('pouet');
             if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
-               console.error('je trouve la classe toggled');
+               $scope.layout.leftOpen = true;
                $scope.layout.toggleLeft();
             }
          }
@@ -171,22 +172,12 @@ angular.module('algorea')
        }
        $scope.layout.refreshSizes();
     };
-    var isCurrentlyOnePage;
+    var isCurrentlyOnePage = false;;
     $scope.layout.isOnePage = function(isOnePage) {
-       if (typeof isCurrentlyOnePage !== 'undefined' && isOnePage == isCurrentlyOnePage) {
-          return;
+       if (typeof isOnePage === 'undefined') {
+          return isCurrentlyOnePage;
        }
-       if (isOnePage) {
-//          $scope.layout.global.options.west.spacing_closed = 0;
-//          $scope.layout.global.close('west');
-          $('#sidebar-left').css('display', 'none');
-          isCurrentlyOnePage = isOnePage;
-       } else {
-//          $scope.layout.global.options.west.spacing_closed = 6;
-//          $scope.layout.global.open('west');
-          $('#sidebar-left').css('display', 'flex');
-          isCurrentlyOnePage = isOnePage;
-       }
+       isCurrentlyOnePage = isOnePage;
     };
     // inspired from https://github.com/capaj/ng-tools/blob/master/src/debounce.js
     // used on onresize for obvious performance reasons
