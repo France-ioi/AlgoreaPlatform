@@ -326,10 +326,10 @@ function getItemsFromAncestors ($params, &$requests, $db, $groupsItemsUpdated){
       $requests[$table]["filters"]["idItemParent"] = true;
    }
    if (!$groupsItemsUpdated) {
-      unset($requests['items']);
-      unset($requests['items_strings']);
-      unset($requests['items_items']);
-      unset($requests['groups_items']);
+      $requests['items']['getChanges'] = false;
+      $requests['items_strings']['getChanges'] = false;
+      $requests['items_items']['getChanges'] = false;
+      $requests['groups_items']['getChanges'] = false;
    }
 }
 
@@ -365,7 +365,6 @@ function getGroups ($params, &$requests) {
    $requests["groups"]["filters"]["MyGroupsWrite"] = array(
       'values' => array(
          'idGroupOwned' => $_SESSION['login']['idGroupOwned'], // TODO: vérifier pour les tempUsers
-         'idGroupSelf'  => $_SESSION['login']['idGroupSelf'],
       ),
       'modes' => array('insert' => true, 'update' => true, 'delete' => true),
    );
@@ -753,10 +752,10 @@ function setupExpandedItemsRequests($params, &$requests, $groupsItemsUpdated) {
       }
    }
    if (!$groupsItemsUpdated) {
-      unset($requests['items']);
-      unset($requests['items_strings']);
-      unset($requests['items_items']);
-      unset($requests['groups_items']);
+      $requests['items']['getChanges'] = false;
+      $requests['items_strings']['getChanges'] = false;
+      $requests['items_items']['getChanges'] = false;
+      $requests['groups_items']['getChanges'] = false;
    }
 }
 
