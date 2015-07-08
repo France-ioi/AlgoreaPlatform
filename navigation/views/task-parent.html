@@ -1,25 +1,3 @@
-<div class="item-from-parent bg-{{activityClass}}">
-   <div class="from-parent-icon"><span class="glyphicon glyphicon-pencil"></span></div>
-   <div class="from-parent-status">
-      <span ng-switch="item_status()">
-         <span ng-switch-when="not visited" class="glyphicon glyphicon-eye-close" title="non visité"></span>
-         <span ng-switch-when="grayed" class="glyphicon glyphicon-lock" title="non accessible"></span>
-         <span ng-switch-when="visited" class="glyphicon glyphicon-eye-open" title="visité le {{get_formatted_date(user_item.sLastActivityDate)}}"></span>
-         <span ng-switch-when="validated" class="glyphicon glyphicon-ok" style="color:#3c763d;" title="validé le {{get_formatted_date(user_item.sValidationDate)}}, score : {{user_item.iScore}}/100"></span>
-         <span ng-switch-when="failed" class="glyphicon glyphicon-remove" style="color:#ff0000;"></span>
-      </span>
-   </div>
-      <div class="from-parent-link"><span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span><span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span></div>
-   <div class="from-parent-res show-large task-label"><a ui-sref="{{getSref('solution')}}" ng-if="user_item.bAccessSolutions || user_item.bValidated">Correction</a></div>
-   <div class="from-parent-res show-small task-label"><a ui-sref="{{getSref('solution')}}" ng-if="user_item.bAccessSolutions || user_item.bValidated"><span title="Correction">C</span></a></div>
-   <div ng-if="item_item.sCategory=='Discovery'" class="from-parent-type show-large task-label task-label-decouverte">Decouverte</div>
-   <div ng-if="item_item.sCategory=='Discovery'" class="from-parent-type show-small  task-label task-label-decouverte"><span title="Découverte">D</span></div>
-   <div ng-if="item_item.sCategory=='Application'" class="from-parent-type show-large  task-label task-label-application">Application</div>
-   <div ng-if="item_item.sCategory=='Application'" class="from-parent-type show-small task-label task-label-application"><span title="Application">A</span></div>
-   <div ng-if="item_item.sCategory=='Validation'" class="from-parent-type show-large  task-label task-label-validation">Validation</div>
-   <div ng-if="item_item.sCategory=='Validation'" class="from-parent-type show-small task-label task-label-validation"><span title="Validation">V</span></div>
-   <div ng-if="item_item.sCategory=='Challenge'" class="from-parent-type show-large  task-label task-label-challenge">Challenge</div>
-   <div ng-if="item_item.sCategory=='Challenge'" class="from-parent-type show-small task-label task-label-challenge"><span title="Challenge">C</span></div>
-   <div ng-if="!item_item.sCategory || item_item.sCategory=='Undefined'" class="from-parent-type show-large  task-label"></div>
-   <div ng-if="!item_item.sCategory || item_item.sCategory=='Undefined'" class="from-parent-type show-small task-label"></div>
-</div>
+<span class="material-icons item-from-parent-icon">keyboard</span> 
+<span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>
+<span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span>

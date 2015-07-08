@@ -31,8 +31,6 @@ angular.module('algorea')
             type = 'error';
          } else if (this.item.ID == 0) {
             type = 'loading';
-         } else if (type == 'task' && this.panel == 'right' && this.pathParams.itemsOnBothSides) {
-            type = 'task-right';
          }
          return this.viewsBaseUrl+type+suffix+'.html';
       };
@@ -102,7 +100,7 @@ angular.module('algorea')
          });
          return res;
       };
-      $scope.getItem = function() {
+      $scope.getItem = function(callback) {
          var that = this;
          itemService.getAsyncRecord('items', that.pathParams.currentItemID, function(item){
             if (!item) {
@@ -120,23 +118,11 @@ angular.module('algorea')
                that.item_item = {};
             }
             itemService.onSeen(item);
+            if(callback) {
+               callback(item);
+            }
          });
       };
-}]);
-
-angular.module('algorea')
-   .controller('leftNavigationController', ['$scope', 'pathService', function ($scope, pathService) {
-      $scope.panel = 'left';
-      $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
-      $scope.localInit = function() {
-         $scope.getPathParams();
-         $scope.item = {ID: 0};
-         $scope.getItem();
-      };
-      $scope.localInit();
-      $scope.$on('syncResetted', function() {
-         $scope.localInit();
-      });
 }]);
 
 angular.module('algorea')
@@ -152,6 +138,117 @@ angular.module('algorea')
       $scope.$on('syncResetted', function() {
          $scope.localInit();
       });
+}]);
+
+angular.module('algorea')
+   .controller('leftNavigationController', ['$scope', 'pathService', 'itemService', '$rootScope', function ($scope, pathService, itemService, $rootScope) {
+      $scope.panel = 'left';
+      $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
+      $scope.itemsList = [];
+      function getLeftItems(item) {
+         $scope.leftParentItemId = item.ID;
+         $scope.itemList = [];
+         if (item.sType == 'Presentation') {
+            $scope.itemList = [item];
+            return;
+         }
+         var children = itemService.getChildren(item);
+         angular.forEach(children, function(child) {
+            child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '/'+child.ID);
+            $scope.itemsList.push(child);
+         });
+         $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
+         $scope.currentLeftItemTitle = item.strings[0].sTitle;
+      };
+      $scope.localInit = function() {
+         $scope.getPathParams();
+         $scope.item = {ID: 0};
+         $scope.getItem(getLeftItems);
+      };
+      $scope.localInit();
+      $scope.$on('syncResetted', function() {
+         $scope.localInit();
+      });
+      $scope.$on('algorea.reloadView', function(event, viewName){
+         if (viewName == 'right') {
+            $scope.getPathParams();
+            $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
+         }
+      });
+}]);
+
+angular.module('algorea')
+   .controller('leftNavItemController', ['$scope', 'pathService', 'itemService', function ($scope, pathService, itemService) {
+   function init() {
+      var item = $scope.item;
+      $scope.item_item = $scope.selectItemItem(item, $scope.leftParentItemId);
+      console.error($scope.leftParentItemId);
+      var type_iconName = {
+         'Root': 'list',
+         'Task': 'keyboard',
+         'Chapter': 'folder',
+         'Course': 'assignment',
+         'Presentation': 'speaker_notes',
+         'Level': 'folder',
+         'Section': 'folder',
+      };
+      var user_item = itemService.getUserItem(item);
+      if (item.sType == 'Task') {
+         if (!user_item) {
+            $scope.mainIconTitle = '';
+            $scope.mainIconClass = "unvisited-item-icon";
+            $scope.mainIconName = 'keyboard';
+         } else if (user_item.bValidated) {
+            $scope.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
+            $scope.mainIconClass = "validated-item-icon";
+            $scope.mainIconName = 'check_circle';
+         } else if (user_item.nbTasksTried) {
+            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+            $scope.mainIconClass = "failed-item-icon";
+            $scope.mainIconName = 'cancel';
+         } else if (user_item.sLastActivityDate) {
+            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+            $scope.mainIconClass = "visited-item-icon";
+            $scope.mainIconName = 'keyboard';
+         } else {
+            $scope.mainIconTitle = '';
+            $scope.mainIconClass = "unvisited-item-icon";
+            $scope.mainIconName = 'keyboard';
+         }
+      } else {
+         $scope.mainIconName = type_iconName[item.sType];
+         if (user_item && user_item.sLastActivityDate) {
+            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+            $scope.mainIconClass = "visited-item-icon";
+         } else {
+            $scope.mainIconTitle = '';
+            $scope.mainIconClass = "unvisited-item-icon";
+         }
+      }
+      if (item.ID == $scope.currentActiveId) {
+         $scope.mainIconClass = "active-item-icon";
+         $scope.linkClass = "active-item-link";
+         $scope.backgroundClass = "active-item-background";
+      } else {
+         $scope.backgroundClass = "inactive-item-background";
+         if (user_item && user_item.sLastActivityDate) {
+            $scope.linkClass = "visited-item-link";
+         } else {
+            $scope.linkClass = "unvisited-item-link";
+         }
+      }
+   }
+   init();
+   $scope.$on('algorea.reloadView', function(event, viewName){
+      if (viewName == 'right') {
+         init();
+      }
+   });
+   $scope.$on('algorea.itemTriggered', function(event, itemId){
+      if (itemId == $scope.item.ID) {
+         init();
+      }
+   });
 }]);
 
 angular.module('algorea')

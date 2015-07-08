@@ -141,12 +141,17 @@ angular.module('algorea')
          $scope.hideSolution();
       }
       $scope.setViews(taskViews);
+      if (platformViews.editor) {
+         $scope.hasEditor = true;
+//         delete platformViews.editor;
+      }
       var scopeViews = [];
       var scopeViewsIndex = [];
       angular.forEach(platformViews, function(platformView, platformViewName) {
          scopeViewsIndex[platformViewName] = scopeViews.push({
             string:    $scope.getString(platformViewName, platformView.tabString),
             name:      platformViewName,
+            id:        $scope.taskName+'-'+platformViewName,
             active:    $scope.isActive(platformViewName),
             disabled:  $scope.isDisabled(platformViewName),
             taskViews: platformView.taskViews,
@@ -176,9 +181,9 @@ angular.module('algorea')
    };
    // TODO: this should go to a service, along with task building functions in the directive
    $scope.getString = function(viewName, viewString) {
-     if (! $scope.inForum && this.panel=='right' && ! this.pathParams.itemsOnBothSides && viewName == $scope.resolutionViewName) {
-        return viewString+" >>";
-     }
+//     if (! $scope.inForum && this.panel=='right' && ! this.pathParams.itemsOnBothSides && viewName == $scope.resolutionViewName) {
+//        return viewString+" >>";
+//     }
      return viewString;
    };
    $scope.isDisabled = function(view) {
@@ -187,13 +192,18 @@ angular.module('algorea')
      }
      return false;
    };
+   $scope.openSeparateEditor = function() {
+      $scope.showEditor = true;
+   }
    $scope.selectTab = function(tabname, fromURL) {
       if (!tabname) {
          return;
       }
-      if (tabname == $scope.resolutionViewName && !this.pathParams.itemsOnBothSides) {
-         return this.goToResolution();
-      }
+//      if (tabname == $scope.resolutionViewName && !this.pathParams.itemsOnBothSides) {
+//         //return this.goToResolution();
+//         $scope.openSeparateEditor();
+//         return;
+//      }
       if (tabname != $scope.currentView) {
          if (!$scope.inForum && !fromURL) {
             var params = {

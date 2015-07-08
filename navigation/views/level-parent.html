@@ -1,5 +1,3 @@
-<h3 class="algorea-level"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></h3>
-{{width_left}}
-<div class="sons-from-parent sons-from-parent-{{panel}}" ng-class="{'sons-from-parent-large': (panel == 'right' && !right_is_small || panel == 'left' && !left_is_small)}">
-   <div ng-repeat="item in children track by item.ID" display-item from="parent"></div>
-</div>
+<span class="material-icons item-from-parent-icon">folder</span> 
+<span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>
+<span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span>

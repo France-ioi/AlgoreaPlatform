@@ -21,7 +21,17 @@ angular.module('algorea')
             },
             views: {
                'left': {
-                   template: '<div display-item></div>',
+                   template: '<div class="sidebar-left-content sidebar-left-content-title"><div class="sidebar-left-item" ng-controller="leftNavItemController" ng-class="backgroundClass" ng-if="!item.private_showpres">'+
+   '<div class="sidebar-left-item-content-container">'+
+      '<div class="sidebar-left-item-content">'+
+         '<div class="sidebar-left-item-contents-icon1">'+
+            '<span class="material-icons">menu</span>'+
+         '</div>'+
+         '<div class="sidebar-left-item-contents-text">Navigation</div>'+
+      '</div>'+
+   '</div>'+
+   '</div>'+
+   '</div><div class="sidebar-left-content" ng-include="\'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {

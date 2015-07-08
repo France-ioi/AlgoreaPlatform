@@ -7,79 +7,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
     <base href="/">
     <script type="text/javascript" src="config.js.php"></script>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<!--    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- dirty trick here: if googleapis.com cdn is down, we consider that no connection is available, and thus fallback on local css -->
     <script type="text/javascript">window.jQuery || document.write('<script src="bower_components/jquery/dist/jquery.min.js">\x3C/script>\x3Clink rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">');</script>
+    <link href="layout/3columns-flex.css" rel="stylesheet" type="text/css" />
+    <link href="layout/menu.css" rel="stylesheet" type="text/css" />
+    <link href="layout/main.css" rel="stylesheet" type="text/css" />
+    <link href="layout/sidebar-left.css" rel="stylesheet" type="text/css" />
+    <link href="layout/sidebar-right.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="algorea.css">
     <link rel="stylesheet" href="forum/forum.css">
-    <link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
-<div ng-controller="layoutController" id="layoutContainer">
-<div class="ui-layout-north" ng-controller="navbarController">
-  <div class="navbar" role="navigation">
-    <div class="container navbar-container">
-      <div class="navbar-inner">
-        <a class="navbar-brand" href="#"><img max-height="40px" alt="France IOI" src="images/logoioi-invert.png"></a>
+<body ng-controller="layoutController">
+<div id="fixed-header-room" class="fixed-header-room"></div>
+<header ng-click="layout.openMenu();">
+   <div id="headerContainer">
+      <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
+         <div id="menu-logo" class="menu-item" >
+            <div class="menu-item-content">Algoréa</div>
+         </div>
+         <div id="menu-else">
+            <div id="menu-item1" class="menu-item" ng-class="{'menu-item-active': activated == 'index'}" ng-click="gotoIndex()">
+               <div class="menu-item-content"><span class="material-icons menu-item-icon">explore</span> Découvrir</div>
+            </div>
+            <div id="menu-item2" class="menu-item" ng-class="{'menu-item-active': activated == 'contents'}" ng-click="gotoProgress()">
+               <div class="menu-item-content "><span class="material-icons menu-item-icon">trending_up</span> Progresser</div>
+            </div>
+            <div id="menu-item3" class="menu-item" ng-class="{'menu-item-active': activated == 'forum'}" ng-click="gotoForum()">
+               <div class="menu-item-content"><span class="material-icons menu-item-icon">group</span> S&rsquo;entraider</div>
+            </div>
+            <div id="menu-item4" class="menu-item">
+               <div class="menu-item-content"><span class="material-icons menu-item-icon">flag</span> Concourir</div>
+            </div>
+            <div id="menu-item5" class="menu-item">
+               <div class="menu-item-content"><span class="material-icons menu-item-icon">school</span> Enseigner</div>
+            </div>
+            <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController" ng-mouseover="showFrame()" ng-mouseleave="hideFrame()" ng-click="toggleFrame()">
+               <div class="menu-item-content" ng-include="'login/userbox.html'"></div>
+            </div>
+         </div>
       </div>
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li ng-class="{active: activated == 'index'}"><a ng-click="gotoIndex()" href="">Découvrir</a></li>
-          <li ng-class="{active: activated == 'contents'}"><a ng-click="gotoProgress()">Progresser</a></li>
-          <li ng-class="{active: activated == 'forum'}"><a ui-sref="forum">S&rsquo;entraider<!-- <span class="badge" style="margin-left:5px;">5</span>--></a></li>
-          <li><a href="#concours">Concourir</a></li>
-          <li><a href="#enseigner">Enseigner</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li id="userinfocontainer" ng-controller="userController">
-             <div ng-include="'login/userbox.html'"></div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="container-fluid" style="margin-top:-20px;">
-    <div class="jumbotron">
-      <h1>Algo<span class="titre-principal-fin">réα</span></h1>
-      <p id="subtitle">L&rsquo;algorithmique par la pratique</p>
-    </div>
-  </div>
-  <div ui-view="breadcrumbs" autoscroll="false"></div>
-</div>
+      <div ui-view="breadcrumbs" id="breadcrumbs" autoscroll="false"></div>
+   </div>
+</header>
+<div id='main'>
 
-<div class="ui-layout-west">
-  <div class="fixed-scrollbar" id="scrollbar-left" onscroll="updateScrollBarLeft()"><div class="inner-scrollbar" id="inner-scrollbar-left"></div></div>
-  <div id="display-left">
-    <div class="content" id="content-left">
-      <div ui-view="left" autoscroll="false"></div>
-    </div>
-  </div>
-</div>
+<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-click="layout.openLeft();"></nav>
 
-<div class="ui-layout-center">
-  <div view-button></div>
-  <div class="fixed-scrollbar" id="scrollbar-right" onscroll="updateScrollBarRight()"><div class="inner-scrollbar" id="inner-scrollbar-right"></div></div>
-  <div id="display-right">
-    <div class="content" id="content-right">
-      <div ui-view="right" autoscroll="false"></div>
-    </div>
-  </div>
-</div>
+<article ui-view="right" autoscroll="false" ng-click="layout.closeIfOpen();"></article>
 
-<div class="ui-layout-east">
-  <div ng-include="'community/view.html'"></div>
-</div>
-</div>
+<aside id="sidebar-right" class="sidebar-right" ng-include="'community/view.html'"  ng-controller="communityController">
 
+</div>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script type="text/javascript">window.jQuery.ui || document.write('<script src="bower_components/jquery-ui/jquery-ui.min.js">\x3C/script>');</script>
-<script src="bower_components/jquery.layout/dist/jquery.layout-latest.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
 <script type="text/javascript">window.angular || document.write('<script src="bower_components/angular/angular.min.js">\x3C/script>');</script>
 <script src="https://code.angularjs.org/1.3.10/i18n/angular-locale_fr-fr.js"></script>
@@ -109,7 +94,7 @@
 <script src="navigation/controllers.js"></script>
 <script src="navigation/directives.js"></script>
 <script src="community/controller.js"></script>
-<script src="ext/task-xd-pr.js"></script>
+<script src="bower_components/pem-platform/task-xd-pr.js"></script>
 <script src="login/controller.js"></script>
 <script src="states.js"></script>
 <script src="task/controller.js"></script>
