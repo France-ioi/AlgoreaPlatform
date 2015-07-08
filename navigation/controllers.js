@@ -278,6 +278,7 @@ angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
       $scope.gotoIndex = function() {$state.go('contents', {path: config.DiscoverRootItemId+'/'+config.DiscoverRootSonItemId,sell:1,selr:2});}
       $scope.gotoProgress = function() {$state.go('contents', {path: config.ProgressRootItemId+'/'+config.OfficialProgressItemId,sell:1,selr:2});}
+      $scope.gotoForum = function() {$state.go('forum');}
       $scope.activated = '';
       $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
          $scope.activated = '';

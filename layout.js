@@ -70,7 +70,6 @@ angular.module('algorea')
          $scope.layout.rightOpen = false;
          if ($(window).width() < 1100) {
             if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
-               console.error('toggle right in closeRight');
                $scope.layout.toggleRight();
             }
          } else {
@@ -92,39 +91,40 @@ angular.module('algorea')
          }
       },
       openMenu: function() {
-         $scope.layout.menuOpen = true;
          if ($(window).width() < 1100) {
             if (!$('#menu').hasClass('menu-toggled')) {
+               $scope.layout.menuOpen = true;
                $scope.layout.toggleMenu();
             }
          } else {
             if ($('#menu').hasClass('menu-toggled')) {
+               $scope.layout.menuOpen = true;
                $scope.layout.toggleMenu();
             }
          }
       },
       openRight: function() {
-         $scope.layout.rightOpen = true;
          if ($(window).width() < 1100) {
             if (!$('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               $scope.layout.rightOpen = true;
                $scope.layout.toggleRight();
             }
          } else {
             if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
+               $scope.layout.rightOpen = true;
                $scope.layout.toggleRight();
             }
          }
       },
       openLeft: function() {
-         $scope.layout.leftOpen = true;
          if ($(window).width() < 1100) {
             if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
+               $scope.layout.leftOpen = true;
                $scope.layout.toggleLeft();
             }
          } else {
-            console.error('pouet');
             if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
-               console.error('je trouve la classe toggled');
+               $scope.layout.leftOpen = true;
                $scope.layout.toggleLeft();
             }
          }
@@ -145,9 +145,18 @@ angular.module('algorea')
 
       }
     };
+   function fixArrowPositions() {
+      if ($('#sidebar-left').hasClass('sidebar-left-toggled') != $('.main-left-arrow').hasClass('main-left-arrow-toggled')) {
+         $('.main-left-arrow').toggleClass('main-left-arrow-toggled')
+      }
+      if ($('#sidebar-right').hasClass('sidebar-right-toggled') != $('.main-right-arrow').hasClass('main-right-arrow-toggled')) {
+         $('.main-right-arrow').toggleClass('main-right-arrow-toggled')
+      }
+   }
    var lastRightIsTask;
    $scope.layout.rightIsTask = function(rightIsTask) {
       if (rightIsTask == lastRightIsTask) {
+         fixArrowPositions();
          return;
       }
       lastRightIsTask = rightIsTask;
@@ -169,24 +178,15 @@ angular.module('algorea')
             $scope.layout.toggleMenu();
          }
        }
+       fixArrowPositions();
        $scope.layout.refreshSizes();
     };
-    var isCurrentlyOnePage;
+    var isCurrentlyOnePage = false;;
     $scope.layout.isOnePage = function(isOnePage) {
-       if (typeof isCurrentlyOnePage !== 'undefined' && isOnePage == isCurrentlyOnePage) {
-          return;
+       if (typeof isOnePage === 'undefined') {
+          return isCurrentlyOnePage;
        }
-       if (isOnePage) {
-//          $scope.layout.global.options.west.spacing_closed = 0;
-//          $scope.layout.global.close('west');
-          $('#sidebar-left').css('display', 'none');
-          isCurrentlyOnePage = isOnePage;
-       } else {
-//          $scope.layout.global.options.west.spacing_closed = 6;
-//          $scope.layout.global.open('west');
-          $('#sidebar-left').css('display', 'flex');
-          isCurrentlyOnePage = isOnePage;
-       }
+       isCurrentlyOnePage = isOnePage;
     };
     // inspired from https://github.com/capaj/ng-tools/blob/master/src/debounce.js
     // used on onresize for obvious performance reasons
@@ -211,15 +211,11 @@ angular.module('algorea')
     var lastSeparateEditorOK = false;
     $scope.layout.refreshSizes = function() {
        if (lastRightIsTask) { // things are handled automatically for everything but the task layout
-          console.error('refreshSizes');
           var availableMainWidth = $('#main-area').width();
-          console.error(availableMainWidth);
           var minWidth = $('#task-right').css('min-width');
           if (!minWidth) {minWidth = '0px';}
           minWidth = parseInt(minWidth.slice(0,-2));
           if (!minWidth) {minWidth = 800;}
-          console.error(minWidth);
-          console.error(availableMainWidth - 2*minWidth);
           if (availableMainWidth - 2*minWidth > 40) {
             $scope.layout.separateEditorOK = true;
           } else {
