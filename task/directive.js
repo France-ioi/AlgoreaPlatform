@@ -12,7 +12,6 @@ angular.module('algorea')
         return '<iframe ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" build-task allowfullscreen></iframe>';
       },
       link: function(scope, elem, attrs) {
-         console.error('start link!');
          // user-item-var can be used to take a variable other than
          // $scope.user_item for the user_item. This is used in the forum.
          if (typeof attrs.userItemVar !== 'undefined') {
@@ -158,7 +157,6 @@ angular.module('algorea')
       restrict: 'EA',
       scope: false,
       link:function(scope, elem, attrs){
-         console.error('starting link2!');
          var name = 'task-'+scope.panel;
          if (scope.inForum) {
             name = 'task-'+Math.floor((Math.random() * 10000) + 1);// could be better...
@@ -166,7 +164,6 @@ angular.module('algorea')
          if (!scope.taskName) {scope.taskName = name;}
          scope.taskIframe = elem;
          function initTask() {
-            console.error('init!');
             //scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+scope.user_item.sToken+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
             if (scope.item.sUrl) {
                scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl+'?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sSourceId='+scope.taskName+'#'+$location.absUrl());
@@ -184,7 +181,6 @@ angular.module('algorea')
             if (!scope.item || scope.item.sType !== 'Task') {
                return;
             }
-            console.error('reinit!');
             scope.taskLoaded = false;
             scope.canGetState = false;
             scope.selectTab('task');
@@ -258,7 +254,6 @@ angular.module('algorea')
                }
             };
             TaskProxyManager.setPlatform(scope.task, scope.platform);
-            console.error(TaskProxyManager);
             scope.platform.showView = function(view) {};
             scope.platform.updateHeight = function(height) {
                scope.updateHeight(height);
@@ -284,7 +279,7 @@ angular.module('algorea')
             }
             $timeout(function() {loadCourse(scope);});
          };
-         if (!scope.item || scope.item.sType !== 'Course') {
+         if (scope.item || scope.item.sType == 'Course') {
             initCourse();
          }
          scope.$on('admin.itemSelected', function() {
