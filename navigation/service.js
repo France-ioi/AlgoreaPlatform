@@ -7,6 +7,7 @@ angular.module('algorea')
      */
       ModelsManager.init(models);
       SyncQueue.init(ModelsManager);
+      var currentLoginData = {};
       SyncQueue.requests = {algorea: {type: 'getAllLevels'}, loginData: {}};
       SyncQueue.requestSets = {};
       var callbacks = {};
@@ -33,6 +34,7 @@ angular.module('algorea')
             newLogin = lastSyncLogin;
             console.error('newLogin: '+newLogin);
             SyncQueue.requests.loginData = data.changes.loginData;
+            currentLoginData = data.changes.loginData;
          } else {
             if (!lastSyncLogin) {
                firstSyncFailed = true;
@@ -92,9 +94,11 @@ angular.module('algorea')
       }
       $rootScope.$on('login.logout', function() {
          delete SyncQueue.requests.loginData;
+         currentLoginData = {};
       });
       function syncWithNewLogin(login, loginData) {
          SyncQueue.requests.loginData = loginData;
+         currentLoginData = loginData;
          newLogin = login;
          firstSyncFailed = false;
          if (newLogin !== lastSyncLogin) {
@@ -103,16 +107,15 @@ angular.module('algorea')
          // TODO: build SyncQueue.cancelCurrentSync() with a StartSyncListener
       }
       function getUserID() {
-         
-         return SyncQueue.requests.loginData.ID;
+         return currentLoginData.ID;
       }
       function getLoginData() {
-         return SyncQueue.requests.loginData;
+         return currentLoginData;
       }
       function getUser() {
          var res = false;
-         console.error(SyncQueue.requests);
-         var userID = SyncQueue.requests.loginData.ID;
+         console.error(currentLoginData);
+         var userID = currentLoginData.ID;
          angular.forEach(ModelsManager.curData.users, function(user, ID) {
             if (ID == userID) {
                res = user;
@@ -122,20 +125,6 @@ angular.module('algorea')
       }
       var idsToSync = {};
       function getIdsToSync(reset) {
-//         var pathItems = $stateParams.path ? $stateParams.path.split('/') : ['6'];
-//         if (/*pathItems[0] == '6'*/ false) {
-//            var rootItem = ModelsManager.getRecords('items')[6];
-//            pathItems = [];
-//            if ( rootItem && rootItem.children) {
-//               angular.forEach(rootItem.children, function(child) {
-//                  if (child.child.iLevel != 0 && child.child.iLevel != 127 && pathItems.indexOf(parseInt(child.idItemChild)) == -1) {
-//                     pathItems.push(parseInt(child.idItemChild));
-//                  }
-//               });
-//            }
-//         } else {
-//            pathItems = [pathItems[0]];
-//         }
          var pathItems = [config.ProgressRootItemId, config.DiscoverRootItemId, config.ContestRootItemId];
          angular.forEach(pathItems, function(itemID) {
             idsToSync[itemID] = {'itemID': itemID, 'minVersion': (itemID in idsToSync) ? SyncQueue.serverVersion : 0};
