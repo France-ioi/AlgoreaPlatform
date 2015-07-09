@@ -3,7 +3,7 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 // creating a new user item
-function default_user_item_factory($idUser, $item, $insertId) {
+function default_user_item_factory($idUser, $item, $insertId, $minVersion) {
    $array = array(
       'ID'     => $insertId,
       'idUser' => $idUser,
@@ -34,7 +34,7 @@ function default_user_item_factory($idUser, $item, $insertId) {
       'bHintsAllowed' => $item['data']->bHintsAllowed,
       'bAccessSolutions' => $item['data']->bAccessSolutions,
       'bGrayedAccess' => $item['data']->bGrayedAccess,
-      'iVersion' => 0 // TODO: really?
+      'iVersion' => $minVersion // TODO: really?
    );
    return array(
      'data' => (object) $array
@@ -42,7 +42,8 @@ function default_user_item_factory($idUser, $item, $insertId) {
 }
 
 // type is "inserted" or "updated"
-function createMissingUserItems($db, &$serverChanges, $type) {
+function createMissingUserItems($db, &$serverChanges, $type, $minVersion) {
+   //file_put_contents('/tmp/customServerChangesDebug.txt', "createMissingUserItems $type\n", FILE_APPEND);
    $userId = $_SESSION['login']['ID'];
    $items_ids = array_keys((array) $serverChanges['items'][$type]);
    $users_items_ids = array();
@@ -56,18 +57,25 @@ function createMissingUserItems($db, &$serverChanges, $type) {
    if (count($diff)) {
       $request = "INSERT IGNORE INTO `users_items` (`idUser`, `idItem`, `iScore`, `iScoreComputed`, `iScoreDiffManual`, `sScoreDiffComment`, `nbSubmissionsAttempts`, `nbTasksTried`, `nbTasksSolved`, `nbChildrenValidated`, `bValidated`, `bFinished`, `nbTasksWithHelp`, `nbHintsCached`, `nbCorrectionsRead`, `iPrecision`, `iAutonomy`, `sStartDate`, `sValidationDate`, `sFinishDate`, `sLastActivityDate`, `bRanked`, `sAllLangProg`, `iVersion`) VALUES";
       $first = true;
+      $idItems = array();
       foreach ($diff as $nothing => $idItem) {
          if (!$first) {$request .= ",";}
          $first = false;
          $request .= " ('".$userId."', '".$idItem."', '0', '0', '0', '', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0001-01-01, 0001-01-01, 0001-01-01, 0001-01-01, '0', '*', '0')";
+         $idItems[] = $idItem;
       }
       $request .= ";";
       $db->exec($request);
-      $insertId = $db->lastInsertId();
+      $sth = $db->prepare('select ID, idItem from users_items where idUser = '.$userId.' and ('.implode(' or ', $idItems).');');
+      $sth->execute();
+      $results = $sth->fetchAll();
+      $idItemIdUserItem = array();
+      foreach ($results as $res) {
+         $idItemIdUserItem[$res['idItem']] = $res['ID'];
+      }
       // insert id is the id of the first inserted, we expect the others to follow
-      foreach($diff as $idItem) {
-         $serverChanges['users_items'][$type][$insertId] = default_user_item_factory($userId, $serverChanges['items'][$type][$idItem], $insertId);
-         $insertId += 1;
+      foreach($idItemIdUserItem as $idItem => $idUserItem) {
+         $serverChanges['users_items'][$type][$idUserItem] = default_user_item_factory($userId, $serverChanges['items'][$type][$idItem], $idUserItem, 0);
       }
    }
 }
@@ -98,6 +106,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       $params['id'.$item['data']->sType] = $params['idItem'];
       $params['bHasAccessCorrection'] = $item['data']->bAccessSolutions;
       $params['bReadAnswers'] = true;
+      $params['bSubmissionPossible'] = true;
       $token = $tokenGenerator->generateToken($params);
       $userItem['data']->sToken = $token;
    } else {
@@ -160,16 +169,21 @@ function fetchItemsIfMissing($serverChanges, $db) {
 
 // returns an array containing the idItem of all the missing user_items
 function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts, $params) {
+   //file_put_contents('/tmp/customServerChangesDebug.txt', "handleUserItems\n", FILE_APPEND);
    global $config;
    if (isset($serverChanges['items']) && isset($serverChanges['items']['inserted'])
       && (!isset($serverChanges['users_items']) || !isset($serverChanges['users_items']['inserted'])
          || count((array) $serverChanges['items']['inserted']) != count((array) $serverChanges['users_items']['inserted']))) {
-      createMissingUserItems($db, $serverChanges, 'inserted');
+      createMissingUserItems($db, $serverChanges, 'inserted', $minServerVersion);
+   } else {
+      //file_put_contents('/tmp/customServerChangesDebug.txt', "no need to create missing users items: \n", FILE_APPEND);
+      //file_put_contents('/tmp/customServerChangesDebug.txt', 'count((array) $serverChanges["items"]["inserted"]): '.count((array) $serverChanges['items']['inserted'])."\n", FILE_APPEND);
+      //file_put_contents('/tmp/customServerChangesDebug.txt', 'count((array) $serverChanges["users_items"]["inserted"]): '.count((array) $serverChanges['users_items']['inserted'])."\n", FILE_APPEND);
    }
    if (isset($serverChanges['items']) && isset($serverChanges['items']['updated'])
        && (!isset($serverChanges['users_items']) || !isset($serverChanges['users_items']['updated'])
            || count((array) $serverChanges['items']['updated']) != count((array) $serverChanges['users_items']['updated']))) {
-      createMissingUserItems($db, $serverChanges, 'updated');
+      createMissingUserItems($db, $serverChanges, 'updated', $minServerVersion);
    }
    // no need for tokens when fetching levels
    if (!isset($serverChanges['users_items']) || ! isset($params["requests"]["algorea"]['type']) || $params["requests"]["algorea"]['type'] == 'getAllLevels') {
@@ -221,6 +235,7 @@ function checkExpandedItemResults(&$serverChanges) {
 }
 
 function syncAddCustomServerChanges($db, $minServerVersion, &$serverChanges, &$serverCounts, $params) {
+   //file_put_contents('/tmp/customServerChangesDebug.txt', date(DATE_RFC822)."\n", FILE_APPEND);
    if (!empty($_SESSION) && !empty($_SESSION['login'])) {
       $serverChanges['loginData'] = $_SESSION['login'];
    } else {
@@ -228,6 +243,7 @@ function syncAddCustomServerChanges($db, $minServerVersion, &$serverChanges, &$s
    }
    if (empty($_SESSION) || empty($_SESSION['login']) || !isset($_SESSION['login']['ID']) || empty($serverChanges) || (isset($params["requests"]["algorea"]['admin']) && $params["requests"]["algorea"]['admin'] == true)) {
       checkExpandedItemResults($serverChanges);
+      //file_put_contents('/tmp/customServerChangesDebug.txt', "premier chemin \n", FILE_APPEND);
       return;
    }
    handleUserItems($db, $minServerVersion, $serverChanges, $serverCounts, $params);
@@ -350,7 +366,7 @@ function myDebugFunction($query, $values, $moment = '') {
    foreach ($values as $valueName => $value) {
       $res = str_replace(':'.$valueName, $db->quote($value), $res);
    }
-   file_put_contents(__DIR__.'/../logs/groups_items.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
+   //file_put_contents(__DIR__.'/../logs/groups_items.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
 }
 
 function getGroups ($params, &$requests) {
