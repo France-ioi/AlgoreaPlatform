@@ -182,7 +182,6 @@ angular.module('algorea')
    function init() {
       var item = $scope.item;
       $scope.item_item = $scope.selectItemItem(item, $scope.leftParentItemId);
-      console.error($scope.leftParentItemId);
       var type_iconName = {
          'Root': 'list',
          'Task': 'keyboard',

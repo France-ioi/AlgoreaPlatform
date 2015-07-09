@@ -1,6 +1,7 @@
 <div class="main-titlebar" ng-include="'navigation/views/menubar.html'"></div>
-<div ng-controller="taskController" class="main-area main-area-task" id="main-area">
-   <div class="first-task">
+<div class="main-area main-area-task" id="main-area">
+   <span style="display:none;" ng-init="layout.hasEditor = false;"></span>
+   <div class="first-task" ng-controller="taskController">
        <div tabset justified="true" ng-show="taskLoaded || showForum" id="task-tabs"  class="task-tabs">
           <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active" class="task-tab" id="view.id" ng-hide="view.name === 'editor' && layout.separateEditorOK">
           </li>
@@ -10,11 +11,11 @@
      <div ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
      <div ng-show="taskLoaded && !showForum" include-task></div>
   </div>
-  <div ng-show="taskLoaded && layout.separateEditorOK" ng-if="hasEditor" class="second-task">
+  <div ng-show="taskLoaded && layout.separateEditorOK" ng-if="layout.hasEditor" class="second-task" ng-controller="taskController">
     <div tabset justified="true" ng-show="taskLoaded" id="task-tabs" class="task-tabs">
       <li active="true" class="task-tab" tab heading="Résolution">
       </li>
     </div>
-    <div include-task task-name="task-answers"></div>
+    <div include-task task-name="task-editor"></div>
   </div>
 </div>

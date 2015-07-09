@@ -142,8 +142,10 @@ angular.module('algorea')
       }
       $scope.setViews(taskViews);
       if (platformViews.editor) {
-         $scope.hasEditor = true;
+         $scope.layout.hasEditor = true;
 //         delete platformViews.editor;
+      } else {
+         $scope.layout.hasEditor = false;
       }
       var scopeViews = [];
       var scopeViewsIndex = [];
@@ -160,7 +162,7 @@ angular.module('algorea')
       $scope.views = scopeViews;
       $scope.viewsIndex = scopeViewsIndex;
       var askedView;
-      if ($scope.inForum) {
+      if ($scope.inForum || $scope.taskName == 'task-editor') {
          askedView = platformViews.editor ? 'editor' : 'task';
       } else {
          askedView = this.panel=='right' ? this.pathParams.viewr : this.pathParams.viewl;
