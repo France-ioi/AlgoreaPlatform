@@ -24,7 +24,7 @@ $config = (object) array(
       "server" => "",
       "params" => (object) array(  ),
       "useTransaction" => false,
-      "maxChanges" => 2000,
+      "maxChanges" => 20000,
    ),
    "shared" => (object) array(
       "RootItemId" => "1",

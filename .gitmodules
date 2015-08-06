@@ -1,6 +1,6 @@
 [submodule "dbv"]
 	path = dbv
-	url = https://github.com/victorstanciu/dbv.git
+	url = https://github.com/France-IOI/dbv.git
 [submodule "commonFramework"]
 	path = commonFramework
 	url = https://github.com/France-ioi/commonFramework.git

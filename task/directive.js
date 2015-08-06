@@ -29,10 +29,15 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-  .directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', function ($location, $sce, $http, $timeout, $rootScope) {
-    function loadTask(scope) {
+.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', function ($location, $sce, $http, $timeout, $rootScope) {
+   function loadTask(scope) {
+      TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
+         scope.task = task;
+         configureTask(scope);
+      }, true);
+   }
+   function configureTask(scope) {
       scope.loadedUserItemID = scope.user_item.ID;
-      scope.task = TaskProxyManager.getTaskProxy(scope.taskName, true);
       scope.task.unloaded = false;
       scope.grader = TaskProxyManager.getGraderProxy(scope.taskName);
       scope.platform = new Platform(scope.task);
@@ -241,12 +246,15 @@ angular.module('algorea')
       scope: false,
       link: function(scope, elem, attrs) {
          var name = 'course-'+scope.panel;
-         // small hack because of the shape of the model
          function loadCourse(scope) {
+            TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
+               scope.task = task;
+            }, true);
+         }
+         function configureCourse(scope) {
             if (!scope.item.bUsesAPI) {
                return;
             }
-            scope.task = TaskProxyManager.getTaskProxy(scope.taskName, function() {}, true);
             scope.task.unloaded = false;
             scope.platform = new Platform(scope.task);
             scope.platform.openUrl = function(sTextId) {

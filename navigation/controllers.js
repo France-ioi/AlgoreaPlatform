@@ -158,7 +158,13 @@ angular.module('algorea')
             $scope.itemsList.push(child);
          });
          $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
-         $scope.currentLeftItemTitle = item.strings[0].sTitle;
+         var strings = itemService.getStrings(item);
+         if (!strings) {
+            console.error('no string for item'+item.ID);
+            $scope.currentLeftItemTitle = '';
+         } else {
+            $scope.currentLeftItemTitle = strings.sTitle;
+         }
       };
       $scope.localInit = function() {
          $scope.getPathParams();
@@ -182,7 +188,6 @@ angular.module('algorea')
    function init() {
       var item = $scope.item;
       $scope.item_item = $scope.selectItemItem(item, $scope.leftParentItemId);
-      console.error($scope.leftParentItemId);
       var type_iconName = {
          'Root': 'list',
          'Task': 'keyboard',
