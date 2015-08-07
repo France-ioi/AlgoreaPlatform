@@ -43,10 +43,13 @@ function cleanTempUsers($db) {
 #cleanTempUsers($db);
 
 $db->exec('truncate groups_ancestors');
+$db->exec('truncate groups_propagate');
+$db->exec('insert into groups_propagate (ID, sAncestorsComputationState) select ID, \'todo\' from groups;');
 $db->exec('update groups_propagate set sAncestorsComputationState = \'todo\';');
 Listeners::createNewAncestors($db, "groups", "Group");
 //$db->exec('truncate items_ancestors');
-//$db->exec('update items set sAncestorsComputationState = \'todo\';');
+//$db->exec('truncate items_propagate');
+//$db->exec('insert into items_propagate (ID, sAncestorsComputationState) select ID, \'todo\' from items;');
 //Listeners::createNewAncestors($db, "items", "Item");
 //Listeners::groupsItemsAfter($db);
 //Listeners::computeAllAccess($db);

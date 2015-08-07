@@ -77,6 +77,7 @@ class Listeners {
    }
 
    public static function createNewAncestors($db, $objectName, $upObjectName) {
+      //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', "\n".date(DATE_RFC822)."\n", FILE_APPEND);
       // We mark as 'todo' all descendants of objects marked as 'todo'
       $query = " INSERT IGNORE INTO  `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) SELECT `descendants`.`ID`, 'todo' FROM `".$objectName."` as `descendants` JOIN `".$objectName."_ancestors` ON (`descendants`.`ID` = `".$objectName."_ancestors`.`id".$upObjectName."Child`) JOIN `".$objectName."_propagate` `ancestors` ON (`ancestors`.`ID` = `".$objectName."_ancestors`.`id".$upObjectName."Ancestor`) WHERE `ancestors`.`sAncestorsComputationState` = 'todo' ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'";
       //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
@@ -117,7 +118,7 @@ class Listeners {
          if ($objectName == 'groups') {
             $query .= " and (`groups_groups_join`.`sType` = 'invitationAccepted' or  `groups_groups_join`.`sType` = 'requestAccepted' or `groups_groups_join`.`sType` = 'direct') UNION SELECT  `groups_propagate`.`ID` as `idGroupAncestor`, `groups_propagate`.`ID` as `idGroupChild`, '1' as `bIsSelf` FROM `groups_propagate` WHERE `groups_propagate`.`sAncestorsComputationState` = 'processing';";
          }
-         file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
+         //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
          $db->exec($query);
 
          // Objects marked as 'processing' are now marked as 'done'

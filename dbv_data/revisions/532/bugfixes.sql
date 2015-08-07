@@ -46,6 +46,8 @@ ALTER TABLE `history_filters` CHANGE `ID` `ID` BIGINT(20) NOT NULL;
 ALTER TABLE `history_filters` CHANGE `idGroup` `idGroup` BIGINT(20) NULL DEFAULT NULL;
 ALTER TABLE `history_filters` CHANGE `idItem` `idItem` BIGINT(20) NULL DEFAULT NULL;
 ALTER TABLE `filters` CHANGE `idItem` `idItem` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `messages` CHANGE `idUser` `idUser` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `history_messages` CHANGE `idUser` `idUser` BIGINT(20) NULL DEFAULT NULL;
 
 ALTER TABLE `groups_ancestors` ADD `bIsSelf` BOOLEAN NOT NULL DEFAULT FALSE AFTER `idGroupChild`;
 ALTER TABLE `history_groups_ancestors` ADD `bIsSelf` BOOLEAN NOT NULL DEFAULT FALSE AFTER `idGroupChild`;
