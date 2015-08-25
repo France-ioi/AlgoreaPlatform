@@ -30,13 +30,13 @@ angular.module('algorea')
 
 angular.module('algorea')
 .directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', function ($location, $sce, $http, $timeout, $rootScope) {
-   function loadTask(scope) {
+   function loadTask(scope, elem) {
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          scope.task = task;
-         configureTask(scope);
+         configureTask(scope, elem);
       }, true);
    }
-   function configureTask(scope) {
+   function configureTask(scope, elem) {
       scope.loadedUserItemID = scope.user_item.ID;
       scope.task.unloaded = false;
       scope.grader = TaskProxyManager.getGraderProxy(scope.taskName);
@@ -180,7 +180,7 @@ angular.module('algorea')
                scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
             }
             elem[0].src = scope.taskUrl;
-            $timeout(function() { loadTask(scope);});
+            $timeout(function() { loadTask(scope, elem);});
          }
          if (scope.item && scope.item.sType == 'Task') {
             initTask();
