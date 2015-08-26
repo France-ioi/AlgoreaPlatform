@@ -12,32 +12,17 @@ function addCustomTriggers(&$triggers) {
          "(`ID`, `sAncestorsComputationState`) VALUES (OLD.id".$upObjectName."Parent, 'todo') ".
          "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
 
-#      "UPDATE `".$objectName."` ".
-#         "SET `".$objectName."`.`sAncestorsComputationState` = 'todo' ".
-#         "WHERE `".$objectName."`.`ID` = OLD.`id".$upObjectName."Child` ".
-#         "OR `".$objectName."`.`ID` = OLD.`id".$upObjectName."Parent`;";
-
       // Mark as 'todo' the objects that are descendants of the child object of the old relation
       $queryOld .= "INSERT IGNORE INTO `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) (SELECT `".$objectName."`.`ID`, 'todo' FROM `".$objectName."` ".
          "JOIN `".$objectName."_ancestors` `descendants` ON (`descendants`.`id".$upObjectName."Child` = `".$objectName."`.`ID`) ".
          "WHERE `descendants`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Child`) ".
          "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
 
-#      $queryOld .= "UPDATE `".$objectName."` ".
-#         "JOIN `".$objectName."_ancestors` `descendants` ON (`descendants`.`id".$upObjectName."Child` = `".$objectName."`.`ID`) ".
-#         "SET `".$objectName."`.`sAncestorsComputationState` = 'todo' ".
-#         "WHERE `descendants`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Child`; ";
-
       // Mark as 'todo' the objects that are ancestors of the parent object of the old relation
-      $queryOld .= "INSERT IGNORE INTO `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) (SELECT `".$objectName."`.`ID`, 'todo' FROM `".$objectName."` ".
-         "JOIN `".$objectName."_ancestors` `ancestors` ON (`ancestors`.`id".$upObjectName."Ancestor` = `".$objectName."`.`ID`) ".
-         "WHERE `ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child`) ".
-         "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
-
-#      $queryOld .= "UPDATE `".$objectName."` ".
+#      $queryOld .= "INSERT IGNORE INTO `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) (SELECT `".$objectName."`.`ID`, 'todo' FROM `".$objectName."` ".
 #         "JOIN `".$objectName."_ancestors` `ancestors` ON (`ancestors`.`id".$upObjectName."Ancestor` = `".$objectName."`.`ID`) ".
-#         "SET `".$objectName."`.`sAncestorsComputationState` = 'todo' ".
-#         "WHERE `ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child`; ";
+#         "WHERE `ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child`) ".
+#         "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
 
       // We delete all bridges between ancestors of the parent and descendants of the child in the old relation
       $queryOld .= "DELETE `bridges` FROM `".$objectName."_ancestors` `child_descendants` ".
@@ -48,14 +33,14 @@ function addCustomTriggers(&$triggers) {
          "AND `child_descendants`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Child`; ";
 
       // Delete all ancestry relationships of the child that were also ancestors of the parent in the old relation
-      $queryOld .= "DELETE `child_ancestors` FROM `".$objectName."_ancestors` `parent_ancestors` ".
-         "JOIN  `".$objectName."_ancestors` `child_ancestors` ON (`child_ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child` AND ".
+      $queryOld .= "DELETE `child_ancestors` FROM `".$objectName."_ancestors` `child_ancestors` ".
+         "JOIN  `".$objectName."_ancestors` `parent_ancestors` ON (`child_ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child` AND ".
             "`child_ancestors`.`id".$upObjectName."Ancestor` = `parent_ancestors`.`id".$upObjectName."Ancestor`) ".
          "WHERE `parent_ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Parent`; ";
 
       // Delete all descendence relationships of the parent that were also descendants of the child in the old relation
-      $queryOld .= "DELETE `parent_ancestors` FROM `".$objectName."_ancestors` `child_ancestors` ".
-         "JOIN  `".$objectName."_ancestors` `parent_ancestors` ON (`parent_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Parent` AND ".
+      $queryOld .= "DELETE `parent_ancestors` FROM `".$objectName."_ancestors` `parent_ancestors` ".
+         "JOIN  `".$objectName."_ancestors` `child_ancestors` ON (`parent_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Parent` AND ".
             "`child_ancestors`.`id".$upObjectName."Child` = `parent_ancestors`.`id".$upObjectName."Child`) ".
          "WHERE `child_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Parent` ";
 
@@ -80,12 +65,12 @@ function addCustomTriggers(&$triggers) {
    }
 
    // We reset the computation of access for any item that lost an ancestor, and any item that gained an ancestor
-   $queryResetAccessOld = "UPDATE `groups_items_propagate` ".
-      "JOIN `groups_items` ON `groups_items`.`ID` = `groups_items_propagate`.`ID`".
-      "SET `groups_items_propagate`.`sPropagateAccess` = 'self' ".
-      "WHERE `groups_items`.`idItem` = OLD.`idItemChild`";
-   $triggers["items_items"]["BEFORE DELETE"][] = $queryResetAccessOld;
-   $triggers["items_items"]["BEFORE UPDATE"][] = $queryResetAccessOld." OR `groups_items`.`idItem` = NEW.`idItemChild`";
+#   $queryResetAccessOld = "UPDATE `groups_items_propagate` ".
+#      "JOIN `groups_items` ON `groups_items`.`ID` = `groups_items_propagate`.`ID`".
+#      "SET `groups_items_propagate`.`sPropagateAccess` = 'self' ".
+#      "WHERE `groups_items`.`idItem` = OLD.`idItemChild`";
+#   $triggers["items_items"]["BEFORE DELETE"][] = $queryResetAccessOld;
+#   $triggers["items_items"]["BEFORE UPDATE"][] = $queryResetAccessOld." OR `groups_items`.`idItem` = NEW.`idItemChild`";
 
    // We reset the computation of access for the group_item that was just modified
    $queryResetAccessNew = "IF NOT (NEW.`sFullAccessDate` <=> OLD.`sFullAccessDate`".
