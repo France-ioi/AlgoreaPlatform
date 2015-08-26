@@ -1,6 +1,6 @@
 ALTER TABLE `users_items` ADD INDEX ( `sAncestorsComputationState` );
 ALTER TABLE `users_items` DROP INDEX `UserItem` , ADD UNIQUE `UserItem` ( `idUser` , `idItem` );
-ALTER TABLE `groups_items` DROP INDEX `idItem` , ADD UNIQUE `idItem` ( `idItem` , `idGroup` );
+ALTER TABLE `groups_items` DROP INDEX `itemGroup` , ADD UNIQUE `idItem` ( `idItem` , `idGroup` );
 ALTER TABLE `history_groups_items` ADD INDEX `itemGroup` ( `idItem` , `idGroup` );
 
 ALTER TABLE `history_items_strings` ADD INDEX `itemLanguage` ( `idItem` , `idLanguage` );
