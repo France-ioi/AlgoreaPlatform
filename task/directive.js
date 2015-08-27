@@ -150,9 +150,16 @@ angular.module('algorea')
          scope.task.getMetaData(function(metaData) {
             scope.metaData = metaData;
             if (metaData.minWidth) {
-               elem.css('min-width',metaData.minWidth+'px');
-               $rootScope.$broadcast('layout.taskLayoutChange');
+               if (metaData.minWidth == 'auto') {
+                  elem.css('width','100%');
+               } else {
+                  elem.css('min-width',metaData.minWidth+'px');
+               }
             }
+            if (metaData.autoHeight) {
+               elem.css('height', 'calc(100vh - 170px)');
+            }
+            $rootScope.$broadcast('layout.taskLayoutChange');
          });
          scope.task.getViews(function(views) {
             scope.setTabs(views);

@@ -57,6 +57,8 @@ angular.module('algorea')
       }
    };
    $scope.syncHeight = function () {
+      if ($scope.metaData.autoHeight)
+         return;
       if (!$scope.intervals.syncHeight) {
          $scope.intervals.syncHeight = $interval(function() {
             $scope.task.getHeight(function(height) {
