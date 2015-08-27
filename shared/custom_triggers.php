@@ -18,7 +18,7 @@ function addCustomTriggers(&$triggers) {
          "WHERE `descendants`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Child`) ".
          "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
 
-      // Mark as 'todo' the objects that are ancestors of the parent object of the old relation
+#      // Mark as 'todo' the objects that are ancestors of the parent object of the old relation
 #      $queryOld .= "INSERT IGNORE INTO `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) (SELECT `".$objectName."`.`ID`, 'todo' FROM `".$objectName."` ".
 #         "JOIN `".$objectName."_ancestors` `ancestors` ON (`ancestors`.`id".$upObjectName."Ancestor` = `".$objectName."`.`ID`) ".
 #         "WHERE `ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child`) ".
@@ -65,12 +65,12 @@ function addCustomTriggers(&$triggers) {
    }
 
    // We reset the computation of access for any item that lost an ancestor, and any item that gained an ancestor
-#   $queryResetAccessOld = "UPDATE `groups_items_propagate` ".
-#      "JOIN `groups_items` ON `groups_items`.`ID` = `groups_items_propagate`.`ID`".
-#      "SET `groups_items_propagate`.`sPropagateAccess` = 'self' ".
-#      "WHERE `groups_items`.`idItem` = OLD.`idItemChild`";
-#   $triggers["items_items"]["BEFORE DELETE"][] = $queryResetAccessOld;
-#   $triggers["items_items"]["BEFORE UPDATE"][] = $queryResetAccessOld." OR `groups_items`.`idItem` = NEW.`idItemChild`";
+   $queryResetAccessOld = "UPDATE `groups_items_propagate` ".
+      "JOIN `groups_items` ON `groups_items`.`ID` = `groups_items_propagate`.`ID`".
+      "SET `groups_items_propagate`.`sPropagateAccess` = 'self' ".
+      "WHERE `groups_items`.`idItem` = OLD.`idItemChild`";
+   $triggers["items_items"]["BEFORE DELETE"][] = $queryResetAccessOld;#
+   $triggers["items_items"]["BEFORE UPDATE"][] = $queryResetAccessOld." OR `groups_items`.`idItem` = NEW.`idItemChild`";
 
    // We reset the computation of access for the group_item that was just modified
    $queryResetAccessNew = "IF NOT (NEW.`sFullAccessDate` <=> OLD.`sFullAccessDate`".

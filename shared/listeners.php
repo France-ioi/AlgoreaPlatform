@@ -82,15 +82,10 @@ class Listeners {
       $query = " INSERT IGNORE INTO  `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) SELECT `descendants`.`ID`, 'todo' FROM `".$objectName."` as `descendants` JOIN `".$objectName."_ancestors` ON (`descendants`.`ID` = `".$objectName."_ancestors`.`id".$upObjectName."Child`) JOIN `".$objectName."_propagate` `ancestors` ON (`ancestors`.`ID` = `".$objectName."_ancestors`.`id".$upObjectName."Ancestor`) WHERE `ancestors`.`sAncestorsComputationState` = 'todo' ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'";
       //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
       $res = $db->exec($query);
-#      if ($objectName == 'items') {
-#         if ($res) {
-#            // case triggered by custom_triggers, violently recomputing everything seems the most reliable way for now.
-#            $db->exec('update items set sAncestorsComputationState = \'todo\';');
-#         }
-#      }
       $hasChanges = true;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no parents not marked as 'done'
+         // TODO: this query is super slow (> 2.5s sometimes)
          $query = "UPDATE `".$objectName."_propagate` as `children` SET `sAncestorsComputationState` = 'processing' WHERE `sAncestorsComputationState` = 'todo' AND `children`.`ID` NOT IN ".
          "(SELECT `id".$upObjectName."Child` FROM ( ".
             "SELECT `".$objectName."_".$objectName."`.`id".$upObjectName."Child` ".
@@ -111,8 +106,8 @@ class Listeners {
          if ($objectName == 'groups') {
             $query .= " and (`groups_groups`.`sType` = 'invitationAccepted' or  `groups_groups`.`sType` = 'requestAccepted' or `groups_groups`.`sType` = 'direct') ";
          }
-         $query .= "UNION DISTINCT ".
-         "SELECT DISTINCT `".$objectName."_ancestors`.`id".$upObjectName."Ancestor`, `".$objectName."_".$objectName."_join`.`id".$upObjectName."Child`".($objectName == 'groups' ? ", '0' as  `bIsSelf`" : '')." FROM `".$objectName."_ancestors` ".
+         $query .= "UNION ".
+         "SELECT `".$objectName."_ancestors`.`id".$upObjectName."Ancestor`, `".$objectName."_".$objectName."_join`.`id".$upObjectName."Child`".($objectName == 'groups' ? ", '0' as  `bIsSelf`" : '')." FROM `".$objectName."_ancestors` ".
          "JOIN `".$objectName."_".$objectName."` as `".$objectName."_".$objectName."_join` ON (`".$objectName."_".$objectName."_join`.`id".$upObjectName."Parent` = `".$objectName."_ancestors`.`id".$upObjectName."Child`) ".
          "JOIN `".$objectName."_propagate` ON (`".$objectName."_".$objectName."_join`.`id".$upObjectName."Child` = `".$objectName."_propagate`.`ID`) WHERE `".$objectName."_propagate`.`sAncestorsComputationState` = 'processing'";
          if ($objectName == 'groups') {
