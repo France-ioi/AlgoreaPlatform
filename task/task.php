@@ -165,7 +165,7 @@ function graderResult($request, $db) {
    if ($stmt->rowCount()) {
       $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`) WHERE idUser = :idUser AND idItem = :idItem;";
       if ($bValidated) {
-         $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = COALESCE(`sValidationDate`, NOW()) WHERE idUser = :idUser AND idItem = :idItem;";
+         $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
       }
       $stmt = $db->prepare($query);
       $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItem'], 'iScore' => $score));
@@ -179,7 +179,7 @@ function graderResult($request, $db) {
       $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
       $token = $tokenGenerator->generateToken($params);
    }
-   echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'sToken' => $token, 'res'=>$res));
+   echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'sToken' => $token));
 }
 
 function getToken($request, $db) {
