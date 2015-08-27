@@ -331,7 +331,7 @@ angular.module('algorea')
       };
 
       $scope.itemItemSelected = function(itemItemID) {
-         if (itemItemID !== null && !$scope.checkSaveItem()) {
+         if (!itemItemID || !$scope.checkSaveItem()) {
             return;
          }
          var itemItem = ModelsManager.getRecord("items_items", itemItemID);
