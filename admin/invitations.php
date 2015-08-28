@@ -7,7 +7,8 @@ ini_set('display_errors', '1');
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 
-$config = json_decode(file_get_contents("../config.json"));
+require_once("../shared/connect.php");
+
 session_start();
 header('Content-Type: application/json');
 
@@ -19,8 +20,6 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
    echo json_encode(array('result' => false, 'error' => 'only identified users can use this file'));
    exit();
 }
-
-require_once("../shared/connect.php");
 
 function getGroupsFromLogins($request, $db) {
    if (!$request['logins'] || empty($request['logins'] || !$request['idGroup'])) {
