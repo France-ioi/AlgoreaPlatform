@@ -27,6 +27,10 @@
    border:0px;
 }
 
+#menu-logo-content:after {
+   content: "Algoréa";
+}
+
 #menu-else {
    flex: 1 1 auto;
    display:flex;

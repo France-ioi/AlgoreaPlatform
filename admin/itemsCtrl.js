@@ -179,7 +179,7 @@ angular.module('algorea')
             });
          });
          // we can give and remove access if parent is a root item
-         if (parent.ID == config.OfficialProgressItemId || parent.ID == config.CustomProgressItemId || parent.ID == config.CustomContestRootItemId || parent.ID == config.OfficialContestRootItemId) {
+         if (parent.sType === 'OfficialProgressRoot' || parent.sType === 'CustomProgressRoot' || parent.sType === 'CustomContestRoot' || parent.sType == 'OfficialContestRootItemId') {
             this.canGiveAccess = true;
             that.canRemoveAccess = true;
             return true;
@@ -435,10 +435,10 @@ angular.module('algorea')
          var group_item;
          if (!record) return false;
          if (recordModel == 'items_items') {
-            if (action == 'delete' && (record.parent.ID == config.CustomProgressItemId || record.parent.ID == config.CustomContestRootItemId)) {
+            if (action == 'delete' && (record.parent.ID == config.domains.current.CustomProgressItemId || record.parent.ID == config.domains.current.CustomContestRootItemId)) {
                return true;
             }
-            if (action == 'insert' && (record.child.ID == config.CustomProgressItemId || record.child.ID == config.CustomContestRootItemId)) {
+            if (action == 'insert' && (record.child.ID == config.domains.current.CustomProgressItemId || record.child.ID == config.domains.current.CustomContestRootItemId)) {
                return true;
             }
             if (action == 'delete') {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .service('itemService', ['$rootScope', '$timeout', '$stateParams', function($rootScope, $timeout, $stateParams) {
+   .service('itemService', ['$rootScope', '$timeout', function($rootScope, $timeout) {
     /*
      * Simple service providing items.
      */
@@ -38,7 +38,7 @@ angular.module('algorea')
                SyncQueue.resetSync = true;
             }
          }
-      };
+      }
 //      $rootScope.$on('$stateChangeSuccess', function() {
 //         var oldIds = idsToSync;
 //         var newIds = 
@@ -134,7 +134,9 @@ angular.module('algorea')
 //         } else {
 //            pathItems = [pathItems[0]];
 //         }
-         var pathItems = [config.ProgressRootItemId, config.DiscoverRootItemId, config.ContestRootItemId];
+         console.error(config);
+         var pathItems = [config.domains.current.ProgressRootItemId, config.domains.current.DiscoverRootItemId, config.domains.current.ContestRootItemId];
+         console.error(pathItems);
          angular.forEach(pathItems, function(itemID) {
             idsToSync[itemID] = {'itemID': itemID, 'minVersion': (itemID in idsToSync) ? SyncQueue.serverVersion : 0};
          });
@@ -229,7 +231,7 @@ angular.module('algorea')
 //               } else
                if (!(child.idItemChild in seenIDs) ){
                   var lang = child.child.sSupportedLangProg;
-                  if (typeof lang !== 'undefined' && (lang == null || lang == '' || lang == '*' || lang.indexOf('Python') != -1)) {
+                  if (typeof lang !== 'undefined' && (!lang || lang == '*' || lang.indexOf('Python') != -1)) {
                      childrenz.push(child);
                   }
                   seenIDs.push(child.idItemChild);
