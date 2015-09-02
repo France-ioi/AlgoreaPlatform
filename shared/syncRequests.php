@@ -576,6 +576,7 @@ function setupExpandedItemsRequests($params, &$requests) {
    $requests["items"]["model"]["fields"]["sType"]["groupBy"] = "`items`.`ID`"; // Could be added to any field. TODO : fix group by system
    $requests["items"]["filters"]["accessible"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf']));
    $requests["items"]["filters"]["accessibleWrite"] = array('modes' => array('insert' => true, 'update' => true, 'delete' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf']));
+   $requests["items"]['debugLogFunction'] = myDebugFunction;
 
    $requests["items_strings"]["model"]["joins"]["items_items"] = array("srcTable" => "items_strings", "srcField" => "idItem", "dstField" => "idItemChild");
    $requests["items_strings"]["model"]["fields"]["idItem"]["groupBy"] = "`items_strings`.`ID`"; // Could be added to any field. TODO : fix group by system

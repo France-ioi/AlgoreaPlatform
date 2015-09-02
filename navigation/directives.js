@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-  .directive('displayItem', ['itemService', 'pathService', function (itemService, pathService) {
+  .directive('displayItem', ['itemService', 'pathService', '$rootScope', function (itemService, pathService, $rootScope) {
     return {
       restrict: 'EA',
       scope: false,
@@ -10,8 +10,8 @@ angular.module('algorea')
            return '<span class="breadcrumbs-item-{{activityClass}} breadcrumbs-{{activityClass}}-{{lastClass}} breadcrumbs-{{distanceClass}}">' +
                   '  <span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
                   '  <a ng-if="!active" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a>'+
-                  '  <div ng-if="rightLink" class="main-right-arrow material-icons" ui-sref="{{rightLink}}">forward</div>'+
-                  '  <div ng-if="leftLink" class="main-left-arrow material-icons" ui-sref="{{leftLink}}">forward</div>';
+                  '  <div ng-if="rightLink" class="main-right-arrow material-icons" ui-sref="{{rightLink.sref}}">forward</div>'+
+                  '  <div ng-if="leftLink" class="main-left-arrow material-icons" ui-sref="{{leftLink.sref}}">forward</div>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,
             * but Angular doesn't provide a way to select a templateUrl based on scope:
@@ -45,11 +45,19 @@ angular.module('algorea')
                      previousID = brothers[i].ID;
                   }
                   var basePath = scope.pathParams.path.slice(0, scope.depth).join('/')+'/';
-                  scope.rightLink = nextID ? pathService.getSrefString(basePath+nextID) : null;
-                  scope.leftLink = previousID ? pathService.getSrefString(basePath+previousID) : null;
+                  if (nextID) {
+                     $rootScope.rightLink = {sref: pathService.getSrefString(basePath+nextID), stateName: 'contents', stateParams: {path: basePath+nextID}};
+                  } else {
+                     $rootScope.rightLink = null;
+                  }
+                  if (previousID) {
+                     $rootScope.leftLink = {sref: pathService.getSrefString(basePath+previousID), stateName: 'contents', stateParams: {path: basePath+previousID}};
+                  } else {
+                     $rootScope.leftLink = null;
+                  }
                } else {
-                  scope.rightLink = null;
-                  scope.leftLink = null;
+                  $rootScope.rightLink = null;
+                  $rootScope.leftLink = null;
                }
             } else {
                if (from == "parent") {

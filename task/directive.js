@@ -29,7 +29,7 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', function ($location, $sce, $http, $timeout, $rootScope) {
+.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', function ($location, $sce, $http, $timeout, $rootScope, $state) {
    function loadTask(scope, elem) {
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          scope.task = task;
@@ -47,6 +47,12 @@ angular.module('algorea')
       };
       scope.platform.updateHeight = function(height) {
          scope.updateHeight(height);
+      };
+      // move to next item in same chapter
+      scope.moveToNext = function() {
+         if ($rootScope.rightLink) {
+            $state.go($rootScope.rightLink.stateName, $rootScope.rightLink.stateParams);
+         }
       };
       scope.platform.askHint = function() {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
@@ -99,7 +105,11 @@ angular.module('algorea')
                      newAnswer.sSubmissionDate = new Date();
                      ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
                      scope.user_answer = newAnswer;
-                     scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID);
+                     scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
+                        if (validated && mode == 'next') {
+                           scope.moveToNext();
+                        }
+                     });
                   }
                })
                .error(function() {
@@ -112,7 +122,7 @@ angular.module('algorea')
       scope.platform.getTaskParams = function(askedParam) {
          return askedParam ? scope.taskParams[askedParam] : scope.taskParams;
       };
-      scope.gradeTask = function (answer, answerToken, validateUserItemID) {
+      scope.gradeTask = function (answer, answerToken, validateUserItemID, callback) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
             $http.post('/task/task.php', {action: 'graderResult', sToken: scope.user_item.sToken, scoreToken: scoreToken, answerToken: answerToken, score: score, message: message}, {responseType: 'json'}).success(function(postRes) {
                if ( ! postRes.result) {
@@ -137,6 +147,7 @@ angular.module('algorea')
                   });
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
+               callback(postRes.bValidated);
             })
             .error(function() {
                console.error("error calling task.php");
@@ -196,7 +207,6 @@ angular.module('algorea')
             if (!scope.item || scope.item.sType !== 'Task') {
                return;
             }
-            console.error('reinit!');
             scope.taskLoaded = false;
             scope.canGetState = false;
             scope.selectTab('task');
