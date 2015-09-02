@@ -411,9 +411,9 @@ function getGroups ($params, &$requests) {
 
 function getAllLevels ($params, &$requests){
    global $config;
-   $idRootItem = $config->shared->OfficialProgressItemId;
-   $idRootIndexItem = $config->shared->DiscoverRootItemId;
-   $idRootCustomItem = $config->shared->CustomProgressItemId;
+   $idRootItem = $config->shared->domains['current']->OfficialProgressItemId;
+   $idRootIndexItem = $config->shared->domains['current']->DiscoverRootItemId;
+   $idRootCustomItem = $config->shared->domains['current']->CustomProgressItemId;
    unset($requests['messages']);
    //unset($requests['threads']);
 #   $requests['threads']['fields']
@@ -611,15 +611,18 @@ function setupExpandedItemsRequests($params, &$requests) {
 
    $expanded_items = array();
    $expanded_items_zero = array();
-   $default_expanded_items = array(
-      $config->shared->RootItemId,
-      $config->shared->ProgressRootItemId,
-      $config->shared->OfficialProgressItemId,
-      $config->shared->CustomProgressItemId,
-      $config->shared->ContestRootItemId,
-      $config->shared->CustomContestRootItemId,
-      $config->shared->OfficialContestRootItemId,
-   );
+   // all these items are fetched in the first sync to make user experience smoother
+   // TODO: do not sync them after first sync
+   $default_expanded_items = array($config->shared->RootItemId);
+   foreach ($config->shared->domains as $_ => $domainData) {
+      $default_expanded_items[] = $domainData->ProgressRootItemId;
+      $default_expanded_items[] = $domainData->PlatformItemId;
+      $default_expanded_items[] = $domainData->OfficialProgressItemId;
+      $default_expanded_items[] = $domainData->CustomProgressItemId;
+      $default_expanded_items[] = $domainData->ContestRootItemId;
+      $default_expanded_items[] = $domainData->CustomContestRootItemId;
+      $default_expanded_items[] = $domainData->OfficialContestRootItemId;
+   }
 
    if (isset($params["requests"]) && isset($params["requests"]["expandedItems"])) {
       foreach ($params["requests"]["expandedItems"] as $ID => $expandedItem) {

@@ -19,6 +19,7 @@
     <link href="layout/sidebar-right.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="algorea.css">
     <link rel="stylesheet" href="forum/forum.css">
+    <link rel="stylesheet" ng-href="{{additionalCssUrl}}">
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -28,7 +29,7 @@
    <div id="headerContainer">
       <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
          <div id="menu-logo" class="menu-item" >
-            <div class="menu-item-content">Algoréa</div>
+            <div class="menu-item-content" id="menu-logo-content"></div>
          </div>
          <div id="menu-else">
             <div id="menu-item1" class="menu-item" ng-class="{'menu-item-active': activated == 'index'}" ng-click="gotoIndex()">

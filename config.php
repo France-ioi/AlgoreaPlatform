@@ -28,25 +28,29 @@ $config = (object) array(
    ),
    "shared" => (object) array(
       "RootItemId" => "1",
-      "ProgressRootItemId" => "2",
-      "OfficialProgressItemId" => "21",
-      "OfficialProgressItemSonId" => "22",
-      "CustomProgressItemId" => "23",
-      "DiscoverRootItemId" => "3",
-      "DiscoverRootSonItemId" => "31",
-      "ContestRootItemId" => "4",
-      "CustomContestRootItemId" => "41",
-      "OfficialContestRootItemId" => "42",
-      "OrphanedRootItemId" => "5",
       "RootGroupId" => "1",
       "RootSelfGroupId" => "2",
       "RootAdminGroupId" => "3",
-      "RootTempGroupId" => "4"
+      "RootTempGroupId" => "4",
+      "OrphanedRootItemId" => "5",
+      "domains" => array( // global root
+         "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
+            "domain" => 'domain url, optional for "default"',
+            "additionalCssUrl" => 'additional css url',
+            "ProgressRootItemId" => "2",
+            "OfficialProgressItemId" => "21",
+            "OfficialProgressItemSonId" => "22",
+            "CustomProgressItemId" => "23",
+            "DiscoverRootItemId" => "3",
+            "DiscoverRootSonItemId" => "31",
+            "ContestRootItemId" => "4",
+            "CustomContestRootItemId" => "41",
+            "OfficialContestRootItemId" => "42",
+         )
+      )
    )
 );
 
 if (is_readable(__DIR__.'/config_local.php')) {
    include_once __DIR__.'/config_local.php';
-} else if (is_readable(__DIR__.'/config.json')) {
-   $config = json_decode(file_get_contents(__DIR__.'/config.json'));
 }

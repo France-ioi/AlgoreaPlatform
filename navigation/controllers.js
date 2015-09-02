@@ -1,11 +1,15 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$scope', 'itemService', 'pathService', '$state', '$filter', function ($scope, itemService, pathService, $state, $filter) {
+   .controller('navigationController', ['$scope', 'itemService', 'pathService', '$state', '$filter', '$sce', function ($scope, itemService, pathService, $state, $filter, $sce) {
       $scope.viewsBaseUrl = 'navigation/views/';
       $scope.getChildren = function() {
          return itemService.getChildren(this.item);
       };
+      if (config.domains.current.additionalCssUrl) {
+         console.error(config.domains.current);
+         $scope.additionalCssUrl = $sce.trustAsUrl(config.domains.current.additionalCssUrl);
+      }
       $scope.item = {ID: 0};
       $scope.errorItem = {ID: -1};
       $scope.getTemplate = function(from) {

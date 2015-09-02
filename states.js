@@ -11,13 +11,13 @@ angular.module('algorea')
 angular.module('algorea')
    .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
       $urlRouterProvider
-         .otherwise('/contents/'+config.ProgressRootItemId+'/'+config.OfficialProgressItemId);
+         .otherwise('/contents/'+config.domains.current.ProgressRootItemId+'/'+config.domains.current.OfficialProgressItemId);
       $stateProvider
          .state("contents", {
             url: "/contents/*path?sell&selr&viewl&viewr",
             //reloadOnSearch: false,
             params: {
-               path: "6/8" // default vaue
+               path: config.domains.current.ProgressRootItemId+'/'+config.domains.current.OfficialProgressItemId // default vaue
             },
             views: {
                'left': {
