@@ -179,7 +179,7 @@ angular.module('algorea')
             });
          });
          // we can give and remove access if parent is a root item
-         if (parent.sType === 'OfficialProgressRoot' || parent.sType === 'CustomProgressRoot' || parent.sType === 'CustomContestRoot' || parent.sType == 'OfficialContestRootItemId') {
+         if (parent.ID === config.domains.current.OfficialProgressItemId || parent.ID === config.domains.current.CustomProgressItemId || parent.ID === config.domains.current.CustomContestRootItemId || parent.ID === config.domains.current.OfficialContestRootItemId) {
             this.canGiveAccess = true;
             that.canRemoveAccess = true;
             return true;
