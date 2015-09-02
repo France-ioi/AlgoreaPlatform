@@ -30,7 +30,9 @@ angular.module('algorea')
    };
    $scope.user_answer = null;
    $scope.load_answer_and_sync = function() {
-      if ($scope.loadedUserItemID != $scope.user_item.ID) return;
+      if ($scope.loadedUserItemID != $scope.user_item.ID) {
+         return;
+      }
       $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item) : '';
       if ($scope.user_answer) {
          $scope.task.reloadAnswer($scope.user_answer.sAnswer, function() {
@@ -84,7 +86,9 @@ angular.module('algorea')
       }
    };
    $scope.sync = function() {
-      if ($scope.loadedUserItemID != $scope.user_item.ID) return;
+      if ($scope.loadedUserItemID != $scope.user_item.ID) {
+         return;
+      }
       $scope.canGetState = true;
       if (!$scope.readOnly) {
          $scope.syncState();
@@ -107,7 +111,9 @@ angular.module('algorea')
    $scope.taskLoaded = false;
    $scope.currentView = null;
    $scope.showView = function(platformView) {
-      if (!platformViews[platformView]) {return;}
+      if (!platformViews[platformView]) {
+         return;
+      }
       if (platformView != $scope.currentView) {
          var viewsArg = {};
          viewsArg[platformView] = true;

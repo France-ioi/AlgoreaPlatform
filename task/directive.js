@@ -181,7 +181,6 @@ angular.module('algorea')
       restrict: 'EA',
       scope: false,
       link:function(scope, elem, attrs){
-         console.error('starting link2!');
          var name = 'task-'+scope.panel;
          if (scope.inForum) {
             name = 'task-'+Math.floor((Math.random() * 10000) + 1);// could be better...
@@ -209,7 +208,8 @@ angular.module('algorea')
             }
             scope.taskLoaded = false;
             scope.canGetState = false;
-            scope.selectTab('task');
+            //scope.selectTab('task');
+            scope.currentView = null;
             if (!scope.task.unloaded) {
                scope.task.unloaded = true;
                scope.task.unload(function() {
