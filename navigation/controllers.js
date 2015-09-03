@@ -285,8 +285,8 @@ angular.module('algorea')
 
 angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
-      $scope.gotoIndex = function() {$state.go('contents', {path: config.DiscoverRootItemId+'/'+config.DiscoverRootSonItemId,sell:1,selr:2});}
-      $scope.gotoProgress = function() {$state.go('contents', {path: config.ProgressRootItemId+'/'+config.OfficialProgressItemId,sell:1,selr:2});}
+      $scope.gotoIndex = function() {$state.go('contents', {path: config.domains.current.DiscoverRootItemId+'/'+config.domains.current.DiscoverRootSonItemId,sell:1,selr:2});}
+      $scope.gotoProgress = function() {$state.go('contents', {path: config.domains.current.ProgressRootItemId+'/'+config.domains.current.OfficialProgressItemId,sell:1,selr:2});}
       $scope.gotoForum = function() {$state.go('forum');}
       $scope.activated = '';
       $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
@@ -294,7 +294,7 @@ angular.module('algorea')
          if (toState.name == 'forum' || toState.name == 'thread' || toState.name == 'newThread') {
             $scope.activated = 'forum';
          } else if (toState.name == 'contents') {
-            if (toParams && toParams.path && toParams.path.indexOf(config.DiscoverRootItemId) !== -1) {
+            if (toParams && toParams.path && toParams.path.indexOf(config.domains.current.DiscoverRootItemId) !== -1) {
                $scope.activated = 'index';
             } else {
                $scope.activated = 'contents';
