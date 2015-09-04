@@ -3,15 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Algorea : l’algorithmique par la pratique</title>
+    <title ng-bind="domainTitle"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
     <base href="/">
     <script type="text/javascript" src="config.js.php"></script>
 <!--    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <!-- dirty trick here: if googleapis.com cdn is down, we consider that no connection is available, and thus fallback on local css -->
-    <script type="text/javascript">window.jQuery || document.write('<script src="bower_components/jquery/dist/jquery.min.js">\x3C/script>\x3Clink rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">');</script>
     <link href="layout/3columns-flex.css" rel="stylesheet" type="text/css" />
     <link href="layout/menu.css" rel="stylesheet" type="text/css" />
     <link href="layout/main.css" rel="stylesheet" type="text/css" />
@@ -28,7 +26,7 @@
 <header ng-click="layout.openMenu();">
    <div id="headerContainer">
       <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
-         <div id="menu-logo" class="menu-item" >
+         <div id="menu-logo" class="menu-item" ng-click="gotoIndex()">
             <div class="menu-item-content" id="menu-logo-content"></div>
          </div>
          <div id="menu-else">

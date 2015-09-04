@@ -2,6 +2,7 @@
 
 angular.module('algorea')
    .controller('navigationController', ['$scope', 'itemService', 'pathService', '$state', '$filter', '$sce', function ($scope, itemService, pathService, $state, $filter, $sce) {
+      $scope.domainTitle = config.domains.current.title;
       $scope.viewsBaseUrl = 'navigation/views/';
       $scope.getChildren = function() {
          return itemService.getChildren(this.item);
