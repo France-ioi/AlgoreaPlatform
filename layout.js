@@ -153,14 +153,14 @@ angular.module('algorea')
          $('.main-right-arrow').toggleClass('main-right-arrow-toggled')
       }
    }
-   var lastRightIsTask;
-   $scope.layout.rightIsTask = function(rightIsTask) {
-      if (rightIsTask == lastRightIsTask) {
+   var lastRightIsFullScreen;
+   $scope.layout.rightIsFullScreen = function(rightIsFullScreen) {
+      if (rightIsFullScreen == lastRightIsFullScreen) {
          fixArrowPositions();
          return;
       }
-      lastRightIsTask = rightIsTask;
-       if (rightIsTask) {
+      lastRightIsFullScreen = rightIsFullScreen;
+       if (rightIsFullScreen) {
          $scope.layout.closeMenu();
          $scope.layout.closeLeft();
          $scope.layout.closeRight();
@@ -210,7 +210,7 @@ angular.module('algorea')
     $scope.layout.separateEditorOK = false;
     var lastSeparateEditorOK = false;
     $scope.layout.refreshSizes = function() {
-       if (lastRightIsTask) { // things are handled automatically for everything but the task layout
+       if (lastRightIsFullScreen) { // things are handled automatically for everything but the task layout
           var availableMainWidth = $('#main-area').width();
           var minWidth = $('#task-right').css('min-width');
           if (!minWidth) {minWidth = '0px';}

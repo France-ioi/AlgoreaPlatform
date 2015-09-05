@@ -23,10 +23,10 @@ angular.module('algorea')
             type = 'chapter';
          }
          if ( ! from) {
-            if (type == 'task') {
-               if (this.panel == 'right') { this.layout.rightIsTask(true); } else { this.layout.leftIsTask(true); }
+            if (type == 'task' || type == 'course' || type == 'presentation') {
+               if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }
             } else {
-               if (this.panel == 'right') { this.layout.rightIsTask(false); } else { this.layout.leftIsTask(false); }
+               if (this.panel == 'right') { this.layout.rightIsFullScreen(false); }
             }
          }
          if (this.pathParams.currentItemID == -2 || (this.pathParams.sell == 0 && this.panel == 'left')) {
