@@ -8,8 +8,12 @@ angular.module('algorea')
          return itemService.getChildren(this.item);
       };
       if (config.domains.current.additionalCssUrl) {
-         console.error(config.domains.current);
          $scope.additionalCssUrl = $sce.trustAsUrl(config.domains.current.additionalCssUrl);
+      }
+      if (config.domains.current.useForum === false) {
+         $scope.useForum = false;
+      } else {
+         $scope.useForum = true;
       }
       $scope.item = {ID: 0};
       $scope.errorItem = {ID: -1};

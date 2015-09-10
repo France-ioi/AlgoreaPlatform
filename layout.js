@@ -117,6 +117,10 @@ angular.module('algorea')
          }
       },
       openLeft: function() {
+         if ($scope.layout.leftOpen) {
+            $scope.layout.closeLeft();
+            return;
+         }
          if ($(window).width() < 1100) {
             if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
                $scope.layout.leftOpen = true;

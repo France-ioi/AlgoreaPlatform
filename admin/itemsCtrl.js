@@ -946,6 +946,10 @@ var AccessManager = {
       }
       var group = ModelsManager.getRecord("groups", idGroup);
       var item = ModelsManager.getRecord("items", idItem);
+      if (!item || !group) {
+         console.error('group or item null in dynComputeItemAccess! idGroup: '+idGroup+', idItem: '+idItem);
+         return;
+      }
       var key = group.ID + "-" + item.ID;
       if (AccessManager.dynAccess[key]) {
          return AccessManager.dynAccess[key];

@@ -130,7 +130,7 @@
 
 .sidebar-left-toggled .sidebar-left-item-final-icons {
    flex-direction:column;
-   background: #e2e2e2;
+/*   background: #e2e2e2;*/
    flex: 1 1 auto;
    display:flex;
    justify-content:space-around;
@@ -145,7 +145,7 @@
    }
    .sidebar-left-item-final-icons {
       flex-direction:column;
-      background: #e2e2e2;
+/*      background: #e2e2e2;*/
       flex: 1 1 auto;
    }
 }

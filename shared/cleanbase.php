@@ -42,16 +42,19 @@ function cleanTempUsers($db) {
 
 #cleanTempUsers($db);
 
-$db->exec('truncate groups_ancestors');
-$db->exec('truncate groups_propagate');
-$db->exec('insert into groups_propagate (ID, sAncestorsComputationState) select ID, \'todo\' from groups;');
-$db->exec('update groups_propagate set sAncestorsComputationState = \'todo\';');
-Listeners::createNewAncestors($db, "groups", "Group");
+function syncDebug() {}
+
+//$db->exec('truncate groups_ancestors');
+//$db->exec('truncate groups_propagate');
+//$db->exec('insert ignore into groups_propagate (ID, sAncestorsComputationState) select ID, \'todo\' from groups;');
+//$db->exec('update groups_propagate set sAncestorsComputationState = \'todo\';');
+//Listeners::createNewAncestors($db, "groups", "Group");
 //$db->exec('truncate items_ancestors');
 //$db->exec('truncate items_propagate');
-//$db->exec('insert into items_propagate (ID, sAncestorsComputationState) select ID, \'todo\' from items;');
+//$db->exec('insert ignore into items_propagate (ID, sAncestorsComputationState) select ID, \'todo\' from items;');
 //Listeners::createNewAncestors($db, "items", "Item");
-//Listeners::groupsItemsAfter($db);
-//Listeners::computeAllAccess($db);
+$db->exec('insert ignore into groups_items_propagate (ID, sPropagateAccess) select ID, \'self\' from groups_items;');
+Listeners::groupsItemsAfter($db);
+Listeners::computeAllAccess($db);
 
 #require_once __DIR__.'/../modelsManager/cleanHistory.php';
