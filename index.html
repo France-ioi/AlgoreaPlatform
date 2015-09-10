@@ -23,7 +23,7 @@
 </head>
 <body ng-controller="layoutController">
 <div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.openMenu();">
+<header ng-click="layout.openMenu($event);">
    <div id="headerContainer">
       <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
          <div id="menu-logo" class="menu-item" ng-click="gotoIndex()">

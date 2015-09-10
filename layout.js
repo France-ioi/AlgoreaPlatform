@@ -90,7 +90,12 @@ angular.module('algorea')
             }
          }
       },
-      openMenu: function() {
+      openMenu: function(event) {
+         // do not open menu when user clicks on arrows
+         console.error(event.target.className);
+         if (event.target.className.indexOf('link-arrow') != -1) {
+            return;
+         }
          if ($(window).width() < 1100) {
             if (!$('#menu').hasClass('menu-toggled')) {
                $scope.layout.menuOpen = true;
