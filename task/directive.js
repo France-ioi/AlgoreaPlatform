@@ -168,7 +168,9 @@ angular.module('algorea')
                }
             }
             if (metaData.autoHeight) {
-               elem.css('height', 'calc(100vh - 170px)');
+               elem.addClass('task-auto-height');
+            } else {
+               elem.removeClass('task-auto-height');
             }
             $rootScope.$broadcast('layout.taskLayoutChange');
          });
@@ -191,7 +193,11 @@ angular.module('algorea')
             console.error('init!');
             //scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+scope.user_item.sToken+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
             if (scope.item.sUrl) {
-               scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl+'?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sSourceId='+scope.taskName+'#'+$location.absUrl());
+               if (scope.item.bUsesAPI) {
+                  scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl+'?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sSourceId='+scope.taskName+'#'+$location.absUrl());
+               } else {
+                  scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
+               }
             } else {
                //scope.taskUrl = $sce.trustAsResourceUrl('http://tasks.eroux.fr/task_integration_api/example/2013-SK-09ab/index.html?sSourceId='+scope.taskName+'#'+$location.absUrl());
                scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
@@ -302,10 +308,11 @@ angular.module('algorea')
          scope.taskName = name;
          scope.taskIframe = elem;
          var initCourse = function() {
-            if (scope.item.sUrl) {
+            console.error(scope.item);
+            if (scope.item.bUsesAPI) {
                scope.courseUrl = $sce.trustAsResourceUrl(scope.item.sUrl+'?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sSourceId='+scope.taskName+'#'+$location.absUrl());
             } else {
-               scope.courseUrl = $sce.trustAsResourceUrl(taskRootUrl+'course.php?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sSourceId='+name+'#'+$location.absUrl());
+               scope.courseUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
             }
             $timeout(function() {loadCourse(scope);});
          };

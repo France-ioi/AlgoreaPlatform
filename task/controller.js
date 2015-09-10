@@ -140,7 +140,7 @@ angular.module('algorea')
       }
    };
    $scope.setTabs = function (taskViews) {
-      if (!this.inForum) {
+      if (!this.inForum && this.useForum) {
          platformViews.forum = {tabString: 'Aide'};
       }
       if ($scope.user_item.bAccessSolutions || $scope.user_item.bValidated) {

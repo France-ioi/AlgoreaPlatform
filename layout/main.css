@@ -177,3 +177,7 @@ body {
    position:relative;
    top:4px;
 }
+
+.task-auto-height {
+   height: calc(100vh - 170px);
+}
