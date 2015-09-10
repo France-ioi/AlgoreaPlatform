@@ -65,12 +65,14 @@ function addCustomTriggers(&$triggers) {
    }
 
    // We reset the computation of access for any item that lost an ancestor, and any item that gained an ancestor
-   $queryResetAccessOld = "UPDATE `groups_items_propagate` ".
-      "JOIN `groups_items` ON `groups_items`.`ID` = `groups_items_propagate`.`ID`".
-      "SET `groups_items_propagate`.`sPropagateAccess` = 'self' ".
-      "WHERE `groups_items`.`idItem` = OLD.`idItemChild`";
-   $triggers["items_items"]["BEFORE DELETE"][] = $queryResetAccessOld;#
-   $triggers["items_items"]["BEFORE UPDATE"][] = $queryResetAccessOld." OR `groups_items`.`idItem` = NEW.`idItemChild`";
+   // TODO: this recomputes all children from parent of changed item, while it would be
+   // possible to mark the parent as 'childrenSelfOnly' and modify the listener accordingly
+   $queryResetAccessOld = "INSERT IGNORE INTO `groups_items_propagate` ".
+      "SELECT `ID`, 'children' as `sPropagateAccess` FROM `groups_items` ".
+      "WHERE ";
+   $triggers["items_items"]["BEFORE DELETE"][] = $queryResetAccessOld."`groups_items`.`idItem` = OLD.`idItemParent` ON DUPLICATE KEY UPDATE sPropagateAccess='children' ";#
+   $triggers["items_items"]["AFTER UPDATE"][] = $queryResetAccessOld."`groups_items`.`idItem` = NEW.`idItemParent` OR `groups_items`.`idItem` = OLD.`idItemParent` ON DUPLICATE KEY UPDATE sPropagateAccess='children' ";
+   $triggers["items_items"]["AFTER INSERT"][] = $queryResetAccessOld."`groups_items`.`idItem` = NEW.`idItemParent` ON DUPLICATE KEY UPDATE sPropagateAccess='children' ";
 
    // We reset the computation of access for the group_item that was just modified
    $queryResetAccessNew = "IF NOT (NEW.`sFullAccessDate` <=> OLD.`sFullAccessDate`".
