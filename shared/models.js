@@ -158,7 +158,7 @@ var models = {
          bAccessSolutions: {type: "boolean", label: "Accès possible aux solutions", defaultValue: false, readOnly: true}
       },
       links: {
-         children: {refModel: "items_items", key: "idItemParent", type: "object", index: "iChildOrder"}, // array better ?
+         children: {refModel: "items_items", key: "idItemParent", type: "array", index: "iChildOrder"}, // array better ?
          parents: {refModel: "items_items", key: "idItemChild", type: "object"},
          strings: {refModel: "items_strings", key: "idItem", type: "array"},
          user_answers: {refModel: "users_answers", key: "idItem", type: "array"},

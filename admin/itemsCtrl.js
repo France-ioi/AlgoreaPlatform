@@ -285,7 +285,7 @@ angular.module('algorea')
       };
 
       $scope.loadChildren = function(item) {
-         if (!angular.equals({}, item.children)) {
+         if (!angular.equals([], item.children)) {
             return;
          }
          if (!SyncQueue.requests.expandedItems) {
@@ -302,9 +302,9 @@ angular.module('algorea')
 
       $scope.itemExpanded = function(itemID) {
          var item = ModelsManager.getRecord("items", itemID);
-         for (var itemItemID in item.children) {
-            $scope.loadGrandChildren(item.children[itemItemID].child);
-         }
+         angular.forEach(item.children, function(itemItem) {
+            $scope.loadGrandChildren(itemItem.child);
+         });
       };
 
       $scope.itemSelected = function(itemID, withItemItem) {
