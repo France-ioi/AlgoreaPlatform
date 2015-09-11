@@ -72,8 +72,53 @@ angular.module('algorea')
          }
          return 'visited';
       };
+      // TODO: cleanup
+      var type_iconName = {
+         'Root': 'list',
+         'Task': 'keyboard',
+         'Chapter': 'folder',
+         'Course': 'assignment',
+         'Presentation': 'speaker_notes',
+         'Level': 'folder',
+         'Section': 'folder',
+      };
+      $scope.setItemIcon = function (item) {
+         var user_item = itemService.getUserItem(item);
+         if (item.sType == 'Task') {
+            if (!user_item) {
+               this.mainIconTitle = '';
+               this.mainIconClass = "unvisited-item-icon";
+               this.mainIconName = 'keyboard';
+            } else if (user_item.bValidated) {
+               this.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
+               this.mainIconClass = "validated-item-icon";
+               this.mainIconName = 'check_circle';
+            } else if (user_item.nbTasksTried) {
+               this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconClass = "failed-item-icon";
+               this.mainIconName = 'cancel';
+            } else if (user_item.sLastActivityDate) {
+               this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconClass = "visited-item-icon";
+               this.mainIconName = 'keyboard';
+            } else {
+               this.mainIconTitle = '';
+               this.mainIconClass = "unvisited-item-icon";
+               this.mainIconName = 'keyboard';
+            }
+         } else {
+            this.mainIconName = type_iconName[item.sType];
+            if (user_item && user_item.sLastActivityDate) {
+               this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconClass = "visited-item-icon";
+            } else {
+               this.mainIconTitle = '';
+               this.mainIconClass = "unvisited-item-icon";
+            }
+         }
+      };
+      $scope.setItemIcon($scope.item);
       $scope.item_percent_done = function() {
-         var user_item = itemService.getUserItem(this.item);
          if (!user_item) {
             return 0;
          }
@@ -127,6 +172,7 @@ angular.module('algorea')
                that.item_item = {};
             }
             itemService.onSeen(item);
+            that.setItemIcon(item);
             if(callback) {
                callback(item);
             }
@@ -142,6 +188,7 @@ angular.module('algorea')
          $scope.getPathParams();
          $scope.item = {ID: 0};
          $scope.getItem();
+         
       };
       $scope.localInit();
       $scope.$on('syncResetted', function() {
@@ -197,48 +244,8 @@ angular.module('algorea')
    function init() {
       var item = $scope.item;
       $scope.item_item = $scope.selectItemItem(item, $scope.leftParentItemId);
-      var type_iconName = {
-         'Root': 'list',
-         'Task': 'keyboard',
-         'Chapter': 'folder',
-         'Course': 'assignment',
-         'Presentation': 'speaker_notes',
-         'Level': 'folder',
-         'Section': 'folder',
-      };
       var user_item = itemService.getUserItem(item);
-      if (item.sType == 'Task') {
-         if (!user_item) {
-            $scope.mainIconTitle = '';
-            $scope.mainIconClass = "unvisited-item-icon";
-            $scope.mainIconName = 'keyboard';
-         } else if (user_item.bValidated) {
-            $scope.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
-            $scope.mainIconClass = "validated-item-icon";
-            $scope.mainIconName = 'check_circle';
-         } else if (user_item.nbTasksTried) {
-            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
-            $scope.mainIconClass = "failed-item-icon";
-            $scope.mainIconName = 'cancel';
-         } else if (user_item.sLastActivityDate) {
-            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
-            $scope.mainIconClass = "visited-item-icon";
-            $scope.mainIconName = 'keyboard';
-         } else {
-            $scope.mainIconTitle = '';
-            $scope.mainIconClass = "unvisited-item-icon";
-            $scope.mainIconName = 'keyboard';
-         }
-      } else {
-         $scope.mainIconName = type_iconName[item.sType];
-         if (user_item && user_item.sLastActivityDate) {
-            $scope.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
-            $scope.mainIconClass = "visited-item-icon";
-         } else {
-            $scope.mainIconTitle = '';
-            $scope.mainIconClass = "unvisited-item-icon";
-         }
-      }
+      $scope.setItemIcon(item);
       if (item.ID == $scope.currentActiveId) {
          $scope.mainIconClass = "active-item-icon";
          $scope.linkClass = "active-item-link";
