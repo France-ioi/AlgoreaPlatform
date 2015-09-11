@@ -211,6 +211,7 @@ angular.module('algorea')
          var children = itemService.getChildren(item);
          angular.forEach(children, function(child) {
             child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '/'+child.ID);
+            child.private_go = pathService.getStateGo($scope.panel, 1, $scope.pathParams, '/'+child.ID);
             $scope.itemsList.push(child);
          });
          $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];

@@ -11,6 +11,7 @@ angular.module('algorea')
                   '  <span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
                   '  <a ng-if="!active" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a>'+
                   '  <div ng-if="active && rightLink" class="link-arrow main-right-arrow material-icons" ui-sref="{{rightLink.sref}}">forward</div>'+
+                  '  <div ng-if="active && upLink && item.ID" class="link-arrow main-up-arrow material-icons" ui-sref="{{upLink.sref}}">forward</div>'+
                   '  <div ng-if="active && leftLink" class="link-arrow main-left-arrow material-icons" ui-sref="{{leftLink.sref}}">forward</div>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,
@@ -44,20 +45,23 @@ angular.module('algorea')
                      }
                      previousID = brothers[i].ID;
                   }
-                  var basePath = scope.pathParams.path.slice(0, scope.depth).join('/')+'/';
+                  var basePath = scope.pathParams.path.slice(0, scope.depth).join('/');
                   if (nextID) {
-                     $rootScope.rightLink = {sref: pathService.getSrefString(basePath+nextID), stateName: 'contents', stateParams: {path: basePath+nextID}};
+                     $rootScope.rightLink = {sref: pathService.getSrefString(basePath+'/'+nextID), stateName: 'contents', stateParams: {path: basePath+'/'+nextID}};
+                     $rootScope.upLink = null;
                   } else {
                      $rootScope.rightLink = null;
+                     $rootScope.upLink = {sref: pathService.getSrefString(basePath, scope.pathParams.path-1), stateName: 'contents', stateParams: {path: basePath, sell: scope.pathParams.path-1}};
                   }
                   if (previousID) {
-                     $rootScope.leftLink = {sref: pathService.getSrefString(basePath+previousID), stateName: 'contents', stateParams: {path: basePath+previousID}};
+                     $rootScope.leftLink = {sref: pathService.getSrefString(basePath+'/'+previousID), stateName: 'contents', stateParams: {path: basePath+'/'+previousID}};
                   } else {
                      $rootScope.leftLink = null;
                   }
                } else {
                   $rootScope.rightLink = null;
                   $rootScope.leftLink = null;
+                  $rootScope.upLink = null;
                }
             } else {
                if (from == "parent") {

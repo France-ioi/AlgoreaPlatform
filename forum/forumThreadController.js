@@ -193,7 +193,7 @@ angular.module('algorea')
             fetchThread($state.params.idThread);
          }
       }
-      $scope.canValidate = $scope.user_item.bValidated != 0 && $scope.item.sValidationType == 'Manual';
+      $scope.canValidate = $scope.user_item && $scope.user_item.bValidated != 0 && $scope.item.sValidationType == 'Manual';
    }
    initThread();
    itemService.onNewLoad(initThread);

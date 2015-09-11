@@ -57,6 +57,7 @@
    flex-direction:row;
    flex:1 0 auto;
    padding:5px;
+   cursor:pointer;
 }
 
 .sidebar-left-item-content {
@@ -190,6 +191,7 @@
 
 .item-link {
    text-decoration:none;
+   color: #23527c;
 }
 .item-link:hover {
    text-decoration:none;

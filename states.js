@@ -21,7 +21,7 @@ angular.module('algorea')
             },
             views: {
                'left': {
-                   template: '<div class="sidebar-left-content sidebar-left-content-title"><div class="sidebar-left-item" ng-controller="leftNavItemController" ng-class="backgroundClass" ng-if="!item.private_showpres">'+
+                   template: '<div class="sidebar-left-content sidebar-left-content-title"><div class="sidebar-left-item" ng-controller="leftNavItemController" ng-class="backgroundClass" ng-if="!item.private_showpres" ng-click="layout.toggleLeft();">'+
    '<div class="sidebar-left-item-content-container">'+
       '<div class="sidebar-left-item-content">'+
          '<div class="sidebar-left-item-contents-icon1">'+
@@ -250,8 +250,28 @@ angular.module('algorea')
            }
            return this.getSrefString(path, sell, selr, null, view ? view : null);
         },
+        // returns function to go to relative path:
+        getStateGo: function(panel, depth, pathParams, relativePath, view) {
+           if (panel == 'menu') {
+              return this.getSrefFunction(pathParams.pathStr, depth, depth+1);
+           }
+           var sell = panel=='left' ? pathParams.sell : pathParams.selr;
+           var path = pathParams.basePathStr + relativePath;
+           var selr = null;
+           if (pathParams.pathStr.substring(0, path.length) == path && (pathParams.path[path.length+1] || pathParams.pathStr[path.length+1]=='/')) {
+              selr = pathParams.baseDepth + depth;
+              path = pathParams.pathStr;
+              if (pathParams.path.length == selr) {
+                 selr=null;
+              }
+           }
+           return this.getSrefFunction(path, sell, selr, null, view ? view : null);
+        },
         getSrefString: function(path, sell, selr, viewl, viewr) {
            return "contents("+JSON.stringify({path:path, sell: sell, selr: selr, viewl: viewl, viewr: viewr})+")";
+        },
+        getSrefFunction: function(path, sell, selr, viewl, viewr) {
+           return function() {$state.go("contents", {path:path, sell: sell, selr: selr, viewl: viewl, viewr: viewr})};
         },
         goToResolution: function(pathParams) {
            $state.go('contents', {

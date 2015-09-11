@@ -197,8 +197,8 @@
    position:fixed;
    right:260px;
    bottom:0px;
-   height:32px;
-   width:32px;
+   height:48px;
+   width:48px;
    background:#2aa3ff;
    color:white;
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
@@ -208,6 +208,29 @@
    flex-direction:column;
    justify-content:space-around;
    cursor:pointer;
+   font-size:27pt !important;
+}
+
+.main-right-arrow-toggled {
+   right:0px !important;
+}
+
+.main-up-arrow {
+   position:fixed;
+   right:260px;
+   bottom:0px;
+   height:48px;
+   width:48px;
+   background:#2aa3ff;
+   color:white;
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+   z-index:2;
+   text-align:center;
+   display:flex !important;
+   flex-direction:column;
+   justify-content:space-around;
+   cursor:pointer;
+   font-size:27pt !important;
 }
 
 .main-right-arrow-toggled {
@@ -219,8 +242,8 @@
    transform: rotate(180deg);/* hack to get the arrow in the desired direction */
    left:325px;
    bottom:0px;
-   height:32px;
-   width:32px;
+   height:48px;
+   width:48px;
    background:#2aa3ff;
    color:white;
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
@@ -230,6 +253,7 @@
    display:flex!important;
    flex-direction:column;
    justify-content:space-around;
+   font-size:27pt !important;
 }
 
 .main-left-arrow-toggled {

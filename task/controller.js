@@ -260,6 +260,9 @@ angular.module('algorea')
       if ($scope.interval) {
          $interval.cancel($scope.interval);
       }
+      if (!$scope.item.bUsesAPI) {
+         return;
+      }      
       $scope.task.unload(function(){});
    });
    $scope.onCourseLoaded = function() {

@@ -270,6 +270,9 @@ angular.module('algorea')
       link: function(scope, elem, attrs) {
          var name = 'course-'+scope.panel;
          function loadCourse(scope) {
+            if (!scope.item.bUsesAPI) {
+               return;
+            }            
             TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
                scope.task = task;
             }, true);
