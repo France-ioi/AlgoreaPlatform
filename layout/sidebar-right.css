@@ -3,11 +3,15 @@
 }
 
 .sidebar-right {
+   display:-webkit-flex;
+   -webkit-flex-direction:column;
+   -webkit-flex: 0 0 260px;
    display:flex;
    flex-direction:column;
    flex: 0 0 260px;
    background: #f8f8f8;
    order: 3;
+   -webkit-order: 3;
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
 
@@ -21,15 +25,22 @@
    }
 
    .sidebar-right-toggled {
+      display:-webkit-flex !important;
+      -webkit-flex-direction:column;
+      -webkit-flex: 0 0 260px;
       display:flex !important;
       flex-direction:column;
       flex: 0 0 260px;
       background: #f8f8f8;
       order: 3;
+      -webkit-order: 3;
    }
 }
 
 .sidebar-right-item {
+   -webkit-flex: 0 0 auto;
+   display:-webkit-flex;
+   -webkit-flex-direction:row;
    flex: 0 0 auto;
    display:flex;
    flex-direction:row;
@@ -46,6 +57,7 @@
    font-weight:bold;
    font-size:20pt;
    text-align:center;
+   -webkit-flex: 0 0 75px !important;
    flex: 0 0 75px !important;
 }
 
@@ -59,6 +71,7 @@
    padding-top:22px;
    padding-left:20px;
    text-align:center;
+   -webkit-flex: 0 0 75px !important;
    flex: 0 0 75px !important;
 }
 
@@ -69,11 +82,13 @@
 }
 
 .sidebar-right-item-left-icon {
+   -webkit-flex: 0 0 34px;
    flex: 0 0 34px;
    padding:5px;
 }
 
 .sidear-right-item-text {
+   -webkit-flex: 1 1 auto;
    flex: 1 1 auto;
    padding-right:5px;
    line-height:25px;
