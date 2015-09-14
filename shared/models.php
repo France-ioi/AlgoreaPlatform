@@ -365,11 +365,11 @@ $viewsModels = array(
       "filters" => array(
          "invitationsAndDescendantsRead" => array(
             "joins" => array("myGroupDescendantsLeft"),
-            "condition"  => '`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_groups`.`idGroupParent` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned',
+            "condition"  => '(`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_groups`.`idGroupParent` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)',
          ),
          "invitationsAndDescendantsWrite" => array(
             "joins" => array("myGroupDescendantsLeft"),
-            "condition"  => '(`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf AND `[PREFIX]groups_groups`.`idGroupParent` != :[PREFIX_FIELD]idRootSelf) OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned',
+            "condition"  => '(`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf AND `[PREFIX]groups_groups`.`idGroupParent` != :[PREFIX_FIELD]idRootSelf) OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)',
          ),
          "addLogin" => array(
             "joins" => array("users", "userInviting"),

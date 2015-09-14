@@ -92,6 +92,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       }
       $params = array_replace($_SESSION['login'], (array)$userItem['data'], (array)$item['data']);
       $params = array_intersect_key($params, $token_fields);
+      $params['idItem'] = $item['data']->sTextId;
       $params['idUser'] = $_SESSION['login']['ID'];
       $params['bHintPossible'] = true;
       // platform needs idTask:
@@ -137,7 +138,7 @@ function fetchItemsIfMissing($serverChanges, $db) {
       }
       $missing_item_ids = array_diff($users_items_ids, $items_ids);
       if (count($missing_item_ids)) {
-         $query = 'select `items`.`ID`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0) as `bGrayedAccess`, `items`.`sType` from `items` join `groups_items` on `groups_items`.`idItem` = `items`.`ID` left join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` where `groups_items`.`idGroup` = '.$_SESSION['login']['idGroupSelf'].' OR `groups_ancestors`.`idGroupChild` = '.$_SESSION['login']['idGroupSelf'].' AND (';
+         $query = 'select `items`.`ID`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, `items`.`sTextId`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0) as `bGrayedAccess`, `items`.`sType` from `items` join `groups_items` on `groups_items`.`idItem` = `items`.`ID` left join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` where `groups_items`.`idGroup` = '.$_SESSION['login']['idGroupSelf'].' OR `groups_ancestors`.`idGroupChild` = '.$_SESSION['login']['idGroupSelf'].' AND (';
          $first = true;
          foreach ($missing_item_ids as $id) {
             if (!$first) {
@@ -359,7 +360,7 @@ function myDebugFunction($query, $values, $moment = '') {
    foreach ($values as $valueName => $value) {
       $res = str_replace(':'.$valueName, $db->quote($value), $res);
    }
-   file_put_contents(__DIR__.'/../logs/groups_items.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
+   file_put_contents(__DIR__.'/../logs/groups.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
 }
 
 function getGroups ($params, &$requests) {
@@ -383,7 +384,7 @@ function getGroups ($params, &$requests) {
    $requests["groups"]['model']['fields']['idUser'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`ID`');
    $requests["groups"]["model"]["filters"]["MineAndInvitations"] = array(
       "joins" => array("myInvitationsLeft"),
-      "condition"  => "`[PREFIX]myInvitationsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupSelf",
+      "condition"  => "(`[PREFIX]myInvitationsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupSelf)",
    );
    $requests["groups"]["filters"]["MineAndInvitations"] = array(
       'values' => array(
@@ -576,7 +577,7 @@ function setupExpandedItemsRequests($params, &$requests) {
    $requests["items"]["model"]["fields"]["sType"]["groupBy"] = "`items`.`ID`"; // Could be added to any field. TODO : fix group by system
    $requests["items"]["filters"]["accessible"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf']));
    $requests["items"]["filters"]["accessibleWrite"] = array('modes' => array('insert' => true, 'update' => true, 'delete' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf']));
-   $requests["items"]['debugLogFunction'] = myDebugFunction;
+   //$requests["items"]['debugLogFunction'] = myDebugFunction;
 
    $requests["items_strings"]["model"]["joins"]["items_items"] = array("srcTable" => "items_strings", "srcField" => "idItem", "dstField" => "idItemChild");
    $requests["items_strings"]["model"]["fields"]["idItem"]["groupBy"] = "`items_strings`.`ID`"; // Could be added to any field. TODO : fix group by system
