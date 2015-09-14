@@ -223,6 +223,7 @@
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;
+   -webkit-justify-content:space-around;
    cursor:pointer;
    font-size:27pt !important;
 }
@@ -247,6 +248,7 @@
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;
+   -webkit-justify-content:space-around;
    cursor:pointer;
    font-size:27pt !important;
 }
@@ -258,6 +260,7 @@
 .main-left-arrow {
    position:fixed;
    transform: rotate(180deg);/* hack to get the arrow in the desired direction */
+   -webkit-transform: rotate(180deg);/* hack to get the arrow in the desired direction */
    left:325px;
    bottom:0px;
    height:48px;
@@ -273,6 +276,7 @@
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;
+   -webkit-justify-content:space-around;
    font-size:27pt !important;
 }
 
