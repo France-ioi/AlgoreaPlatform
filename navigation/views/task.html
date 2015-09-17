@@ -6,15 +6,15 @@
           </li>
        </div>
 
-     <div ng-include="'forum/thread.html'" ng-show="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
+     <div ng-include="'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
      <div ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
      <div ng-show="taskLoaded && !showForum" include-task class="task-container"></div>
   </div>
-  <div ng-show="taskLoaded && layout.separateEditorOK" ng-if="hasEditor" class="second-task">
+  <div ng-show="taskLoaded" ng-if="hasEditor && layout.separateEditorOK" class="second-task" ng-controller="taskController">
     <div tabset justified="true" ng-show="taskLoaded" id="task-tabs" class="task-tabs">
       <li active="true" class="task-tab" tab heading="Résolution">
       </li>
     </div>
-    <div include-task class="task-container" task-name="task-answers"></div>
+    <div include-task class="task-container" task-name="task-editor"></div>
   </div>
 </div>

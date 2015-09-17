@@ -100,7 +100,7 @@ angular.module('algorea')
       angular.forEach($scope.intervals, function(interval) {
          $interval.cancel(interval);
       });
-      $scope.task.unload(function(){});
+      $scope.task.unload(function(){}, function(){});
    });
    $scope.$on('algorea.taskViewChange', function(event, toParams) {
       $scope.selectTab($scope.panel == 'right' ? toParams.viewr : toParams.viewl, true);
@@ -122,7 +122,7 @@ angular.module('algorea')
          } else {
             this.showForum = false;
             if (!$scope.task.unloaded) {
-               this.task.showViews(platformViews[platformView].taskViews, $scope.load_answer_and_sync);
+               this.task.showViews(platformViews[platformView].taskViews, $scope.load_answer_and_sync, function(){});
             }
          }
          $scope.currentView = platformView;
@@ -170,11 +170,9 @@ angular.module('algorea')
       var askedView;
       if ($scope.inForum) {
          askedView = platformViews.editor ? 'editor' : 'task';
-      } else {
-         askedView = this.panel=='right' ? this.pathParams.viewr : this.pathParams.viewl;
       }
       if (!askedView) {
-         askedView = defaultViewName;
+         askedView = ($scope.taskName == 'task-editor') ? 'editor' : defaultViewName;
       }
       $scope.showView(askedView);
    };

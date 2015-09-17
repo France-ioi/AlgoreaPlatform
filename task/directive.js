@@ -42,11 +42,13 @@ angular.module('algorea')
       scope.grader = TaskProxyManager.getGraderProxy(scope.taskName);
       scope.platform = new Platform(scope.task);
       TaskProxyManager.setPlatform(scope.task, scope.platform);
-      scope.platform.showView = function(view) {
+      scope.platform.showView = function(view, success, error) {
          scope.selectTab(view);
+         success();
       };
-      scope.platform.updateHeight = function(height) {
+      scope.platform.updateHeight = function(height, success, error) {
          scope.updateHeight(height);
+         success();
       };
       // move to next item in same chapter
       scope.moveToNext = function() {
@@ -54,24 +56,24 @@ angular.module('algorea')
             $state.go($rootScope.rightLink.stateName, $rootScope.rightLink.stateParams);
          }
       };
-      scope.platform.askHint = function() {
+      scope.platform.askHint = function(success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
          $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken}, {responseType: 'json'}).success(function(postRes) {
             if ( ! postRes.result) {
-               console.error("got error from task.php: "+postRes.error);
+               error("got error from task.php: "+postRes.error);
             } else if (!scope.canGetState || scope.user_item.ID != scope.askHintUserItemID) {
-               console.error("got askHint return from another task");
+               error("got askHint return from another task");
             } else {
                scope.user_item.sToken = postRes.sToken;
-               scope.task.updateToken(scope.user_item.sToken);
+               scope.task.updateToken(scope.user_item.sToken, success, error);
             }
          })
          .error(function() {
-            console.error("error calling task.php");
+            error("error calling task.php");
          });
       };
-      scope.platform.validate = function(mode) {
+      scope.platform.validate = function(mode, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          if (scope.loadedUserItemID != scope.user_item.ID) return;
          var validateUserItemID = scope.user_item.ID;
@@ -86,16 +88,16 @@ angular.module('algorea')
          } else {
             if (!scope.canGetState) return;
             scope.task.getAnswer(function (answer) {
-               if (scope.loadedUserItemID != scope.user_item.ID) return;
+               if (scope.loadedUserItemID != scope.user_item.ID) error('scope.loadedUserItemID != scope.user_item.ID');
                $http.post('/task/task.php', {action: 'askValidation', sToken: scope.user_item.sToken, sAnswer: answer}, {responseType: 'json'}).success(function(postRes) {
                   if (scope.loadedUserItemID != scope.user_item.ID) {
-                     console.error('loadedUserItemID != user_item.ID');
+                     error('loadedUserItemID != user_item.ID');
                      return;
                   }
                   if ( ! postRes.result) {
-                     console.error("got error from task.php: "+postRes.error);
+                     error("got error from task.php: "+postRes.error);
                   } else if (!scope.canGetState || validateUserItemID != scope.user_item.ID) {
-                     console.error('got validate from another task');
+                     error('got validate from another task');
                   } else if (scope.item.sValidationType != 'Manual') {
                      var newAnswer = ModelsManager.createRecord('users_answers');
                      newAnswer.ID = postRes.answer.idUserAnswer;
@@ -106,6 +108,7 @@ angular.module('algorea')
                      ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
                      scope.user_answer = newAnswer;
                      scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
+                        success();
                         if (validated && mode == 'next') {
                            scope.moveToNext();
                         }
@@ -113,24 +116,34 @@ angular.module('algorea')
                   }
                })
                .error(function() {
-                  console.error("error calling task.php");
+                  error("error calling task.php");
                });
             });
          }
       };
-      scope.taskParams = {minScore: 0, maxScore: 10, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser};
-      scope.platform.getTaskParams = function(askedParam) {
-         return askedParam ? scope.taskParams[askedParam] : scope.taskParams;
+      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser};
+      scope.platform.getTaskParams = function(askedParam, defaultValue, success, error) {
+         var res = scope.taskParams;
+         if (typeof key !== 'undefined') {
+            if (key !== 'options' && key in res) {
+               res = res[key];
+            } else if (res.options && key in res.options) {
+               res = res.options[key];
+            } else {
+               res = (typeof defaultValue !== 'undefined') ? defaultValue : null; 
+            }
+         }
+         success(res);
       };
-      scope.gradeTask = function (answer, answerToken, validateUserItemID, callback) {
+      scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
             $http.post('/task/task.php', {action: 'graderResult', sToken: scope.user_item.sToken, scoreToken: scoreToken, answerToken: answerToken, score: score, message: message}, {responseType: 'json'}).success(function(postRes) {
                if ( ! postRes.result) {
-                  console.error("got error from task.php: "+postRes.error);
+                  error("got error from task.php: "+postRes.error);
                   return;
                }
                if (scope.user_item.ID != validateUserItemID) {
-                  console.error("grading old task");
+                  error("grading old task");
                   return;
                }
                if (!scope.user_item.bValidated && postRes.bValidated) {
@@ -147,10 +160,10 @@ angular.module('algorea')
                   });
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
-               callback(postRes.bValidated);
+               success(postRes.bValidated);
             })
             .error(function() {
-               console.error("error calling task.php");
+               error("error calling task.php");
             });
          });
       };
@@ -175,6 +188,7 @@ angular.module('algorea')
             $rootScope.$broadcast('layout.taskLayoutChange');
          });
          scope.task.getViews(function(views) {
+            console.error(views);
             scope.setTabs(views);
          });
       });
@@ -190,11 +204,9 @@ angular.module('algorea')
          if (!scope.taskName) {scope.taskName = name;}
          scope.taskIframe = elem;
          function initTask() {
-            console.error('init!');
-            //scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+scope.user_item.sToken+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
-                  scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl+'?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sSourceId='+scope.taskName+'#'+$location.absUrl());
+                  scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
                } else {
                   scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
                }
