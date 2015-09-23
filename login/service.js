@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('franceIOILogin', [])
-     .service('loginService', ['$http', function ($http) {
+     .service('loginService', ['$http', '$rootScope', function ($http, $rootScope) {
         var state = 'not-ready';
-        var scope = null;
         var tempUser = false;
         var userID = null;
         var userSelfGroup = null;
@@ -42,23 +41,6 @@ angular.module('franceIOILogin', [])
           });
         }
         function allowSourceOrigin() { return true; }
-       // deparam.min.js (https://github.com/chrissrogers/jquery-deparam), modified to check if integer is in bounds
-       (function(h){h.deparam=function(i,j){var d={},k={"true":!0,"false":!1,"null":null};h.each(i.replace(/\+/g," ").split("&"),function(i,l){var m;var a=l.split("="),c=decodeURIComponent(a[0]),g=d,f=0,b=c.split("]["),e=b.length-1;/\[/.test(b[0])&&/\]$/.test(b[e])?(b[e]=b[e].replace(/\]$/,""),b=b.shift().split("[").concat(b),e=b.length-1):e=0;if(2===a.length)if(a=decodeURIComponent(a[1]),j&&(a=a&&!isNaN(a)&&parseInt(a).toString===a?+a:"undefined"===a?void 0:void 0!==k[a]?k[a]:a),e)for(;f<=e;f++)c=""===b[f]?g.length:b[f],m=g[c]=
-        f<e?g[c]||(b[f+1]&&isNaN(b[f+1])?{}:[]):a,g=m;else h.isArray(d[c])?d[c].push(a):d[c]=void 0!==d[c]?[d[c],a]:a;else c&&(d[c]=j?void 0:"")});return d}})(jQuery);
-        function getMessage(serializedString) {
-           var obj;
-           try {
-              obj = $.deparam(serializedString, true);
-           } catch (e) {
-              console.error("impossible to decode received message ("+serializedString+'), ');
-              return null;
-           }
-           var message = null;
-           if (obj.request) {
-              message = {request: obj.request, content: obj.content, source: obj.source, messageId: obj.messageId};
-           }
-           return message;
-        }
         function onLogin(data) {
            createSession(data, function (user) {
               state = 'login';
@@ -69,12 +51,12 @@ angular.module('franceIOILogin', [])
               userSelfGroup = user.loginData.idGroupSelf;
               userOwnedGroup = user.loginData.idGroupOwned;
               userLogin = user.sLogin;
-              scope.$broadcast('login.login', data);
+              $rootScope.$broadcast('login.login', data);
               triggerCallback();
            });
         }
         function onLogout(data) {
-           scope.$broadcast('login.logout');
+           $rootScope.$broadcast('login.logout');
            createTempUser('logout', function(user) {
               tempUser = true;
               userLogin = user.sLogin;
@@ -82,7 +64,7 @@ angular.module('franceIOILogin', [])
               userSelfGroup = null;
               userOwnedGroup = null;
               state = 'login';
-              scope.$broadcast('login.login', {login: user.sLogin, tempUser: true, loginData: user.loginData});
+              $rootScope.$broadcast('login.login', {login: user.sLogin, tempUser: true, loginData: user.loginData});
            });
         }
         function onNotLogged(data) {
@@ -93,12 +75,16 @@ angular.module('franceIOILogin', [])
               userSelfGroup = null;
               userOwnedGroup = null;
               state = 'login';
-              scope.$broadcast('login.login', {login: user.sLogin, tempUser: true, loginData: user.loginData});
+              $rootScope.$broadcast('login.login', {login: user.sLogin, tempUser: true, loginData: user.loginData});
               triggerCallback();
            });
         }
         function messageCallback(e) {
-           var message = getMessage(e.data);
+           try {
+              var message = JSON.parse(e.data);
+           } catch(e) { return; }
+           if (!message || message.source !== 'loginModule')
+              return;
            if (message.request == 'login') {
               onLogin(message.content);
            } else if (message.request == 'logout') {
@@ -148,11 +134,9 @@ angular.module('franceIOILogin', [])
               return tempUser;
            },
            bindScope: function(newScope) {
-              scope = newScope;
            },
            init: function(newScope) {
-              scope = newScope;
-              $.receiveMessage(messageCallback, allowSourceOrigin);
+              window.addEventListener("message", messageCallback, false);
            },
            getCallbacks: function() {
               return {'login': onLogin, 'logout': onLogout, 'notlogged': onNotLogged};

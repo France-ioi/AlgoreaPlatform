@@ -2,7 +2,7 @@
 
 angular.module('algorea')
    .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout) {
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html#'+$location.absUrl());
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl('http://loginfranceioi.eroux.fr/');
       $scope.innerHtml = "chargement...";
       $scope.loggedIn = false;
       $scope.frameHidden = true;
@@ -40,9 +40,5 @@ angular.module('algorea')
             $scope.hideFrame();
          }
       };
-      // for compatibility with messages sent by tasks:
-      angular.forEach(loginService.getCallbacks(), function(callback, event) {
-         PmInterface.addEventListener('loginModule', event, callback);
-      });
-      PmInterface.init();
+      loginService.init();
 }]);
