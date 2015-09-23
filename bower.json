@@ -1,17 +1,18 @@
 {
   "name": "AlgoreaPlatform",
   "dependencies": {
-    "bootstrap": "latest",
-    "jquery": "1.*",
     "angular": "latest",
     "angular-bootstrap": "latest",
-    "angular-ui-router": "0.2.13",
-    "jquery-ui": "latest",
-    "jquery.layout": "latest",
-    "dynatree": "latest",
-    "jQuery-contextMenu": "latest",
     "angular-i18n": "latest",
     "angular-sanitize": "latest",
+    "angular-ui-router": "0.2.13",
+    "bootstrap": "latest",
+    "dynatree": "latest",
+    "jQuery-contextMenu": "latest",
+    "jquery": "1.*",
+    "jquery-ui": "latest",
+    "jquery.layout": "latest",
+    "jschannel": "*",
     "pem-platform": "France-ioi/pem-platform"
   }
 }
