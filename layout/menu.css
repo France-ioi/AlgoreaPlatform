@@ -62,7 +62,7 @@
    text-align: center;
 }
 
-#userinfo {
+.userinfo {
    position: relative;
    overflow:visible;
    text-align:center;
@@ -72,7 +72,7 @@
    color:white;
    border:0px;
 }
-#loginFrame {
+.loginFrame {
    z-index:5;
    position: absolute;
    margin-left:auto;
@@ -84,6 +84,14 @@
    overflow: hidden;
    border: 0px solid;
    box-shadow:         0px 0px 0px;
+}
+
+#userinfocontainer-breadcrumbs {
+   display:none;
+}
+
+.userinfocontainer-breadcrumbs-toggled {
+   display:block !important;
 }
 
 @media all and (max-width: 1100px)  and (min-width: 700px) {
@@ -104,7 +112,7 @@
       width:160px;
       top:32px;
    }
-   #userinfo {
+   #userinfocontainer > .userinfo {
       -webkit-flex-basis:200px;
       flex-basis:200px;
       overflow:hidden;
@@ -113,6 +121,12 @@
    #userinfocontainer {
       -webkit-flex-basis:200px;
       flex-basis:200px;
+   }
+   #userinfocontainer-breadcrumbs {
+      display:block;
+   }
+   .userinfocontainer-breadcrumbs-toggled {
+      display:none;
    }
 }
 
@@ -158,6 +172,7 @@
    -webkit-flex-wrap:wrap;
    flex-wrap:wrap;
    min-height:25px;
+   padding-right:20px;
 }
 
 .breadcrumbs-item {
@@ -297,4 +312,23 @@
    .main-right-arrow-toggled {
       right:260px !important;
    }
+}
+
+.login-in-breadcrumbs {
+   flex: 0 0 auto;
+   margin-left: auto;
+}
+
+.breadcrumbs-loginbox > .userinfo {
+   background:transparent;
+   font-size: 12pt;
+}
+
+.breadcrumbs-loginbox >.userinfo > .material-icons {
+   font-size: 12pt;
+}
+
+.breadcrumbs-loginbox > .userinfo > .loginFrame {
+   top:25px;
+   right:-20px;
 }

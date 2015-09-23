@@ -53,6 +53,7 @@ angular.module('algorea')
       toggleMenu: function() {
          $('#menu').toggleClass('menu-toggled');
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
+         $('#userinfocontainer-breadcrumbs').toggleClass('userinfocontainer-breadcrumbs-toggled');
       },
       closeMenu: function() {
          $scope.layout.menuOpen = false;
@@ -90,9 +91,8 @@ angular.module('algorea')
             }
          }
       },
-      openMenu: function(event) {
+      bClicked: function(event) {
          // do not open menu when user clicks on arrows
-         console.error(event.target.className);
          if (event.target.className.indexOf('link-arrow') != -1) {
             return;
          }
@@ -105,6 +105,23 @@ angular.module('algorea')
             if ($('#menu').hasClass('menu-toggled')) {
                $scope.layout.menuOpen = true;
                $scope.layout.toggleMenu();
+            }
+         }
+      },
+      breadcrumbsClicked: function(event) {
+         // do not close menu when user clicks on link
+         if (event.target.className.indexOf('breadcrumbs-item') != -1) {
+            return;
+         }
+         $scope.layout.menuOpen = !$scope.layout.menuOpen;
+         $scope.layout.toggleMenu();
+         if ($(window).width() < 1100) {
+            if ($('#menu').hasClass('menu-toggled')) {
+               $scope.layout.menuOpen = false;
+            }
+         } else {
+            if (!$('#menu').hasClass('menu-toggled')) {
+               $scope.layout.menuOpen = false;
             }
          }
       },

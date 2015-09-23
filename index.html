@@ -23,7 +23,7 @@
 </head>
 <body ng-controller="layoutController">
 <div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.openMenu($event);">
+<header ng-click="layout.menuClicked($event);">
    <div id="headerContainer">
       <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
          <div id="menu-logo" class="menu-item" ng-click="gotoIndex()">
@@ -50,7 +50,7 @@
             </div>
          </div>
       </div>
-      <div ui-view="breadcrumbs" id="breadcrumbs" autoscroll="false"></div>
+      <div ui-view="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
    </div>
 </header>
 <div id='main'>

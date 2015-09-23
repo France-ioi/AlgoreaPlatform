@@ -1,1 +1,4 @@
 <div class="breadcrumbs-item" ng-repeat="(depth, item) in items" display-item from="menu"></div>
+<div id="userinfocontainer-breadcrumbs" class="login-in-breadcrumbs" ng-controller="userController" ng-mouseover="showFrame()" ng-mouseleave="hideFrame()" ng-click="toggleFrame()">
+   <div class="breadcrumbs-loginbox" ng-include="'login/userbox.html'"></div>
+</div>
