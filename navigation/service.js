@@ -29,7 +29,6 @@ angular.module('algorea')
             // case of the first sync, before any login is done, this relies on the local session
             lastSyncLogin = data.changes.loginData.sLogin;
             newLogin = lastSyncLogin;
-            console.error('newLogin: '+newLogin);
             SyncQueue.requests.loginData = data.changes.loginData;
          } else {
             if (!lastSyncLogin) {
@@ -52,7 +51,7 @@ angular.module('algorea')
                SyncQueue.sentVersion = 0;
                SyncQueue.resetSync = true;
                // refreshing ids to sync (containing version number)
-               SyncQueue.requests = {algorea: {type: 'getItemsFromAncestors', ancestors: getIdsToSync(true)}};
+               SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: getIdsToSync(true)};
                SyncQueue.planToSend(0);
                firstSyncDone = 1;
                if (userCallback) {
@@ -61,7 +60,7 @@ angular.module('algorea')
                }
             } else if (!syncDone) {
                // calling callbacks after first full sync
-               SyncQueue.requests = {algorea: {type: 'getItemsFromAncestors', ancestors: getIdsToSync(false)}};
+               SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: getIdsToSync(false)};
                angular.forEach(callbacks, function(callbackIDlist, model) {
                   angular.forEach(callbackIDlist, function(callbacklist, ID) {
                      var record = (model == 'general') ? null : ModelsManager.curData[model][ID];
@@ -78,7 +77,7 @@ angular.module('algorea')
             lastSyncLogin = newLogin;
             ModelsManager.init(models);
             SyncQueue.init(ModelsManager);
-            SyncQueue.requests = {algorea: {type: 'getAllLevels'}};
+            SyncQueue.requests.algorea = {type: 'getAllLevels'};
             SyncQueue.sentVersion = 0;
             SyncQueue.resetSync = true;
             syncDone = 0;
