@@ -12,7 +12,6 @@ angular.module('algorea')
         return '<iframe ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" build-task allowfullscreen></iframe>';
       },
       link: function(scope, elem, attrs) {
-         console.error('start link!');
          // user-item-var can be used to take a variable other than
          // $scope.user_item for the user_item. This is used in the forum.
          if (typeof attrs.userItemVar !== 'undefined') {
@@ -44,11 +43,11 @@ angular.module('algorea')
       TaskProxyManager.setPlatform(scope.task, scope.platform);
       scope.platform.showView = function(view, success, error) {
          scope.selectTab(view);
-         success();
+         if (success) { success(); }
       };
       scope.platform.updateHeight = function(height, success, error) {
          scope.updateHeight(height);
-         success();
+         if (success) { success(); }
       };
       // move to next item in same chapter
       scope.moveToNext = function() {
@@ -108,7 +107,7 @@ angular.module('algorea')
                      ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
                      scope.user_answer = newAnswer;
                      scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
-                        success();
+                        if (success) { success(); }
                         if (validated && mode == 'next') {
                            scope.moveToNext();
                         }
@@ -133,7 +132,7 @@ angular.module('algorea')
                res = (typeof defaultValue !== 'undefined') ? defaultValue : null; 
             }
          }
-         success(res);
+         if (success) { success(res) };
       };
       scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
@@ -160,7 +159,7 @@ angular.module('algorea')
                   });
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
-               success(postRes.bValidated);
+               if (success) { success(postRes.bValidated) };
             })
             .error(function() {
                error("error calling task.php");
@@ -325,7 +324,7 @@ angular.module('algorea')
          var initCourse = function() {
             console.error(scope.item);
             if (scope.item.bUsesAPI) {
-               scope.courseUrl = $sce.trustAsResourceUrl(scope.item.sUrl+'?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sSourceId='+scope.taskName+'#'+$location.absUrl());
+               scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
             } else {
                scope.courseUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
             }
