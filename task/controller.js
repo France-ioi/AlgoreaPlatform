@@ -260,8 +260,10 @@ angular.module('algorea')
       }
       if (!$scope.item.bUsesAPI) {
          return;
-      }      
-      $scope.task.unload(function(){});
+      }
+      if ($scope.task) {
+         $scope.task.unload(function(){});
+      }
    });
    $scope.onCourseLoaded = function() {
       $scope.syncHeight();
