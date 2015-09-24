@@ -108,7 +108,11 @@ angular.module('algorea')
             }
          } else {
             this.mainIconName = type_iconName[item.sType];
-            if (user_item && user_item.sLastActivityDate) {
+            if (user_item && user_item.bValidated) {
+               this.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
+               this.mainIconClass = "validated-item-icon";
+               this.mainIconName = 'check_circle';
+            } else if (user_item && user_item.sLastActivityDate) {
                this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
                this.mainIconClass = "visited-item-icon";
             } else {
