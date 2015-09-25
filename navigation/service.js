@@ -19,7 +19,7 @@ angular.module('algorea')
       function setSyncInterval() {
          if (!intervalIsSet) {
             intervalIsSet = true;
-            setInterval(SyncQueue.planToSend, 15000);
+            setInterval(SyncQueue.planToSend, 30000);
          }
       }
       SyncQueue.planToSend();

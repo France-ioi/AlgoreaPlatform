@@ -4,3 +4,6 @@
 ALTER TABLE `items_items`
   DROP KEY `parentChild`,
   ADD KEY `parentChild` (`idItemParent`,`idItemChild`);
+
+ALTER TABLE `history_items_items`
+  ADD KEY `parentChild` (`idItemParent`,`idItemChild`);
