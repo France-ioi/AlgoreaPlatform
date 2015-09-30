@@ -93,6 +93,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       $params = array_replace($_SESSION['login'], (array)$userItem['data'], (array)$item['data']);
       $params = array_intersect_key($params, $token_fields);
       $params['idItem'] = $item['data']->sTextId;
+      $params['idItemLocal'] = $item['data']->ID;
       $params['idUser'] = $_SESSION['login']['ID'];
       $params['bHintPossible'] = true;
       // platform needs idTask:

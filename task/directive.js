@@ -132,13 +132,17 @@ angular.module('algorea')
                res = (typeof defaultValue !== 'undefined') ? defaultValue : null; 
             }
          }
-         if (success) { success(res) };
+         if (success) {
+            success(res)
+         } else {
+            return res;
+         }
       };
       scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
-            $http.post('/task/task.php', {action: 'graderResult', sToken: scope.user_item.sToken, scoreToken: scoreToken, answerToken: answerToken, score: score, message: message}, {responseType: 'json'}).success(function(postRes) {
+            $http.post('/task/task.php', {action: 'graderResult', sToken: scope.user_item.sToken, scoreToken: scoreToken, answerToken: answerToken, score: score, message: message, idItem: scope.item.ID}, {responseType: 'json'}).success(function(postRes) {
                if ( ! postRes.result) {
-                  error("got error from task.php: "+postRes.error);
+                  console.error("got error from task.php: "+postRes.error);
                   return;
                }
                if (scope.user_item.ID != validateUserItemID) {
@@ -159,7 +163,7 @@ angular.module('algorea')
                   });
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
-               if (success) { success(postRes.bValidated) };
+               if (success) { success(postRes.bValidated); } else { return postRes.bValidated; };
             })
             .error(function() {
                error("error calling task.php");
@@ -187,7 +191,6 @@ angular.module('algorea')
             $rootScope.$broadcast('layout.taskLayoutChange');
          });
          scope.task.getViews(function(views) {
-            console.error(views);
             scope.setTabs(views);
          });
       });
@@ -303,7 +306,6 @@ angular.module('algorea')
                }
             };
             TaskProxyManager.setPlatform(scope.task, scope.platform);
-            console.error(TaskProxyManager);
             scope.platform.showView = function(view) {};
             scope.platform.updateHeight = function(height) {
                scope.updateHeight(height);
@@ -322,7 +324,6 @@ angular.module('algorea')
          scope.taskName = name;
          scope.taskIframe = elem;
          var initCourse = function() {
-            console.error(scope.item);
             if (scope.item.bUsesAPI) {
                scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
             } else {

@@ -48,13 +48,13 @@ function checkParams($params) {
 // this function checks the platformToken if necessary an returns a safe score
 // TODO: maybe sAnswer or bValidated should be added to the token?
 function getScore($request, $params, $otherPlatformToken, $db) {
-   if (!isset($params['idItem']) || !intval($params['idItem'])) {
+   if (!isset($params['idItemLocal']) || !intval($params['idItemLocal'])) {
       echo json_encode(array('result' => false, 'error' => 'no item ID!', 'token' => $params));
       exit;
    }
    $query = 'SELECT * from platforms join items on items.idPlatform = platforms.ID where items.ID = :idItem;';
    $stmt = $db->prepare($query);
-   $stmt->execute(array('idItem' => $params['idItem']));
+   $stmt->execute(array('idItem' => $params['idItemLocal']));
    $platform = $stmt->fetch();
    if (!$platform || !count($platform)) {
       echo json_encode(array('result' => false, 'error' => 'Unable to find corresponding platform', 'token' => $params, 'platform' => $platform));
