@@ -110,7 +110,7 @@ angular.module('algorea')
       },
       breadcrumbsClicked: function(event) {
          // do not close menu when user clicks on link
-         if (event.target.className.indexOf('breadcrumbs-item') != -1) {
+         if (event.target.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
             return;
          }
          $scope.layout.menuOpen = !$scope.layout.menuOpen;
