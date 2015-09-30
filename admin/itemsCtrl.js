@@ -331,12 +331,12 @@ angular.module('algorea')
       };
 
       $scope.itemItemSelected = function(itemItemID) {
-         if (!itemItemID || !$scope.checkSaveItem()) {
+         if (!$scope.checkSaveItem()) {
             return;
          }
          var itemItem = ModelsManager.getRecord("items_items", itemItemID);
          $scope.item_item = itemItem;
-         $scope.group_item = getGroupItem($scope.loginData.idGroupSelf, itemItem.child.ID);
+         $scope.group_item = itemItem ? getGroupItem($scope.loginData.idGroupSelf, itemItem.child.ID) : null;
          $scope.itemSelected(itemItem ? itemItem.idItemChild : null, true);
       };
 
