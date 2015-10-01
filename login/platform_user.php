@@ -59,7 +59,12 @@ function createTempUser($db) {
    $sLogin = 'tmp-'.mt_rand(10000000, 99999999);
    list($userAdminGroupId, $userSelfGroupId) = createGroupsFromLogin($db, $sLogin, 1);
    $userId = getRandomID();
-   $query = "insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`) values ('$userId', '0', '$sLogin', '1', NOW(), $userSelfGroupId, NULL);";
+   $stm = $db->prepare("insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`) values (:userId, '0', :sLogin, '1', NOW(), :userSelfGroupId, NULL);");
+   $stm->execute(array(
+      'userId' => $userId,
+      'sLogin' => $sLogin,
+      'userSelfGroupId' => $userSelfGroupId
+   ));
    $_SESSION['login'] = array(
       'idGroupSelf' => $userSelfGroupId,
       'tempUser'    => 1,
@@ -86,9 +91,9 @@ if ($action == 'login') {
    $_SESSION['login']['sToken'] = $request['token'];
    $_SESSION['login']['tempUser'] = 0;
    $_SESSION['login']['loginId'] = $params['idUser'];
-   $query = 'select ID, idGroupSelf, idGroupOwned, bIsAdmin from users where `loginID`=\''.$params['idUser'].'\';';
+   $query = 'select ID, idGroupSelf, idGroupOwned, bIsAdmin from users where `loginID`= :idUser ;';
    $stm = $db->prepare($query);
-   $stm->execute();
+   $stm->execute(array('idUser' => $params['idUser']));
    if(! $stm->rowCount()) {
       list($userAdminGroupId, $userSelfGroupId) = createGroupsFromLogin($db, $params['sLogin']);
       $userId = getRandomID();
