@@ -121,7 +121,7 @@ angular.module('algorea')
          }
       };
       scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser};
-      scope.platform.getTaskParams = function(askedParam, defaultValue, success, error) {
+      scope.platform.getTaskParams = function(key, defaultValue, success, error) {
          var res = scope.taskParams;
          if (typeof key !== 'undefined') {
             if (key !== 'options' && key in res) {
