@@ -206,6 +206,7 @@ angular.module('algorea')
          if (!scope.taskName) {scope.taskName = name;}
          scope.taskIframe = elem;
          function initTask() {
+            scope.currentView = null;
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
                   scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
