@@ -54,21 +54,17 @@ function createMissingUserItems($db, &$serverChanges, $type) {
    $diff = array_diff($items_ids, $users_items_ids);
    // one big insert request with multiple values
    if (count($diff)) {
-      $request = "INSERT IGNORE INTO `users_items` (`idUser`, `idItem`, `iScore`, `iScoreComputed`, `iScoreDiffManual`, `sScoreDiffComment`, `nbSubmissionsAttempts`, `nbTasksTried`, `nbTasksSolved`, `nbChildrenValidated`, `bValidated`, `bFinished`, `nbTasksWithHelp`, `nbHintsCached`, `nbCorrectionsRead`, `iPrecision`, `iAutonomy`, `sStartDate`, `sValidationDate`, `sFinishDate`, `sLastActivityDate`, `bRanked`, `sAllLangProg`, `iVersion`) VALUES";
+      $request = "INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`) VALUES";
       $first = true;
       foreach ($diff as $nothing => $idItem) {
          if (!$first) {$request .= ",";}
+         $ID = getRandomID();
          $first = false;
-         $request .= " ('".$userId."', '".$idItem."', '0', '0', '0', '', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0001-01-01, 0001-01-01, 0001-01-01, 0001-01-01, '0', '*', '0')";
+         $request .= " ('".$ID."', '".$userId."', '".$idItem."')";
+         $serverChanges['users_items'][$type][$ID] = default_user_item_factory($userId, $serverChanges['items'][$type][$idItem], $ID);
       }
       $request .= ";";
       $db->exec($request);
-      $insertId = $db->lastInsertId();
-      // insert id is the id of the first inserted, we expect the others to follow
-      foreach($diff as $idItem) {
-         $serverChanges['users_items'][$type][$insertId] = default_user_item_factory($userId, $serverChanges['items'][$type][$idItem], $insertId);
-         $insertId += 1;
-      }
    }
 }
 

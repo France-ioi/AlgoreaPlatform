@@ -24,6 +24,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 require_once(dirname(__FILE__)."/../shared/TokenParser.php");
+require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
 
 function getTokenParams($request) {
    global $config;
@@ -105,7 +106,7 @@ require_once("../shared/connect.php");
 if (file_exists( __DIR__."/../shared/debug.php")) {
    include_once __DIR__."/../shared/debug.php"; // not required
 } else {
-   function syncDebug($type, $b_or_e, $subtype) {}
+   function syncDebug($type, $b_or_e, $subtype='') {}
 }
 require_once("../shared/listeners.php");
 require_once(dirname(__FILE__)."/../shared/TokenGenerator.php");
@@ -113,23 +114,21 @@ require_once(dirname(__FILE__)."/../shared/TokenGenerator.php");
 function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
+   $ID = getRandomID();
    checkParams($params);
-   $query = "INSERT INTO `users_answers` (`idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:idUser, :idItem, :sAnswer, NOW(), 0);";
+   $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItem'], 'sAnswer' => $request['sAnswer']));
-   $idUserAnswer = $db->lastInsertID();
-
+   $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItem'], 'sAnswer' => $request['sAnswer']));
    $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, nbTasksTried = 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItem']));
    unset($stmt);
-   //Listeners::UserItemsAfter($db);
 
    $answerParams = array(
       'sAnswer' => $request['sAnswer'],
       'idUser' => intval($_SESSION['login']['ID']),
       'idItem' => intval($params['idItem']),
-      'idUserAnswer' => $idUserAnswer
+      'idUserAnswer' => $ID
    );
    $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
    $answerToken = $tokenGenerator->generateToken($answerParams);
@@ -161,17 +160,15 @@ function graderResult($request, $db) {
    $bValidated = ($score > 50);
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItem'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
-   if ($stmt->rowCount()) {
-      $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`) WHERE idUser = :idUser AND idItem = :idItem;";
-      if ($bValidated) {
-         $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
-      }
-      $stmt = $db->prepare($query);
-      $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItem'], 'iScore' => $score));
-      if ($bValidated) {
-         Listeners::UserItemsAfter($db);
-      }
+   $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
+   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`) WHERE idUser = :idUser AND idItem = :idItem;";
+   if ($bValidated) {
+      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+   }
+   $stmt = $db->prepare($query);
+   $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
+   if ($bValidated) {
+      Listeners::UserItemsAfter($db);
    }
    $token = $request['sToken'];
    if ($bValidated && !$params['bAccessSolutions']) {
@@ -184,7 +181,7 @@ function graderResult($request, $db) {
 
 function getToken($request, $db) {
    global $config;
-   $query = 'select `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`ID`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
+   $query = 'select `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
    'from `items` '.
    'join `groups_items` on `groups_items`.`idItem` = `items`.`ID` '.
    'join `users_items` on `users_items`.`idItem` = `items`.`ID` '.
@@ -218,7 +215,8 @@ function getToken($request, $db) {
       'bReadAnswers' => true,
       'aAnswers' => $answers,
       'idUser' => intval($_SESSION['login']['ID']),
-      'idItem' => intval($request['idItem']),
+      'idItemLocal' => intval($request['idItem']),
+      'idItem' => $data['sTextId'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],
       'bHasSolvedTask' => $data['bValidated'],
    );

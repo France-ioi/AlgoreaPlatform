@@ -100,7 +100,10 @@ angular.module('algorea')
       angular.forEach($scope.intervals, function(interval) {
          $interval.cancel(interval);
       });
-      $scope.task.unload(function(){}, function(){});
+      var task = $scope.task;
+      $scope.task.unload(function(){
+         task.chan.destroy();
+      }, function(){});
    });
    $scope.$on('algorea.taskViewChange', function(event, toParams) {
       $scope.selectTab($scope.panel == 'right' ? toParams.viewr : toParams.viewl, true);
