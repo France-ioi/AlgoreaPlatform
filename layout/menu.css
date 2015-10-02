@@ -203,11 +203,11 @@
 {
   content: '>';
 }
-#breadcrumbs>div:last-child>span>a:after
+#breadcrumbs>div:nth-last-child(2)>span>a:after
 {
   content: '';
 }
-#breadcrumbs>div:last-child>span>span:after
+#breadcrumbs>div:nth-last-child(2)>span>span:after
 {
   content: '';
 }
