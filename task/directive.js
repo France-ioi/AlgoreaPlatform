@@ -287,7 +287,7 @@ angular.module('algorea')
          function loadCourse(scope) {
             if (!scope.item.bUsesAPI) {
                return;
-            }            
+            }
             TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
                scope.task = task;
             }, true);
