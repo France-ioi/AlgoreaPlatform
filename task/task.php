@@ -106,7 +106,7 @@ require_once("../shared/connect.php");
 if (file_exists( __DIR__."/../shared/debug.php")) {
    include_once __DIR__."/../shared/debug.php"; // not required
 } else {
-   function syncDebug($type, $b_or_e, $subtype) {}
+   function syncDebug($type, $b_or_e, $subtype='') {}
 }
 require_once("../shared/listeners.php");
 require_once(dirname(__FILE__)."/../shared/TokenGenerator.php");
