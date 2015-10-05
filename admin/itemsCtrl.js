@@ -733,9 +733,18 @@ angular.module('algorea')
             $scope.initGroups();
             SyncQueue.sync();
             if (!syncInterval) {
-               setInterval(SyncQueue.planToSend, 10000);
+               syncInterval = setInterval(SyncQueue.planToSend, 10000);
             }
          } else if (syncInterval) {
+            clearInterval(syncInterval);
+         }
+      });
+      $scope.$on('login.logout', function(event, data) {
+         SyncQueue.sentVersion = 0;
+         SyncQueue.resetSync = true;
+         ModelsManager.reinit();
+         SyncQueue.init(ModelsManager);
+         if (syncInterval) {
             clearInterval(syncInterval);
          }
       });
