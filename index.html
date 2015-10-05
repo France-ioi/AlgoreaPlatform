@@ -15,13 +15,19 @@
     <link href="layout/main.css" rel="stylesheet" type="text/css" />
     <link href="layout/sidebar-left.css" rel="stylesheet" type="text/css" />
     <link href="layout/sidebar-right.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="algorea.css">
-    <link rel="stylesheet" href="forum/forum.css">
-    <link rel="stylesheet" ng-href="{{additionalCssUrl}}">
+    <link rel="stylesheet" href="algorea.css" type="text/css">
+    <link rel="stylesheet" href="forum/forum.css" type="text/css">
+    <script type="text/javascript">
+      link = document.createElement( "link" );
+      link.href =  config.domains.current.additionalCssUrl;
+      link.type = "text/css";
+      link.rel = "stylesheet";
+      document.getElementsByTagName( "head" )[0].appendChild( link );
+    </script>
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body ng-controller="layoutController">
+<body ng-controller="layoutController" ng-cloak>
 <div id="fixed-header-room" class="fixed-header-room"></div>
 <header ng-click="layout.menuClicked($event);">
    <div id="headerContainer">
