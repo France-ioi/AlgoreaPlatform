@@ -326,13 +326,13 @@ angular.module('algorea')
          scope.taskIframe = elem;
          var initCourse = function() {
             if (scope.item.bUsesAPI) {
-               scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
+               scope.courseUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
             } else {
                scope.courseUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
             }
             $timeout(function() {loadCourse(scope);});
          };
-         if (!scope.item || scope.item.sType !== 'Course') {
+         if (scope.item && (scope.item.sType == 'Course' || scope.item.sType == 'Presentation')) {
             initCourse();
          }
          scope.$on('admin.itemSelected', function() {

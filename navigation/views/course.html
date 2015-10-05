@@ -1,8 +1,5 @@
 <div class="main-titlebar" ng-if="panel == 'right'" ng-include="'navigation/views/menubar.html'"></div>
-<div class="main-area">
-   {{item.sUrl}}
-   <div ng-controller="courseController">
-      <div ng-show="!courseLoaded" ng-include="viewsBaseUrl+'loading.html'"></div>
-      <div ng-show="courseLoaded" include-course></div>
-   </div>
+<div class="main-area" ng-controller="courseController">
+   <div ng-show="!courseLoaded" ng-include="viewsBaseUrl+'loading.html'"></div>
+   <div ng-show="courseLoaded" include-course></div>
 </div>
