@@ -21,7 +21,7 @@
       <script src="../bower_components/dynatree/dist/jquery.dynatree.min.js" type="text/javascript"></script>
       <script src="../ext/inheritance.js" type="text/javascript"></script>
       <script src="../commonFramework/treeview/treeview.js" type="text/javascript"></script>
-      <script src="../ext/jquery.postmessage.min.js"></script>
+      <script src="../bower_components/jschannel/src/jschannel.js"></script>
       <script src="../login/service.js" type="text/javascript"></script>
       <script src="itemsCtrl.js" type="text/javascript"></script>
       <script src="adminUserItemController.js" type="text/javascript"></script>
@@ -47,7 +47,7 @@
          <iframe id="loginFrame" class="loginFrame" ng-src="{{loginModuleUrl}}"></iframe>
       </div>
       <div ng-hide="loginReady" class="loginCentered">
-         <img src="../assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Retrieving login information...</strong></p>
+         <img src="../images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Retrieving login information...</strong></p>
       </div>
       <div ng-controller="ItemsCtrl" ng-show="userLogged && loginReady">
          <a href="#" class="btn btn-default" ng-click="selectModelName('items')" ng-class="{'items': 'btn-success'}[selectedModelName]">Item : <b>{{ item.strings[0].sTitle }}</b></a>
