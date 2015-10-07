@@ -8,6 +8,7 @@ class Listeners {
       $hasChanges = true;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
+         // TODO: this request takes quite long (~0.34s) even when there is no 'todo' user_item, to be optimized (not easy!)
          $query = "UPDATE `users_items` as `parent` SET `sAncestorsComputationState` = 'processing' WHERE `sAncestorsComputationState` = 'todo' AND `parent`.`idItem` NOT IN
          (SELECT `idItemChild` FROM (
             SELECT `items_items`.`idItemChild`
@@ -72,7 +73,9 @@ class Listeners {
 
    public static function UserItemsAfter($db) {
       syncDebug('UserItemsAfter', 'begin');
-      Listeners::computeAllUserItems($db);
+      // the only case where a call to computeAllUserItems is relevant is
+      // validation, which is handled by task.php
+      //Listeners::computeAllUserItems($db);
       syncDebug('UserItemsAfter', 'end');
    }
 
