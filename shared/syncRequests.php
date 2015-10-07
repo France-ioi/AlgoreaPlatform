@@ -281,6 +281,35 @@ function getAncestorsCondition($db, $params, $prefix, $field) {
    return $ancestors_condition;
 }
 
+// returns true if a new sync is needed on groups_items, items, items_strings and users_items
+//         false if no sync is needed on any of these
+//         'user_items' if only a sync on users_items is needed
+function reallyNeedsMainClientSync($db, $params, $minServerVersion) {
+   if ($minServerVersion == 0) {
+      return true;
+   }
+   $stmt = $db->prepare('select max(iVersion) from groups_ancestors where idGroupChild = :idGroupSelf');
+   $stmt->execute(array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
+   $newAncestorVersion = $stmt->fetchColumn();
+   if ($newAncestorVersion > $minServerVersion) {
+      return true;
+   }
+   $ancestors_condition = getAncestorsCondition($db, $params, '', '`groups_items`.`idItem`');
+   $stmt = $db->prepare('select max(groups_items.iVersion) from groups_items join groups_ancestors on groups_ancestors.idGroupAncestor = groups_items.idGroup join items_ancestors on items_ancestors.idItemChild = groups_items.idItem where groups_ancestors.idGroupChild = :idGroupSelf and '.$ancestors_condition);
+   $stmt->execute(array('idGroupSelf' => $minServerVersion));
+   $newGroupItemsVersion = $stmt->fetchColumn();
+   if ($newGroupItemsVersion > $minServerVersion) {
+      return true;
+   }
+   $stmt = $db->prepare('select max(users_items.iVersion) from users_items where idUser = :idUser');
+   $stmt->execute(array('idUser' => $_SESSION['login']['ID']));
+   $newUsersItemsVersion = $stmt->fetchColumn();
+   if ($newUsersItemsVersion > $minServerVersion) {
+      return 'users_items';
+   }
+   return false;
+}
+
 function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
    $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
    array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
@@ -315,7 +344,7 @@ function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
 
    $requests["items_strings"]["model"]["joins"]["items_ancestors"] = array("srcTable" => "items_strings", "srcField" => "idItem", "dstField" => "idItemChild");
    $requests["items_strings"]["model"]["fields"]["idItem"]["groupBy"] = "`items_strings`.`ID`"; // Could be added to any field. TODO : fix group by system
-   $requests["items_strings"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));;
+   $requests["items_strings"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
 
    if (!isset($requests["users_items"])) {
       $users_items_model = createViewModelFromTable("users_items", true);
@@ -344,42 +373,13 @@ function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
       $requests[$table]["filters"]["idItemParent"] = true;
    }
    $needsChanges = reallyNeedsMainClientSync($db, $params, $minServerVersion);
-   if (!$needsChanges || $needsChanges == 'users_items') {
+   if (!$needsChanges || $needsChanges === 'users_items') {
       foreach($tables as $table => $_) {
          if (!$needsChanges || $table != 'users_items') {
             $requests[$table]['getChanges'] = false;
          }
       }
    }
-}
-
-// returns true if a new sync is needed on groups_items, items, items_strings and users_items
-//         false if no sync is needed on any of these
-//         'user_items' if only a sync on users_items is needed
-function reallyNeedsMainClientSync($db, $params, $minServerVersion) {
-   if ($minServerVersion == 0) {
-      return true;
-   }
-   $stmt = $db->prepare('select max(iVersion) from groups_ancestors where idGroupChild = :idGroupSelf');
-   $stmt->execute(array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
-   $newAncestorVersion = $stmt->fetchColumn();
-   if ($newAncestorVersion > $minServerVersion) {
-      return true;
-   }
-   $ancestors_condition = getAncestorsCondition($db, $params, '', '`groups_items`.`idItem`');
-   $stmt = $db->prepare('select max(groups_items.iVersion) from groups_items join groups_ancestors on groups_ancestors.idGroupAncestor = groups_items.idGroup join items_ancestors on items_ancestors.idItemChild = groups_items.idItem where groups_ancestors.idGroupChild = :idGroupSelf and '.$ancestors_condition);
-   $stmt->execute(array('idGroupSelf' => $minServerVersion));
-   $newGroupItemsVersion = $stmt->fetchColumn();
-   if ($newGroupItemsVersion > $minServerVersion) {
-      return true;
-   }
-   $stmt = $db->prepare('select max(users_items.iVersion) from users_items where idUser = :idUser');
-   $stmt->execute(array('idUser' => $_SESSION['login']['ID']));
-   $newUsersItemsVersion = $stmt->fetchColumn();
-   if ($newUsersItemsVersion > $minServerVersion) {
-      return 'users_items';
-   }
-   return false;
 }
 
 function getMyGroupsItems ($params, &$requests) {
