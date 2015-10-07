@@ -264,7 +264,24 @@ function syncAddCustomClientChanges($db, $minServerVersion, &$clientChanges) {
    }
 }
 
-function getItemsFromAncestors ($params, &$requests, $db){
+function getAncestorsCondition($db, $params, $prefix, $field) {
+   $ancestors_condition = "(";
+   $first = true;
+   if ($params["requests"]["algorea"]['ancestors']) {
+      foreach ($params["requests"]["algorea"]["ancestors"] as $ID => $item) {
+         if ($ID == 'minVersion' || $ID == 'resetMinVersion') { continue; }
+         if (!$first) {
+            $ancestors_condition .= ' OR ';
+         }
+         $first = false;
+         $ancestors_condition .= '`'.$prefix.'items_ancestors`.`idItemAncestor` = '.$db->quote($ID).' OR '.$field.' = '.$db->quote($ID);
+      }
+      $ancestors_condition .= ')';
+   }
+   return $ancestors_condition;
+}
+
+function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
    $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
    array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
    $requests["items_items"]["model"]["joins"]["items_ancestors"] = array("srcTable" => "items_items", "srcField" => "idItemChild", "dstField" => "idItemChild");
@@ -315,20 +332,8 @@ function getItemsFromAncestors ($params, &$requests, $db){
    );
    $requests["users_items"]["filters"]["idUser"] = $_SESSION['login']['ID'];
 
-   $ancestors_condition = "(";
+   $ancestors_condition = getAncestorsCondition($db, $params, '[PREFIX]', '[FIELD]');
 
-   $first = true;
-   if ($params["requests"]["algorea"]['ancestors']) {
-      foreach ($params["requests"]["algorea"]["ancestors"] as $ID => $item) {
-         if ($ID == 'minVersion' || $ID == 'resetMinVersion') { continue; }
-         if (!$first) {
-            $ancestors_condition .= ' OR ';
-         }
-         $first = false;
-         $ancestors_condition .= '`[PREFIX]items_ancestors`.`idItemAncestor` = '.$db->quote($ID).' OR [FIELD] = '.$db->quote($ID);
-      }
-      $ancestors_condition .= ')';
-   }
    $tables = array('items_items' => 'idItemParent', 'items' => 'ID', 'items_strings' => 'idItem', 'users_items' => 'idItem', 'groups_items' => 'idItem');
    foreach($tables as $table => $field) {
       $requests[$table]["model"]["filters"]["idItemParent"] = array(
@@ -338,6 +343,43 @@ function getItemsFromAncestors ($params, &$requests, $db){
       );
       $requests[$table]["filters"]["idItemParent"] = true;
    }
+   $needsChanges = reallyNeedsMainClientSync($db, $params, $minServerVersion);
+   if (!$needsChanges || $needsChanges == 'users_items') {
+      foreach($tables as $table => $_) {
+         if (!$needsChanges || $table != 'users_items') {
+            $requests[$table]['getChanges'] = false;
+         }
+      }
+   }
+}
+
+// returns true if a new sync is needed on groups_items, items, items_strings and users_items
+//         false if no sync is needed on any of these
+//         'user_items' if only a sync on users_items is needed
+function reallyNeedsMainClientSync($db, $params, $minServerVersion) {
+   if ($minServerVersion == 0) {
+      return true;
+   }
+   $stmt = $db->prepare('select max(iVersion) from groups_ancestors where idGroupChild = :idGroupSelf');
+   $stmt->execute(array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
+   $newAncestorVersion = $stmt->fetchColumn();
+   if ($newAncestorVersion > $minServerVersion) {
+      return true;
+   }
+   $ancestors_condition = getAncestorsCondition($db, $params, '', '`groups_items`.`idItem`');
+   $stmt = $db->prepare('select max(groups_items.iVersion) from groups_items join groups_ancestors on groups_ancestors.idGroupAncestor = groups_items.idGroup join items_ancestors on items_ancestors.idItemChild = groups_items.idItem where groups_ancestors.idGroupChild = :idGroupSelf and '.$ancestors_condition);
+   $stmt->execute(array('idGroupSelf' => $minServerVersion));
+   $newGroupItemsVersion = $stmt->fetchColumn();
+   if ($newGroupItemsVersion > $minServerVersion) {
+      return true;
+   }
+   $stmt = $db->prepare('select max(users_items.iVersion) from users_items where idUser = :idUser');
+   $stmt->execute(array('idUser' => $_SESSION['login']['ID']));
+   $newUsersItemsVersion = $stmt->fetchColumn();
+   if ($newUsersItemsVersion > $minServerVersion) {
+      return 'users_items';
+   }
+   return false;
 }
 
 function getMyGroupsItems ($params, &$requests) {
@@ -357,7 +399,7 @@ function myDebugFunction($query, $values, $moment = '') {
    foreach ($values as $valueName => $value) {
       $res = str_replace(':'.$valueName, $db->quote($value), $res);
    }
-   file_put_contents(__DIR__.'/../logs/groups.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
+   file_put_contents(__DIR__.'/../logs/groups_items.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
 }
 
 function getGroups ($params, &$requests) {
@@ -504,7 +546,7 @@ function filterUsers(&$requests) {
 #   }
 }
 
-function algoreaCustomRequest($params, &$requests, $db) {
+function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
    if (!isset($_SESSION)) {
       session_start();
    }
@@ -555,7 +597,7 @@ function algoreaCustomRequest($params, &$requests, $db) {
       getGroups($params, $requests);
       switch ($params["requests"]["algorea"]['type']) {
          case 'getItemsFromAncestors':
-            getItemsFromAncestors($params, $requests, $db);
+            getItemsFromAncestors($params, $requests, $db, $minServerVersion);
             break;
          case 'expandedItems':
             setupExpandedItemsRequests($params, $requests);
@@ -688,6 +730,7 @@ function setupExpandedItemsRequests($params, &$requests) {
          //$requests['zero_'.$table]["debug"] = true;
       }
    }
+   //file_put_contents(__DIR__.'/../logs/groups_items.log', date(DATE_RFC822).'  '.json_encode($requests['groups_items'])."\n", FILE_APPEND);
 }
 
 function setupGroupsItemsRequests(&$requests) {
@@ -702,10 +745,10 @@ function setupGroupsItemsRequests(&$requests) {
    }
 }
 
-function getSyncRequests($params) {
+function getSyncRequests($params, $minServerVersion) {
    global $db;
    $requests = syncGetTablesRequests();
-   algoreaCustomRequest($params, $requests, $db);
+   algoreaCustomRequest($params, $requests, $db, $minServerVersion);
 
    return $requests;
 }
