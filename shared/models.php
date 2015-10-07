@@ -501,6 +501,7 @@ $viewsModels = array(
          "myGroupDescendants" => array("dstField" => "idGroupChild", "srcField" => "idGroup", "srcTable" => "groups_items", "dstTable" => "groups_ancestors"),
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
          "myGroupAncestorsLeft" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroup", "srcTable" => "groups_items", "dstTable" => "groups_ancestors"),
+         "myGroupAncestors" => array("dstField" => "idGroupAncestor", "srcField" => "idGroup", "srcTable" => "groups_items", "dstTable" => "groups_ancestors"),
       ),
       "fields" => array(
          "idGroup" => array(),
@@ -524,12 +525,12 @@ $viewsModels = array(
       ),
       "filters" => array(
          "descendantsAndAncestorsRead" => array(
-            "joins" => array("myGroupDescendantsLeft", "myGroupAncestorsLeft"),
-            "condition"  => '(`[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupAncestorsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
+            "joins" => array("myGroupDescendants", "myGroupAncestors"),
+            "condition"  => '(`[PREFIX]myGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
          "descendantsWrite" => array(
-            "joins" => array("myGroupDescendantsLeft"),
-            "condition"  => '(`[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned) AND (`[PREFIX]groups_items`.`bCachedManagerAccess` <=> 1 OR `[PREFIX]groups_items`.`bOwnerAccess` <=> 1)',
+            "joins" => array("myGroupDescendants"),
+            "condition"  => '(`[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupSelf `[PREFIX]myGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned) AND (`[PREFIX]groups_items`.`bCachedManagerAccess` <=> 1 OR `[PREFIX]groups_items`.`bOwnerAccess` <=> 1)',
          ),
          "myGroupSelf" => array(
             "joins" => array(),
