@@ -168,7 +168,7 @@ function graderResult($request, $db) {
    $stmt = $db->prepare($query);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
    if ($bValidated) {
-      Listeners::UserItemsAfter($db);
+      Listeners::computeAllUserItems($db);
    }
    $token = $request['sToken'];
    if ($bValidated && !$params['bAccessSolutions']) {
