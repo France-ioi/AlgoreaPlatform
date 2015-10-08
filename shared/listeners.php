@@ -2,6 +2,9 @@
 
 class Listeners {
    public static function computeAllUserItems($db) {
+      $query = "SELECT iVersion FROM `synchro_version`";
+      $stmt = $db->query($query);
+      $version = $stmt->fetchColumn();
       // We mark as 'todo' all ancestors of objects marked as 'todo'
       $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
       $db->exec($query);
@@ -75,7 +78,7 @@ class Listeners {
             $stmtUpdate->execute(array('ID' => $row['ID'], 'idUser' => $row['idUser'], 'idItem' => $row['idItem'], 'sValidationType' => $row['sValidationType']));
          }
          // Objects marked as 'processing' are now marked as 'done'
-         $query = "UPDATE `users_items` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
+         $query = "UPDATE `users_items` SET `sAncestorsComputationState` = 'done', iVersion = '".$version."' WHERE `sAncestorsComputationState` = 'processing'";
          $hasChanges = ($db->exec($query) > 0);
       }
    }
