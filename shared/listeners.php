@@ -3,18 +3,27 @@
 class Listeners {
    public static function computeAllUserItems($db) {
       // We mark as 'todo' all ancestors of objects marked as 'todo'
-      $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo'";
+      $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
       $db->exec($query);
       $hasChanges = true;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
-         // TODO: this request takes quite long (~0.34s) even when there is no 'todo' user_item, to be optimized (not easy!)
-         $query = "UPDATE `users_items` as `parent` SET `sAncestorsComputationState` = 'processing' WHERE `sAncestorsComputationState` = 'todo' AND `parent`.`idItem` NOT IN
-         (SELECT `idItemChild` FROM (
-            SELECT `items_items`.`idItemChild`
-            FROM `items_items`
-            JOIN `users_items` as `children` ON (`children`.`idItem` = `items_items`.`idItemParent`)
-            WHERE `children`.`sAncestorsComputationState` <> 'done') as `notready`)";
+         $query = "UPDATE `users_items` as `parent`
+            JOIN  (
+                 SELECT * FROM (
+            SELECT `parent`.`ID` FROM `users_items` as `parent`
+            WHERE `sAncestorsComputationState` = 'todo'
+            AND NOT EXISTS
+            (
+                  SELECT `items_items`.`idItemChild`
+                  FROM `items_items`
+                  JOIN `users_items` as `children` ON (`children`.`idItem` = `items_items`.`idItemChild`)
+                  WHERE `items_items`.`idItemParent` = `parent`.`idItem`
+                  AND `children`.`sAncestorsComputationState` <> 'done' AND `children`.`idUser` = `parent`.`idUser`
+            )) as `tmp2`
+            ) as `tmp`
+             SET `sAncestorsComputationState` = 'processing'
+            WHERE tmp.ID = parent.ID;";
          $db->exec($query);
         /* For every object marked as 'processing', we compute all the caracteristics based on the children:
               * sLastActivityDate as the max of children's
