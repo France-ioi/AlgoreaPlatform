@@ -323,8 +323,10 @@ $viewsModels = array(
          "myGroupAncestors" => array("dstField" => "idGroupAncestor", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_ancestors"),
          "myGroupDescendants" => array("dstField" => "idGroupChild", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_ancestors"),
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
-         "users" => array('type' => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "users"),
+         "usersLeft" => array('type' => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "users"),
+         "users" => array("dstField" => "idGroupSelf", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "users"),
          "myInvitationsLeft" => array("type" => "LEFT", "dstField" => "idGroupParent", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_groups"),
+         "myInvitations" => array("dstField" => "idGroupParent", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_groups"),
          "myGroupDescendantsLeft" => array("type" => "LEFT", "dstField" => "idGroupChild", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_ancestors"),
       ),
       "fields" => array(
@@ -366,6 +368,14 @@ $viewsModels = array(
          "invitationsAndDescendantsRead" => array(
             "joins" => array("myGroupDescendantsLeft"),
             "condition"  => '(`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_groups`.`idGroupParent` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)',
+         ),
+         "invitationsRead" => array(
+            "joins" => array(),
+            "condition"  => '(`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_groups`.`idGroupParent` = :[PREFIX_FIELD]idGroupOwned)',
+         ),
+         "descendantsRead" => array(
+            "joins" => array("myGroupDescendants"),
+            "condition"  => '`[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned',
          ),
          "invitationsAndDescendantsWrite" => array(
             "joins" => array("myGroupDescendantsLeft"),

@@ -406,6 +406,8 @@ function getGroups ($params, &$requests) {
    global $config;
    $idRootSelf = $config->shared->RootSelfGroupId;
    $idRootOwned = $config->shared->RootAdminGroupId;
+   $requests['groups_invitations'] = $requests['groups'];
+   //$requests['groups_groups_invitations'] = $requests['groups_groups'];
    $requests['groups']["model"]["fields"]["sType"]["groupBy"] = "`groups`.`ID`";
    $requests["groups"]["model"]["filters"]["MyGroupsWrite"] = array(
       "joins" => array("myInvitationsLeft", "myGroupDescendantsLeft"),
@@ -418,16 +420,28 @@ function getGroups ($params, &$requests) {
       ),
       'modes' => array('insert' => true, 'update' => true, 'delete' => true),
    );
-   $requests["groups"]['filters']['addUserID'] = array('modes' => array('select' => true));
-   array_push($requests["groups"]["fields"], 'idUser');
    $requests["groups"]['model']['fields']['idUser'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`ID`');
-   $requests["groups"]["model"]["filters"]["MineAndInvitations"] = array(
+   $requests["groups"]["model"]["filters"]["Mine"] = array(
       "joins" => array("myInvitationsLeft"),
       "condition"  => "(`[PREFIX]myInvitationsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupSelf)",
    );
-   $requests["groups"]["filters"]["MineAndInvitations"] = array(
+   $requests["groups"]["filters"]["Mine"] = array(
       'values' => array(
          'idGroupOwned' => $_SESSION['login']['idGroupOwned'], // TODO: vérifier pour les tempUsers
+         'idGroupSelf'  => $_SESSION['login']['idGroupSelf'],
+      ),
+      'modes' => array('select' => true),
+   );
+
+   $requests["groups_invitations"]['filters']['addUserID'] = array('modes' => array('select' => true));
+   array_push($requests["groups_invitations"]["fields"], 'idUser');
+   $requests["groups_invitations"]['model']['fields']['idUser'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`ID`');
+   $requests["groups_invitations"]["model"]["filters"]["Invitations"] = array(
+      "joins" => array("myInvitations"),
+      "condition"  => "(`[PREFIX]myInvitations`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)",
+   );
+   $requests["groups_invitations"]["filters"]["Invitations"] = array(
+      'values' => array(
          'idGroupSelf'  => $_SESSION['login']['idGroupSelf'],
       ),
       'modes' => array('select' => true),
@@ -597,6 +611,9 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       getGroups($params, $requests);
       switch ($params["requests"]["algorea"]['type']) {
          case 'getItemsFromAncestors':
+            // temporary
+            unset($requests['groups']);
+            unset($requests['groups_groups']);
             getItemsFromAncestors($params, $requests, $db, $minServerVersion);
             break;
          case 'expandedItems':
