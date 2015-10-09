@@ -407,7 +407,6 @@ function getGroups ($params, &$requests) {
    $idRootSelf = $config->shared->RootSelfGroupId;
    $idRootOwned = $config->shared->RootAdminGroupId;
    $requests['groups_invitations'] = $requests['groups'];
-   //$requests['groups_groups_invitations'] = $requests['groups_groups'];
    $requests['groups']["model"]["fields"]["sType"]["groupBy"] = "`groups`.`ID`";
    $requests["groups"]["model"]["filters"]["MyGroupsWrite"] = array(
       "joins" => array("myInvitationsLeft", "myGroupDescendantsLeft"),
@@ -447,20 +446,21 @@ function getGroups ($params, &$requests) {
       'modes' => array('select' => true),
    );
 
-   $requests["groups_groups"]['filters']['addLogin'] = array('modes' => array('select' => true));
-   array_push($requests["groups_groups"]["fields"], 'sChildLogin');
-   $requests["groups_groups"]['model']['fields']['sChildLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`sLogin`');
-   array_push($requests["groups_groups"]["fields"], 'sUserInvitingLogin');
-   $requests["groups_groups"]['model']['fields']['sUserInvitingLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`userInviting`.`sLogin`');
+   $requests['groups_groups_invitations'] = $requests['groups_groups'];
+   $requests["groups_groups_invitations"]['filters']['addLogin'] = array('modes' => array('select' => true));
+   array_push($requests["groups_groups_invitations"]["fields"], 'sChildLogin');
+   $requests["groups_groups_invitations"]['model']['fields']['sChildLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`sLogin`');
+   array_push($requests["groups_groups_invitations"]["fields"], 'sUserInvitingLogin');
+   $requests["groups_groups_invitations"]['model']['fields']['sUserInvitingLogin'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`userInviting`.`sLogin`');
+   //$requests['groups_groups']["model"]["fields"]["idGroupParent"]["groupBy"] = "`groups_groups`.`ID`";
    if (!$_SESSION['login']['tempUser']) {
-      $requests['groups_groups']['filters']['invitationsAndDescendantsRead'] = array('modes' => array('select' => true), 'values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idGroupOwned' => $_SESSION['login']['idGroupOwned']));
+      $requests['groups_groups']['filters']['descendantsRead'] = array('modes' => array('select' => true), 'values' => array('idGroupOwned' => $_SESSION['login']['idGroupOwned']));
+      $requests['groups_groups_invitations']['filters']['invitationsRead'] = array('modes' => array('select' => true), 'values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
       //$requests['groups_groups']['filters']['invitationsAndDescendantsWrite'] = array('modes' => array('insert' => true, 'update' => true, 'delete' => true), 'values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idRootSelf' => $idRootSelf, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']));
       // TODO: find a working write filter (commented one can't work due to triggers)
    } else {
       $requests["groups_groups"]['readOnly'] = true;
    }
-   $requests["groups_groups"]['debug'] = true;
-   $requests['groups_groups']["model"]["fields"]["idGroupParent"]["groupBy"] = "`groups_groups`.`ID`";
 }
 
 function getAllLevels ($params, &$requests){
@@ -608,7 +608,12 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       //$requests['items_ancestors']['readOnly'] = true;
       //$requests['items_ancestors']['filters']['accessible'] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
       unset($requests["groups_ancestors"]);
-      getGroups($params, $requests);
+      if (!$_SESSION['login']['tempUser']) {
+         getGroups($params, $requests);
+      } else {
+         unset($requests['groups']);
+         unset($requests['groups_groups']);
+      }
       switch ($params["requests"]["algorea"]['type']) {
          case 'getItemsFromAncestors':
             // temporary
