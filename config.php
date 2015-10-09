@@ -37,6 +37,7 @@ $config = (object) array(
          "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
             "title" => 'Change title here',
             "domain" => 'domain url, optional for "default"',
+            "usesForum" => true,
             "additionalCssUrl" => 'additional css url',
             "ProgressRootItemId" => "2",
             "OfficialProgressItemId" => "21",

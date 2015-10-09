@@ -561,6 +561,7 @@ function filterUsers(&$requests) {
 }
 
 function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
+   global $config;
    if (!isset($_SESSION)) {
       session_start();
    }
@@ -628,6 +629,11 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
             //setupExpandedItemsRequests($params, $requests);
             getAllLevels($params, $requests);
             break;
+      }
+      if (!$config->shared->domains['current']->usesForum) {
+         unset($requests['users_threads']);
+         unset($requests['threads']);
+         unset($requests['messages']);
       }
    }
 }
