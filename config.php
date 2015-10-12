@@ -53,6 +53,23 @@ $config = (object) array(
    )
 );
 
+// Tabs
+$config->shared->domains['current']->tabs[0] = array(
+      'title' => 'Découvrir',
+      'path' => '4022/4023',
+      'icon' => 'explore'
+      );
+$config->shared->domains['current']->tabs[1] = array(
+      'title' => 'Progresser',
+      'path' => '4026/4021',
+      'icon' => 'trending_up'
+      );
+$config->shared->domains['current']->tabs[2] = array(
+      'title' => 'S\'entraider',
+      'path' => 'forum',
+      'icon' => 'group'
+      );
+
 if (is_readable(__DIR__.'/config_local.php')) {
    include_once __DIR__.'/config_local.php';
 }

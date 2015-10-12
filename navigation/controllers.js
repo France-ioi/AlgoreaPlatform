@@ -3,6 +3,7 @@
 angular.module('algorea')
    .controller('navigationController', ['$scope', 'itemService', 'pathService', '$state', '$filter', '$sce', function ($scope, itemService, pathService, $state, $filter, $sce) {
       $scope.domainTitle = config.domains.current.title;
+      $scope.config = config;
       $scope.viewsBaseUrl = 'navigation/views/';
       $scope.getChildren = function() {
          return itemService.getChildren(this.item);
@@ -303,19 +304,30 @@ angular.module('algorea')
 angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
       $scope.gotoIndex = function() {$state.go('contents', {path: config.domains.current.DiscoverRootItemId+'/'+config.domains.current.DiscoverRootSonItemId,sell:1,selr:2});}
-      $scope.gotoProgress = function() {$state.go('contents', {path: config.domains.current.ProgressRootItemId+'/'+config.domains.current.OfficialProgressItemId,sell:1,selr:2});}
-      $scope.gotoForum = function() {$state.go('forum');}
-      $scope.activated = '';
-      $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
-         $scope.activated = '';
-         if (toState.name == 'forum' || toState.name == 'thread' || toState.name == 'newThread') {
-            $scope.activated = 'forum';
-         } else if (toState.name == 'contents') {
-            if (toParams && toParams.path && toParams.path.indexOf(config.domains.current.DiscoverRootItemId) !== -1) {
-               $scope.activated = 'index';
+      $scope.gotoMenuItem = function(i, tabPath) {
+         $scope.activated = i;
+         if (tabPath == 'forum'){
+            $state.go('forum');
+         } else {
+            if (tabPath.indexOf('/') !== -1) {
+               $state.go('contents', {path: tabPath,sell:1,selr:2});
             } else {
-               $scope.activated = 'contents';
-            }
+               $state.go('contents', {path: tabPath,sell:0,selr:1});
+            } 
          }
+      };
+      $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
+         $scope.activated = null;
+         var toSearch = toState.name;
+         if (toState.name == 'thread' || toState.name == 'newThread') {
+            toSearch = 'forum';
+         } else if (toState.name == 'contents') {
+            toSearch = toParams.path
+         }
+         angular.forEach(config.domains.current.tabs, function(tab, i) {
+            if (toSearch.indexOf(tab.path) !== -1) {
+               $scope.activated = i;
+            }
+         });
       });
 }]);
