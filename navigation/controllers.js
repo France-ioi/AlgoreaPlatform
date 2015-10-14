@@ -164,6 +164,7 @@ angular.module('algorea')
          itemService.getAsyncRecord('items', that.pathParams.currentItemID, function(item){
             if (!item) {
               that.item = that.errorItem;
+              if (callback) {callback(null);}
               return;
             }
             that.item = item;
@@ -207,6 +208,12 @@ angular.module('algorea')
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
       $scope.itemsList = [];
       function getLeftItems(item) {
+         if (!item) {
+            $scope.layout.hasLeftMenu(false);
+            return;
+         } else {
+            $scope.layout.hasLeftMenu(true);
+         }
          $scope.leftParentItemId = item.ID;
          $scope.itemList = [];
          if (item.sType == 'Presentation') {

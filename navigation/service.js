@@ -19,7 +19,7 @@ angular.module('algorea')
       function setSyncInterval() {
          if (!intervalIsSet) {
             intervalIsSet = true;
-            setInterval(SyncQueue.planToSend, 30000);
+            setInterval(SyncQueue.planToSend, 8000);
          }
       }
       SyncQueue.planToSend();
@@ -119,23 +119,13 @@ angular.module('algorea')
       }
       var idsToSync = {};
       function getIdsToSync(reset) {
-//         var pathItems = $stateParams.path ? $stateParams.path.split('/') : ['6'];
-//         if (/*pathItems[0] == '6'*/ false) {
-//            var rootItem = ModelsManager.getRecords('items')[6];
-//            pathItems = [];
-//            if ( rootItem && rootItem.children) {
-//               angular.forEach(rootItem.children, function(child) {
-//                  if (child.child.iLevel != 0 && child.child.iLevel != 127 && pathItems.indexOf(parseInt(child.idItemChild)) == -1) {
-//                     pathItems.push(parseInt(child.idItemChild));
-//                  }
-//               });
-//            }
-//         } else {
-//            pathItems = [pathItems[0]];
-//         }
-         console.error(config);
          var pathItems = [config.domains.current.ProgressRootItemId, config.domains.current.DiscoverRootItemId, config.domains.current.ContestRootItemId];
-         console.error(pathItems);
+         angular.forEach(config.domains.current.tabs, function(tab) {
+            var itemID = tab.path.split('/')[0];
+            if (parseInt(itemID) && pathItems.indexOf(itemID) == -1) {
+               pathItems.push(itemID);
+            }
+         });
          angular.forEach(pathItems, function(itemID) {
             idsToSync[itemID] = {'itemID': itemID, 'minVersion': (itemID in idsToSync) ? SyncQueue.serverVersion : 0};
          });

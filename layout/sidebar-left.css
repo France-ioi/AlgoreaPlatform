@@ -17,6 +17,10 @@
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
 
+.sidebar-left-hidden {
+   display:none;
+}
+
 .sidebar-left-content {
    -webkit-flex: 1 0 auto;
    flex: 1 0 auto;

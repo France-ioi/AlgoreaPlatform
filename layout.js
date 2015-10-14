@@ -34,6 +34,11 @@ angular.module('algorea')
       goNormal: function() {
 
       },
+      hasLeftMenu: function(hasLeftMenu) {
+        if ($('#sidebar-left').hasClass('sidebar-left-hidden') == hasLeftMenu) {
+          $('#sidebar-left').toggleClass('sidebar-left-hidden')
+        }
+      },
       toggleLeft: function() {
          $('#sidebar-left').toggleClass('sidebar-left-toggled');
          $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
