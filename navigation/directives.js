@@ -51,7 +51,11 @@ angular.module('algorea')
                      $rootScope.upLink = null;
                   } else {
                      $rootScope.rightLink = null;
-                     $rootScope.upLink = {sref: pathService.getSrefString(basePath, scope.pathParams.path-1), stateName: 'contents', stateParams: {path: basePath, sell: scope.pathParams.path-1}};
+                     if(basePath) {
+                        $rootScope.upLink = {sref: pathService.getSrefString(basePath, scope.pathParams.path-1), stateName: 'contents', stateParams: {path: basePath, sell: scope.pathParams.path-1}};
+                     } else {
+                        $rootScope.upLink = null;
+                     }
                   }
                   if (previousID) {
                      $rootScope.leftLink = {sref: pathService.getSrefString(basePath+'/'+previousID), stateName: 'contents', stateParams: {path: basePath+'/'+previousID}};

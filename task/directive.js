@@ -286,6 +286,7 @@ angular.module('algorea')
          var name = 'course-'+scope.panel;
          function loadCourse(scope) {
             if (!scope.item.bUsesAPI) {
+               elem.addClass('fullscreen-iframe');
                return;
             }
             TaskProxyManager.getTaskProxy(scope.taskName, function(task) {

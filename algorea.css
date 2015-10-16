@@ -27,7 +27,7 @@ body {
    border: 0px;
    display: block;
    overflow:auto;
-   height: 500px;
+   height: calc(100vh - 170px);
 }
 .tabset-task {
    width: 800px;
