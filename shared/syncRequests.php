@@ -82,7 +82,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       'sSupportedLangProg'   => null,
       'sLogin'               => null,
    );
-   if ($item['data']->sType == 'Task' || $item['data']->sType == 'Course') {
+   if ($item['data']->bUsesAPI && ($item['data']->sType == 'Task' || $item['data']->sType == 'Course'|| $item['data']->sType == 'Presentation')) {
       if (!isset($item['data']->bGrayedAccess) || $item['data']->bGrayedAccess) {
          $userItem['data']->sToken = ''; return;
       }
