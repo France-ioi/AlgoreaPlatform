@@ -18,11 +18,13 @@
     <link rel="stylesheet" href="algorea.css" type="text/css">
     <link rel="stylesheet" href="forum/forum.css" type="text/css">
     <script type="text/javascript">
-      link = document.createElement( "link" );
-      link.href =  config.domains.current.additionalCssUrl;
-      link.type = "text/css";
-      link.rel = "stylesheet";
-      document.getElementsByTagName( "head" )[0].appendChild( link );
+      if (config.domains.current.additionalCssUrl) {
+        link = document.createElement( "link" );
+        link.href =  config.domains.current.additionalCssUrl;
+        link.type = "text/css";
+        link.rel = "stylesheet";
+        document.getElementsByTagName( "head" )[0].appendChild( link );
+      }
     </script>
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
