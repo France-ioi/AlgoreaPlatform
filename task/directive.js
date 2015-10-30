@@ -28,17 +28,18 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', function ($location, $sce, $http, $timeout, $rootScope, $state) {
-   function loadTask(scope, elem) {
+.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval) {
+   function loadTask(scope, elem, sameUrl) {
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          scope.task = task;
-         configureTask(scope, elem);
-      }, true);
+         configureTask(scope, elem, sameUrl);
+      }, !sameUrl);
    }
-   function configureTask(scope, elem) {
+   function configureTask(scope, elem, sameUrl) {
       scope.loadedUserItemID = scope.user_item.ID;
       scope.task.unloaded = false;
-      scope.grader = TaskProxyManager.getGraderProxy(scope.taskName);
+      // not sure the following line is still necessary
+      TaskProxyManager.getGraderProxy(scope.taskName, function(grader) {scope.grader = grader;});
       scope.platform = new Platform(scope.task);
       TaskProxyManager.setPlatform(scope.task, scope.platform);
       scope.platform.showView = function(view, success, error) {
@@ -205,23 +206,40 @@ angular.module('algorea')
          }
          if (!scope.taskName) {scope.taskName = name;}
          scope.taskIframe = elem;
-         function initTask() {
+         function initTask(sameUrl) {
             scope.currentView = null;
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
-                  scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
+                  var itemUrl = scope.item.sUrl;
+                  if (itemUrl.indexOf('#') == -1) {
+                     // the idea is not to change the base url even if we change token, so we put token after #
+                     itemUrl = itemUrl + '#';
+                  }
+                  scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
+                  // we save the value, to compare it with the new one if iframe is reloaded
+                  scope.itemUrl = itemUrl;
                } else {
                   scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
+                  scope.itemUrl = null;
                }
             } else {
                //scope.taskUrl = $sce.trustAsResourceUrl('http://tasks.eroux.fr/task_integration_api/example/2013-SK-09ab/index.html?sSourceId='+scope.taskName+'#'+$location.absUrl());
-               scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
+               //scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
+               console.error('item has no url!');
             }
             elem[0].src = scope.taskUrl;
-            $timeout(function() { loadTask(scope, elem);});
+            $timeout(function() { loadTask(scope, elem, sameUrl);});
          }
          if (scope.item && scope.item.sType == 'Task') {
-            initTask();
+            initTask(false);
+         }
+         // function comparing two url, returning true if the iframe won't be reloaded
+         // (= if the difference is only after #)
+         function isSameBaseUrl(oldItemUrl, newItemUrl) {
+            if (!oldItemUrl || !newItemUrl) {return false;}
+            var baseOldItemUrl = oldItemUrl.indexOf('#') == -1 ? oldItemUrl : oldItemUrl.substr(0, oldItemUrl.indexOf('#'));
+            var baseNewItemUrl = newItemUrl.indexOf('#') == -1 ? newItemUrl : newItemUrl.substr(0, newItemUrl.indexOf('#'));  
+            return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
             if (!scope.item || scope.item.sType !== 'Task') {
@@ -231,17 +249,25 @@ angular.module('algorea')
             scope.canGetState = false;
             //scope.selectTab('task');
             scope.currentView = null;
+            var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (!scope.task.unloaded) {
                scope.task.unloaded = true;
+               angular.forEach(scope.intervals, function(interval) {
+                  $interval.cancel(interval);
+               });
                scope.task.unload(function() {
-                  TaskProxyManager.deleteTaskProxy(scope.taskName);
-                  elem[0].src = '';
-                  $timeout(initTask);
+                  if (!sameUrl) {
+                     TaskProxyManager.deleteTaskProxy(scope.taskName);
+                     elem[0].src = '';
+                  }
+                  $timeout(function() {initTask(sameUrl);});
                });
             } else {
-               TaskProxyManager.deleteTaskProxy(scope.taskName);
-               elem[0].src = '';
-               $timeout(initTask);
+               if (!sameUrl) {
+                  TaskProxyManager.deleteTaskProxy(scope.taskName);
+                  elem[0].src = '';
+               }
+               $timeout(function() {initTask(sameUrl);});
             }
          }
          scope.$on('admin.itemSelected', function() {
