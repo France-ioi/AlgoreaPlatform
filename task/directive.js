@@ -120,10 +120,10 @@ angular.module('algorea')
             });
          }
       };
-      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser};
+      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser, options: {}};
       scope.platform.getTaskParams = function(key, defaultValue, success, error) {
          var res = scope.taskParams;
-         if (typeof key !== 'undefined') {
+         if (key) {
             if (key !== 'options' && key in res) {
                res = res[key];
             } else if (res.options && key in res.options) {
@@ -133,7 +133,7 @@ angular.module('algorea')
             }
          }
          if (success) {
-            success(res)
+            success(res);
          } else {
             return res;
          }
