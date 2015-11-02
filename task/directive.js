@@ -259,8 +259,12 @@ angular.module('algorea')
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);
                      elem[0].src = '';
+                     $timeout(function() {initTask(sameUrl);});
+                  } else {
+                     scope.task.updateToken(scope.user_item.sToken, function() {
+                        initTask(sameUrl);
+                     });
                   }
-                  $timeout(function() {initTask(sameUrl);});
                });
             } else {
                if (!sameUrl) {
