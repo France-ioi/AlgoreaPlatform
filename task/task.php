@@ -118,16 +118,17 @@ function askValidation($request, $db) {
    checkParams($params);
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
-   $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItem'], 'sAnswer' => $request['sAnswer']));
+   $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'sAnswer' => $request['sAnswer']));
    $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, nbTasksTried = 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItem']));
+   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
    unset($stmt);
 
    $answerParams = array(
       'sAnswer' => $request['sAnswer'],
       'idUser' => intval($_SESSION['login']['ID']),
       'idItem' => intval($params['idItem']),
+      'idItemLocal' => intval($params['idItemLocal']),
       'idUserAnswer' => $ID
    );
    $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
@@ -141,7 +142,7 @@ function askHint($request, $db) {
    checkParams($params);
    $query = "UPDATE `users_items` SET nbHintsCached = nbHintsCached + 1, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItem']));
+   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
    Listeners::UserItemsAfter($db);
 
    $params['nbHintsGiven'] = $params['nbHintsGiven'] + 1;
