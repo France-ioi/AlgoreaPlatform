@@ -46,6 +46,19 @@ angular.module('algorea')
          scope.selectTab(view);
          if (success) { success(); }
       };
+      scope.platform.openUrl = function(sTextId, success, error) {
+         if (itemService && pathService) {
+            var itemId = itemService.getItemIdByTextId(sTextId);
+            pathService.openItemFromLink(itemId, scope.pathParams, scope.panel);
+            if (success) {success();}
+         } else {
+            if (error) {
+               error('you cannot follow links in this mode');
+            } else {
+               console.error('you cannot follow links in this mode');
+            }
+         }
+      };
       scope.platform.updateHeight = function(height, success, error) {
          scope.updateHeight(height);
          if (success) { success(); }
@@ -321,6 +334,7 @@ angular.module('algorea')
             }
             TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
                scope.task = task;
+               configureCourse(scope);
             }, true);
          }
          function configureCourse(scope) {
@@ -329,12 +343,17 @@ angular.module('algorea')
             }
             scope.task.unloaded = false;
             scope.platform = new Platform(scope.task);
-            scope.platform.openUrl = function(sTextId) {
+            scope.platform.openUrl = function(sTextId, success, error) {
                if (itemService && pathService) {
                   var itemId = itemService.getItemIdByTextId(sTextId);
                   pathService.openItemFromLink(itemId, scope.pathParams, scope.panel);
+                  if (success) {success();}
                } else {
-                  console.error('you cannot follow links in this mode');
+                  if (error) {
+                     error('you cannot follow links in this mode');
+                  } else {
+                     console.error('you cannot follow links in this mode');
+                  }
                }
             };
             TaskProxyManager.setPlatform(scope.task, scope.platform);
@@ -349,6 +368,8 @@ angular.module('algorea')
                   if (metaData.minWidth) {
                      elem.css('min-width',metaData.minWidth+'px');
                   }
+                  scope.onCourseLoaded();
+               }, function() {
                   scope.onCourseLoaded();
                });
             });
