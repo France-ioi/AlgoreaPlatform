@@ -2,7 +2,7 @@
 
 class groupsItemsDescendantsAncestors {
    public static function getSyncRequests() {
-      $request = syncGetTablesRequests(array('groups_items' => true));
+      $request = syncGetTablesRequests(array('groups_items' => true), false);
       $request = $request['groups_items'];
       $request["model"]["fields"]["idGroup"]["groupBy"] = "`groups_items`.`ID`";
       $request["model"]["filters"]["myGroupDescendantsAncestors"] = array(

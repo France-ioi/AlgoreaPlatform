@@ -788,7 +788,7 @@ function setupGroupsItemsRequests(&$requests) {
 
 function getSyncRequests($params, $minServerVersion) {
    global $db;
-   $requests = syncGetTablesRequests();
+   $requests = syncGetTablesRequests(null, false);
    algoreaCustomRequest($params, $requests, $db, $minServerVersion);
 
    return $requests;

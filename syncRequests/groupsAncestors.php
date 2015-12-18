@@ -2,7 +2,7 @@
 
 class groupsAncestors {
    public static function getSyncRequests() {
-      $request = syncGetTablesRequests(array('groups' => true));
+      $request = syncGetTablesRequests(array('groups' => true), false);
       $request = $request['groups'];
       $request["model"]["filters"] =  array(
          "myGroupAncestors" => array(

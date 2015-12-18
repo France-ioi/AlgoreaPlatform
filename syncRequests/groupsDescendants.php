@@ -2,7 +2,7 @@
 
 class groupsDescendants {
    public static function getSyncRequests() {
-      $request = syncGetTablesRequests(array('groups' => true));
+      $request = syncGetTablesRequests(array('groups' => true), false);
       $request = $request['groups'];
       $request["model"]["filters"]["myGroupDescendants"] = array(
          "joins" => array("myGroupDescendants"),
