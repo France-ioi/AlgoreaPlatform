@@ -380,6 +380,8 @@ function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
          }
       }
    }
+   // groups_items slows everything down here, no idea why
+   unset($requests['groups_items']);
 }
 
 function getMyGroupsItems ($params, &$requests) {
@@ -538,6 +540,8 @@ function getAllLevels ($params, &$requests){
    $requests["users_items"]["filters"]["idUser"] = $_SESSION['login']['ID'];
    $requests["items_strings"]["filters"]["getAllLevels"] = true;
    $requests["items"]["filters"]["getAllLevels"] = true;
+   // groups_items slows everything down
+   unset($requests['groups_items']);
 }
 
 // only fetch public infos if not self
