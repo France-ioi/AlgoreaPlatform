@@ -58,7 +58,12 @@ angular.module('algorea')
       toggleMenu: function() {
          $('#menu').toggleClass('menu-toggled');
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
-         $('#userinfocontainer-breadcrumbs').toggleClass('userinfocontainer-breadcrumbs-toggled');
+         // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
+         // the class is not always in sync with the menu. A true fix would be to rewrite the layout
+         // algorithm entirely
+         if ($('#userinfocontainer-breadcrumbs').hasClass('userinfocontainer-breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
+            $('#userinfocontainer-breadcrumbs').toggleClass('userinfocontainer-breadcrumbs-toggled');
+         }
       },
       closeMenu: function() {
          $scope.layout.menuOpen = false;
@@ -115,7 +120,7 @@ angular.module('algorea')
       },
       breadcrumbsClicked: function(event) {
          // do not close menu when user clicks on link
-         if (event.target.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
+         if (event.target.parentNode.parentNode.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
             return;
          }
          $scope.layout.menuOpen = !$scope.layout.menuOpen;
