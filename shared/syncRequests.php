@@ -489,7 +489,7 @@ function getAllLevels ($params, &$requests){
       "ignoreValue" => true,
       "readOnly" => true,
    );
-   $requests["groups_items"]["model"]["fields"]["idItem"]["groupBy"] = "`groups_items`.`ID`";
+   //$requests["groups_items"]["model"]["fields"]["idItem"]["groupBy"] = "`groups_items`.`ID`";
    $requests["items_items"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
    $requests["items_items"]["readOnly"] = true;
 
@@ -533,6 +533,7 @@ function getAllLevels ($params, &$requests){
    $requests["items"]["readOnly"] = true;
 
    $requests["items_items"]["filters"]["getAllLevels"] = true;
+   $requests["groups_items"]["filters"]["getAllLevels"] = true;
    $requests["users_items"]["filters"]["getAllLevels"] = true;
    $requests["users_items"]["filters"]["idUser"] = $_SESSION['login']['ID'];
    $requests["items_strings"]["filters"]["getAllLevels"] = true;
@@ -782,7 +783,6 @@ function setupGroupsItemsRequests(&$requests) {
       $requests["groups_items"]["model"]["joins"]["items_items"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
       $requests["groups_items"]["filters"]["descendantsAndAncestorsRead"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
       $requests["groups_items"]["filters"]["descendantsWrite"] = array('modes' => array('insert' => true, 'update' => true, 'delete' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
-      $requests["groups_items"]["model"]["fields"]["sType"]["groupBy"] = "`groups_items`.`ID`";
    }
 }
 
