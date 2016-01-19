@@ -156,17 +156,35 @@ function fetchItemsIfMissing($serverChanges, $db) {
    return $items;
 }
 
+function hasMissingUserItems($serverChanges, $mode) {
+   if (!isset($serverChanges['items']) || !isset($serverChanges['items'][$mode])) {
+      return false;
+   }
+   if (!isset($serverChanges['users_items']) || !isset($serverChanges['users_items'][$mode])) {
+      return true;
+   }
+   // first implementation used count, but in some cases the request for users_items also fetches
+   // users_items for items to which the user doesn't have access anymore, and in vicious cases,
+   // the count was the same, although some users_items were missing for actually fetched items
+   $users_items_items = [];
+   foreach ((array) $serverChanges['users_items']['inserted'] as $userItem) {
+      $users_items_items[$userItem['data']->idItem] = true;
+   }
+   foreach ((array) $serverChanges['items'][$mode] as $item) {
+      if (!isset($users_items_items[$item['data']->ID])) {
+         return true;
+      }
+   }
+   return false;
+}
+
 // returns an array containing the idItem of all the missing user_items
 function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts, $params) {
    global $config;
-   if (isset($serverChanges['items']) && isset($serverChanges['items']['inserted'])
-      && (!isset($serverChanges['users_items']) || !isset($serverChanges['users_items']['inserted'])
-         || count((array) $serverChanges['items']['inserted']) != count((array) $serverChanges['users_items']['inserted']))) {
+   if (hasMissingUserItems($serverChanges, 'inserted')) {
       createMissingUserItems($db, $serverChanges, 'inserted');
    }
-   if (isset($serverChanges['items']) && isset($serverChanges['items']['updated'])
-       && (!isset($serverChanges['users_items']) || !isset($serverChanges['users_items']['updated'])
-           || count((array) $serverChanges['items']['updated']) != count((array) $serverChanges['users_items']['updated']))) {
+   if (hasMissingUserItems($serverChanges, 'updated')) {
       createMissingUserItems($db, $serverChanges, 'updated');
    }
    // no need for tokens when fetching levels
