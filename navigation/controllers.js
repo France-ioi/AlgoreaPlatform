@@ -29,7 +29,12 @@ angular.module('algorea')
          }
          if ( ! from) {
             if (type == 'task' || type == 'course' || type == 'presentation') {
-               if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }
+               // TODO: remove!
+               if (this.item.ID == '1744652358459813985') {
+                  this.layout.rightIsFullScreen(false);
+               } else {
+                  if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }   
+               }
             } else {
                if (this.panel == 'right') { this.layout.rightIsFullScreen(false); }
             }
@@ -207,6 +212,7 @@ angular.module('algorea')
       $scope.panel = 'left';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
       $scope.itemsList = [];
+      $scope.layout.hasLeftMenu(false);
       function getLeftItems(item) {
          if (!item) {
             $scope.layout.hasLeftMenu(false);
