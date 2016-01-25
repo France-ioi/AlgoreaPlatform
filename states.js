@@ -11,7 +11,7 @@ angular.module('algorea')
 angular.module('algorea')
    .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
       $urlRouterProvider
-         .otherwise('/contents/'+config.domains.current.ProgressRootItemId+'/'+config.domains.current.OfficialProgressItemId);
+         .otherwise(config.domains.current.defaultPath);
       $stateProvider
          .state("contents", {
             url: "/contents/*path?sell&selr&viewl&viewr",
