@@ -215,9 +215,9 @@ angular.module('algorea')
             $scope.layout.hasLeftMenu(true);
          }
          $scope.leftParentItemId = item.ID;
-         $scope.itemList = [];
+         $scope.itemsList = [];
          if (item.sType == 'Presentation') {
-            $scope.itemList = [item];
+            $scope.itemsList = [item];
             return;
          }
          var children = itemService.getChildren(item);
