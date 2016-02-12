@@ -47,18 +47,18 @@ angular.module('algorea')
                   }
                   var basePath = scope.pathParams.path.slice(0, scope.depth).join('/');
                   if (nextID) {
-                     $rootScope.rightLink = {sref: pathService.getSrefString(basePath+'/'+nextID), stateName: 'contents', stateParams: {path: basePath+'/'+nextID}};
+                     $rootScope.rightLink = {sref: pathService.getSrefString(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
                      $rootScope.upLink = null;
                   } else {
                      $rootScope.rightLink = null;
                      if(basePath) {
-                        $rootScope.upLink = {sref: pathService.getSrefString(basePath, scope.pathParams.path-1), stateName: 'contents', stateParams: {path: basePath, sell: scope.pathParams.path-1}};
+                        $rootScope.upLink = {sref: pathService.getSrefString(basePath, scope.pathParams.path-1, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: scope.pathParams.path-1, selr: null, viewr: null}};
                      } else {
                         $rootScope.upLink = null;
                      }
                   }
                   if (previousID) {
-                     $rootScope.leftLink = {sref: pathService.getSrefString(basePath+'/'+previousID), stateName: 'contents', stateParams: {path: basePath+'/'+previousID}};
+                     $rootScope.leftLink = {sref: pathService.getSrefString(basePath+'/'+previousID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+previousID, selr: null, viewr: null}};
                   } else {
                      $rootScope.leftLink = null;
                   }
