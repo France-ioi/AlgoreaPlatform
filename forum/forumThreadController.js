@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('forumThreadController', ['$scope', '$state', 'itemService', 'loginService', '$http', '$timeout', function ($scope, $state, itemService, loginService, $http, $timeout) {
+   .controller('forumThreadController', ['$scope', '$state', 'itemService', 'loginService', '$http', '$timeout', '$rootScope',  function ($scope, $state, itemService, loginService, $http, $timeout, $rootScope) {
    if (!$scope.inTask) {
       $scope.layout.isOnePage(true);
       $scope.user_item = {};
@@ -24,7 +24,7 @@ angular.module('algorea')
    }
    $scope.newMessage = null;
    $scope.newMessageInserted = false;
-   $scope.myUserID = null;
+   //$scope.myUserID = null;
    $scope.answers = [];
    $scope.events = [];
    $scope.canValidate = false;
@@ -67,7 +67,6 @@ angular.module('algorea')
             });
             $scope.other_user_item = {bValidated: data.other_bValidated != '0', sToken: data.sToken, sState: data.other_sState, nbHintsCached: parseInt(data.other_nbHintsCached), idUser: $scope.thread.idUserCreated, idItem: $scope.thread.idItem};
             $scope.answers = data.other_answers;
-            console.error(data.other_answers);
             $scope.events = $scope.thread.messages.slice(0);
             $scope.events = $scope.events.concat(data.other_answers);
             $scope.openAnswer(currentAnswer);
@@ -83,7 +82,7 @@ angular.module('algorea')
       angular.forEach($scope.thread.user_thread, function(found_user_thread) {
          $scope.user_thread = found_user_thread;
       });
-      if (!$scope.user_thread) {
+      if (!$scope.user_thread || $scope.user_thread.idUser != $scope.myUserID) {
          $scope.user_thread = ModelsManager.createRecord('users_threads');
          $scope.user_thread.idUser = $scope.myUserID;
          $scope.user_thread.idThread = $scope.thread.ID;
@@ -99,14 +98,13 @@ angular.module('algorea')
       ModelsManager.updated('users_threads', $scope.user_thread.ID);
    };
    function fetchThread(idThread) {
-      itemService.getAsyncRecord('threads', idThread, function(thread) {
+      itemService.syncThread(idThread, function() {
+         var thread = itemService.getRecord('threads', idThread);
          $scope.thread = thread;
          $scope.loading = false;
          if (!thread) {
             return;
          }
-         $scope.myUserID = loginService.getUser();
-         $scope.myUserID = $scope.myUserID.userID;
          $scope.ownThread = ($scope.myUserID == thread.idUserCreated);
          angular.forEach(thread.messages, function(message) {
             if (message.idUser == $scope.myUserID && message.sSubmissionDate === null) {
@@ -144,8 +142,6 @@ angular.module('algorea')
       $scope.ownThread = true;
       $scope.newThread = true;
       itemService.onNewLoad(function() {
-         $scope.myUserID = loginService.getUser();
-         $scope.myUserID = $scope.myUserID.userID;
          var newThread = ModelsManager.createRecord('threads');
          newThread.idUserCreated = $scope.myUserID;
          if (item) {
@@ -161,6 +157,7 @@ angular.module('algorea')
          newThread.sLastActivityDate = new Date();
          $scope.thread = newThread;
          $scope.createEmptyNewMessage();
+         $scope.ensureUserThread();
          $scope.loading = false;
       });
    }
@@ -168,8 +165,6 @@ angular.module('algorea')
    // $scope.item is defined
    function lookupThread() {
       var result = null;
-      $scope.myUserID = loginService.getUser();
-      $scope.myUserID = $scope.myUserID.userID;
       angular.forEach($scope.item.threads, function(thread) {
          if (thread.idUserCreated == $scope.myUserID) {
             result = thread;
@@ -195,9 +190,25 @@ angular.module('algorea')
       }
       $scope.canValidate = $scope.user_item && $scope.user_item.bValidated != 0 && $scope.item.sValidationType == 'Manual';
    }
-   initThread();
-   itemService.onNewLoad(initThread);
+   $scope.$on('destroy', function() {
+
+   });
+   //initThread();
+   $scope.init = function() {
+      $scope.loading = true;
+      itemService.onNewLoad(function() {
+         $scope.myUserID = $rootScope.myUserID;
+         initThread();
+         $timeout($scope.$apply);
+      });   
+   }
+   $scope.init();
+   $scope.$on('syncResetted', function() {
+      $scope.loading = true;
+      $scope.init();
+   });
    $scope.$on('algorea.reloadView', function() {
+      $scope.loading = true;
       $timeout(initThread);
    });
    // TODO: launch initThread on ModelsManager.addListener('threads', 'updated', 'forumThreadController', callback); ?
