@@ -313,6 +313,9 @@ $viewsModels = array(
          "bImportant" => array(),
       ),
       "filters" => array(
+         "accessible" => array(
+               "condition"  => "`[PREFIX]filters`.`idUser` = :[PREFIX_FIELD]idUser",
+         ),
       ),
    ),
 
@@ -394,7 +397,9 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
          "groups_items" =>  array("srcTable" => "items", "srcField" => "ID", "dstField" => "idItem"),
-         "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor")
+         "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
+         "items_ancestors" => array("srcTable" => "items", "srcField" => "ID", "dstField" => "idItemChild"),
+         "items_items" => array("srcTable" => "items", "srcField" => "ID", "dstField" => "idItemChild"),
       ),
       "fields" => array(
          "sUrl" => array(),
@@ -433,7 +438,8 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
          "groups_items" =>  array("srcTable" => "items_items", "srcField" => "idItemChild", "dstField" => "idItem"),
-         "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor")
+         "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
+         "items_ancestors" => array("srcTable" => "items_items", "srcField" => "idItemChild", "dstField" => "idItemChild"),
       ),
       "fields" => array(
          "idItemParent" => array(),
@@ -480,7 +486,9 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
          "groups_items" =>  array("srcTable" => "items_strings", "srcField" => "idItem", "dstField" => "idItem"),
-         "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor")
+         "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
+         "items_ancestors" => array("srcTable" => "items_strings", "srcField" => "idItem", "dstField" => "idItemChild"),
+         "items_items" => array("srcTable" => "items_strings", "srcField" => "idItem", "dstField" => "idItemChild"),
       ),
       "fields" => array(
          "idItem"          => array(),
@@ -513,6 +521,7 @@ $viewsModels = array(
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
          "myGroupAncestorsLeft" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroup", "srcTable" => "groups_items", "dstTable" => "groups_ancestors"),
          "myGroupAncestors" => array("dstField" => "idGroupAncestor", "srcField" => "idGroup", "srcTable" => "groups_items", "dstTable" => "groups_ancestors"),
+         "items_ancestors" => array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild"),
       ),
       "fields" => array(
          "idGroup" => array(),
@@ -565,9 +574,14 @@ $viewsModels = array(
       "mainTable" => "messages",
       "adminOnly" => false,
       "joins" => array(
+        "threads" => array("srcTable" => "messages", "srcField" => "idThread", "dstField" => "ID"),
+        "users"   => array("srcTable" => "messages", "srcField" => "idUser", "dstField" => "ID"),
+        "users_items" => array("srcTable" => "threads", "srcField" => "idItem", "dstField" => "idItem"),
+        "left_users_items" => array("type" => "LEFT", "srcTable" => "threads", "srcField" => "idItem", "dstField" => "idItem", "dstTable" => "users_items"),
       ),
       "fields" => array(
           "idThread"        => array(),
+          "sLogin"          => array('tableName' => 'users', 'readOnly' => true),
           "idUser"          => array(),
           "sSubmissionDate" => array(),
           "bPublished"      => array(),
@@ -578,6 +592,21 @@ $viewsModels = array(
           "bPersistant"     => array(),
       ),
       "filters" => array(
+         // "accessibleHelpRead" => array(
+         //    "joins" => array("users_items", "threads", "users"),
+         //    "condition"  => "(`[PREFIX]users_items`.`idUser` = :[PREFIX_FIELD]idUser and `[PREFIX]users_items`.`bValidated` = 1)",
+         // ),
+         "accessibleWrite" => array(
+            "joins" => array("left_users_items", "threads"),
+            "condition"  => "((`[PREFIX]threads`.`sType` = 'General' or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser) or (`[PREFIX]left_users_items`.`ID` IS NOT NULL AND `[PREFIX]left_users_items`.`idUser` = :[PREFIX_FIELD]idUser and `[PREFIX]left_users_items`.`bValidated` = 1) and `[PREFIX]messages`.`idUser` = :[PREFIX_FIELD]idUser)",
+         ),
+         // "accessibleGeneralOrMineRead" => array(
+         //    "joins" => array("threads", "users"),
+         //    "condition"  => "(`[PREFIX]threads`.`sType` = 'General' or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
+         // ),
+         "idThread" => array(
+            "condition"  => "(`[PREFIX]messages`.`idThread` = :[PREFIX_FIELD]idThread)",
+         ),
       ),
    ),
    "threads" => array(
@@ -594,6 +623,7 @@ $viewsModels = array(
           "sType"             => array(),
           "sLastActivityDate" => array(),
           "idUserCreated"     => array(),
+          "sUserCreatedLogin" => array('tableName' => 'users', 'field' => 'sLogin', 'readOnly' => true),
           "idItem"            => array(),
           "sTitle"            => array(),
           "sMessage"          => array(),
@@ -601,10 +631,16 @@ $viewsModels = array(
           "bHidden"           => array(),
       ),
       "filters" => array(
-         "accessible" => array(
+         "accessibleHelp" => array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
-            "condition"  => '((`[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :idGroupSelf AND `[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :idGroupOwned)',
+            "condition"  => '((`[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedGrayedAccess` = 1 OR `[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
+         "accessibleGeneralOrMineRead" => array(
+            "condition"  => "(`[PREFIX]threads`.`sType` = 'General' or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
+         ),
+         "accessibleWrite" => array(
+            "condition"  => "(`[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
+         )
       ),
    ),
    "users" => array(
@@ -660,10 +696,13 @@ $viewsModels = array(
           "sGradingDate" => array(),
       ),
       "filters" => array(
-         "accessible" => array(
+         "accessibleForumRead" => array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
             "condition"  => '((`[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf) AND (`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned))',
          ),
+         "accessible" => array(
+            "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser",
+         )
       ),
    ),
    "users_items" => array(
@@ -674,6 +713,7 @@ $viewsModels = array(
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfUserDescendants" => array("srcTable" => "users_items", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUser"),
          "selfGroupDescendants" => array("srcTable" => "selfUserDescendants", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
+         "items_ancestors" => array("srcTable" => "users_items", "srcField" => "idItem", "dstField" => "idItemChild"),
       ),
       "fields" => array(
           "idUser"                => array(),
@@ -706,12 +746,16 @@ $viewsModels = array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
             "condition"  => '((`[PREFIX]groups_items`.`bCachedManagerAccess` = 1 OR `[PREFIX]groups_items`.`bOwnerAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf) AND (`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned))',
          ),
+         "mine" => array(
+            "condition" => "`[PREFIX]users_items`.`idUser` = :[PREFIX_FIELD]idUser"
+         ),
       ),
    ),
    "users_threads" => array(
       "mainTable" => "users_threads",
       "adminOnly" => false,
       "joins" => array(
+         "threads" => array("srcTable" => "messages", "srcField" => "idThread", "dstField" => "ID"),
       ),
       "fields" => array(
           "idUser"         => array(),
@@ -721,6 +765,9 @@ $viewsModels = array(
           "bStarred"       => array(),
       ),
       "filters" => array(
+         "accessible" => array(
+               "condition"  => "`[PREFIX]users_threads`.`idUser` = :[PREFIX_FIELD]idUser",
+         ),
       ),
    ),
 );
