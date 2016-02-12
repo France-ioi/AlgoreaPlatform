@@ -61,6 +61,7 @@ angular.module('algorea')
             } else if (!syncDone) {
                // calling callbacks after first full sync
                SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: getIdsToSync(false)};
+               $rootScope.$broadcast('syncFinished');
                angular.forEach(callbacks, function(callbackIDlist, model) {
                   angular.forEach(callbackIDlist, function(callbacklist, ID) {
                      var record = (model == 'general') ? null : ModelsManager.curData[model][ID];
@@ -108,7 +109,6 @@ angular.module('algorea')
       }
       function getUser() {
          var res = false;
-         console.error(SyncQueue.requests);
          var userID = SyncQueue.requests.loginData.ID;
          angular.forEach(ModelsManager.curData.users, function(user, ID) {
             if (ID == userID) {
@@ -151,6 +151,9 @@ angular.module('algorea')
             ModelsManager.updated('users', user_id, false);
          },
          syncWithNewLogin: syncWithNewLogin,
+         getRecord: function (model, ID) {
+            return ModelsManager.getRecord(model, ID);
+         },
          getAsyncRecord: function (model, ID, callback) {
             if (syncDone) {
                callback(ModelsManager.getRecord(model, ID));
@@ -173,6 +176,7 @@ angular.module('algorea')
                   callbacks.general = {0: []};
                }
                callbacks.general[0].push(callback);
+               // TODO: remove callback once called
             }
          },
          saveRecord: function(model, ID) {
@@ -182,11 +186,16 @@ angular.module('algorea')
          getStrings: function(item) {
             return item.strings[0];
          },
-         getUserItem: function(item) {
+         getUserItem: function(item, idUser) {
             var result_user_item = null;
+            if (!idUser) {
+               idUser = $rootScope.myUserID;
+            }
             angular.forEach(item.user_item, function(user_item) {
-               result_user_item = user_item;
-               return;
+               if (!idUser || user_item.idUser == idUser) {
+                  result_user_item = user_item;
+                  return;
+               }
             });
             return result_user_item;
          },
@@ -232,7 +241,6 @@ angular.module('algorea')
             angular.forEach(childrenz, function (child) {
                children.push(child.child);
             });
-//            console.error(children);
             return children;
          },
          getItemIdByTextId: function(sTextId) {
@@ -279,6 +287,18 @@ angular.module('algorea')
                typeStr = 'Cours';
             }
             return typeStr;
+         },
+         syncThread: function(idThread, callback) {
+            var endListenerName = 'thread-'+idThread;
+            SyncQueue.requestSets[endListenerName] = {name: 'getThread', 'idThread': idThread};
+            SyncQueue.addSyncEndListeners(endListenerName, function() {
+               callback();
+               SyncQueue.removeSyncEndListeners(endListenerName);
+            }, true);
+            SyncQueue.planToSend();
+         },
+         unsyncThread:function() {
+            delete(SyncQueue.requests.requestSets);
          }
       };
    }]);
