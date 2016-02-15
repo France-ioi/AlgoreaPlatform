@@ -147,7 +147,7 @@ function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
    //    );
    // }
 
-   $requests['users_items']['filters']['mine'] = array(
+   $requests['users_items']['filters']['idUser'] = array(
       'values' => ['idUser' => $_SESSION['login']['ID']],
    );
 
@@ -260,9 +260,9 @@ function getAllLevels ($params, &$requests){
    $idRootIndexItem = $config->shared->domains['current']->DiscoverRootItemId;
    $idRootCustomItem = $config->shared->domains['current']->CustomProgressItemId;
    unset($requests['messages']);
-   //unset($requests['threads']);
-#   $requests['threads']['fields']
-   $requests["threads"]['model']['fields']['sUserCreatedLogin'] = array('sql' => '`users`.`sLogin`', 'tableName' => 'users');
+   unset($requests['users_threads']);
+   unset($requests['threads']);
+   unset($requests['filters']);
    $requests["items_items"]["model"]["filters"]["getAllLevels"] = array(
       "joins" => array(),
       "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem.")",
@@ -322,7 +322,7 @@ function getAllLevels ($params, &$requests){
    $requests["items_items"]["filters"]["getAllLevels"] = true;
    $requests["groups_items"]["filters"]["getAllLevels"] = true;
    $requests["users_items"]["filters"]["getAllLevels"] = true;
-   $requests['users_items']['filters']['mine'] = array(
+   $requests['users_items']['filters']['idUser'] = array(
       'values' => ['idUser' => $_SESSION['login']['ID']],
    );
    $requests["items_strings"]["filters"]["getAllLevels"] = true;

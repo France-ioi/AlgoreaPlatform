@@ -86,10 +86,16 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       }
       $params = array_replace($_SESSION['login'], (array)$userItem['data'], (array)$item['data']);
       $params = array_intersect_key($params, $token_fields);
+      // case of a user_item fetched for a forum thread:
+      if ($userItem['data']->idUser != $_SESSION['login']['ID']) {
+         $params['bSubmissionPossible'] = false;
+         $params['bReadAnswers'] = true;
+      }
       $params['idItem'] = $item['data']->sTextId;
       $params['idItemLocal'] = $item['data']->ID;
-      $params['idUser'] = $_SESSION['login']['ID'];
+      $params['idUser'] = $userItem['data']->idUser;
       $params['bHintPossible'] = true;
+      $params['bHasSolvedTask'] = $userItem['data']->bValidated;
       // platform needs idTask:
       $params['id'.$item['data']->sType] = $params['idItem'];
       $params['bHasAccessCorrection'] = $item['data']->bAccessSolutions;
@@ -108,12 +114,15 @@ function fetchItemsIfMissing($serverChanges, $db) {
    } else {
       $items = array_replace($serverChanges['items']['updated'], $serverChanges['items']['inserted']);
    }
-   if (count($items) !=
+   if ((count($items) !=
          ((isset($serverChanges['users_items']['updated'])
             ? count($serverChanges['users_items']['updated']) : 0)
          + (isset($serverChanges['users_items']['inserted'])
             ? count($serverChanges['users_items']['inserted']) : 0)
-         )) {
+         ))
+      || (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && 
+         (isset($serverChanges['requestSets']['getThread']['users_items']['inserted']) || isset($serverChanges['requestSets']['getThread']['users_items']['updated'])))
+      ) {
       if (!isset($serverChanges['items'])) {
          $items_ids = array();
       } else {
@@ -128,6 +137,16 @@ function fetchItemsIfMissing($serverChanges, $db) {
       }
       if (isset($serverChanges['users_items']) && count($serverChanges['users_items']['inserted'])) {
          foreach($serverChanges['users_items']['inserted'] as $id => $values) {
+            $users_items_ids[] = $values['data']->idItem;
+         }
+      }
+      if (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && isset($serverChanges['requestSets']['getThread']['users_items']['inserted'])) {
+         foreach ((array) $serverChanges['requestSets']['getThread']['users_items']['inserted'] as $id => $values) {
+            $users_items_ids[] = $values['data']->idItem;
+         }
+      }
+      if (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && isset($serverChanges['requestSets']['getThread']['users_items']['updated'])) {
+         foreach ((array) $serverChanges['requestSets']['getThread']['users_items']['updated'] as $id => $values) {
             $users_items_ids[] = $values['data']->idItem;
          }
       }
@@ -185,14 +204,20 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
    if (hasMissingUserItems($serverChanges, 'updated')) {
       createMissingUserItems($db, $serverChanges, 'updated');
    }
-   // no need for tokens when fetching levels
-   if (!isset($serverChanges['users_items']) || ! isset($params["requests"]["algorea"]['type']) || $params["requests"]["algorea"]['type'] == 'getAllLevels') {
-      return;
-   }
    $items = fetchItemsIfMissing($serverChanges, $db);
    // then we generate tokens for the user items corresponding to tasks and courses
    require_once(dirname(__FILE__)."/TokenGenerator.php");
    $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
+   if (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && isset($serverChanges['requestSets']['getThread']['users_items']['inserted'])) {
+      foreach ((array) $serverChanges['requestSets']['getThread']['users_items']['inserted'] as $userItem) {
+         generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
+      }
+   }
+   if (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && isset($serverChanges['requestSets']['getThread']['users_items']['updated'])) {
+      foreach ((array) $serverChanges['requestSets']['getThread']['users_items']['updated'] as $userItem) {
+         generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
+      }
+   }
    if (isset($serverChanges['users_items']) && isset($serverChanges['users_items']['updated'])) {
       foreach ((array) $serverChanges['users_items']['updated'] as $userItem) {
          generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);

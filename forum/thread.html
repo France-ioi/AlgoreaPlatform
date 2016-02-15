@@ -78,7 +78,7 @@
          <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
       </div>
       <div ng-show="taskLoaded && threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true"></div>
-      <center ng-hide="taskLoaded"><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+      <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
    </div>
    <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID">
       <div ng-if="event.bTrainersOnly !== undefined" class="bs-callout bs-callout-default"><!-- case of message -->
@@ -115,7 +115,7 @@
             <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
          </div>
          <div ng-show="taskLoaded && !showForum" include-task task-name="my-task"></div>
-         <center ng-hide="taskLoaded"><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+         <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
       </div>
    </div>
 </div>

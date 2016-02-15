@@ -683,6 +683,9 @@ $viewsModels = array(
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfUserDescendants" => array("srcTable" => "users_answers", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUser"),
          "selfGroupDescendants" => array("srcTable" => "selfUserDescendants", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
+         "my_users_items" => array("srcTable" => "users_answers", "dstTable" => "users_items", "dstField" => "idItem", "srcField" => "idItem"),
+         "other_users_items" => array("srcTable" => "users_answers", "dstTable" => "users_items", "dstField" => "idItem", "srcField" => "idItem"),
+         "items" => array("srcTable" => "users_answers", "dstTable" => "items", "dstField" => "ID", "srcField" => "idItem"),
       ),
       "fields" => array(
           "idUser"       => array(),
@@ -702,7 +705,19 @@ $viewsModels = array(
          ),
          "accessible" => array(
             "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser",
-         )
+         ),
+         "getMyUserItem" => array(
+            "joins" => array("my_users_items"),
+            "condition"  => "`[PREFIX]my_users_items`.`idUser` = :[PREFIX_FIELD]idUser",
+         ),
+         "getOtherUserItem" => array(
+            "joins" => array("other_users_items"),
+            "condition"  => "`[PREFIX]other_users_items`.`idUser` = :[PREFIX_FIELD]idUser",
+         ),
+         "idItem" => array(
+            "joins" => array("items"),
+            "condition"  => "`[PREFIX]items`.`ID` = :[PREFIX_FIELD]idItem",
+         ),
       ),
    ),
    "users_items" => array(
@@ -746,8 +761,11 @@ $viewsModels = array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
             "condition"  => '((`[PREFIX]groups_items`.`bCachedManagerAccess` = 1 OR `[PREFIX]groups_items`.`bOwnerAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf) AND (`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned))',
          ),
-         "mine" => array(
+         "idUser" => array(
             "condition" => "`[PREFIX]users_items`.`idUser` = :[PREFIX_FIELD]idUser"
+         ),
+         "idItem" => array(
+            "condition" => "`[PREFIX]users_items`.`idItem` = :[PREFIX_FIELD]idItem"
          ),
       ),
    ),

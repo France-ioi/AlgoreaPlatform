@@ -29,6 +29,7 @@ angular.module('algorea')
    $scope.events = [];
    $scope.canValidate = false;
    $scope.threadData = {currentAnswer: null}; // just to ease prototypal inheritance
+   $scope.thread = null;
    $scope.createEmptyNewMessage = function() {
       $scope.newMessage = ModelsManager.createRecord('messages');
       $scope.newMessage.idThread = $scope.thread.ID;
@@ -41,42 +42,6 @@ angular.module('algorea')
          $scope.$broadcast('task-answers.openAnswer', answer.sAnswer);
          $scope.threadData.currentAnswer = answer;
       }
-   };
-   $scope.loadTaskToken = function() {
-      $scope.task = {};
-      var postData = {
-         'idThread': $scope.thread.ID,
-         'idItem': $scope.thread.idItem,
-         'idUser': $scope.thread.idUserCreated
-      };
-      $http.post('/forum/getThreadTask.php', postData, {responseType: 'json'}).
-         success(function(data) {
-            if (!data.success) {
-               $scope.taskLoadingError = data.error;
-               $scope.taskLoading = false;
-               console.error(data.error);
-               return;
-            }
-            var currentAnswer = null;
-            angular.forEach(data.other_answers, function(answer) {
-               answer.sSubmissionDate = ModelsManager.getJSDateTimeFromSQLDateTime(answer.sSubmissionDate);
-               answer.sGradingDate = answer.sGradingDate ? ModelsManager.getJSDateTimeFromSQLDateTime(answer.sGradingDate) : null;
-               if (!$scope.threadData.currentAnswer || answer.sSubmissionDate > $scope.threadData.currentAnswer.sSubmissionDate) {
-                  currentAnswer = answer;
-               }
-            });
-            $scope.other_user_item = {bValidated: data.other_bValidated != '0', sToken: data.sToken, sState: data.other_sState, nbHintsCached: parseInt(data.other_nbHintsCached), idUser: $scope.thread.idUserCreated, idItem: $scope.thread.idItem};
-            $scope.answers = data.other_answers;
-            $scope.events = $scope.thread.messages.slice(0);
-            $scope.events = $scope.events.concat(data.other_answers);
-            $scope.openAnswer(currentAnswer);
-            $scope.taskLoading = false;
-         }).
-         error(function(data) {
-            $scope.taskLoadingError = 'Error while calling getThreadTask.';
-            $scope.taskLoading = false;
-            console.error(data);
-         });
    };
    $scope.ensureUserThread = function() {
       angular.forEach($scope.thread.user_thread, function(found_user_thread) {
@@ -120,24 +85,42 @@ angular.module('algorea')
             if (!$scope.item.ID) {
                $scope.item = ModelsManager.getRecord('items', $scope.thread.idItem);
             }
-            $scope.user_item = itemService.getUserItem($scope.item);
+            $scope.user_item = itemService.getUserItem($scope.item, $rootScope.myUserID);
+            $scope.other_user_item = itemService.getUserItem($scope.item, thread.idUserCreated);
             var typeStr = itemService.getItemTypeStr($scope.item);
             $scope.itemStr = typeStr+' : '+($scope.item.strings[0] ? $scope.item.strings[0].sTitle : '');
             if ($scope.item.sType && $scope.item.sType == "Task") {
                $scope.hasTask = true;
-               $scope.loadTaskToken();
+               var currentAnswer = itemService.getCurrentAnswer($scope.item, thread.idUserCreated);
+               $scope.answers = itemService.getAnswers($scope.item, thread.idUserCreated);
+               $scope.events = $scope.thread.messages.slice(0);
+               $scope.events = $scope.events.concat($scope.answers);
+               $scope.openAnswer(currentAnswer);
+               $scope.taskLoading = false;
+               $scope.synchronizeEvents();
             }
          } else if ($scope.inTask) {
-            $scope.answers = $scope.item.user_answers;
+            $scope.answers = itemService.getAnswers($scope.item);
             $scope.events = $scope.events.concat($scope.answers);
             $scope.user_item = itemService.getUserItem($scope.item);
             $scope.hasTask = true;
             $scope.taskLoading = false;
+            $scope.synchronizeEvents();
          }
          $scope.ensureUserThread();
          $scope.updateReadDate();
       });
    }
+   $scope.synchronizeEvents = function() {
+      SyncQueue.addSyncEndListeners('forumThreadController', function() {
+         $scope.events = $scope.thread.messages.slice(0);
+         $scope.answers = itemService.getAnswers($scope.item, $scope.thread.idUserCreated);
+         $scope.events = $scope.events.concat($scope.answers);
+      }, true);
+   }
+   $scope.$on('$destroy', function() {
+      SyncQueue.removeSyncEndListeners('forumThreadController');
+   });
    function startNewThread(item) {
       $scope.ownThread = true;
       $scope.newThread = true;
@@ -190,9 +173,6 @@ angular.module('algorea')
       }
       $scope.canValidate = $scope.user_item && $scope.user_item.bValidated != 0 && $scope.item.sValidationType == 'Manual';
    }
-   $scope.$on('destroy', function() {
-
-   });
    //initThread();
    $scope.init = function() {
       $scope.loading = true;
@@ -326,7 +306,6 @@ angular.module('algorea')
                console.error(data.error);
                return;
             }
-            $scope.loadTaskToken();
          }).
          error(function(data) {
             $scope.taskLoadingError = 'Error while calling validateAnswer.';

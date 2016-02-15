@@ -199,14 +199,29 @@ angular.module('algorea')
             });
             return result_user_item;
          },
-         getCurrentAnswer: function(item) {
+         getCurrentAnswer: function(item, idUser) {
             var result_user_answer = null;
+            if (!idUser) {
+               idUser = $rootScope.myUserID;
+            }
             angular.forEach(item.user_answers, function(user_answer) {
-               if (!result_user_answer || result_user_answer.sSubmissionDate < user_answer.sSubmissionDate) {
+               if ((!result_user_answer || result_user_answer.sSubmissionDate < user_answer.sSubmissionDate) && user_answer.idUser == idUser) {
                   result_user_answer = user_answer;
                }
             });
             return result_user_answer;
+         },
+         getAnswers: function(item, idUser) {
+            var result = [];
+            if (!idUser) {
+               idUser = $rootScope.myUserID;
+            }
+            angular.forEach(item.user_answers, function(user_answer) {
+               if (user_answer.idUser == idUser) {
+                  result.push(user_answer);
+               }
+            });
+            return result;
          },
          getBrothersFromParent: function(parentID) {
             return this.getChildren(this.getItem(parentID));

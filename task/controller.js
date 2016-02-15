@@ -33,7 +33,7 @@ angular.module('algorea')
       if ($scope.loadedUserItemID != $scope.user_item.ID) {
          return;
       }
-      $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item) : '';
+      $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
       if ($scope.user_answer) {
          $scope.task.reloadAnswer($scope.user_answer.sAnswer, function() {
             if ($scope.loadedUserItemID != $scope.user_item.ID) return;
