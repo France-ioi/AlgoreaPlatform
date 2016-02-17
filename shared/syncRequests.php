@@ -447,7 +447,7 @@ function setupExpandedItemsRequests($params, &$requests) {
       $parents_condition_zero .= ')';
    }
    //print_r($expanded_items);
-   $tables = array('items_items' => 'idItemParent', 'items' => 'ID', 'items_strings' => 'idItem', 'groups_items' => 'idItem', 'users_items' => 'idItem'/*, 'users_answers' => 'idItem'*/, 'threads' => 'idItem');
+   $tables = array('items_items' => 'idItemParent', 'items' => 'ID', 'items_strings' => 'idItem', 'groups_items' => 'idItem', 'users_items' => 'idItem'/*, 'users_answers' => 'idItem'*/);
    foreach($tables as $table => $field) {
       $requests[$table]["model"]["filters"]["idItemParent"] = array(
          "joins" => array($table == 'items_items' ? null : "items_items"),
