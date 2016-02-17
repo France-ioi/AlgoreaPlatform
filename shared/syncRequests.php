@@ -696,7 +696,7 @@ function setupExpandedItemsRequests($params, &$requests) {
       $requests["groups_items"]["filters"]["myGroupSelf"] = array("values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf']));
    } else {
       $requests["groups_items"]["model"]["joins"]["items_items"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
-      $requests["groups_items"]["filters"]["descendantsAndAncestorsRead"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
+      $requests["groups_items"]["filters"]["descendantsRead"] = array('modes' => array('select' => true), "values" => array("idGroupOwned" => $_SESSION['login']['idGroupOwned']));
       //$requests["groups_items"]["filters"]["descendantsWrite"] = array('modes' => array('update' => true, 'delete' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));// TODO: proper filter for write
       $requests["groups_items"]["model"]["fields"]["sType"]["groupBy"] = "`groups_items`.`ID`";
       //$requests['debugLogFunction'] = myDebugFunction;

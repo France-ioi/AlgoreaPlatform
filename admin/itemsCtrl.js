@@ -715,6 +715,7 @@ angular.module('algorea')
          {name: "groupsGroupsDescendantsAncestors"},
          {name: "groupsGroupsAncestors"},
          {name: "groupsItemsDescendantsAncestors"},
+         {name: "groupsItemsAncestors"},
          //{name: "itemsOrphaned"},
          //{name: "itemsStringsOrphaned"},
          //{name: "groupsItemsOrphaned"},

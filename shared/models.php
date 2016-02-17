@@ -539,6 +539,14 @@ $viewsModels = array(
             "joins" => array("myGroupDescendants", "myGroupAncestors"),
             "condition"  => '(`[PREFIX]myGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]myGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
+         "descendantsRead" => array(
+            "joins" => array("myGroupDescendants"),
+            "condition"  => '(`[PREFIX]myGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)',
+         ),
+         "ancestorsRead" => array(
+            "joins" => array("myGroupAncestors"),
+            "condition"  => '(`[PREFIX]myGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
+         ),
          "descendantsWrite" => array(
             "joins" => array("myGroupDescendants"),
             "condition"  => '(`[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupSelf `[PREFIX]myGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned) AND (`[PREFIX]groups_items`.`bCachedManagerAccess` <=> 1 OR `[PREFIX]groups_items`.`bOwnerAccess` <=> 1)',
