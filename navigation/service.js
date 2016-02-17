@@ -108,7 +108,6 @@ angular.module('algorea')
       }
       function getUser() {
          var res = false;
-         console.error(SyncQueue.requests);
          var userID = SyncQueue.requests.loginData.ID;
          angular.forEach(ModelsManager.curData.users, function(user, ID) {
             if (ID == userID) {
@@ -258,12 +257,20 @@ angular.module('algorea')
                $rootScope.$broadcast('algorea.itemTriggered', item.ID);
             }
          },
-         getItemTypeStr: function(item) {
-            if (!item || item.sType == 'Root') return '';
-            var type = item.sType;
-            if (type == 'GenericChapter' || type == 'StaticChapter'  || type == 'ContestChapter'  || type == 'LimitedTimeChapter') {
+         normalizeItemType: function(type) {
+            if (!type) return '';
+            if (type.substring(type.length - 7, type.length) === 'Chapter') {
                type = 'Chapter';
             }
+            if (type.substring(type.length - 4, type.length) === 'Root') {
+               type = 'Root';
+            }
+            return type;
+         },
+         getItemTypeStr: function(item) {
+            if (!item) return '';
+            var type = this.normalizeItemType(item.sType);
+            if (type == 'Root') return '';
             var typeStr;
             if (type == 'Level') {
                typeStr = 'Niveau' + (item.iLevel ? ' '+item.iLevel : '');
