@@ -7,6 +7,6 @@
     </div>
   </div>
   <div ng-include="'forum/thread.html'" ng-show="showForum"></div>
-  <div ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
+  <div class="loading" ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'"></div>
   <div ng-show="taskLoaded && !showForum" include-task></div>
 </div>

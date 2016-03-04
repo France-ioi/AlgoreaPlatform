@@ -36,6 +36,7 @@ $config = (object) array(
       "domains" => array( // global root
          "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
             "title" => 'Change title here',
+            "usesLeftNavigation" => false,
             "domain" => 'domain url, optional for "default"',
             "defaultPath" => '/contents/4022/4023',
             "usesForum" => true,

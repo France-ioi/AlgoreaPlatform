@@ -63,7 +63,7 @@ body {
    -webkit-flex-wrap:wrap;
    display:flex;
    flex-wrap:wrap;
-   background: #e8e8e8;
+   background-color: #e8e8e8;
    height:74px;
 }
 
@@ -75,7 +75,7 @@ body {
 .main-titlebar-icon {
    -webkit-flex: 0 0 75px;
    flex: 0 0 75px;
-   background:#2aa3ff;
+   background-color:#2aa3ff;
    color:white;
    font-size:63px !important;
    padding-top:4px;
@@ -208,9 +208,17 @@ body {
 }
 
 .task-auto-height {
-   height: calc(100vh - 170px);
+   height: calc(100vh - 205px);
 }
 
 .fullscreen-iframe {
-   height: calc(100vh - 25px) !important;
+   height: calc(100vh - 185px) !important;
+}
+
+.loading {
+   display:block;
+   position:relative;
+   width:100px;
+   margin-left:auto;
+   margin-right:auto;
 }

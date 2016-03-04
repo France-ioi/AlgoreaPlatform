@@ -58,9 +58,14 @@ angular.module('algorea')
       toggleMenu: function() {
          $('#menu').toggleClass('menu-toggled');
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
+         $('#breadcrumbs').toggleClass('breadcrumbs-toggled');
+         $('#footer').toggleClass('footer-toggled');
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
          // the class is not always in sync with the menu. A true fix would be to rewrite the layout
          // algorithm entirely
+         if ($('#breadcrumbs').hasClass('breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
+            $('#breadcrumbs').toggleClass('breadcrumbs-toggled');
+         }
          if ($('#userinfocontainer-breadcrumbs').hasClass('userinfocontainer-breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
             $('#userinfocontainer-breadcrumbs').toggleClass('userinfocontainer-breadcrumbs-toggled');
          }
@@ -217,12 +222,19 @@ angular.module('algorea')
        fixArrowPositions();
        $scope.layout.refreshSizes();
     };
-    var isCurrentlyOnePage = false;;
+    var isCurrentlyOnePage = !config.domains.current.useLeftNavigation;
+    console.error(config.domains.current);
+    console.error(isCurrentlyOnePage);
     $scope.layout.isOnePage = function(isOnePage) {
-       if (typeof isOnePage === 'undefined') {
-          return isCurrentlyOnePage;
+       if (config.domains.current.useLeftNavigation) {
+          console.error('arg!s');
+          if (typeof isOnePage === 'undefined') {
+             return isCurrentlyOnePage;
+          }
+          isCurrentlyOnePage = isOnePage;
+       } else {
+          return true;
        }
-       isCurrentlyOnePage = isOnePage;
     };
     // inspired from https://github.com/capaj/ng-tools/blob/master/src/debounce.js
     // used on onresize for obvious performance reasons

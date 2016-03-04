@@ -8,6 +8,9 @@
    <span ng-if="itemType == 'Section'">folder</span>
 </div>
 <div class="main-titlebar-titles main-titlebar-item"><span class="main-titlebar-title1">{{strings.sTitle}}</span><br>{{strings.sSubtitle}}</div>
+<div ng-if="rightLink" class="link-arrow main-right-arrow material-icons" ui-sref="{{rightLink.sref}}">forward</div>
+<div ng-if="upLink && item.ID" class="link-arrow main-up-arrow material-icons" ui-sref="{{upLink.sref}}">forward</div>
+<div ng-if="leftLink" class="link-arrow main-left-arrow material-icons" ui-sref="{{leftLink.sref}}">forward</div>
 <div class="main-titlebar-icon1 main-titlebar-item" ng-if="item.idItemUnlocked && item.idItemUnlocked != 0">{{item.idItemUnlocked}}<span class="material-icons">vpn_key</span></div>
 <div class="main-titlebar-icon2 main-titlebar-item" ng-if="item_item.sCategory == 'Challenge'"><span class="material-icons">star</span></div>
 <div id="main-titlebar-community" class="main-titlebar-community main-titlebar-item" ng-click="layout.toggleRight()" ng-init="layout.setRightIcon();"><span class="material-icons">forum</span></div>
