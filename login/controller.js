@@ -1,29 +1,37 @@
-'use strict';
-
 angular.module('algorea')
    .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout) {
+      'use strict';
       $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html');
       $scope.innerHtml = "Chargement...";
       $scope.loggedIn = false;
+      $scope.loginStr = null;
       $scope.frameHidden = true;
       $scope.userinfoClass = 'userinfo-closed';
       $scope.loginFrameClass = 'loginFrame-login';
       $scope.infoWord = '';
       loginService.bindScope($rootScope);
       $scope.$on('login.login', function(event, data) {
-         $scope.innerHtml = data.login;
+         $scope.innerHtml = 'Se déconnecter';
+         if (data.tempUser) {
+            $scope.loginStr = null;   
+         } else {
+            $scope.loginStr = data.login;
+         }
          $scope.loggedIn = true;
          $scope.tempUser = data.tempUser;
          if (data.tempUser) {
             $scope.loginFrameClass = 'loginFrame-login';
             $scope.innerHtml = "Se connecter";
          } else {
-            $scope.infoWord = '(infos)';
+            $scope.infoWord = '';
             $scope.loginFrameClass = 'loginFrame-logout';
          }
          itemService.syncWithNewLogin(data.login, data.loginData);
          $scope.hideFrame();
          $timeout(function(){$scope.$apply();});
+      });
+      $scope.$on('login.logout', function(event,data) {
+         $scope.loginStr = null;
       });
       $scope.showFrame = function() {
          $scope.frameHidden = false;
@@ -41,4 +49,11 @@ angular.module('algorea')
          }
       };
       loginService.init();
+      $scope.openLoginPopup = function() {
+         var additionalArgs = '';
+         if ($scope.loggedIn && !$scope.tempUser) {
+            additionalArgs = '&autoLogout=1';
+         }
+         window.open($scope.loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
+      };
 }]);

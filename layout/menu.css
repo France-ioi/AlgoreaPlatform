@@ -226,6 +226,10 @@
    color: rgb(2, 118, 196) !important;
 }
 
+.arrow-link-icon {
+   font-size:27pt !important;
+}
+
 .main-right-arrow {
    position:fixed;
    right:260px;

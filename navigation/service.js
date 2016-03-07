@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .service('itemService', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+   .service('itemService', ['$rootScope', '$timeout', 'loginService', function($rootScope, $timeout, loginService) {
     /*
      * Simple service providing items.
      */
@@ -30,6 +30,7 @@ angular.module('algorea')
             lastSyncLogin = data.changes.loginData.sLogin;
             newLogin = lastSyncLogin;
             SyncQueue.requests.loginData = data.changes.loginData;
+            loginService.setLocalLoginData(data.changes.loginData);
          } else {
             if (!lastSyncLogin) {
                firstSyncFailed = true;

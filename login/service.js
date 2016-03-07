@@ -31,6 +31,19 @@ angular.module('franceIOILogin', [])
             });
          }
         }
+        function setLocalLoginData(loginData) {
+          if (!loginDone) {
+            state = 'login';
+            tempUser = loginData.tempUser;
+            userID = loginData.ID;
+            userSelfGroup = loginData.idGroupSelf;
+            userOwnedGroup = loginData.idGroupOwned;
+            userLogin = loginData.sLogin;
+            var broadcastArg = {login: loginData.sLogin, tempUser: loginData.tempUser, loginData: loginData};
+            $rootScope.$broadcast('login.login', broadcastArg);
+            triggerCallback();
+          }
+        }
         function triggerCallback() {
            loginDone = true;
            angular.forEach(callbacks, function(callback, i) {
@@ -124,6 +137,7 @@ angular.module('franceIOILogin', [])
               return state;
            },
            getLoginData: getLoginData,
+           setLocalLoginData: setLocalLoginData,
            getUser: function() {
               if (state == 'not-ready') {
                  return false;
