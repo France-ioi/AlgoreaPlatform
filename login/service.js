@@ -33,15 +33,19 @@ angular.module('franceIOILogin', [])
         }
         function setLocalLoginData(loginData) {
           if (!loginDone) {
-            state = 'login';
-            tempUser = loginData.tempUser;
-            userID = loginData.ID;
-            userSelfGroup = loginData.idGroupSelf;
-            userOwnedGroup = loginData.idGroupOwned;
-            userLogin = loginData.sLogin;
-            var broadcastArg = {login: loginData.sLogin, tempUser: loginData.tempUser, loginData: loginData};
-            $rootScope.$broadcast('login.login', broadcastArg);
-            triggerCallback();
+            if (loginData) {
+               state = 'login';
+               tempUser = loginData.tempUser;
+               userID = loginData.ID;
+               userSelfGroup = loginData.idGroupSelf;
+               userOwnedGroup = loginData.idGroupOwned;
+               userLogin = loginData.sLogin;
+               var broadcastArg = {login: loginData.sLogin, tempUser: loginData.tempUser, loginData: loginData};
+               $rootScope.$broadcast('login.login', broadcastArg);
+               triggerCallback();
+            } else {
+               onNotLogged();
+            }
           }
         }
         function triggerCallback() {

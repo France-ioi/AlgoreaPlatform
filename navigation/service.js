@@ -36,6 +36,7 @@ angular.module('algorea')
                firstSyncFailed = true;
                SyncQueue.sentVersion = 0;
                SyncQueue.resetSync = true;
+               loginService.setLocalLoginData();
             }
          }
       }
