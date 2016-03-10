@@ -69,23 +69,29 @@ angular.module('algorea')
       };
       var currentMap = null;
       var actuallyDrawMap = function(callback) {
-         var map = new DeclickMap();
+         console.error('draw map with '+currentRoot);
          drawnRoot = currentRoot;
-         map.init("map-content", "map/robot.svg", function(index) {
-            itemIdClicked(index);
-         }, function() {
-            map.loadPath(mapPath);
+         if (currentMap) {
             var steps = getSteps(currentRoot);
-            map.loadSteps(steps);
-            currentMap = map;
-            if (currentStep) {
-               currentMap.setCurrentStep(currentStep);
-            }
-            currentMap.update();
-            if (callback) {
-               callback();
-            }
-         });
+            currentMap.removeSteps();
+            currentMap.loadSteps(steps);
+         } else {
+            currentMap = new DeclickMap();
+            currentMap.init("map-content", "map/robot.svg", function(index) {
+               itemIdClicked(index);
+            }, function() {
+               currentMap.loadPath(mapPath);
+               var steps = getSteps(currentRoot);
+               currentMap.loadSteps(steps);
+               if (currentStep) {
+                  currentMap.setCurrentStep(currentStep);
+               }
+               currentMap.update();
+               if (callback) {
+                  callback();
+               }
+            });
+         }
       };
       var currentRoot = null;
       var drawnRoot = null;

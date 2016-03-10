@@ -263,7 +263,7 @@ angular.module('algorea')
             //scope.selectTab('task');
             scope.currentView = null;
             var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
-            if (!scope.task.unloaded) {
+            if (scope.task && !scope.task.unloaded) {
                scope.task.unloaded = true;
                angular.forEach(scope.intervals, function(interval) {
                   $interval.cancel(interval);

@@ -17,11 +17,11 @@ angular.module('algorea')
     var container = $('#layoutContainer');
     var taskMinWidth = 820;
     var nonTaskMinWidth = 400;
-    itemService.getAsyncRecord('items', '1384877030317901919', function() {
-       mapService.setRoot('1384877030317901919');
-       mapService.setBasePath('4029/4026/4021');
-       mapService.prepareMap();
-    });
+    // itemService.getAsyncRecord('items', '1384877030317901919', function() {
+    //    mapService.setRoot('1384877030317901919');
+    //    mapService.setBasePath('4029/4026/4021');
+    //    mapService.prepareMap();
+    // });
     mapService.setClickedCallback(function(path, lastItem) {
       if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
          var pathArray = path.split('/');
