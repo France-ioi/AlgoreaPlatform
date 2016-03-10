@@ -18,7 +18,8 @@ function DeclickMap() {
     var displayedSteps = [];
     var labels = [];
     var stepCallback;
-    var currentIndex = 0;
+    var currentIndex = -1;
+    var chapterOpen = false;
 
     // Initialization
     var initView = function(canvasId) {
@@ -265,6 +266,7 @@ function DeclickMap() {
         target = true;
         $canvas.css("cursor", "default");
         currentChapterPath = null;
+        chapterOpen = false;
     };
 
     var openChapter = function(index, animate) {
@@ -295,8 +297,10 @@ function DeclickMap() {
                 targetZoom = paper.view.zoom;
             }
             $canvas.css("cursor", "pointer");
+            chapterOpen = true;
         } else {
             currentChapterPath = null;
+            chapterOpen = false;
         }
     };
 
@@ -371,6 +375,10 @@ function DeclickMap() {
         paper.view.zoom = 1;
         // display steps
         displaySteps();
+        // open chapter if required
+        if (currentIndex>-1 && chapterOpen) {
+            setCurrentStep(steps[currentIndex].id, false);
+        }
     };
 
 
@@ -482,11 +490,18 @@ function DeclickMap() {
         // place last step
         placeSymbol(i, currentCurve, currentCurve.length);
         // resize and place current image
-        current.position = displayedSteps[currentIndex].position;
+        var startIndex;
+        if (currentIndex === -1) {
+            //currentIndex not set yet
+            startIndex = 0;
+            current.visible = false;
+        } else {
+            startIndex = currentIndex;
+        }
+        current.position = displayedSteps[startIndex].position;
         targetCurrent = current.position;
-        current.fitBounds(displayedSteps[currentIndex].bounds);
+        current.fitBounds(displayedSteps[startIndex].bounds);
         current.scale(1.5);
-        current.visible = false;
         current.onMouseDown = function(event) {
             setCurrentStep(steps[currentIndex].id, false, true);
             if (stepCallback) {

@@ -81,7 +81,9 @@ angular.module('algorea')
       },
       openMap: function() {
          if (!$scope.mapInfos.mapMode) {
-            $scope.layout.openMenu();
+            if ($scope.mapInfos.hasMap == 'button') {
+               $scope.layout.openMenu();
+            }
             $scope.mapInfos.mapMode = true;
             $('#footer').hide();
             $('#view-right').hide();
@@ -91,7 +93,9 @@ angular.module('algorea')
       },
       closeMap: function() {
          if ($scope.mapInfos.mapMode) {
-            $scope.layout.closeMenu();
+            if ($scope.mapInfos.hasMap == 'button') {
+               $scope.layout.closeMenu();
+            }
             $('#footer').show();
             $('#view-right').show();
             $('#map').hide();
@@ -299,9 +303,6 @@ angular.module('algorea')
        } else if ($(window).width() > 1100) {
          $scope.layout.leftOpen = false;
          $scope.layout.rightOpen = false;
-         if (!$scope.mapInfos.mapMode) {
-            $scope.layout.closeMenu();
-         }
          $scope.layout.menuOpen = false;
          if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
             $scope.layout.toggleLeft();
@@ -309,7 +310,7 @@ angular.module('algorea')
          if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
             $scope.layout.toggleRight();
          }
-         if ($('#menu').hasClass('menu-toggled') && !$scope.mapInfos.mapMode) {
+         if ($('#menu').hasClass('menu-toggled')) {
             $scope.layout.toggleMenu();
          }
        }

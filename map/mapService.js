@@ -69,16 +69,20 @@ angular.module('algorea')
       };
       var currentMap = null;
       var actuallyDrawMap = function(callback) {
+         console.error('drawing map');
          var map = new DeclickMap();
          map.init("map-content", "map/robot.svg", function(index) {
             itemIdClicked(index);
          }, function() {
+            drawnRoot = currentRoot;
             map.loadPath(mapPath);
-            map.setCurrentStep(0);
             var steps = getSteps(currentRoot);
             map.loadSteps(steps);
             currentMap = map;
-            drawnRoot = currentRoot;
+            if (currentStep) {
+               console.error('set current step: '+currentStep);
+               currentMap.setCurrentStep(currentStep);
+            }
             currentMap.update();
             if (callback) {
                callback();
@@ -87,6 +91,7 @@ angular.module('algorea')
       };
       var currentRoot = null;
       var drawnRoot = null;
+      var currentStep = null;
       var setRoot = function(itemId) {
          currentRoot = itemId;
       };
@@ -104,14 +109,59 @@ angular.module('algorea')
             currentMap.update();
          }
       }
-      /* todo !
-      var getRootIdFromItem = function(item) {
-
+      var getRootFromItem = function(item, pathParams) {
+         var rootItem = null;
+         var newBasePath = '';
+         $.each(pathParams.path, function(i, itemId) {
+            if (rootItem) return;
+            var item = ModelsManager.getRecord('items', itemId);
+            if (item && item.sType == 'Level') {
+               rootItem = item;
+            } else {
+               if (newBasePath) {
+                  newBasePath += '/';
+               }
+               newBasePath +=itemId;
+            }
+         });
+         return {rootItem: rootItem, basePath: newBasePath};
       };
+      var getPathFromItem = function(item,pathParams) {
+         if (pathParams.pathStr.substring(0,basePath.length) != basePath) {
+            console.error('problem with getPathFromItem');
+            return;
+         }
+         return pathParams.pathStr.substring(basePath.length+1);
+      }
+      var setCurrentStep = function(item, pathParams) {
+         var itemPath = getPathFromItem(item,pathParams);
+         if (!itemPath) return;
+         if (currentMap) {
+            console.error('map.setCurrentStep('+itemPath+')');
+            currentMap.setCurrentStep(itemPath);
+         }
+         currentStep = itemPath;
+      }
       var currentItemId = null;
-      */
       var setCurrentItem = function(item, pathParams) {
-         //currentItemId = item.ID;
+         if (!item || !item.ID || item.ID == currentItemId) {
+            return;
+         }
+         currentItemId = item.ID;
+         var root = getRootFromItem(item, pathParams);
+         if (!root.rootItem || !root.rootItem.ID) {
+            console.error('error in setCurrentItem');
+            return;
+         }
+         if (drawnRoot != root.rootItem.ID) {
+            currentRoot = root.rootItem.ID;
+            basePath = root.basePath;
+            actuallyDrawMap(function() {
+               setCurrentStep(item,pathParams);
+            });
+         } else {
+            setCurrentStep(item,pathParams);
+         }
       };
       return {
          setCurrentItem: setCurrentItem,
