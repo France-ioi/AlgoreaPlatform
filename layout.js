@@ -28,8 +28,6 @@ angular.module('algorea')
          var selr = pathArray.length;
          var sell = selr -1;
          var pathParams = pathService.getPathParams();
-         console.error(pathParams);
-         console.error(path);
          if (pathParams.basePathStr == path) {
             $scope.layout.closeMap();
          } else {
@@ -124,7 +122,6 @@ angular.module('algorea')
          }
       },
       toggleMenu: function() {
-         console.error('toggleMenu');
          $('#headerContainer').toggleClass('menu-toggled');
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
          $('#footer').toggleClass('footer-toggled');
@@ -137,14 +134,12 @@ angular.module('algorea')
          // algorithm entirely
          if ($('#breadcrumbs').hasClass('breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
             $('#breadcrumbs').toggleClass('breadcrumbs-toggled');
-            console.error('hasclass = '+$('#breadcrumbs').hasClass('breadcrumbs-toggled'));
          }
          if ($('#userinfocontainer-breadcrumbs').hasClass('userinfocontainer-breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
             $('#userinfocontainer-breadcrumbs').toggleClass('userinfocontainer-breadcrumbs-toggled');
          }
       },
       closeMenu: function() {
-         console.error('closeMenu');
          $scope.layout.menuOpen = false;
          if ($(window).width() < 1100) {
             if ($('#headerContainer').hasClass('menu-toggled')) {
@@ -158,7 +153,6 @@ angular.module('algorea')
          $scope.layout.syncBreadcrumbs();
       },
       openMenu: function() {
-         console.error('openMenu');
          $scope.layout.menuOpen = true;
          if ($(window).width() < 1100) {
             if (!$('#headerContainer').hasClass('menu-toggled')) {
@@ -196,7 +190,6 @@ angular.module('algorea')
          }
       },
       bClicked: function(event) {
-         console.error('debug3');
          // do not open menu when user clicks on arrows
          if (event.target.className.indexOf('link-arrow') != -1) {
             return;
@@ -218,7 +211,6 @@ angular.module('algorea')
          if (!config.domains.current.clickableMenu || event.target.parentNode.parentNode.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
             return;
          }
-         console.error('debug2');
          $scope.layout.menuOpen = !$scope.layout.menuOpen;
          $scope.layout.toggleMenu();
          if ($(window).width() < 1100) {
@@ -265,8 +257,7 @@ angular.module('algorea')
          if ($scope.layout.leftOpen) {
             $scope.layout.closeLeft();
          }
-         if ($scope.layout.menuOpen && !$scope.mapInfos.mapMode) {
-            console.error('debug0');
+         if (config.domains.current.clickableMenu && $scope.layout.menuOpen && !$scope.mapInfos.mapMode) {
             $scope.layout.closeMenu();
          }
       }
@@ -292,7 +283,6 @@ angular.module('algorea')
          fixArrowPositions();
          return;
       }
-      console.error('debug1');
       lastRightIsFullScreen = rightIsFullScreen;
        if (rightIsFullScreen) {
          if (!$scope.mapInfos.mapMode) {
@@ -310,9 +300,7 @@ angular.module('algorea')
          if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
             $scope.layout.toggleRight();
          }
-         if ($('#menu').hasClass('menu-toggled')) {
-            $scope.layout.toggleMenu();
-         }
+         $scope.layout.openMenu();
        }
        fixArrowPositions();
        $scope.layout.refreshSizes();

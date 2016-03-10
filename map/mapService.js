@@ -69,18 +69,16 @@ angular.module('algorea')
       };
       var currentMap = null;
       var actuallyDrawMap = function(callback) {
-         console.error('drawing map');
          var map = new DeclickMap();
+         drawnRoot = currentRoot;
          map.init("map-content", "map/robot.svg", function(index) {
             itemIdClicked(index);
          }, function() {
-            drawnRoot = currentRoot;
             map.loadPath(mapPath);
             var steps = getSteps(currentRoot);
             map.loadSteps(steps);
             currentMap = map;
             if (currentStep) {
-               console.error('set current step: '+currentStep);
                currentMap.setCurrentStep(currentStep);
             }
             currentMap.update();
@@ -137,7 +135,6 @@ angular.module('algorea')
          var itemPath = getPathFromItem(item,pathParams);
          if (!itemPath) return;
          if (currentMap) {
-            console.error('map.setCurrentStep('+itemPath+')');
             currentMap.setCurrentStep(itemPath);
          }
          currentStep = itemPath;
@@ -150,7 +147,6 @@ angular.module('algorea')
          currentItemId = item.ID;
          var root = getRootFromItem(item, pathParams);
          if (!root.rootItem || !root.rootItem.ID) {
-            console.error('error in setCurrentItem');
             return;
          }
          if (drawnRoot != root.rootItem.ID) {
