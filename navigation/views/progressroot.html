@@ -1,0 +1,7 @@
+<div class="main-titlebar root-titlebar" ng-include="'navigation/views/menubar.html'"></div>
+<div class="main-area main-area-normal">
+   <div ng-bind-html="strings.sDescription"></div>
+    <uib-tabset active="active">
+	    <uib-tab ng-repeat="item in children track by item.ID" heading="{{getTitle(item)}}"><div display-item from="parent"></div></uib-tab>
+  	</uib-tabset>
+</div>
