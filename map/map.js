@@ -31,8 +31,8 @@ function DeclickMap() {
         // setup paperjs
         paper.setup(canvas);
 
-        initCenter = paper.view.center;
-        targetCenter = initCenter;
+        initCenter = new paper.Point(paper.view.center);
+        targetCenter = new paper.Point(initCenter);
         targetZoom = 1;
 
         var dragX, dragY;
@@ -88,7 +88,7 @@ function DeclickMap() {
                         var step = vector.normalize(stepCenter);
                         view.center = center.add(step);
                     } else {
-                        view.center = targetCenter;
+                        view.center = new paper.Point(targetCenter);
                     }
                 }
                 if (view.zoom !== targetZoom) {
@@ -169,7 +169,7 @@ function DeclickMap() {
     };
 
     var centerEveryting = function() {
-        everything.position = paper.view.center;
+        everything.position = new paper.Point(paper.view.center);
     };
 
     // Path loading
@@ -211,8 +211,8 @@ function DeclickMap() {
         displaySteps();
         // view resizing
         paper.view.onResize = function(event) {
-            initCenter = paper.view.center;
-            targetCenter = initCenter;
+            initCenter = new paper.Point(paper.view.center);
+            targetCenter = new paper.Point(initCenter);
             targetZoom = 1;
             //centerEveryting();
             resize();
@@ -262,7 +262,7 @@ function DeclickMap() {
             currentChapterLabels.visible = false;
         }
         targetZoom = 1;
-        targetCenter = initCenter;
+        targetCenter = new paper.Point(initCenter);
         target = true;
         $canvas.css("cursor", "default");
         currentChapterPath = null;
@@ -287,12 +287,12 @@ function DeclickMap() {
             var zHeight = paper.view.bounds.height / (bounds.height);
             var zWidth = paper.view.bounds.width / (bounds.width);
             if (animate) {
-                targetCenter = bounds.center;
+                targetCenter = new paper.Point(bounds.center);
                 targetZoom = paper.view.zoom * Math.min(zHeight, zWidth);
                 target = true;
             } else {
-                paper.view.center = bounds.center;
-                targetCenter = paper.view.center;
+                paper.view.center = new paper.Point(bounds.center);
+                targetCenter = new paper.Point(paper.view.center);
                 paper.view.zoom = paper.view.zoom * Math.min(zHeight, zWidth);
                 targetZoom = paper.view.zoom;
             }
