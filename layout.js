@@ -11,12 +11,47 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', function ($scope, $window, $timeout, $rootScope, $interval) {
+  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', 'mapService', 'itemService', 'pathService', '$state', function ($scope, $window, $timeout, $rootScope, $interval, mapService, itemService, pathService, $state) {
     var pane_west = $('.ui-layout-west');
     var pane_center = $('.ui-layout-center');
     var container = $('#layoutContainer');
     var taskMinWidth = 820;
     var nonTaskMinWidth = 400;
+    itemService.getAsyncRecord('items', '1384877030317901919', function() {
+       mapService.setRoot('1384877030317901919');
+       mapService.setBasePath('4029/4026/4021');
+       mapService.prepareMap();
+    });
+    mapService.setClickedCallback(function(path, lastItem) {
+      if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
+         var pathArray = path.split('/');
+         var selr = pathArray.length;
+         var sell = selr -1;
+         var pathParams = pathService.getPathParams();
+         console.error(pathParams);
+         console.error(path);
+         if (pathParams.basePathStr == path) {
+            $scope.layout.closeMap();
+         } else {
+            $state.go('contents', {path: path,sell:sell,selr:selr});
+         }
+      }
+    });
+    $scope.mapInfos = {
+       'mapPossible' : true,
+       'hasMap':false,
+       'mapOpened' : false
+    };
+   $scope.gotoIndex = function() {
+      var defaultPathStr = config.domains.current.defaultPath;
+      if (defaultPathStr.substr(0, 10) == '/contents/') {
+         defaultPathStr = defaultPathStr.substr(10, defaultPathStr.length);
+         var pathArray = defaultPathStr.split('/');
+         var selr = pathArray.length;
+         var sell = selr -1;
+      }
+      $state.go('contents', {path: defaultPathStr,sell:0,selr:1});
+   }
     // $scope.layout will be accesset and set by viewButton directive in a subscope, so
     // it must be an object, or prototypal inheritance will mess everything
     $scope.layout = {
@@ -33,6 +68,35 @@ angular.module('algorea')
       },
       goNormal: function() {
 
+      },
+      hasMap: function(hasMap, firstOpening) {
+         $scope.mapInfos.hasMap = hasMap;
+         if (hasMap == 'always') {
+            $scope.layout.openMap();
+         } else if (hasMap == 'never') {
+            $scope.layout.closeMap();
+         } else if (hasMap == 'button' && firstOpening) {
+            $scope.layout.closeMap();
+         }
+      },
+      openMap: function() {
+         if (!$scope.mapInfos.mapMode) {
+            $scope.layout.openMenu();
+            $scope.mapInfos.mapMode = true;
+            $('#footer').hide();
+            $('#view-right').hide();
+            $('#map').show();
+            mapService.show();
+         }
+      },
+      closeMap: function() {
+         if ($scope.mapInfos.mapMode) {
+            $scope.layout.closeMenu();
+            $('#footer').show();
+            $('#view-right').show();
+            $('#map').hide();
+            $scope.mapInfos.mapMode = false;
+         }
       },
       hasLeftMenu: function(hasLeftMenu) {
         if ($('#sidebar-left').hasClass('sidebar-left-hidden') == hasLeftMenu) {
@@ -56,31 +120,52 @@ angular.module('algorea')
          }
       },
       toggleMenu: function() {
-         $('#menu').toggleClass('menu-toggled');
+         console.error('toggleMenu');
+         $('#headerContainer').toggleClass('menu-toggled');
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
-         $('#breadcrumbs').toggleClass('breadcrumbs-toggled');
          $('#footer').toggleClass('footer-toggled');
+         $scope.layout.syncBreadcrumbs();
+      },
+      syncBreadcrumbs: function() {
+         $('#breadcrumbs').each(function(item) {console.error('debug12');});
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
          // the class is not always in sync with the menu. A true fix would be to rewrite the layout
          // algorithm entirely
          if ($('#breadcrumbs').hasClass('breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
             $('#breadcrumbs').toggleClass('breadcrumbs-toggled');
+            console.error('hasclass = '+$('#breadcrumbs').hasClass('breadcrumbs-toggled'));
          }
          if ($('#userinfocontainer-breadcrumbs').hasClass('userinfocontainer-breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
             $('#userinfocontainer-breadcrumbs').toggleClass('userinfocontainer-breadcrumbs-toggled');
          }
       },
       closeMenu: function() {
+         console.error('closeMenu');
          $scope.layout.menuOpen = false;
          if ($(window).width() < 1100) {
-            if ($('#menu').hasClass('menu-toggled')) {
+            if ($('#headerContainer').hasClass('menu-toggled')) {
                $scope.layout.toggleMenu();
             }
          } else {
-            if (!$('#menu').hasClass('menu-toggled')) {
+            if (!$('#headerContainer').hasClass('menu-toggled')) {
                $scope.layout.toggleMenu();
             }
          }
+         $scope.layout.syncBreadcrumbs();
+      },
+      openMenu: function() {
+         console.error('openMenu');
+         $scope.layout.menuOpen = true;
+         if ($(window).width() < 1100) {
+            if (!$('#headerContainer').hasClass('menu-toggled')) {
+               $scope.layout.toggleMenu();
+            }
+         } else {
+            if ($('#headerContainer').hasClass('menu-toggled')) {
+               $scope.layout.toggleMenu();
+            }
+         }
+         $scope.layout.syncBreadcrumbs();
       },
       closeRight: function() {
          $scope.layout.rightOpen = false;
@@ -107,17 +192,18 @@ angular.module('algorea')
          }
       },
       bClicked: function(event) {
+         console.error('debug3');
          // do not open menu when user clicks on arrows
          if (event.target.className.indexOf('link-arrow') != -1) {
             return;
          }
          if ($(window).width() < 1100) {
-            if (!$('#menu').hasClass('menu-toggled')) {
+            if (!$('#headerContainer').hasClass('menu-toggled')) {
                $scope.layout.menuOpen = true;
                $scope.layout.toggleMenu();
             }
          } else {
-            if ($('#menu').hasClass('menu-toggled')) {
+            if ($('#headerContainer').hasClass('menu-toggled')) {
                $scope.layout.menuOpen = true;
                $scope.layout.toggleMenu();
             }
@@ -125,17 +211,18 @@ angular.module('algorea')
       },
       breadcrumbsClicked: function(event) {
          // do not close menu when user clicks on link
-         if (event.target.parentNode.parentNode.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
+         if (!config.domains.current.clickableMenu || event.target.parentNode.parentNode.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
             return;
          }
+         console.error('debug2');
          $scope.layout.menuOpen = !$scope.layout.menuOpen;
          $scope.layout.toggleMenu();
          if ($(window).width() < 1100) {
-            if ($('#menu').hasClass('menu-toggled')) {
+            if ($('#headerContainer').hasClass('menu-toggled')) {
                $scope.layout.menuOpen = false;
             }
          } else {
-            if (!$('#menu').hasClass('menu-toggled')) {
+            if (!$('#headerContainer').hasClass('menu-toggled')) {
                $scope.layout.menuOpen = false;
             }
          }
@@ -174,7 +261,8 @@ angular.module('algorea')
          if ($scope.layout.leftOpen) {
             $scope.layout.closeLeft();
          }
-         if ($scope.layout.menuOpen) {
+         if ($scope.layout.menuOpen && !$scope.mapInfos.mapMode) {
+            console.error('debug0');
             $scope.layout.closeMenu();
          }
       }
@@ -200,14 +288,20 @@ angular.module('algorea')
          fixArrowPositions();
          return;
       }
+      console.error('debug1');
       lastRightIsFullScreen = rightIsFullScreen;
        if (rightIsFullScreen) {
-         $scope.layout.closeMenu();
+         if (!$scope.mapInfos.mapMode) {
+            $scope.layout.closeMenu();
+         }
          $scope.layout.closeLeft();
          $scope.layout.closeRight();
        } else if ($(window).width() > 1100) {
          $scope.layout.leftOpen = false;
          $scope.layout.rightOpen = false;
+         if (!$scope.mapInfos.mapMode) {
+            $scope.layout.closeMenu();
+         }
          $scope.layout.menuOpen = false;
          if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
             $scope.layout.toggleLeft();
@@ -215,7 +309,7 @@ angular.module('algorea')
          if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
             $scope.layout.toggleRight();
          }
-         if ($('#menu').hasClass('menu-toggled')) {
+         if ($('#menu').hasClass('menu-toggled') && !$scope.mapInfos.mapMode) {
             $scope.layout.toggleMenu();
          }
        }
@@ -223,13 +317,10 @@ angular.module('algorea')
        $scope.layout.refreshSizes();
     };
     var isCurrentlyOnePage = !config.domains.current.useLeftNavigation;
-    console.error(config.domains.current);
-    console.error(isCurrentlyOnePage);
     $scope.layout.isOnePage = function(isOnePage) {
        if (config.domains.current.useLeftNavigation) {
-          console.error('arg!s');
           if (typeof isOnePage === 'undefined') {
-             return isCurrentlyOnePage;
+             return isCurrentlyOnePage || $rootScope.mapInfos.mapMode;
           }
           isCurrentlyOnePage = isOnePage;
        } else {

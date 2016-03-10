@@ -1,7 +1,8 @@
 angular.module('algorea')
    .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout) {
       'use strict';
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html');
+      //$scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html');
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://oldloginfranceioi.eroux.fr/login.html');
       $scope.innerHtml = "Chargement...";
       $scope.loggedIn = false;
       $scope.loginStr = null;

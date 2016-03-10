@@ -485,7 +485,8 @@ function getGroups ($params, &$requests) {
 
 function getAllLevels ($params, &$requests){
    global $config;
-   $idRootItem = $config->shared->domains['current']->OfficialProgressItemId;
+   $idRootItem = $config->shared->domains['current']->PlatformItemId;
+   $idRootProgressItem = $config->shared->domains['current']->OfficialProgressItemId;
    $idRootIndexItem = $config->shared->domains['current']->DiscoverRootItemId;
    $idRootCustomItem = $config->shared->domains['current']->CustomProgressItemId;
    unset($requests['messages']);
@@ -495,7 +496,7 @@ function getAllLevels ($params, &$requests){
    array_push($requests["threads"]['fields'], 'sUserCreatedLogin');
    $requests["items_items"]["model"]["filters"]["getAllLevels"] = array(
       "joins" => array(),
-      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem.")",
+      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootProgressItem.")",
       "ignoreValue" => true,
       "readOnly" => true,
    );
@@ -517,7 +518,7 @@ function getAllLevels ($params, &$requests){
    $requests["items_strings"]["model"]["fields"]["idItem"]["groupBy"] = "`items_strings`.`ID`";
    $requests["items_strings"]["model"]["filters"]["getAllLevels"] = array(
       "joins" => array("items_items"),
-      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items_strings`.`idItem` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem." OR `[PREFIX]items_strings`.`idItem` = ".$idRootIndexItem.")",
+      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items_strings`.`idItem` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem." OR `[PREFIX]items_strings`.`idItem` = ".$idRootIndexItem." OR `[PREFIX]items_strings`.`idItem` = ".$idRootProgressItem.")",
       "readOnly" => true,
       "ignoreValue" => true,
    );
@@ -527,7 +528,7 @@ function getAllLevels ($params, &$requests){
    $requests["users_items"]["model"]["joins"]["items_items"] =  array("type" => "LEFT", "srcTable" => "users_items", "srcField" => "idItem", "dstField" => "idItemChild");
    $requests["users_items"]["model"]["filters"]["getAllLevels"] = array(
       "joins" => array("items_items"),
-      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]users_items`.`idItem` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem." OR `[PREFIX]users_items`.`idItem` = ".$idRootIndexItem.")",
+      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]users_items`.`idItem` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem." OR `[PREFIX]users_items`.`idItem` = ".$idRootIndexItem." OR `[PREFIX]users_items`.`idItem` = ".$idRootProgressItem.")",
       "readOnly" => true,
       "ignoreValue" => true,
    );
@@ -541,7 +542,7 @@ function getAllLevels ($params, &$requests){
    $requests["items"]["model"]["fields"]["idItem"]["groupBy"] = "`items`.`ID`";
    $requests["items"]["model"]["filters"]["getAllLevels"] = array(
       "joins" => array("items_items"),
-      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items`.`ID` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem." OR `[PREFIX]items`.`ID` = ".$idRootIndexItem.")",
+      "condition"  => "(`[PREFIX]items_items`.`idItemParent` = ".$idRootItem." OR `[PREFIX]items`.`ID` = ".$idRootItem." OR `[PREFIX]items_items`.`idItemParent` = ".$idRootIndexItem." OR `[PREFIX]items`.`ID` = ".$idRootIndexItem." OR `[PREFIX]items`.`ID` = ".$idRootProgressItem.")",
       "readOnly" => true,
       "ignoreValue" => true,
    );

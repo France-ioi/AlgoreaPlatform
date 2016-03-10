@@ -13,6 +13,7 @@
     "jquery-ui": "latest",
     "jquery.layout": "latest",
     "jschannel": "*",
-    "pem-platform": "France-ioi/pem-platform"
+    "pem-platform": "France-ioi/pem-platform",
+    "paper": "^0.9.25"
   }
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$scope', 'itemService', 'pathService', '$state', '$filter', '$sce', function ($scope, itemService, pathService, $state, $filter, $sce) {
+   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','mapService','$timeout', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, mapService, $timeout) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
       $scope.viewsBaseUrl = 'navigation/views/';
@@ -18,21 +18,29 @@ angular.module('algorea')
       }
       $scope.item = {ID: 0};
       $scope.errorItem = {ID: -1};
+      this.firstApply = true;
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
          $scope.itemType = this.item && this.item.sType ? itemService.normalizeItemType(this.item.sType) : 'error';
          var type = $scope.itemType.toLowerCase();
          // exception: DiscoverRootItemId has type Root but should be displayed as a Presentation
-         if (this.item && this.item.ID == config.DiscoverRootItemId) type = 'presentation';
+         if (this.item && this.item.ID == config.domains.current.DiscoverRootItemId && !from) {type = 'presentation';}
+         if (this.item && this.item.ID == config.domains.current.ProgressRootItemId && !from) {type = 'progressroot';}
          if ( ! from) {
-            if (type == 'task' || type == 'course' || type == 'presentation') {
-               // TODO: remove!
-               if (this.item.ID == '1744652358459813985') {
-                  this.layout.rightIsFullScreen(false);
-               } else {
-                  if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }   
-               }
+            if (type == 'chapter' || type == 'section' || type == 'level') {
+               type = 'blank';
+               this.layout.hasMap('always');
+            } else if (type == 'task' || type == 'course') {
+               this.layout.hasMap('button', this.firstApply);
+            } else {
+               this.layout.hasMap('never');
+            }
+            if (this.item) {
+               mapService.setCurrentItem(this.item, this.pathParams);
+            }
+            if (type == 'task' || type == 'course') {
+               if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }   
             } else {
                if (this.panel == 'right') { this.layout.rightIsFullScreen(false); }
             }
@@ -45,6 +53,7 @@ angular.module('algorea')
          } else if (this.item.ID == 0) {
             type = 'loading';
          }
+         this.firstApply = false;
          return this.viewsBaseUrl+type+suffix+'.html';
       };
       $scope.getSref = function(view) {
@@ -187,6 +196,9 @@ angular.module('algorea')
             }
          });
       };
+      $scope.getTitle = function(item) {
+         return item.strings[0].sTitle;
+      }
 }]);
 
 angular.module('algorea')
@@ -195,6 +207,7 @@ angular.module('algorea')
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('right');}
       $scope.localInit = function() {
          $scope.getPathParams();
+         $scope.firstApply = true;
          $scope.item = {ID: 0};
          $scope.getItem();
          
@@ -293,10 +306,19 @@ angular.module('algorea')
    .controller('superBreadCrumbsController', ['$scope', 'itemService', 'pathService', function ($scope, itemService, pathService) {
       $scope.panel = 'menu';
       $scope.getItems = function() {
+         var indexShift = 0;
          angular.forEach($scope.pathParams.path, function(ID, index) {
+            if (ID == config.domains.current.CustomProgressItemId || ID == config.domains.current.OfficialProgressItemId) {
+               indexShift = indexShift + 1;
+               return;
+            }
+            var newIndex = index - indexShift;
             $scope.items.push({ID: 0});
             itemService.getAsyncRecord('items', ID, function(item) {
-               $scope.items[index] = item;
+               $scope.items[newIndex] = item;
+               if (item) {
+                  item.breadCrumbsDepth = index;
+               }
             });
          });
       };
@@ -314,7 +336,6 @@ angular.module('algorea')
 
 angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
-      $scope.gotoIndex = function() {$state.go('contents', {path: config.domains.current.DiscoverRootItemId+'/'+config.domains.current.DiscoverRootSonItemId,sell:1,selr:2});}
       $scope.gotoMenuItem = function(i, tabPath) {
          $scope.activated = i;
          if (tabPath == 'forum'){

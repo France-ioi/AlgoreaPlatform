@@ -181,9 +181,15 @@ angular.module('algorea')
          },
          // XXX: change this for language filtering
          getStrings: function(item) {
+            if (!item || !item.strings) {
+               return null;
+            }
             return item.strings[0];
          },
          getUserItem: function(item) {
+            if (!item || !item.user_item) {
+               return null;
+            }
             var result_user_item = null;
             angular.forEach(item.user_item, function(user_item) {
                result_user_item = user_item;

@@ -1,7 +1,7 @@
 <div id="headerContainer">
    <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
       <div id="menu-logo" class="menu-item" ng-click="gotoIndex()">
-         <div class="menu-logo-content" id="menu-logo-content"></div>
+         <div class="menu-logo-content" id="menu-logo-content"></div><div class="tagline">Pour convertir ses idées<br>en applications numériques</div>
       </div>
       <div id="menu-else" >
          <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated == i}" ng-click="gotoMenuItem(i, tab.path)">
@@ -12,5 +12,5 @@
          </div>
       </div>
    </div>
-   <div ui-view="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
+   <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
 </div>

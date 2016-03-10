@@ -17,7 +17,7 @@ angular.module('algorea')
             url: "/contents/*path?sell&selr&viewl&viewr",
             //reloadOnSearch: false,
             params: {
-               path: config.domains.current.ProgressRootItemId+'/'+config.domains.current.OfficialProgressItemId // default vaue
+               path: config.domains.current.ProgressRootItemId
             },
             views: {
                'left': {
@@ -131,7 +131,7 @@ angular.module('algorea')
       }]);
 
 angular.module('algorea')
-   .service('pathService', ['$stateParams', '$state', '$rootScope', '$timeout', 'itemService','$view', function($stateParams, $state, $rootScope, $timeout, itemService,$view) {
+   .service('pathService', ['$stateParams', '$state', '$rootScope', '$timeout', 'itemService','$view','$window','$location', function($stateParams, $state, $rootScope, $timeout, itemService,$view, $window,$location) {
      /* Warning: tricks at work here!
       * 
       * As of today (2014-03-18), none of the available routers handle the possibility
@@ -162,35 +162,9 @@ angular.module('algorea')
                    $rootScope.$broadcast('algorea.taskViewChange', toParams, fromParams);
                 },0);
          }
-         /* This part is also a hack due to the limited capacities of routers.
-          * It's been done after reporting https://github.com/angular-ui/ui-router/issues/1744
-          * (which has a description of the addressed problem)
-          * The idea is not to reload left view when unnecessary. This was
-          * introduced in order not to reload left iframe in case of static content.
-          * The code computes left item before and after, and if it's the same,
-          * it just sends a signal instead of reloading the views. Then the scopes
-          * need to handle their reloading themselves by watching the signal.
-          */
-         if (fromState.name == 'contents' && toState.name == 'contents') {
-            var toPath = toParams.path.split('/');
-            var toSelr = toParams.selr ? parseInt(toParams.selr) : toPath.length;
-            var toSell = toParams.sell ? parseInt(toParams.sell) : toSelr -1;
-            var toLeftItem = toPath[toSell-1];
-            var fromPath = fromParams.path.split('/');
-            var fromSelr = fromParams.selr ? parseInt(fromParams.selr) : fromPath.length;
-            var fromSell = fromParams.sell ? parseInt(fromParams.sell) : fromSelr -1;
-            var fromLeftItem = fromPath[fromSell-1];
-            if(fromLeftItem == toLeftItem) {
-               event.preventDefault();
-               $timeout(function() {
-                  $state.go(toState, toParams, {notify: false, location: 'replace'});
-                  $timeout(function() {
-                     $rootScope.$broadcast('algorea.reloadView', 'breadcrumbs');
-                     $rootScope.$broadcast('algorea.reloadView', 'right');
-                  },0);
-               },0);
-            }
-         }
+      });
+      $rootScope.$on('$stateChangeSuccess', function (event) {
+        $window.ga('send', 'pageview', $location.path());
       });
     /* 
      * Simple service for path parsing and analysis and url factoring

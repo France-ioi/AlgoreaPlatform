@@ -101,9 +101,11 @@ angular.module('algorea')
          $interval.cancel(interval);
       });
       var task = $scope.task;
-      $scope.task.unload(function(){
-         task.chan.destroy();
-      }, function(){});
+      if (task) {
+         task.unload(function(){
+            task.chan.destroy();
+         }, function(){});
+      }
    });
    $scope.$on('algorea.taskViewChange', function(event, toParams) {
       $scope.selectTab($scope.panel == 'right' ? toParams.viewr : toParams.viewl, true);
@@ -242,17 +244,22 @@ angular.module('algorea')
    $scope.interval = null;
    $scope.courseLoaded = /*false*/true;
    $scope.updateHeight = function(height) {
-      $scope.taskIframe.height(parseInt(height)+40);
+      $scope.taskIframe.height(parseInt(height));
       if ($rootScope.refreshSizes) {
          $rootScope.refreshSizes();
       }
    };
+   var lastheight = 0;
    $scope.syncHeight = function () {
       if (!$scope.interval) {
          $scope.interval = $interval(function() {
             $scope.task.getHeight(function(height) {
+               if (height == lastheight) {
+                  return;
+               }
                $scope.updateHeight(height);
                $scope.courseLoaded = true;
+               height = lastheight;
             });
          }, 1000);
       }
