@@ -83,7 +83,7 @@ angular.module('algorea')
                $scope.layout.openMenu();
             }
             $scope.mapInfos.mapMode = true;
-            $('#footer').hide();
+            //$('#footer').hide();
             $('#view-right').hide();
             $('#map').show();
             mapService.show();
@@ -94,7 +94,7 @@ angular.module('algorea')
             if ($scope.mapInfos.hasMap == 'button') {
                $scope.layout.closeMenu();
             }
-            $('#footer').show();
+            //$('#footer').show();
             $('#view-right').show();
             $('#map').hide();
             $scope.mapInfos.mapMode = false;
@@ -128,7 +128,6 @@ angular.module('algorea')
          $scope.layout.syncBreadcrumbs();
       },
       syncBreadcrumbs: function() {
-         $('#breadcrumbs').each(function(item) {console.error('debug12');});
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
          // the class is not always in sync with the menu. A true fix would be to rewrite the layout
          // algorithm entirely

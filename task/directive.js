@@ -28,7 +28,7 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval) {
+.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', 'mapService', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, mapService) {
    function loadTask(scope, elem, sameUrl) {
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          scope.task = task;
@@ -65,9 +65,7 @@ angular.module('algorea')
       };
       // move to next item in same chapter
       scope.moveToNext = function() {
-         if ($rootScope.rightLink) {
-            $state.go($rootScope.rightLink.stateName, $rootScope.rightLink.stateParams);
-         }
+         scope.goRightLink();
       };
       scope.platform.askHint = function(success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
@@ -167,6 +165,7 @@ angular.module('algorea')
                   scope.user_item.sToken = postRes.sToken;
                   scope.user_item.bValidated = true;
                   scope.user_item.sValidationDate = new Date();
+                  mapService.updateSteps();
                   ModelsManager.updated('users_items', scope.user_item.ID, false, true);
                   $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                   scope.task.updateToken(postRes.sToken, function() {

@@ -19,6 +19,11 @@ angular.module('algorea')
       $scope.item = {ID: 0};
       $scope.errorItem = {ID: -1};
       this.firstApply = true;
+      $scope.setItemOnMap = function() {
+         if (this.item) {
+            mapService.setCurrentItem(this.item, this.pathParams);
+         }
+      }
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
@@ -36,9 +41,7 @@ angular.module('algorea')
             } else {
                this.layout.hasMap('never');
             }
-            if (this.item) {
-               mapService.setCurrentItem(this.item, this.pathParams);
-            }
+            $scope.setItemOnMap();
             if (type == 'task' || type == 'course') {
                if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }   
             } else {
@@ -189,6 +192,9 @@ angular.module('algorea')
             } else {
                that.item_item = {};
             }
+            if (!that.user_item.sLastActivityDate) {
+               mapService.updateSteps();
+            }
             itemService.onSeen(item);
             that.setItemIcon(item);
             if(callback) {
@@ -262,6 +268,7 @@ angular.module('algorea')
          $scope.item = {ID: 0};
          $scope.getItem(function() {
             $scope.setArrowLinks();
+            $scope.setItemOnMap();
          });
       };
       $scope.localInit();
@@ -272,6 +279,7 @@ angular.module('algorea')
          if (viewName == 'right') {
             $scope.getPathParams();
             $scope.setArrowLinks();
+            $scope.setItemOnMap();
          }
       });
 }]);

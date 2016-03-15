@@ -26,7 +26,8 @@ angular.module('algorea')
             }
             var childStep = {};
             childStep.name = strings.sTitle;
-            childStep.passed = !!user_item.sLastActivityDate;
+            childStep.passed = user_item.bValidated;
+            childStep.visited = !!user_item.sLastActivityDate;
             childStep.id = itemId+'/'+child.ID;
             itemIdList[child.ID] = true;
             childStep.steps = [];
@@ -40,7 +41,8 @@ angular.module('algorea')
                }
                var grandChildStep = {};
                grandChildStep.name = gc_strings.sTitle;
-               grandChildStep.passed = !!gc_user_item.sLastActivityDate;
+               grandChildStep.passed = gc_user_item.bValidated;
+               grandChildStep.visited = !!gc_user_item.sLastActivityDate;
                grandChildStep.id = itemId+'/'+child.ID+'/'+grandChild.ID;
                itemIdList[grandChild.ID] = true;
                childStep.steps.push(grandChildStep);
@@ -67,14 +69,21 @@ angular.module('algorea')
             clickedCallback(basePath+'/'+path, lastItem);
          }
       };
-      var currentMap = null;
-      var actuallyDrawMap = function(callback) {
-         console.error('draw map with '+currentRoot);
-         drawnRoot = currentRoot;
-         if (currentMap) {
+      var updateSteps = function() {
+         if (currentMap && currentRoot) {
             var steps = getSteps(currentRoot);
             currentMap.removeSteps();
             currentMap.loadSteps(steps);
+            if (currentStepRootId == currentRoot) {
+               currentMap.setCurrentStep(currentStep);
+            }
+         }
+      }
+      var currentMap = null;
+      var actuallyDrawMap = function(callback) {
+         drawnRoot = currentRoot;
+         if (currentMap) {
+            updateSteps();
          } else {
             currentMap = new DeclickMap();
             currentMap.init("map-content", "map/robot.svg", function(index) {
@@ -96,6 +105,7 @@ angular.module('algorea')
       var currentRoot = null;
       var drawnRoot = null;
       var currentStep = null;
+      var currentStepRootId = null;
       var setRoot = function(itemId) {
          currentRoot = itemId;
       };
@@ -144,6 +154,7 @@ angular.module('algorea')
             currentMap.setCurrentStep(itemPath);
          }
          currentStep = itemPath;
+         currentStepRootId = currentRoot;
       }
       var currentItemId = null;
       var setCurrentItem = function(item, pathParams) {
@@ -172,6 +183,7 @@ angular.module('algorea')
          setRoot: setRoot,
          setBasePath: setBasePath,
          setClickedCallback: setClickedCallback,
-         show: show
+         show: show,
+         updateSteps: updateSteps
       };
 }]);
