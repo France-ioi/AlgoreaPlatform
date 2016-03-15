@@ -198,23 +198,81 @@ angular.module('algorea')
       };
       $scope.getTitle = function(item) {
          return item.strings[0].sTitle;
-      }
+      };
 }]);
 
 angular.module('algorea')
-   .controller('rightNavigationController', ['$scope', 'pathService', function ($scope, pathService) {
+   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', function ($scope, pathService, itemService, $timeout) {
       $scope.panel = 'right';
-      $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('right');}
+      $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('right');};
+      $scope.setArrowLinks = function() {
+         var brothers = itemService.getBrothersFromParent(this.pathParams.parentItemID);
+         var nextID, previousID;
+         for (var i = 0 ; i < brothers.length ; i++) {
+            if ($scope.item && brothers[i].ID == $scope.item.ID) {
+               nextID = (i+1<brothers.length) ? brothers[i+1].ID : null;
+               break;
+            }
+            previousID = brothers[i].ID;
+         }
+         var basePath = $scope.pathParams.path.slice(0, $scope.pathParams.selr-1).join('/');
+         if (nextID) {
+            $scope.rightLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
+         } else {
+            $scope.rightLink = null;
+            if ($scope.pathParams.selr > 4) {
+               var grandParentId = $scope.pathParams.path[$scope.pathParams.selr-3];
+               if (grandParentId) {
+                  var uncles = itemService.getBrothersFromParent(grandParentId);
+                  var grandParentPath = $scope.pathParams.path.slice(0, $scope.pathParams.selr-2).join('/');
+                  for (i = 0 ; i < uncles.length ; i++) {
+                     if (uncles[i].ID == this.pathParams.parentItemID) {
+                        nextID = (i+1<uncles.length) ? uncles[i+1].ID : null;
+                        break;
+                     }
+                  }
+                  if (nextID) {
+                     $scope.rightLink = {sref: pathService.getSrefFunction(grandParentPath+'/'+nextID, $scope.pathParams.path.length-2, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: $scope.pathParams.path.length-2, selr: null, viewr: null}};
+                  }
+               }
+            }
+         }
+         if (previousID) {
+            $scope.leftLink = {sref: pathService.getSrefFunction(basePath+'/'+previousID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+previousID, selr: null, viewr: null}};
+         } else {
+            $scope.leftLink = null;
+            if(basePath) {
+               $scope.leftLink = {sref: pathService.getSrefFunction(basePath, $scope.pathParams.path.length-1, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: $scope.pathParams.path.length-1, selr: null, viewr: null}};
+            }
+         }
+      }
+      $scope.goLeftLink = function() {
+         if ($scope.leftLink) {
+            $scope.leftLink.sref();
+         }
+      };
+      $scope.goRightLink = function() {
+         if ($scope.rightLink) {
+            $scope.rightLink.sref();
+         }
+      };
       $scope.localInit = function() {
          $scope.getPathParams();
          $scope.firstApply = true;
          $scope.item = {ID: 0};
-         $scope.getItem();
-         
+         $scope.getItem(function() {
+            $scope.setArrowLinks();
+         });
       };
       $scope.localInit();
       $scope.$on('syncResetted', function() {
          $scope.localInit();
+      });
+      $scope.$on('algorea.reloadView', function(event, viewName){
+         if (viewName == 'right') {
+            $scope.getPathParams();
+            $scope.setArrowLinks();
+         }
       });
 }]);
 

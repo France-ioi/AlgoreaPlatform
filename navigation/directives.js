@@ -32,39 +32,6 @@ angular.module('algorea')
                if (scope.depth+1 > scope.pathParams.selr) {
                   scope.distanceClass = 'after-selected';
                }
-               // left and right arrows on the (active) tab corresponding to the right panel
-               if (scope.active) {
-                  var brothers = itemService.getBrothersFromParent(scope.pathParams.path[scope.depth-1]);
-                  var nextID, previousID;
-                  for (var i = 0 ; i < brothers.length ; i++) {
-                     if (scope.item && brothers[i].ID == scope.item.ID) {
-                        nextID = (i+1<brothers.length) ? brothers[i+1].ID : null;
-                        break;
-                     }
-                     previousID = brothers[i].ID;
-                  }
-                  var basePath = scope.pathParams.path.slice(0, scope.depth).join('/');
-                  if (nextID) {
-                     $rootScope.rightLink = {sref: pathService.getSrefString(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
-                     $rootScope.upLink = null;
-                  } else {
-                     $rootScope.rightLink = null;
-                     if(basePath) {
-                        $rootScope.upLink = {sref: pathService.getSrefString(basePath, scope.pathParams.path-1, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: scope.pathParams.path-1, selr: null, viewr: null}};
-                     } else {
-                        $rootScope.upLink = null;
-                     }
-                  }
-                  if (previousID) {
-                     $rootScope.leftLink = {sref: pathService.getSrefString(basePath+'/'+previousID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+previousID, selr: null, viewr: null}};
-                  } else {
-                     $rootScope.leftLink = null;
-                  }
-               } else {
-                  $rootScope.rightLink = null;
-                  $rootScope.leftLink = null;
-                  $rootScope.upLink = null;
-               }
             } else {
                if (from == "parent") {
                   scope.setItemIcon(scope.item);
