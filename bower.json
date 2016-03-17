@@ -12,7 +12,10 @@
     "jquery": "1.*",
     "jquery-ui": "latest",
     "jquery.layout": "latest",
-    "jschannel": "*",
+    "jschannel": "https://github.com/yochannah/jschannel.git#f2bcb86",
     "pem-platform": "France-ioi/pem-platform"
+  },
+  "resolutions": {
+    "jschannel": "f2bcb86"
   }
 }
