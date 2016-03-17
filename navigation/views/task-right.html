@@ -1,8 +1,8 @@
 <div ng-controller="taskController">
   <div ng-if="!layout.west_is_open">
     <h2>{{strings.sTitle}}</h2>
-    <div tabset justified="true">
-       <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active">
+    <div uib-tabset justified="true">
+       <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active">
        </li>
     </div>
   </div>
