@@ -63,7 +63,7 @@ if (!isset($data) || !$data || $data['bGrayedAccess']) {
 }
 
 require_once __DIR__.'/../shared/TokenGenerator.php';
-$tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
+$tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
 $tokenArgs = array(
    'bAccessSolutions' => $data['bAccessSolutions'],
    'bSubmissionPossible' => false,
@@ -77,7 +77,7 @@ $tokenArgs = array(
    'bHasSolvedTask' => min($data['my_bValidated'], $data['other_bValidated']),
 );
 $tokenArgs['idTask'] = $tokenArgs['idItem']; // TODO: should disapear
-$sToken = $tokenGenerator->generateToken($tokenArgs);
+$sToken = $tokenGenerator->encodeJWS($tokenArgs);
 
 // getting other user's answers
 $query = 'SELECT users_answers.*, user.sLogin as sLogin, user_grader.sLogin as graderLogin from users_answers join users as user on user.ID = users_answers.idUser left join users as user_grader on user_grader.ID = users_answers.idUserGrader where users_answers.idItem = :idItem and users_answers.idUser = :idUser;';

@@ -28,9 +28,9 @@ require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
 
 function getTokenParams($request) {
    global $config;
-   $tokenParser = new TokenParser($config->platform->public_key);
+   $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
    try {
-      $params = $tokenParser->decodeToken($request['sToken']);
+      $params = $tokenParser->decodeJWS($request['sToken']);
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage()));
       exit;
@@ -68,9 +68,9 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       echo json_encode(array('result' => false, 'error' => 'platform token was ommited, please transmit it.', 'token' => $params));
       exit;
    }
-   $tokenParser = new TokenParser($platform['sPublicKey']);
+   $tokenParser = new TokenParser($platform['sPublicKey'], $platform['sUri']);
    try {
-      $params = $tokenParser->decodeToken($otherPlatformToken);
+      $params = $tokenParser->decodeJWS($otherPlatformToken);
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage(), 'platform' => $platform));
       exit;
@@ -87,9 +87,9 @@ function getScore($request, $params, $otherPlatformToken, $db) {
 // answerToken as returned by askHint()
 function getIdUserAnswer($params, $answerToken) {
    global $config;
-   $tokenParser = new TokenParser($config->platform->public_key);
+   $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
    try {
-      $answerParams = $tokenParser->decodeToken($answerToken);
+      $answerParams = $tokenParser->decodeJWS($answerToken);
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage()));
       exit;
@@ -131,8 +131,8 @@ function askValidation($request, $db) {
       'idItemLocal' => intval($params['idItemLocal']),
       'idUserAnswer' => $ID
    );
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-   $answerToken = $tokenGenerator->generateToken($answerParams);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+   $answerToken = $tokenGenerator->encodeJWS($answerParams);
    echo json_encode(array('result' => true, 'sAnswerToken' => $answerToken, 'answer' => $answerParams));
 }
 
@@ -146,8 +146,8 @@ function askHint($request, $db) {
    Listeners::UserItemsAfter($db);
 
    $params['nbHintsGiven'] = $params['nbHintsGiven'] + 1;
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-   $token = $tokenGenerator->generateToken($params);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+   $token = $tokenGenerator->encodeJWS($params);
    echo json_encode(array('result' => true, 'sToken' => $token));
 }
 
@@ -174,8 +174,8 @@ function graderResult($request, $db) {
    $token = $request['sToken'];
    if ($bValidated && !$params['bAccessSolutions']) {
       $params['bAccessSolutions'] = true;
-      $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-      $token = $tokenGenerator->generateToken($params);
+      $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+      $token = $tokenGenerator->encodeJWS($params);
    }
    echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'sToken' => $token));
 }
@@ -222,8 +222,8 @@ function getToken($request, $db) {
       'bHasSolvedTask' => $data['bValidated'],
    );
    $tokenArgs['id'+$data['sType']] = $tokenArgs['idItem']; // TODO: should disapear
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-   $sToken = $tokenGenerator->generateToken($tokenArgs);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+   $sToken = $tokenGenerator->encodeJWS($tokenArgs);
    echo json_encode(array('result' => true, 'sToken' => $stoken, 'tokenArgs' => $tokenArgs));
 }
 

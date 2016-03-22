@@ -96,7 +96,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       $params['id'.$item['data']->sType] = $params['idItem'];
       $params['bHasAccessCorrection'] = $item['data']->bAccessSolutions;
       $params['bReadAnswers'] = true;
-      $token = $tokenGenerator->generateToken($params);
+      $token = $tokenGenerator->encodeJWS($params);
       $userItem['data']->sToken = $token;
    } else {
       $userItem['data']->sToken = '';
@@ -194,7 +194,7 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
    $items = fetchItemsIfMissing($serverChanges, $db);
    // then we generate tokens for the user items corresponding to tasks and courses
    require_once(dirname(__FILE__)."/TokenGenerator.php");
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    if (isset($serverChanges['users_items']) && isset($serverChanges['users_items']['updated'])) {
       foreach ((array) $serverChanges['users_items']['updated'] as $userItem) {
          generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);

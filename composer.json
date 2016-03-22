@@ -1,5 +1,9 @@
 {
    "require": {
-      "namshi/jose": "*"
+      "spomky-labs/jose": "2.0.*@beta",
+      "phpseclib/phpseclib": "*",
+      "php": ">=5.4.0",
+      "lib-openssl": "*",
+      "lib-curl": "*"
    }
 }
