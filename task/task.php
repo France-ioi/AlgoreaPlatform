@@ -62,7 +62,7 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       exit;
    }
    if (!$platform['bUsesTokens']) {
-      return 10 * floatval($request['score']);  // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+      return floatval($request['score']);  // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
    }
    if (!$otherPlatformToken) {
       echo json_encode(array('result' => false, 'error' => 'platform token was ommited, please transmit it.', 'token' => $params));
@@ -80,7 +80,7 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       error_log('possible hack attempt from user ID '.$_SESSION['login']['ID']);
       exit;
    }
-   return 10 * floatval($params['score']); // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+   return floatval($params['score']); // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
 }
 
 // function returning the idUserAnswer field of $otherPlatformToken, an
