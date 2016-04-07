@@ -69,10 +69,10 @@ angular.module('algorea')
             $state.go($rootScope.rightLink.stateName, $rootScope.rightLink.stateParams);
          }
       };
-      scope.platform.askHint = function(success, error) {
+      scope.platform.askHint = function(hintToken, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
-         $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken}, {responseType: 'json'}).success(function(postRes) {
+         $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken, hintToken: hintToken}, {responseType: 'json'}).success(function(postRes) {
             if ( ! postRes.result) {
                error("got error from task.php: "+postRes.error);
             } else if (!scope.canGetState || scope.user_item.ID != scope.askHintUserItemID) {

@@ -91,6 +91,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       $params['idItem'] = $item['data']->sTextId;
       $params['idItemLocal'] = $item['data']->ID;
       $params['idUser'] = $_SESSION['login']['ID'];
+      $params['nbHintsGiven'] = $userItem['data']->nbHintsCached;
       $params['bHintPossible'] = true;
       // platform needs idTask:
       $params['id'.$item['data']->sType] = $params['idItem'];
