@@ -11,7 +11,7 @@ angular.module('algorea')
       if (config.domains.current.additionalCssUrl) {
          $scope.additionalCssUrl = $sce.trustAsUrl(config.domains.current.additionalCssUrl);
       }
-      if (config.domains.current.useForum === false) {
+      if (config.domains.current.usesForum === false) {
          $scope.useForum = false;
       } else {
          $scope.useForum = true;
