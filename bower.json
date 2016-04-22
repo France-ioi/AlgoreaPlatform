@@ -2,6 +2,7 @@
   "name": "AlgoreaPlatform",
   "dependencies": {
     "angular": "latest",
+    "angular-animate": "latest",
     "angular-bootstrap": "latest",
     "angular-i18n": "latest",
     "angular-sanitize": "latest",

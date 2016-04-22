@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize']);
+var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize', 'ngAnimate']);
 
 app.directive('field', function() {
    return {
@@ -65,7 +65,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('ItemsCtrl', ['$scope', '$modal', 'loginService', function($scope, $modal, loginService) {
+   .controller('ItemsCtrl', ['$scope', '$uibModal', 'loginService', function($scope, $uibModal, loginService) {
       $scope.models = models;
       $scope.inForum = true;// TODO: used by tasks, should be better
       $scope.accessManager = AccessManager;
@@ -677,7 +677,7 @@ angular.module('algorea')
                }
             }
          };
-         $modal.open(options);
+         $uibModal.open(options);
       };
 
       ModelsManager.init(models);
