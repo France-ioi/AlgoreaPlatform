@@ -591,8 +591,11 @@ function checkInitialUsersItems($db) {
    if ($countUserItems) {
       return;
    }
-   $stmt = $db->prepare('insert into users_items (idUser, idItem, iVersion) select :idUser, idItem, 0 from groups_items join groups_ancestors on groups_items.idGroup = groups_ancestors.idGroupAncestor where ((`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND groups_ancestors.`idGroupChild` = :idGroupSelf);');
-   $stmt->execute(array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idUser' => $_SESSION['login']['ID']));
+   $stmt = $db->prepare('select iVersion from synchro_version where ID=0;');
+   $stmt->execute();
+   $iVersion = $stmt->fetchColumn();
+   $stmt = $db->prepare('insert into users_items (idUser, idItem, iVersion) select :idUser, idItem, :iVersion from groups_items join groups_ancestors on groups_items.idGroup = groups_ancestors.idGroupAncestor where ((`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND groups_ancestors.`idGroupChild` = :idGroupSelf);');
+   $stmt->execute(array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idUser' => $_SESSION['login']['ID'], 'iVersion' => $iVersion));
 }
 
 function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
