@@ -64,7 +64,7 @@ function createMissingUserItems($db, &$serverChanges, $type) {
          $serverChanges['users_items'][$type][$ID] = default_user_item_factory($userId, $serverChanges['items'][$type][$idItem], $ID);
       }
       $request .= ";";
-      $db->exec($request);
+      //$db->exec($request);
    }
 }
 
@@ -612,7 +612,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       filterUsers($requests);
       // TODO: real check on user right
       //unset($requests["groups_items"]);
-      checkInitialUsersItems($db);
+      //checkInitialUsersItems($db);
       if ( ! $admin) {
          setupGroupsItemsRequests($requests);
          //unset($requests["groups_items"]);
@@ -640,7 +640,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
          //unset($requests["threads"]);
          unset($requests["messages"]);
       }
-      $requests['users_items']['readOnly'] = true;
+      $requests['users_items']['insertBeforeUpdate'] = true;
       //$requests['threads']['debug'] = true;
       //$requests["threads"]["debugLogFunction"] = myDebugFunction;
       //$requests['users_answers']['readOnly'] = true;
