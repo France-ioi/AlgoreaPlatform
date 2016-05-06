@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Bienvenue sur Declick.net</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+			* {margin:0;padding:0;border-width:0;}
+            html {height:100%;}
+            body {background-color:#480A2A;height:100%;}
+            svg {border:solid 1px #ffffff;}
+            
+            #animation {width:100%;height:100%;}
+            .hidden {visibility:hidden;}
+        </style>
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/paper/dist/paper-full.min.js"></script>
+        <script>
+            // elements
+            var body, d, k, feet, antennas, eyes, rightHand, leftHand;
+            // groups
+            var center, left, right, robot;
+            // animation step
+            var step = 0;
+            // Robot radius
+            var radius;
+
+            // Robot deplacement speed (pixels per seconds)
+            var speed = 500;
+            // Robot movement speed
+            var speed2 = 200;
+            // Robot movement speed #2
+            var speed3 = 100;
+            
+            // used for animations
+            var target = 0;
+            var target2 = 0;
+            var init = false;
+            
+            function initRobot() {
+                // load elements
+                body = paper.project.importSVG(document.getElementById("body"));
+                eclic = paper.project.importSVG(document.getElementById("eclic"));
+                d = paper.project.importSVG(document.getElementById("d"));
+                k = paper.project.importSVG(document.getElementById("k"));
+                antennas = paper.project.importSVG(document.getElementById("antennas"));
+                feet = paper.project.importSVG(document.getElementById("feet"));
+                eyes = paper.project.importSVG(document.getElementById("eyes"));
+                rightHand = paper.project.importSVG(document.getElementById("hand-right"));
+                leftHand = paper.project.importSVG(document.getElementById("hand-left"));
+                
+                // position elements
+                k.translate(new paper.Point(39,0));
+                antennas.translate(new paper.Point(7.22,-3));
+                feet.translate(new paper.Point(10,68));
+                eyes.translate(new paper.Point(9.9,8));
+                rightHand.translate(new paper.Point(0,32));
+                leftHand.translate(new paper.Point(68.1,32));
+                
+                // hide elements
+                //d.visible = false;
+                //k.visible = false;
+                eclic.visible = false;
+                antennas.visible = false;
+                feet.visible = false;
+                eyes.visible = false;
+                rightHand.visible = false;
+                leftHand.visible = false;
+                
+                // create groups
+                right = new paper.Group();
+                right.addChild(d);
+                right.addChild(rightHand);
+                left = new paper.Group();
+                left.addChild(k);
+                left.addChild(leftHand);
+                center = new paper.Group();
+                center.addChild(body);
+                center.addChild(eclic);
+                center.addChild(antennas);
+                center.addChild(eyes);
+                robot = new paper.Group();
+                robot.addChild(center);
+                robot.addChild(feet);
+                robot.addChild(left);
+                robot.addChild(right);
+                
+                // place robot
+                robot.scale(2);
+                robot.transformContent = false;
+                radius = robot.bounds.width/2;
+                robot.visible = false;
+            }
+            
+            function removeSVG() {
+                $(".hidden").remove();
+            }
+
+            function nextStep() {
+                switch (step) {
+                    case 0: // start
+                        robot.position = new paper.Point(-radius,paper.view.center.y);
+                        var distance = paper.view.center.x - robot.position.x;
+                        var length = 2*Math.PI*radius;
+                        var number = Math.floor(distance/length);
+                        var angle = ((distance - number*length)/radius)*180/Math.PI;
+                        robot.rotate(-angle);
+                        robot.visible = true;
+                        break;
+                    case 1: // robot to center: wait for a little while
+                        window.setTimeout(function() {
+                            nextStep();
+                        }, 1000);
+                        break;
+                    case 2: // now we open its arms
+                        eclic.visible = true;
+                        eyes.visible = true;
+                        leftHand.visible = true;
+                        rightHand.visible = true;
+                        target = right.position.x - radius;
+                        target2 = left.position.x + radius;
+                        break;
+                    case 3: // robot opened: wait for a little while
+                        window.setTimeout(function() {
+                            nextStep();
+                        }, 100);
+                        break;
+                    case 4: // show feet and raise body
+                        var delta = feet.bounds.bottom - body.bounds.bottom;
+                        feet.translate(new paper.Point(0, -delta));
+                        target = body.position.y - delta;
+                        feet.visible = true;
+                        //target = 
+                        break;
+                    case 5: // show antennas
+                        var delta = antennas.bounds.height;
+                        target = antennas.position.y;
+                        antennas.translate(new paper.Point(0, delta));
+                        antennas.visible = true;
+                        break;
+                    case 6: // hide hands
+                        leftHand.visible = false;
+                        rightHand.visible = false;
+                        robot.onMouseEnter = function() {
+                            $("#animation").css("cursor", "pointer");
+                        };
+                        robot.onMouseLeave = function() {
+                            $("#animation").css("cursor", "default");
+                        };
+                        robot.onMouseDown = function() {
+                            document.location = "http://www.declick.net";
+                        };
+                        window.setTimeout(function() {
+                            window.parent.animationFinished();
+                        }, 500);
+                        break;
+                }
+                step++;
+            }
+
+
+            function setAnimation() {
+                paper.view.onFrame = function(event) {
+                    switch (step) {
+                        case 1: // bring robot to center
+                            var deltaX = speed * event.delta;
+                            var newX = robot.position.x + deltaX;
+                            if (newX >= paper.view.center.x) {
+                                // center reached
+                                robot.position = paper.view.center;
+                                robot.rotation = 0;
+                                nextStep();
+                            } else {
+                                deltaAngle = (deltaX/radius)*180/Math.PI;
+                                robot.translate(new paper.Point(deltaX, 0));
+                                robot.rotate(deltaAngle);
+                            }
+                            break;
+                        case 3: // open d and k
+                            var deltaX = speed2 * event.delta;
+                            var newX = right.position.x - deltaX;
+                            if (newX <= target) {
+                                // position reached
+                                right.position = new paper.Point(target, right.position.y);
+                                left.position = new paper.Point(target2, left.position.y);
+                                nextStep();
+                            } else {
+                                right.translate(new paper.Point(-deltaX, 0));
+                                left.translate(new paper.Point(deltaX, 0));
+                            }
+                            break;
+                        case 5: // raise body
+                            var deltaY = speed2 * event.delta;
+                            var newY = body.position.y - deltaY;
+                            if (newY <= target) {
+                                // position reached
+                                center.position = new paper.Point(center.position.x, target);
+                                nextStep();
+                            } else {
+                                center.translate(new paper.Point(0, -deltaY));
+                            }
+                            break;
+                        case 6: // raise antennas
+                            var deltaY = speed3 * event.delta;
+                            var newY = antennas.position.y - deltaY;
+                            if (newY <= target) {
+                                // position reached
+                                antennas.position = new paper.Point(antennas.position.x, target);
+                                nextStep();
+                            } else {
+                                antennas.translate(new paper.Point(0, -deltaY));
+                            }
+                            break;
+                    }
+                    //robot.position = robot.position.add(new paper.Point(1,0));
+                };
+            }
+            
+            function start() {
+                paper.view.draw();
+                nextStep();
+            }
+
+            $(function() {
+                var canvas = document.getElementById('animation');;
+                paper.setup(canvas);
+                initRobot();
+                removeSVG();
+                setAnimation();
+                start();
+            });
+            function SVGSymbol(elem){
+			 var a = new Symbol(paper.project.importSVG(elem));
+			 elem.parentNode.removeChild(elem);
+			 return a;
+            }
+            //var a = SVGSymbol(document.getElementById('svg'));            
+        </script>
+    </head>
+    <body>
+        <svg id="body" class="hidden">
+            <circle id="path3482" fill-rule="evenodd" cx="39.074" cy="39.074" r="39.074" fill="#e52c21"/>
+        </svg>
+        <svg id="eclic" class="hidden">
+            <g id="g3439" fill="#fff" transform="translate(-41.986 -39.561)"><path id="path3441" d="m64.199 88.108h-14.091c0.353 1.189 1.022 2.145 2.006 2.869 0.984 0.723 2.097 1.084 3.34 1.084 1.485 0 2.814-0.621 3.982-1.863l2.813 1.633c-1.93 2.289-4.195 3.434-6.795 3.434-2.431 0-4.5-0.854-6.208-2.561-1.708-1.709-2.562-3.777-2.562-6.211 0-2.432 0.854-4.5 2.562-6.207 1.708-1.709 3.777-2.563 6.208-2.563 2.433 0 4.499 0.855 6.197 2.568 1.699 1.713 2.548 3.787 2.548 6.225v1.592zm-3.426-3.203c-0.353-1.176-1.02-2.135-2.004-2.873-0.985-0.738-2.09-1.107-3.315-1.107-1.224 0-2.335 0.369-3.326 1.107-0.994 0.738-1.667 1.697-2.02 2.873h10.665z"/><path id="path3443" d="m82.437 89.892c-2.153 3.582-4.871 5.373-8.158 5.373-2.432 0-4.497-0.855-6.196-2.564-1.697-1.711-2.546-3.785-2.546-6.221s0.849-4.504 2.546-6.203c1.699-1.703 3.765-2.553 6.196-2.553 3.23 0 5.939 1.76 8.131 5.283l-2.729 1.705c-1.56-2.523-3.36-3.787-5.401-3.787-1.541 0-2.85 0.541-3.927 1.623-1.076 1.082-1.616 2.396-1.616 3.945s0.54 2.865 1.616 3.945c1.077 1.084 2.386 1.623 3.927 1.623 2.078 0 3.89-1.27 5.431-3.814l2.726 1.645z"/><path id="path3445" d="m93.825 95.265h-10.052v-17.541h3.202v14.338h6.85v3.203z"/><path id="path3447" d="m98.365 95.265h-3.203v-17.541h3.203v17.541z"/><path id="path3449" d="m116.6 89.892c-2.154 3.582-4.875 5.373-8.159 5.373-2.433 0-4.496-0.855-6.194-2.564-1.699-1.711-2.549-3.785-2.549-6.221s0.85-4.504 2.549-6.203c1.698-1.703 3.762-2.553 6.194-2.553 3.23 0 5.939 1.76 8.13 5.283l-2.729 1.705c-1.559-2.523-3.358-3.787-5.401-3.787-1.542 0-2.849 0.541-3.927 1.623-1.077 1.082-1.616 2.396-1.616 3.945s0.539 2.865 1.616 3.945c1.078 1.084 2.385 1.623 3.927 1.623 2.078 0 3.889-1.27 5.43-3.814l2.729 1.645z"/></g>        </svg>
+        <svg id="d" class="hidden">
+            <g id="g4455" transform="translate(-61.533,-41.044)"><polygon id="polygon4457" points="100.6 119.55 61.533 80.296 100.6 41.044" fill="#fff"/><path id="path4459" fill="#e52c21" d="m99.615 80.277c0 3.532-1.229 6.54-3.684 9.02-2.451 2.48-5.436 3.721-8.949 3.721l-12.674 0.039v-25.518h2.374 10.3c3.514-0.027 6.498 1.209 8.949 3.701 2.456 2.494 3.684 5.506 3.684 9.037zm-4.629 0.021c0-2.244-0.777-4.16-2.334-5.742-1.555-1.582-3.445-2.375-5.67-2.375h-8.046v16.194h8.046c2.225 0 4.115-0.785 5.67-2.355 1.557-1.569 2.334-3.475 2.334-5.722z"/></g>        </svg>
+        <svg id="k" class="hidden">
+            <g id="g3" transform="translate(-62.109,-41.044)"><polygon id="polygon5" points="62.109 119.55 101.17 80.296 62.109 41.044" fill="#fff"/><path id="path7" fill="#e52c21" d="m88.408 67.536-12.707 12.81 12.83 12.711h-6.809l-9.301-9.414-0.708 0.709v8.705h-4.643v-25.521h4.643v10.17l10.132-10.17h6.563z"/></g>
+        </svg>
+        <svg id="antennas" class="hidden">
+            <g id="g3" fill="#e52c21" transform="translate(-49.639 -73.148)"><path id="path5" d="m109.1 88.045c1.383-2.161 1.011-4.961-0.813-6.693l3.76-6.538c0.389 0.205 0.875 0.106 1.135-0.262 0.283-0.404 0.186-0.957-0.217-1.242-0.402-0.282-0.959-0.184-1.24 0.219-0.258 0.368-0.186 0.854 0.135 1.151l-4.861 5.769c-2.141-1.068-4.733-0.563-6.324 1.241 3.089 1.737 5.924 3.875 8.425 6.355z"/><path id="path7" d="m50.936 74.813 3.76 6.537c-1.824 1.732-2.197 4.533-0.814 6.694 2.501-2.479 5.337-4.619 8.428-6.356-1.592-1.804-4.185-2.308-6.326-1.24l-4.86-5.769c0.319-0.297 0.392-0.783 0.135-1.151-0.282-0.402-0.839-0.501-1.24-0.219-0.403 0.285-0.5 0.838-0.219 1.242 0.26 0.369 0.746 0.468 1.136 0.262z"/></g>
+        </svg>
+        <svg id="feet" class="hidden">
+            <g id="g3" fill="#e52c21" transform="translate(-52.009,-71.781)"><path id="path5" d="m104.78 82.847 0.24-2.691c0.947-0.316 1.617-1.221 1.57-2.27-0.016-0.396-0.143-0.76-0.334-1.078l0.635-4.938c-1.834 1.595-3.814 3.021-5.922 4.258l0.092 0.715c-0.232 0.377-0.357 0.824-0.338 1.299 0.047 1.031 0.773 1.865 1.725 2.111l0.23 2.572c-3.168 0.475-5.6 3.199-5.6 6.498h13.158c0.001-3.25-2.358-5.943-5.456-6.476zm-1.758-4.778-0.053-1.213h1.279l0.053 1.213h-1.279z"/><path id="path7" d="m59.713 82.847 0.24-2.691c0.948-0.316 1.617-1.221 1.571-2.27-0.017-0.396-0.143-0.76-0.335-1.078l0.095-0.734c-2.112-1.246-4.096-2.686-5.931-4.293h-0.01l0.649 5.063c-0.231 0.377-0.357 0.824-0.337 1.299 0.047 1.031 0.773 1.865 1.726 2.111l0.229 2.572c-3.168 0.475-5.601 3.199-5.601 6.498h13.16c0.002-3.251-2.357-5.944-5.456-6.477zm-1.758-4.778-0.053-1.213h1.28l0.053 1.213h-1.28z"/></g>        
+        </svg>
+        <svg id="eyes" class="hidden">
+            <path id="path3" fill="#f7b69e" d="m0 24.088c0-10.816 13.043-24.088 29.135-24.088 16.09 0 29.133 13.271 29.133 24.088"/><path id="path5" fill="#e52c21" d="m21.781 7.009c1.77 0 3.275 0.628 4.531 1.882 1.252 1.254 1.883 2.765 1.883 4.531 0 1.826-0.613 3.366-1.84 4.621-1.223 1.252-2.75 1.88-4.574 1.88-1.826 0-3.365-0.628-4.621-1.88-1.252-1.255-1.881-2.795-1.881-4.621 0-1.767 0.643-3.277 1.926-4.531 1.281-1.254 2.809-1.882 4.576-1.882zm14.793 0c1.768 0 3.279 0.628 4.533 1.882 1.256 1.254 1.881 2.765 1.881 4.531 0 1.826-0.613 3.366-1.838 4.621-1.229 1.252-2.75 1.88-4.576 1.88-1.822 0-3.363-0.628-4.617-1.88-1.254-1.255-1.881-2.795-1.881-4.621 0-1.767 0.643-3.277 1.924-4.531s2.809-1.882 4.574-1.882z"/>        
+        </svg>     
+        <svg id="hand-right" class="hidden">
+            <path id="path3" fill="#e52c21" d="m4.4209 12.256c-2.538-0.262-4.49-2.438-4.419-5.034 0.049-1.748 1.004-3.256 2.4-4.092l1.686-2.861v-0.002c0.211-0.357 0.876-0.355 1.492 0.004 0.612 0.361 0.938 0.947 0.725 1.303l-0.001 0.002-0.959 1.629 3.831-0.074c0.418-0.006 0.764 0.563 0.779 1.273 0.016 0.709-0.314 1.293-0.727 1.301l-0.003-0.002-0.001 0.002-4.251 0.08-0.019 0.701 4.325-0.086v0.002h0.002c0.414-0.008 0.764 0.563 0.779 1.271 0.014 0.711-0.314 1.293-0.729 1.301l-0.004-0.002v0.002l-4.445 0.084-0.017 0.629 4.113-0.08-0.003 0.002 0.004 0.002c0.416-0.01 0.762 0.559 0.777 1.27 0.014 0.711-0.313 1.293-0.73 1.301v0.002l-4.232 0.08v0.021c-0.079-0.002-0.155-0.012-0.233-0.018l-0.14 0.002v-0.013z"/>
+        </svg>     
+        <svg id="hand-left" class="hidden">
+            <path id="path3" fill="#e52c21" d="m5.6434 12.256c2.538-0.262 4.49-2.439 4.419-5.034-0.049-1.749-1.004-3.256-2.4-4.093l-1.686-2.861-0.001-0.001c-0.211-0.357-0.876-0.355-1.492 0.004-0.612 0.361-0.938 0.947-0.724 1.303v0.002l0.959 1.629-3.832-0.074c-0.417-0.006-0.763 0.563-0.779 1.272-0.016 0.71 0.314 1.293 0.727 1.302l0.002-0.002 0.001 0.002 4.251 0.08 0.019 0.7-4.326-0.085v0.001l-0.002 0.001c-0.414-0.008-0.763 0.563-0.779 1.271-0.013 0.71 0.314 1.292 0.729 1.3h0.003l0.001 0.002 4.445 0.084 0.017 0.629-4.113-0.08 0.003 0.002-0.005 0.002c-0.415-0.01-0.761 0.559-0.776 1.27-0.014 0.709 0.312 1.293 0.729 1.301l4.232 0.082v0.021c0.079-0.002 0.155-0.012 0.233-0.018l0.14 0.002 0.005-0.014z"/>        
+        </svg>
+        <canvas id="animation">
+        </canvas>
+    </body>
+</html>
