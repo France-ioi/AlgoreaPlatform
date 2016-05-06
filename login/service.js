@@ -97,8 +97,9 @@ angular.module('franceIOILogin', [])
            });
         }
         function messageCallback(e) {
+           var message;
            try {
-              var message = JSON.parse(e.data);
+              message = JSON.parse(e.data);
            } catch(e) { return; }
            if (!message || message.source !== 'loginModule')
               return;

@@ -22,7 +22,7 @@ angular.module('algorea')
             setInterval(SyncQueue.planToSend, 8000);
          }
       }
-      SyncQueue.planToSend();
+      SyncQueue.planToSend(0);
       setSyncInterval();
       function syncStartListener(data) {
          if (!lastSyncLogin && data && data.changes && data.changes.loginData && data.changes.loginData.sLogin) {
@@ -86,7 +86,7 @@ angular.module('algorea')
             firstSyncDone = 0;
             lastSyncLogin = newLogin;
             $rootScope.$broadcast('syncResetted');
-            SyncQueue.planToSend();
+            SyncQueue.planToSend(100);
          }
       }
       $rootScope.$on('login.logout', function() {
@@ -97,7 +97,7 @@ angular.module('algorea')
          newLogin = login;
          firstSyncFailed = false;
          if (newLogin !== lastSyncLogin) {
-            SyncQueue.planToSend();
+            SyncQueue.planToSend(50);
          }
          // TODO: build SyncQueue.cancelCurrentSync() with a StartSyncListener
       }

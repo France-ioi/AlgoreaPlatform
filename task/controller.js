@@ -53,7 +53,7 @@ angular.module('algorea')
    };
    $scope.intervals = {};
    $scope.updateHeight = function(height) {
-      $scope.taskIframe.height(parseInt(height)+40);
+      $scope.taskIframe.css('height', parseInt(height)+40);
       if ($rootScope.refreshSizes) {
          $rootScope.refreshSizes();
       }
@@ -205,7 +205,7 @@ angular.module('algorea')
    };
    $scope.openSeparateEditor = function() {
       $scope.showEditor = true;
-   }
+   };
    $scope.selectTab = function(tabname, fromURL) {
       if (!tabname) {
          return;
@@ -244,7 +244,7 @@ angular.module('algorea')
    $scope.interval = null;
    $scope.courseLoaded = /*false*/true;
    $scope.updateHeight = function(height) {
-      $scope.taskIframe.height(parseInt(height));
+      $scope.taskIframe.css('height', parseInt(height));
       if ($rootScope.refreshSizes) {
          $rootScope.refreshSizes();
       }

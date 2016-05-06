@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr" ng-app="algorea"  ng-controller="navigationController">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title ng-bind="domainTitle"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <script type="text/javascript" src="config.js.php"></script>
+    <link rel="stylesheet" href="vendor.min.css">
+    <link rel="stylesheet" href="algorea.min.css">
+    <script type="text/javascript">
+      if (config.domains.current.additionalCssUrl) {
+        link = document.createElement( "link" );
+        link.href =  config.domains.current.additionalCssUrl;
+        link.type = "text/css";
+        link.rel = "stylesheet";
+        document.getElementsByTagName( "head" )[0].appendChild( link );
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    </script>
+</head>
+<body ng-controller="layoutController" ng-cloak>
+<div id="fixed-header-room" class="fixed-header-room"></div>
+<header ng-click="layout.menuClicked($event);" ng-include="'menu.html'">
+</header>
+<div id='main'>
+
+<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-hide="layout.isMenuClosed()"></nav>
+
+<article id="view-right" ui-view="right" autoscroll="false" ng-click="layout.closeIfOpen();"></article>
+
+<aside id="sidebar-right" class="sidebar-right" ng-include="'community/view.html'"  ng-controller="communityController">
+
+</div>
+
+<footer id="footer"><div class="footer-container"><div class="footer-left">Réalisé par <a target="_blank" href="http://www.colombbus.org/">Colombbus</a> et <a  target="_blank" href="http://www.france-ioi.org/">France-ioi</a> <a ng-click="goToPath('4029/358693573288821832')">Forum</a></div><div class="footer-right"><a href="mailto:declick@colombbus.org">Contactez-nous ! <i class="glyphicon glyphicon-envelope"></i></a></div></div></footer>
+
+<div id="map" class="map" style="display:none;" ng-include="'map/map.html'"></div>
+
+<script src="vendor.min.js"></script>
+<script src="algorea.min.js"></script>
+<script src="templates.js"></script>
+</body>
+</html>

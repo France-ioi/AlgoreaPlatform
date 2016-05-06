@@ -24,6 +24,9 @@ angular.module('algorea')
             mapService.setCurrentItem(this.item, this.pathParams);
          }
       }
+      $scope.goToPath = function(path) {
+         $state.go('contents', {path: path,sell:null,selr:null});
+      }
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
@@ -138,7 +141,7 @@ angular.module('algorea')
          }
       };
       $scope.setItemIcon($scope.item);
-      $scope.item_percent_done = function() {
+      $scope.item_percent_done = function(user_item) {
          if (!user_item) {
             return 0;
          }
