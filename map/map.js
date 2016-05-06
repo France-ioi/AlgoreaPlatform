@@ -13,13 +13,19 @@ function DeclickMap() {
     var chapterLabels = [];
     var targetZoom, targetCenter, targetCurrent, target = false;
     var clickCaptured = false;
-    // margin around the path
-    var margin = 40;
     var displayedSteps = [];
     var labels = [];
     var stepCallback;
     var currentIndex = -1;
     var chapterOpen = false;
+    var movementSpeed, zoomSpeed;
+
+    // margin around the path
+    var margin = 40;
+    // duration of animations
+    var animationDuration = 0.8;
+
+
 
     // Initialization
     var initView = function(canvasId) {
@@ -74,14 +80,13 @@ function DeclickMap() {
         };
 
         // Map animation
-        var stepZoom = 0.05;
-        var stepCenter = 10;
         paper.view.onFrame = function(event) {
             if (target) {
                 var view = paper.view;
                 var center = view.center;
                 target = false;
                 if (!center.equals(targetCenter)) {
+                    var stepCenter = event.delta*movementSpeed;
                     target = true;
                     var vector = targetCenter.subtract(center);
                     if (vector.length > stepCenter) {
@@ -92,6 +97,7 @@ function DeclickMap() {
                     }
                 }
                 if (view.zoom !== targetZoom) {
+                    var stepZoom = event.delta*zoomSpeed;
                     target = true;
                     if (view.zoom < targetZoom) {
                         view.zoom = Math.min(view.zoom + stepZoom, targetZoom);
@@ -233,6 +239,7 @@ function DeclickMap() {
     };
     
     var initSteps = function(data) {
+        steps = [];
         function getObject(value, chapter) {
             var object = {chapter: chapter, name: value.name};
             if (typeof value.id !== 'undefined') {
@@ -261,9 +268,7 @@ function DeclickMap() {
             currentChapterPath.visible = false;
             currentChapterLabels.visible = false;
         }
-        targetZoom = 1;
-        targetCenter = new paper.Point(initCenter);
-        target = true;
+        setTarget(initCenter, 1);
         $canvas.css("cursor", "default");
         currentChapterPath = null;
         chapterOpen = false;
@@ -287,9 +292,7 @@ function DeclickMap() {
             var zHeight = paper.view.bounds.height / (bounds.height);
             var zWidth = paper.view.bounds.width / (bounds.width);
             if (animate) {
-                targetCenter = new paper.Point(bounds.center);
-                targetZoom = paper.view.zoom * Math.min(zHeight, zWidth);
-                target = true;
+                setTarget(bounds.center, paper.view.zoom * Math.min(zHeight, zWidth));
             } else {
                 paper.view.center = new paper.Point(bounds.center);
                 targetCenter = new paper.Point(paper.view.center);
@@ -302,6 +305,14 @@ function DeclickMap() {
             currentChapterPath = null;
             chapterOpen = false;
         }
+    };
+    
+    var setTarget = function(center, zoom) {
+        targetCenter = new paper.Point(center);
+        targetZoom = zoom;
+        movementSpeed = (paper.view.center.getDistance(targetCenter))/animationDuration;
+        zoomSpeed = Math.abs(zoom - paper.view.zoom)/animationDuration;
+        target = true;
     };
 
 
@@ -355,29 +366,45 @@ function DeclickMap() {
         }
     };
     
-    var resize = function() {
+    var removeSteps = function() {
         // remove everything
         paper.project.activeLayer.removeChildren();
-        // create new group
-        everything = new paper.Group();
-        // fit path to new dimensions
-        path.fitBounds(paper.view.bounds.expand(-margin));
-        // add path to new group
-        everything.addChild(path);
-        // center everything
-        centerEveryting();
         // initialize data
         displayedSteps = [];
         chapterPaths = [];
         chapterLabels = [];
         chapters = [];
         labels = [];
+        currentIndex = -1;
+        chapterOpen = false;
+        target = false;
+        if (initCenter) {
+            paper.view.center = new paper.Point(initCenter);
+            targetCenter = new paper.Point(initCenter);
+        }
         paper.view.zoom = 1;
+        targetZoom = 1;
+        // create new group
+        everything = new paper.Group();
+        // fit path to new dimensions
+        if (path) {
+            path.fitBounds(paper.view.bounds.expand(-margin));
+            // add path to new group
+            everything.addChild(path);
+            // center everything
+            centerEveryting();
+        }
+    };
+    
+    var resize = function() {
+        var savedCurrentIndex = currentIndex;
+        var savedChapterOpen = chapterOpen;
+        removeSteps();
         // display steps
         displaySteps();
         // open chapter if required
-        if (currentIndex>-1 && chapterOpen) {
-            setCurrentStep(steps[currentIndex].id, false);
+        if (savedCurrentIndex>-1 && savedChapterOpen) {
+            setCurrentStep(steps[savedCurrentIndex].id, false);
         }
     };
 
@@ -641,6 +668,10 @@ function DeclickMap() {
         }
         // remove any precedently bound mousemove handlers
         $canvas.off("mousemove");
+    };
+    
+    this.removeSteps = function() {
+        removeSteps();
     };
 }
 
