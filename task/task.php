@@ -128,6 +128,7 @@ function askValidation($request, $db) {
       'sAnswer' => $request['sAnswer'],
       'idUser' => intval($_SESSION['login']['ID']),
       'idItem' => intval($params['idItem']),
+      'itemUrl' => intval($params['itemUrl']),
       'idItemLocal' => intval($params['idItemLocal']),
       'idUserAnswer' => $ID
    );
@@ -182,7 +183,7 @@ function graderResult($request, $db) {
 
 function getToken($request, $db) {
    global $config;
-   $query = 'select `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
+   $query = 'select `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
    'from `items` '.
    'join `groups_items` on `groups_items`.`idItem` = `items`.`ID` '.
    'join `users_items` on `users_items`.`idItem` = `items`.`ID` '.
@@ -218,6 +219,7 @@ function getToken($request, $db) {
       'idUser' => intval($_SESSION['login']['ID']),
       'idItemLocal' => intval($request['idItem']),
       'idItem' => $data['sTextId'],
+      'itemUrl' => $data['sUrl'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],
       'bHasSolvedTask' => $data['bValidated'],
    );
