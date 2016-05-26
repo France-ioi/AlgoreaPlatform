@@ -4,7 +4,8 @@ class getThread {
    public static function getSyncRequests($requestSet) {
       global $db;
       if (!isset($requestSet['idThread'])) {
-         return;
+         error_log('getThread requestSet with no idThread argument.');
+         return [];
       }
 
       $requests = syncGetTablesRequests(array('messages' => true, 'users_answers' => true, 'users_items' => true), false);
@@ -31,16 +32,15 @@ class getThread {
       $stmt->execute(['ID' => $requestSet['idThread']]);
       $thread = $stmt->fetch();
       if (!$thread) {
-         error_log('warning: user '+$_SESSION['login']['ID']+' tried to access non-existant thread '+$requestSet['idThread']+'.');
-         return;
+         error_log('warning: user '.$_SESSION['login']['ID'].' tried to access non-existant thread '.$requestSet['idThread'].'.');
+         return [];
       }
       $idItem = $thread['idItem'];
       // threads initiated by the user are already fetched in the thread_general request
       if ($idItem) {
-         $query = "select threads.ID, users_items.bValidated as bValidated, MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions, MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions from threads
-         join groups_items on groups_items.idItem = threads.idItem
-         left join users_items on users_items.idItem = threads.idItem and users_items.idUser = :idUser
-         join users_items as other_users_items on other_users_items.idItem = threads.idItem and users_items.idUser = :idUser
+         $query = "select threads.ID, threads.idUserCreated, users_items.bValidated as bValidated,  MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions from threads
+         join groups_items on groups_items.idItem = :idItem
+         join users_items on users_items.idItem = :idItem and users_items.idUser = :idUser
          join groups_ancestors as selfGroupAncestors on selfGroupAncestors.idGroupAncestor = groups_items.idGroup
          where
          ((`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND `selfGroupAncestors`.`idGroupChild` = :idGroupSelf)
@@ -49,12 +49,13 @@ class getThread {
          $stmt->execute([
             'ID' => $requestSet['idThread'],
             'idUser' => $_SESSION['login']['ID'],
+            'idItem' => $idItem,
             'idGroupSelf' => $_SESSION['login']['idGroupSelf']
          ]);
          $test = $stmt->fetch();
-         if (!$test || (!$test['bValidated'] && !$test['bAccessSolutions'])) {
-            error_log('warning: user '+$_SESSION['login']['ID']+' tried to access thread '+$requestSet['idThread']+' without permission.');
-            return;
+         if (!$test || (!$test['bValidated'] && !$test['bAccessSolutions'] && $test['idUserCreated'] != $_SESSION['login']['ID'])) {
+            error_log('warning: user '.$_SESSION['login']['ID'].' tried to access thread '.$requestSet['idThread'].' without permission.');
+            return [];
          }
 
          $requests['my_users_items']['filters']['idItem'] = $idItem;
@@ -71,7 +72,6 @@ class getThread {
          $requests["users_answers"]["debugLogFunction"] = myDebugFunction;
 
          //$requests["users_items"]['model']["fields"]['bAccessSolutions'] = array('sql' => 'MAX(`groups_items`.`bCachedAccessSolutions`)');
-
          return [
             'threadMessages' => $requests['messages'], 
             'threadAnswers' => $requests['users_answers'],
