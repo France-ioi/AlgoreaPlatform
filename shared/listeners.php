@@ -175,6 +175,12 @@ class Listeners {
                                     "JOIN `groups_items_propagate` as `parents_propagate` on `parents`.`ID` = `parents_propagate`.`ID` ".
                                     "WHERE `parents_propagate`.`sPropagateAccess` = 'children';";
 
+      // mark as 'done' items that shouldn't propagate
+      $queryMarkDoNotPropagate = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, sPropagateAccess) ".
+                                    "SELECT `groups_items`.`ID` as `ID`, 'done' as sPropagateAccess FROM groups_items ".
+                                    "JOIN `items` on `groups_items`.`idItem` = `items`.`ID` ".
+                                    "WHERE `items`.`sType` = 'CustomContestRoot' OR `items`.`sType` = 'CustomProgressRoot' ON DUPLICATE KEY UPDATE sPropagateAccess='done';";
+
       // marking 'self' groups_items sons of groups_items marked as 'children'
       $queryMarkExistingChildren = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, sPropagateAccess) ".
                                     "SELECT `children`.`ID` as `ID`, 'self' as sPropagateAccess ".
@@ -232,6 +238,7 @@ class Listeners {
       $hasChanges = true;
       while ($hasChanges) {
          $res = $db->exec($queryInsertMissingPropagate);
+         $res = $db->exec($queryMarkDoNotPropagate);
          //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryInsertMissingPropagate."\n".$res." rows updated\n", FILE_APPEND);
          $res = $db->exec($queryMarkExistingChildren);
          //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryMarkExistingChildren."\n".$res." rows updated\n", FILE_APPEND);

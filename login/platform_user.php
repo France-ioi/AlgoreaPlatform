@@ -79,8 +79,8 @@ if ($action == 'login') {
   // user has logged through login platform, we receive the token here:
   // we fill the session and, if not already creted, create a new user
    require_once(dirname(__FILE__)."/../shared/TokenParser.php");
-   $tokenParser = new TokenParser($config->login->public_key);
-   $params = $tokenParser->decodeToken($request['token']);
+   $tokenParser = new TokenParser($config->login->public_key, $config->login->name);
+   $params = $tokenParser->decodeJWS($request['token']);
    if (!$params || empty($params)) {
       echo '{"result": false, "error": "invalid or empty token"}';
       return;

@@ -11,7 +11,7 @@ angular.module('algorea')
       if (config.domains.current.additionalCssUrl) {
          $scope.additionalCssUrl = $sce.trustAsUrl(config.domains.current.additionalCssUrl);
       }
-      if (config.domains.current.useForum === false) {
+      if (config.domains.current.usesForum === false) {
          $scope.useForum = false;
       } else {
          $scope.useForum = true;
@@ -21,12 +21,10 @@ angular.module('algorea')
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
-         var type = this.item && this.item.sType ? this.item.sType.toLowerCase() : 'error';
+         $scope.itemType = this.item && this.item.sType ? itemService.normalizeItemType(this.item.sType) : 'error';
+         var type = $scope.itemType.toLowerCase();
          // exception: DiscoverRootItemId has type Root but should be displayed as a Presentation
          if (this.item && this.item.ID == config.DiscoverRootItemId) type = 'presentation';
-         if (type == 'genericchapter' || type == 'staticchapter'  || type == 'contestchapter'  || type == 'limitedtimechapter') {
-            type = 'chapter';
-         }
          if ( ! from) {
             if (type == 'task' || type == 'course' || type == 'presentation') {
                // TODO: remove!
@@ -113,7 +111,7 @@ angular.module('algorea')
                this.mainIconName = 'keyboard';
             }
          } else {
-            this.mainIconName = type_iconName[item.sType];
+            this.mainIconName = type_iconName[itemService.normalizeItemType(item.sType)];
             if (user_item && user_item.bValidated) {
                this.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";

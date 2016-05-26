@@ -74,6 +74,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       'bHasSolvedTask'       => null,
       'nbHintsGiven'         => null,
       'idItem'               => null,
+      'itemUrl'              => null,
       'idUser'               => null,
       'bIsAdmin'             => null,
       'bIsDefault'           => null,
@@ -86,21 +87,23 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       }
       $params = array_replace($_SESSION['login'], (array)$userItem['data'], (array)$item['data']);
       $params = array_intersect_key($params, $token_fields);
+      $params['idItem'] = $item['data']->sTextId;
+      $params['itemUrl'] = $item['data']->sUrl;
+      $params['idItemLocal'] = $item['data']->ID;
       // case of a user_item fetched for a forum thread:
       if ($userItem['data']->idUser != $_SESSION['login']['ID']) {
          $params['bSubmissionPossible'] = false;
          $params['bReadAnswers'] = true;
       }
-      $params['idItem'] = $item['data']->sTextId;
-      $params['idItemLocal'] = $item['data']->ID;
       $params['idUser'] = $userItem['data']->idUser;
+      $params['nbHintsGiven'] = $userItem['data']->nbHintsCached;
       $params['bHintPossible'] = true;
       $params['bHasSolvedTask'] = $userItem['data']->bValidated;
       // platform needs idTask:
       $params['id'.$item['data']->sType] = $params['idItem'];
       $params['bHasAccessCorrection'] = $item['data']->bAccessSolutions;
       $params['bReadAnswers'] = true;
-      $token = $tokenGenerator->generateToken($params);
+      $token = $tokenGenerator->encodeJWS($params);
       $userItem['data']->sToken = $token;
    } else {
       $userItem['data']->sToken = '';
@@ -150,9 +153,10 @@ function fetchItemsIfMissing($serverChanges, $db) {
             $users_items_ids[] = $values['data']->idItem;
          }
       }
+
       $missing_item_ids = array_diff($users_items_ids, $items_ids);
       if (count($missing_item_ids)) {
-         $query = 'select `items`.`ID`, `items`.`bUsesAPI`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, `items`.`sTextId`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0) as `bGrayedAccess`, `items`.`sType` from `items` join `groups_items` on `groups_items`.`idItem` = `items`.`ID` join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` where `groups_ancestors`.`idGroupChild` = '.$_SESSION['login']['idGroupSelf'].' AND (';
+         $query = 'select `items`.`ID`, `items`.`sUrl`, `items`.`bUsesAPI`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, `items`.`sTextId`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0) as `bGrayedAccess`, `items`.`sType` from `items` join `groups_items` on `groups_items`.`idItem` = `items`.`ID` join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` where `groups_ancestors`.`idGroupChild` = '.$_SESSION['login']['idGroupSelf'].' AND (';
          $first = true;
          foreach ($missing_item_ids as $id) {
             if (!$first) {
@@ -204,10 +208,14 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
    if (hasMissingUserItems($serverChanges, 'updated')) {
       createMissingUserItems($db, $serverChanges, 'updated');
    }
+   // no need for tokens when fetching levels
+   if (!isset($serverChanges['users_items']) || ! isset($params["requests"]["algorea"]['type']) || $params["requests"]["algorea"]['type'] == 'getAllLevels') {
+      return;
+   }
    $items = fetchItemsIfMissing($serverChanges, $db);
    // then we generate tokens for the user items corresponding to tasks and courses
    require_once(dirname(__FILE__)."/TokenGenerator.php");
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    if (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && isset($serverChanges['requestSets']['getThread']['users_items']['inserted'])) {
       foreach ((array) $serverChanges['requestSets']['getThread']['users_items']['inserted'] as $userItem) {
          generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
@@ -229,7 +237,6 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
       }
    }
 }
-
 
 function checkInitialUsersItems($db) {
    $stmt = $db->prepare('select count(ID) from users_items where idUser = :idUser;');
