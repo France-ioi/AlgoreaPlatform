@@ -1,32 +1,32 @@
 <div ng-controller="forumIndexController" ng-if="!loading">
-   <div ng-controller="forumFilterController" ng-include="'forum/filters.html'">
+   <div ng-if="false" ng-controller="forumFilterController" ng-include="'forum/filters.html'">
    </div>
    <div class="container threadsContainer" style="width:100%">
       <div class="row clearfix">
          <div class="col-md-2 column">
-            <button class="btn btn-standard" ng-click="newThread();" style="margin-bottom: 20px;">Nouvelle demande d'aide</button>
-            <div ng-repeat="globalFilter in globalFilters" ng-class="{globalFilterSelected: globalFilter == currentGlobalFilter}">
+            <button class="btn btn-standard" ng-click="newThread();" style="margin-bottom: 20px;font-size:16pt;">Nouvelle demande d'aide</button>
+            <div ng-if="false" ng-repeat="globalFilter in globalFilters" ng-class="{globalFilterSelected: globalFilter == currentGlobalFilter}">
                <a class="globalFilter" href="" ng-click="selectGlobalFilter(globalFilter);">{{globalFilter.description}}</a>
             </div>
          </div>
          <div class="col-md-10 column">
-            <ul tabset>
-               <li tab select="selectTab('helpOthers')" active="tabs.helpOthers.active">
-                  <div tab-heading>
+            <ul uib-tabset>
+               <li uib-tab select="selectTab('helpOthers')" active="tabs.helpOthers.active">
+                  <div uib-tab-heading>
                      <strong>Aider les autres ({{helpOthersThreads.length}})</strong> 
                   </div>
                   <div ng-repeat="(ID, thread) in threads | threadFilter:'helpOthers':myUserID:currentFilter:currentGlobalFilter.filter as helpOthersThreads" ng-include="'forum/threadInIndex.html'" class="threadsInIndex">
                   </div>
                </li>
-               <li tab select="selectTab('getHelp')" active="tabs.getHelp.active">
-                  <div tab-heading>
+               <li uib-tab select="selectTab('getHelp')" active="tabs.getHelp.active">
+                  <div uib-tab-heading>
                      <strong>Me faire aider ({{getHelpThreads.length}})</strong> 
                   </div>
                   <div ng-repeat="(ID, thread) in threads | threadFilter:'getHelp':myUserID:currentFilter:currentGlobalFilter.filter as getHelpThreads" ng-include="'forum/threadInIndex.html'" class="threadsInIndex">
                   </div>
                </li>
-               <li tab select="selectTab('general')" active="tabs.general.active">
-                  <div tab-heading>
+               <li uib-tab select="selectTab('general')" active="tabs.general.active">
+                  <div uib-tab-heading>
                      <strong>Général ({{generalThreads.length}})</strong> 
                   </div>
                   <div ng-repeat="(ID, thread) in threads | threadFilter:'general':myUserID:currentFilter:currentGlobalFilter.filter as generalThreads" ng-include="'forum/threadInIndex.html'" class="threadsInIndex">
