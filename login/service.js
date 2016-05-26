@@ -52,6 +52,7 @@ angular.module('franceIOILogin', [])
               userOwnedGroup = user.loginData.idGroupOwned;
               userLogin = user.sLogin;
               $rootScope.myUserID = userID;
+              $rootScope.myLogin = user.sLogin;
               $rootScope.$broadcast('login.login', data);
               triggerCallback();
            });
@@ -66,6 +67,7 @@ angular.module('franceIOILogin', [])
               userOwnedGroup = null;
               state = 'login';
               $rootScope.myUserID = userID;
+              $rootScope.myLogin = user.sLogin;
               $rootScope.$broadcast('login.login', {login: user.sLogin, tempUser: true, loginData: user.loginData});
            });
         }
@@ -79,6 +81,7 @@ angular.module('franceIOILogin', [])
               state = 'login';
               $rootScope.$broadcast('login.login', {login: user.sLogin, tempUser: true, loginData: user.loginData});
               $rootScope.myUserID = userID;
+              $rootScope.myLogin = user.sLogin;
               triggerCallback();
            });
         }

@@ -583,6 +583,8 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
 function getSyncRequests($params, $minServerVersion) {
    global $db;
    $requests = syncGetTablesRequests(null, false);
+   $requests['messages']['lowPriority'] = true;
+   $requests['users_threads']['lowPriority'] = true;
    //var_export($requests);
    algoreaCustomRequest($params, $requests, $db, $minServerVersion);
    //var_export($requests);

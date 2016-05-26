@@ -34,6 +34,7 @@ angular.module('algorea')
       $scope.newMessage = ModelsManager.createRecord('messages');
       $scope.newMessage.idThread = $scope.thread.ID;
       $scope.newMessage.idUser = $scope.myUserID;
+      $scope.newMessage.sLogin = $scope.myLogin;
       $scope.newMessage.bPublished = false;
       $scope.newMessage.sSubmissionDate = false;
    };
@@ -177,7 +178,6 @@ angular.module('algorea')
    $scope.init = function() {
       $scope.loading = true;
       itemService.onNewLoad(function() {
-         $scope.myUserID = $rootScope.myUserID;
          initThread();
          $timeout($scope.$apply);
       });   
@@ -201,6 +201,7 @@ angular.module('algorea')
             ModelsManager.insertRecord('threads', $scope.thread);
             $scope.newThread = false;
             $scope.newMessage.sSubmissionDate = new Date();
+            $scope.newMessage.bPublished = true;
             ModelsManager.insertRecord('messages', $scope.newMessage);
             $scope.createEmptyNewMessage();
             $scope.newMessageInserted = false;
@@ -226,6 +227,9 @@ angular.module('algorea')
    };
    $scope.newMessageFocus = function() {
       if (!$scope.newMessageInserted) {
+         if ($scope.newMessage === null) {
+            $scope.createEmptyNewMessage();
+         }
          ModelsManager.insertRecord('messages', $scope.newMessage);
          $scope.newMessageInserted = true;
       }
