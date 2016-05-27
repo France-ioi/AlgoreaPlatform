@@ -121,6 +121,7 @@ angular.module('algorea')
    }
    $scope.$on('$destroy', function() {
       SyncQueue.removeSyncEndListeners('forumThreadController');
+      itemService.unsyncThread(idThread);
    });
    function startNewThread(item) {
       $scope.ownThread = true;

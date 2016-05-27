@@ -1,7 +1,7 @@
 <?php
 
 class getThread {
-   public static function getSyncRequests($requestSet) {
+   public static function getSyncRequests($requestSet, $minServerVersion) {
       global $db;
       if (!isset($requestSet['idThread'])) {
          error_log('getThread requestSet with no idThread argument.');
@@ -15,7 +15,7 @@ class getThread {
       $requests['my_users_items'] = $requests['users_items'];
       $requests['other_users_items'] = $requests['users_items'];
       unset($requests['users_items']);
-      $minVersion = 0;
+      $minVersion = $minServerVersion;
       if (isset($requestSet["minVersion"])) {
          $minVersion = intval($requestSet["minVersion"]);
       }

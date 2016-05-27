@@ -313,15 +313,17 @@ angular.module('algorea')
          },
          syncThread: function(idThread, callback) {
             var endListenerName = 'thread-'+idThread;
-            SyncQueue.requestSets[endListenerName] = {name: 'getThread', 'idThread': idThread};
+            SyncQueue.requestSets[endListenerName] = {minVersion: 0, name: 'getThread', 'idThread': idThread};
             SyncQueue.addSyncEndListeners(endListenerName, function() {
-               callback();
+               console.error(SyncQueue.requestSets[endListenerName]);
                SyncQueue.removeSyncEndListeners(endListenerName);
+               delete(SyncQueue.requestSets[endListenerName].minVersion);
+               callback();
             }, true);
             SyncQueue.planToSend();
          },
-         unsyncThread:function() {
-            delete(SyncQueue.requests.requestSets);
+         unsyncThread:function(idThread) {
+            delete(SyncQueue.requestSets['thread-'+idThread]);
          }
       };
    }]);
