@@ -93,7 +93,8 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       // case of a user_item fetched for a forum thread:
       if ($userItem['data']->idUser != $_SESSION['login']['ID']) {
          $params['bSubmissionPossible'] = false;
-         $params['bReadAnswers'] = true;
+      } else {
+         $params['bSubmissionPossible'] = true;
       }
       $params['idUser'] = $userItem['data']->idUser;
       $params['nbHintsGiven'] = $userItem['data']->nbHintsCached;
@@ -209,7 +210,7 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
       createMissingUserItems($db, $serverChanges, 'updated');
    }
    // no need for tokens when fetching levels
-   if (!isset($serverChanges['users_items']) || ! isset($params["requests"]["algorea"]['type']) || $params["requests"]["algorea"]['type'] == 'getAllLevels') {
+   if (!isset($params["requests"]["algorea"]['type']) || $params["requests"]["algorea"]['type'] == 'getAllLevels') {
       return;
    }
    $items = fetchItemsIfMissing($serverChanges, $db);
