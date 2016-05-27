@@ -74,8 +74,8 @@
       </div>
    </div>
    <div ng-if="hasTask && !taskLoading && answers.length" ng-controller="taskController">
-      <div uib-tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task">
-         <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
+      <div uib-tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task" active="askedView">
+         <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" index="view.name"></li>
       </div>
       <div ng-show="taskLoaded && threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true"></div>
       <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
