@@ -223,9 +223,9 @@ function getGroups ($params, &$requests) {
       'modes' => array('select' => true),
    );
 
-   $requests["groups_invitations"]['filters']['addUserID'] = array('modes' => array('select' => true));
+   //$requests["groups_invitations"]['filters']['addUserID'] = array('modes' => array('select' => true));
    array_push($requests["groups_invitations"]["fields"], 'idUser');
-   $requests["groups_invitations"]['model']['fields']['idUser'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`ID`');
+   $requests["groups_invitations"]['model']['fields']['idUser'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'table' => 'users', 'fieldName' => 'ID');
    $requests["groups_invitations"]["model"]["filters"]["Invitations"] = array(
       "joins" => array("myInvitations"),
       "condition"  => "(`[PREFIX]myInvitations`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)",
@@ -379,6 +379,7 @@ function setupExpandedItemsRequests($params, &$requests) {
       $requests["users_items"]["model"]["joins"]["items_items"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
       $requests["users_items"]["filters"]["accessible"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
       $requests["users_items"]["model"]["fields"]["sType"]["groupBy"] = "`users_items`.`ID`";
+      //$requests["groups_groups"]["debugLogFunction"] = myDebugFunction;
       //$requests["users_items"]["debugLogFunction"] = myDebugFunction;
    }
 
@@ -585,6 +586,7 @@ function getSyncRequests($params, $minServerVersion) {
    $requests = syncGetTablesRequests(null, false);
    $requests['messages']['lowPriority'] = true;
    $requests['users_threads']['lowPriority'] = true;
+   $requests['groups_groups']['lowPriority'] = true;
    //var_export($requests);
    algoreaCustomRequest($params, $requests, $db, $minServerVersion);
    //var_export($requests);
