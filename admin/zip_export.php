@@ -118,9 +118,9 @@ function populate_user_information(&$db, &$user_information, &$item_information,
          JOIN items_ancestors ON users_items.idItem = items_ancestors.idItemChild
       WHERE groups_ancestors.idGroupAncestor = :groupId
          AND items_ancestors.idItemAncestor = :itemId;");
-   if ($stmt->execute(['groupId' => $main_group_id, 'itemId' => $main_group_id])) {
+   if ($stmt->execute(['groupId' => $main_group_id, 'itemId' => $main_item_id])) {
       while ($row = $stmt->fetch()) {
-      $user_information[$row["idUser"]]["results"][$row["idItem"]] = array("score" => $row["iScore"], 
+         $user_information[$row["idUser"]]["results"][$row["idItem"]] = array("score" => $row["iScore"], 
               "jsondata" => array("nbSubmissionsAttempts" => $row["nbSubmissionsAttempts"],
                                   "iScore"                => $row["iScore"],
                                   "bValidated"            => $row["bValidated"],
@@ -201,7 +201,7 @@ function write_files(&$db, &$user_information, &$item_information) {
       foreach($user_information as $userId => $user_info) {
          if ($user_info["lastname"] == "") $user_info["lastname"] = "Nom non renseigné";
          if ($user_info["firstname"] == "") $user_info["firstname"] = "Prénom non renseigné";
-         fwrite($csv,$user_info["lastname"] . ", " . $user_info["firstname"]);
+         fwrite($csv,$user_info["login"]);
          foreach($item_information as $itemId => $item_info) {
             $directory = $item_info["directory"] . "/" . $user_info["login"] . "/";
             mkdir($directory);
