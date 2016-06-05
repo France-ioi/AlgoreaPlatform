@@ -202,7 +202,7 @@ class Listeners {
        "  SELECT `child`.`ID`,  ".
        "  MIN(`parent`.`sCachedFullAccessDate`) as sCachedFullAccessDate, ".
        "  MIN(IF(`items_items`.`bAccessRestricted` = 0, `parent`.`sCachedPartialAccessDate`, NULL)) as sCachedPartialAccessDate, ".
-       "  MAX(IF(`items_items`.`bAccessRestricted` = 0, `parent`.`bCachedManagerAccess`, 0)) as bCachedManagerAccess, ".
+       "  MAX(`parent`.`bCachedManagerAccess`) as bCachedManagerAccess, ".
        "  MIN(IF(`items_items`.`bAccessRestricted` = 1 AND `items_items`.`bAlwaysVisible` = 1, `parent`.`sCachedPartialAccessDate`, NULL)) as sCachedGrayedAccessDate, ".
        "  MIN(`parent`.`sCachedAccessSolutionsDate`) as sCachedAccessSolutionsDate, ".
        "  CONCAT('From ancestor group(s) ', GROUP_CONCAT(`parent`.`sAccessReason`, ', ')) AS `sAccessReasonAncestors` ".
