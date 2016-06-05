@@ -1,4 +1,4 @@
-<div><p ng-hide="group_item.bCachedMangerAccess || group_item.bOwnerAccess"><strong>Attention:</strong>Vous n'avez accès à cet item qu'en lecture</p></div>
+<div><p ng-hide="group_item.bCachedManagerAccess || group_item.bOwnerAccess"><strong>Attention:</strong>Vous n'avez accès à cet item qu'en lecture</p></div>
 <form>
   <!- {{items.ID}} -->
    <label class="control-label col-xs-4">Type :</label>
@@ -22,7 +22,7 @@
    <field model="item" field="items.sContestPhase" />
    <field model="item" field="items.iLevel" />
    <field model="item" field="items.bNoScore" />
-   <p  ng-show="group_item.bCachedMangerAccess || group_item.bOwnerAccess">
+   <p  ng-show="group_item.bCachedManagerAccess || group_item.bOwnerAccess">
       <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)">Reset</a>
       <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)">Enregistrer</a>
    </p>
