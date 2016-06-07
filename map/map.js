@@ -36,11 +36,18 @@ function DeclickMap() {
         
         // setup paperjs
         paper.setup(canvas);
-
+        
         initCenter = new paper.Point(paper.view.center);
         targetCenter = new paper.Point(initCenter);
         targetZoom = 1;
 
+        // view resizing
+        paper.view.onResize = function(event) {
+            initCenter = new paper.Point(paper.view.center);
+            targetCenter = new paper.Point(initCenter);
+            targetZoom = 1;
+        };
+        
         var dragX, dragY;
 
         // mouse management
@@ -421,6 +428,7 @@ function DeclickMap() {
             var symbol = getSymbol(steps[index]);
             var point = curve.getPointAt(length, false);
             var placed = symbol.place(point);
+            var hasSubItems = false;
             displayedSteps.push(placed);
             everything.addChild(placed);
             if (chapter) {
@@ -438,7 +446,15 @@ function DeclickMap() {
                 chapters.push(placed);
                 currentLabels = new paper.Group();
                 currentLabels.visible = false;
-                placed.onMouseDown = getChapterMouseHandler(chapters.length - 1);
+                if (typeof steps[index+1] !== 'undefined' && !steps[index+1].chapter) {
+                        hasSubItems = true;
+                }
+                if (hasSubItems) {
+                    placed.onMouseDown = getChapterMouseHandler(chapters.length - 1);
+                } else {
+                    // no subitems: open corresponding step
+                    placed.onMouseDown = getStepMouseHandler(index)
+                }
                 // display chapter number
                 var textNumber = new paper.PointText({
                     point: point,
@@ -448,7 +464,16 @@ function DeclickMap() {
                     content: chapters.length
                 });
                 textNumber.bounds.center = point;
-                textNumber.onMouseDown = getChapterMouseHandler(chapters.length - 1);
+                textNumber.onMouseEnter = mouseEnterHandler;
+                textNumber.onMouseLeave = mouseLeaveHandler;
+                if (hasSubItems) {
+                    placed.onMouseDown = getChapterMouseHandler(chapters.length - 1);
+                    textNumber.onMouseDown = getChapterMouseHandler(chapters.length - 1);
+                } else {
+                    // no subitems: open corresponding step
+                    placed.onMouseDown = getStepMouseHandler(index);
+                    textNumber.onMouseDown = getStepMouseHandler(index);
+                }
                 everything.addChild(textNumber);
             } else {
                 placed.onMouseDown = getStepMouseHandler(index);
@@ -490,7 +515,11 @@ function DeclickMap() {
                     text.point = text.point.add(normal);
                 }
                 everything.addChild(text);
-                text.onMouseDown = getChapterMouseHandler(chapters.length - 1);
+                if (hasSubItems) {
+                    text.onMouseDown = getChapterMouseHandler(chapters.length - 1);
+                } else {
+                    text.onMouseDown = getStepMouseHandler(index);
+                }
                 previousLabel = null;
             }
             labels.push(text);
@@ -674,5 +703,3 @@ function DeclickMap() {
         removeSteps();
     };
 }
-
-
