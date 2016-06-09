@@ -104,6 +104,17 @@ var models = {
             nullInvalid: true
          },
          bUsesAPI: {type: "boolean", label: "Utilise l'API", defaultValue: true},
+         sFullScreen: {
+            type: "enum",
+            values: {
+               forceYes: {label: "forcé oui"},
+               forceNo: {label: "forcé non"},
+               default: {label: "suivant le type"}
+            },
+            label: "Plein écran",
+            defaultValue: "default",
+            nullInvalid: true
+         },
          bShowDifficulty: {type: "boolean", label: "Afficher la difficulté", defaultValue: false},
          bShowSource: {type: "boolean", label: "Afficher la source", defaultValue: false},
          bHintsAllowed: {type: "boolean", label: "Autoriser les conseils", defaultValue: false},
