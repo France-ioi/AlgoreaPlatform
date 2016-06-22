@@ -36,6 +36,7 @@
       opacity:1;
       border:0px;
       transition: opacity 0.5s ease-in-out;
+      overflow:hidden;
     }
     .animation-debut-fade {
       opacity:0 !important;
@@ -43,7 +44,7 @@
     }
     </style>
 </head>
-<body ng-controller="layoutController">
+<body ng-controller="layoutController" id="body">
 <iframe id="animation-debut" src="animation.html" style="display:none;"></iframe>
 <div id="fixed-header-room" class="fixed-header-room"></div>
 <header id="header-id" ng-click="layout.menuClicked($event);" ng-include="'menu.html'" >
@@ -65,9 +66,16 @@
 <script>
 function animationFinished() {
   $('#animation-debut').addClass('animation-debut-fade');
+  window.setTimeout(function() {
+    $('#animation-debut').remove();
+  }, 2000);
+  document.getElementById('body').style['overflow-x']='auto';
+  document.getElementById('body').style['overflow-y']='scroll';
 }
 function startAnimation() {
   document.getElementById('animation-debut').style.display='block';
+  document.getElementById('body').style['overflow-x']='hidden';
+  document.getElementById('body').style['overflow-y']='hidden';
 }
 if (location.pathname=='/') startAnimation();
 </script>
