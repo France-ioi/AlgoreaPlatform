@@ -471,7 +471,7 @@ angular.module('algorea')
             if (group_item && group_item.bOwnerAccess) {
                accessStr = '<span class="dynatree-owner">';
                accessStrEnd = '</span>';
-            } else if (group_item && group_item.bManagerAccess) {
+            } else if (group_item && group_item.bCachedManagerAccess) {
                accessStr = '<span class="dynatree-manager">';
                accessStrEnd = '</span>';
             }
