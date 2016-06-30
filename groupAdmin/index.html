@@ -1,0 +1,20 @@
+<div ng-if="loading">
+	Chargement...
+</div>
+<div ng-show="error">{{error}}</div>
+<div ng-if="!loading && !error">
+
+	Bonjour blablabla
+
+	<div ng-hide="myGroupAdmin.children">
+		Vous n'avez aucun groupe
+	</div>
+	<div ng-show="myGroupAdmin.children">
+		Liste des groupes :
+		<ul>
+			<li ng-repeat="group_group in myGroupAdmin.children"><a ng-click="goToGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+		</ul>
+	</div>
+
+	<button ng-click="newGroup();">Ajouter un groupe</button>
+</div>
