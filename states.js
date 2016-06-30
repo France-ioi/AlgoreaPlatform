@@ -85,6 +85,34 @@ angular.module('algorea')
                    template: '',
                 },
              },
+          }).state("groupAdmin", {
+            url: "/groupAdmin/",
+            views: {
+               'left': {
+                   template: '',
+                },
+                'right': {
+                   templateUrl: 'groupAdmin/index.html',
+                   controller: 'groupAdminIndexController',
+                },
+                'breadcrumbs': {
+                   template: '',
+                },
+             },
+          }).state("groupAdminGroup", {
+            url: "/groupAdmin/:idGroup",
+            views: {
+               'left': {
+                   template: '',
+                },
+                'right': {
+                   templateUrl: 'groupAdmin/group.html',
+                   controller: 'groupAdminController',
+                },
+                'breadcrumbs': {
+                   template: '',
+                },
+             },
           }).state("concourir", {
             url: "/concourir",
             views: {
