@@ -33,9 +33,16 @@ var models = {
          sPassword: {type: "string", label: "Mot de passe (si vide, pas de mot de passe demandé)", defaultValue: ''},
          sType: {
             type: "enum",
-            values: {Root: {label: "Racine"}, Class: {label: "Classe"}, Club: {label: "Club"}, Friends: {label: "Amis"}, Other: {label:"Autre"}, UserSelf: {label:"Utilisateur"}, UserAdmin: {label:"Utilisateur (groupes administrés)"}, RootAdmin: {label:"Racine groupes administrés"}, RootSelf: {label:"Racine groupes utilisateurs"}},
+            values: {Root: {label: "Racine", hidden: true}, Class: {label: "Classe"}, Club: {label: "Club"}, Friends: {label: "Amis"}, Other: {label:"Autre"}, UserSelf: {label:"Utilisateur", hidden: true}, UserAdmin: {label:"Utilisateur (groupes administrés)", hidden: true}, RootAdmin: {label:"Racine groupes administrés", hidden: true}, RootSelf: {label:"Racine groupes utilisateurs", hidden: true}},
             label: "Type",
             defaultValue: "Class",
+            nullInvalid: true
+         },
+         sRole: {
+            type: "enum",
+            values: {owner: {label: "Propriétaire", hidden: true}, manager: {label: "Administrateur"}, observer: {label: "Observateur"}, member: {label: "Membre"},},
+            label: "Rôle",
+            defaultValue: "member",
             nullInvalid: true
          },
          bSendEmails: {type: "boolean", label: "Envoi d'emails"}
@@ -43,8 +50,8 @@ var models = {
       links: {
          children: {refModel: "groups_groups", key: "idGroupParent", type: "array"}, // array better ?
          parents: {refModel: "groups_groups", key: "idGroupChild", type: "object"},
-         userSelf: {refModel: "users", key: "idGroupSelf", type: "object"},
-         userOwned: {refModel: "users", key: "idGroupOwned", type: "object"},
+         userSelf: {refModel: "users", key: "idGroupSelf", type: "array"},
+         userOwned: {refModel: "users", key: "idGroupOwned", type: "array"},
          userAccess: {refModel: "users", key: "idGroupAccess", type: "object"}
       }
    },

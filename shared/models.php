@@ -46,6 +46,7 @@ $tablesModels = array (
          "idGroupChild" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "iChildOrder" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sType" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sRole" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sStatusDate" => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
          "idUserInviting" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
       ),
