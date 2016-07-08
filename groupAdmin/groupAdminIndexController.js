@@ -45,9 +45,9 @@ angular.module('algorea')
    	$scope.loading = true;
    	$scope.error = '';
    	if (SyncQueue.requests.loginData.tempUser == 1) {
-   		$scope.error = 'Vous devez être connecté pour accéder à cette interface.';
-   		$scope.loading = false;
-   		return;
+   		//$scope.error = 'Vous devez être connecté pour accéder à cette interface.';
+   		//$scope.loading = false;
+   		//return;
    	}
    	$scope.startSync(function() {
    		$scope.initGroups();

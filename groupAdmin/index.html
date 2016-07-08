@@ -6,12 +6,14 @@
 
 	Bonjour blablabla
 
-	<div ng-hide="myGroupAdmin.children">
+	<div ng-hide="true">
 		Vous n'avez aucun groupe
 	</div>
-	<div ng-show="myGroupAdmin.children">
+	<div ng-show="true">
 		Liste des groupes :
 		<ul>
+			<li><a>Ceci est un groupe</a></li>
+			<li><a>Ceci est un autre groupe</a></li>
 			<li ng-repeat="group_group in myGroupAdmin.children"><a ng-click="goToGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
 		</ul>
 	</div>

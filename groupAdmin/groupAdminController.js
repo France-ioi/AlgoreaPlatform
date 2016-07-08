@@ -70,8 +70,20 @@ angular.module('algorea').
 // one group
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', function ($scope, $stateParams, itemService) {
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', function ($scope, $stateParams, itemService, $uibModal) {
    $scope.error = null;
+
+   $scope.groupFields = models.groups.fields;
+   
+   $scope.openPopup = function(group_group, item) {
+      var groupId = group_group.child.ID;
+      var modalInstance = $uibModal.open({
+         template: 'Une belle modal',
+         size: 800,
+       });
+   };
+
+
 
    $scope.invitationError = null;
    $scope.newInvitationOpened = false;

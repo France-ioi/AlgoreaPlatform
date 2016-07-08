@@ -9,10 +9,23 @@
 	<uib-tabset active="active">
 		<uib-tab heading="Descriptif">
 			<field model="group" field="groups.sName" />
-			<field model="group" field="groups.sType" />
+		   <label class="control-label">Type :</label>
+         <div>
+           <select ng-model="group.sType" class="form-control">
+             <option value="{{key}}" ng-repeat="(key, value) in groupFields.sType.values" ng-selected="group.sType == key" ng-if="key!='Root'">{{value.label}}</option>
+           </select>
+         </div>
    		<field model="group" field="groups.sDescription" />
+         <label class="control-label" ng-if="group.sType == 'Class'">Niveau :</label>
+         <div ng-if="group.sType == 'Class'">
+           <select ng-model="group.iGrade" class="form-control">
+             <option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+           </select>
+         </div>
+         <input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails"/>
 		   <p>
 		      <a class="btn btn-primary" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+		      <a class="btn btn-primary" ng-click="removeGroup()">Supprimer</a>
 		   </p>
 		</uib-tab>
 
@@ -28,7 +41,7 @@
          <table class="table table-bordered table-hover">
             <tbody>
                <tr ng-repeat="child in group.children | directOrInvitation">
-                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
+                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
                   <td>oeil</td>
                   <td ng-clic="removeUser(child);">poubelle</td>
                </tr>
@@ -50,7 +63,7 @@
 		         <table class="table table-bordered table-hover">
 		            <tbody>
 		               <tr ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
-		                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
+		                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
 		                  <td ng-click="refuseRequest(child);">refuse</td>
 		                  <td ng-click="acceptRequest(child);">accept</td>
 		               </tr>
@@ -79,31 +92,36 @@
 	      <table class="table table-bordered table-hover">
 	         <thead>
 	            <tr>
+	               <th>Utilisateur</th>
 	               <th>Date</th>
 	               <th>Type</th>
-	               <th>Parcours / Chapitre / Exercice</th>
+	               <th>Exercice</th>
 	            </tr>
 	         </thead>
 	         <tbody>
 	            <tr>
+	               <td>Prénom nom (login)</td>
 	               <td>3/3/2016 18:30</td>
 	               <td>3e tentative de résolution</td>
-	               <td>Bob &amp; Max / Robot / Création</td>
+	               <td>Création</td>
 	            </tr>
 	            <tr>
+	               <td>Prénom nom (login)</td>
 	               <td>3/3/2016 18:15</td>
 	               <td>valiation d'exercice</td>
-	               <td>Bob &amp; Max / Robot / Création</td>
+	               <td>Création</td>
 	            </tr>
 	            <tr>
+	               <td>Prénom nom (login)</td>
 	               <td>3/3/2016 18:00</td>
 	               <td>Question sur le forum</td>
-	               <td>Bob &amp; Max / Quelques rappels / Titre vraiment très long</td>
+	               <td>Titre vraiment très très très long</td>
 	            </tr>
 	            <tr>
+	               <td>Prénom nom (login)</td>
 	               <td>3/3/2016 17:55</td>
 	               <td>Validation de chapitre</td>
-	               <td>Bob &amp; Max / Robot / Création</td>
+	               <td>Création</td>
 	            </tr>
 	         </tbody>
 	      </table>
@@ -113,12 +131,14 @@
 		<div ng-if="progressionType == 'collective'">
 			Parcours:
 			<select><option>Bob &amp; Max</option></select>
+         Niveau:
+         <select><option>Le premier niveau</option></select>
 			<table>
 	         <thead>
 	            <tr>
 	               <th>Nom</th>
 	               <th>Description</th>
-	               <th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</th>
+	               <th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
 	            </tr>
 	         </thead>
 	         <tbody>
@@ -128,6 +148,7 @@
 	               <td ng-repeat="child in group.children | confirmed">
 	               	<span ng-init="thisUserItem = getUserItem(child, item);">
 	               	validated: {{thisUserItem.bValidated}}, score: {{thisUserItem.iScore}}/100, nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}, conseils demandés : {{thisUserItem.nbHintsCached}}
+                     <button ng-click="openPopup(child,item);">ouvrir popup</button>
 	               	</span>
 	               </td>
 	            </tr>
@@ -152,7 +173,7 @@
          </thead>
          <tbody>
             <tr ng-repeat="parent in group.parents">
-               <td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}}</td>
+               <td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
                <td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'manager');"></td>
                <td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'observer');"></td>
                <td><button ng-click="removeAdmin(parent);">poubelle</button></td>
