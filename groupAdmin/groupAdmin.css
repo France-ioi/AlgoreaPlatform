@@ -56,6 +56,16 @@ Yellow-green: #D1D718;
 	font-style: italic;
 	text-transform: none;
 }
+.groupAdmin-tabContent .label-title {
+	font-weight: bold;
+	display: inline-block;
+	margin-bottom: 5px;
+	font-size: 18px;
+}
+.groupAdmin-tabContent .label-title.label-list-item {
+	display: list-item;
+	list-style-position: inside;
+}
 .groupAdmin-tabContent .label-description {
 	font-size: 14px;
 	font-style: italic;
