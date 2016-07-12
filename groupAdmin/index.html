@@ -12,15 +12,20 @@
 				<p>Vous n'avez aucun groupe</p>
 			</div>
 			<div ng-show="true">
-				<p>Liste des groupes :</p>
-				<ul>
+				<p class="groupAdmin-title">Consulter un groupe :</p>
+				<ul class="group-list list">
 					<li><a>Ceci est un groupe</a></li>
 					<li><a>Ceci est un autre groupe</a></li>
 					<li ng-repeat="group_group in myGroupAdmin.children"><a ng-click="goToGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
 				</ul>
 			</div>
-
-			<button ng-click="newGroup();">Ajouter un groupe</button>
+			<div>
+			<p class="groupAdmin-title">Créer un nouveau groupe :</p>
+			<div class="form-inline">
+				<input type="text" ng-model="group.sName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
+				<button ng-click="newGroup();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
+			</div>
+			</div>
 		</div>
 	</div>
 </div>
