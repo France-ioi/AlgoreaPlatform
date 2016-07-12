@@ -26,6 +26,24 @@ Red : #e42c20;
 	width: 50%;
 	margin: 0 auto;
 }
+.groupAdmin-homeContent .list {
+	border: 1px solid #a88996;
+	line-height: 1.5em;
+	list-style: none;
+	margin-bottom: 2em;
+	padding: 0;
+	background-color: #fff;
+}
+.groupAdmin-homeContent .list a {
+	padding: 0 1em;
+	color: #480a2a;
+	cursor: pointer;
+	display: block;
+}
+.groupAdmin-homeContent .list a:hover {
+	text-decoration: none;
+	background-color: #edebed;
+}
 .groupAdmin .nav-tabs>li>a {
 	font-size: 14px;
 	font-weight: bold;
@@ -158,4 +176,18 @@ Red : #e42c20;
 .groupAdmin .group-delete:hover {
 	text-decoration: none;
 	background-image: url(images/grand-supprimer.png);
+}
+
+/* Group admin home */
+.groupAdmin-homeContent .form-inline {
+	position: relative;
+	padding-right: 45px;
+}
+.groupAdmin-homeContent .form-inline input {
+	width: 100%;
+}
+.groupAdmin-homeContent .form-inline .btn-icon {
+	position: absolute;
+	top: 0;
+	right: 0;
 }
