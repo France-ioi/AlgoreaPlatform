@@ -40,6 +40,8 @@ Red : #e42c20;
 	text-decoration: none;
 	background-color: #edebed;
 }
+
+/* Tabs */
 .groupAdmin .nav-tabs>li>a {
 	font-size: 14px;
 	font-weight: bold;
@@ -60,6 +62,7 @@ Red : #e42c20;
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
 }
+/* Text elements */
 .groupAdmin .groupAdmin-title {
 	font-size: 18px;
 	text-transform: uppercase;
@@ -92,6 +95,8 @@ Red : #e42c20;
 	line-height: 1.2em;
 	text-shadow: 1px 1px 1px #fff;
 }
+
+/* Forms */
 .groupAdmin .form-control {
 	border-color: #a88996;
 	border-radius: 0;
@@ -99,7 +104,6 @@ Red : #e42c20;
 .groupAdmin .form-control + .form-control {
 	margin-top: 1em;
 }
-.groupAdmin-tabContent .checkboxSwitch {}
 .groupAdmin .checkboxSwitch input.switch {
 	display: none;
 }
@@ -141,6 +145,13 @@ Red : #e42c20;
 .groupAdmin .table-utilisateur tr:hover {
 	background-color: #edebed;
 }
+
+.groupAdmin .block-delete {
+	border-top: 1px solid #000;
+	padding-top: 1em;
+	text-align: right;
+}
+/* Buttons */
 .groupAdmin .btn.btn-primary {
 	background-color: #480a2a;
 	border-color: #480a2a;
@@ -185,7 +196,6 @@ Red : #e42c20;
 .groupAdmin .btn-icon .btn-label {
 	display: none;
 }
-.groupAdmin-tabContent .table-utilisateur .delete {}
 .groupAdmin .group-delete {
 	color: #480a2a;
 	display: inline-block;
