@@ -111,6 +111,43 @@ Red : #e42c20;
 	padding-top: 1em;
 	text-align: right;
 }
+.groupAdmin-tabContent .table-utilisateur {
+	background-color: #fff;
+	border: 1px solid #480a2a;
+}
+.groupAdmin-tabContent .table-utilisateur tr td {
+	border: none;
+}
+.groupAdmin-tabContent .table-utilisateur tr td:first-child {
+	width: 100%;
+}
+.groupAdmin-tabContent .table-utilisateur tr td + td {
+	text-align: center;
+}
+.groupAdmin-tabContent .table-utilisateur .button-icon {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	cursor: pointer;
+	transition: all 250ms;
+}
+.groupAdmin-tabContent .table-utilisateur .button-icon.view-more {
+	background: url(images/apercu.png) center center no-repeat;
+}
+.groupAdmin-tabContent .table-utilisateur .button-icon.view-more:active,
+.groupAdmin-tabContent .table-utilisateur .button-icon.view-more:focus,
+.groupAdmin-tabContent .table-utilisateur .button-icon.view-more:hover {
+	background-image: url(images/apercu-clic.png);
+}
+.groupAdmin-tabContent .table-utilisateur .button-icon.delete {
+	background: url(images/petit-supprimer.png) center center no-repeat;
+}
+.groupAdmin-tabContent .table-utilisateur .button-icon.delete:active,
+.groupAdmin-tabContent .table-utilisateur .button-icon.delete:focus,
+.groupAdmin-tabContent .table-utilisateur .button-icon.delete:hover {
+	background-image: url(images/petit-supprimer-clic.png);
+}
+.groupAdmin-tabContent .table-utilisateur .delete {}
 .groupAdmin .btn-delete {
 	color: #480a2a;
 	display: inline-block;

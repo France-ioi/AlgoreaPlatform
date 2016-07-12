@@ -81,12 +81,12 @@
 					<div class="row">
 						<div class="col-md-4">
 							<div class="groupAdmin-tabTitle">Composition du groupe «{{group.sName}}»</div>
-							<table class="table table-bordered table-hover">
+							<table class="table table-utilisateur">
 								<tbody>
 								<tr ng-repeat="child in group.children | directOrInvitation">
 									<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-									<td>oeil</td>
-									<td ng-clic="removeUser(child);">poubelle</td>
+									<td><span class="button-icon view-more" title="voir"></span></td>
+									<td ng-clic="removeUser(child);"><span class="button-icon delete" title="supprimer"></span></td>
 								</tr>
 								</tbody>
 							</table>
