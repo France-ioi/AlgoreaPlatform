@@ -92,6 +92,10 @@ Red : #e42c20;
 	line-height: 1.2em;
 	text-shadow: 1px 1px 1px #fff;
 }
+.groupAdmin .form-control {
+	border-color: #a88996;
+	border-radius: 0;
+}
 .groupAdmin .form-control + .form-control {
 	margin-top: 1em;
 }
