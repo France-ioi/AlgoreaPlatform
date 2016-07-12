@@ -138,6 +138,9 @@ Red : #e42c20;
 .groupAdmin .table-utilisateur tr td + td {
 	text-align: center;
 }
+.groupAdmin .table-utilisateur tr:hover {
+	background-color: #edebed;
+}
 .groupAdmin .btn.btn-primary {
 	background-color: #480a2a;
 	border-color: #480a2a;
