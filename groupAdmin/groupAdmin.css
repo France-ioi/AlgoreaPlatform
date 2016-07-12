@@ -41,18 +41,10 @@ article {
 .groupAdmin-tabContent {
 	background-color: #edebed;
 	padding: 2em;
-}
-.groupAdmin-tabContent .control-group {
-	clear: both;
-	width: 600px;
 	overflow: auto;
-	margin-bottom: 1em;
 }
-.groupAdmin-tabContent .control-label {
-	display: block;
-	float: left;
-	width: 33%;
-	padding-right: 1em;
+.groupAdmin-tabContent .row {
+	margin-bottom: 1em;
 }
 .groupAdmin-tabContent .label-description {
 	font-size: 14px;
@@ -63,12 +55,21 @@ article {
 	line-height: 1.2em;
 	text-shadow: 1px 1px 1px #fff;
 }
-.groupAdmin-tabContent .control-group .form-control {
-	width: 67%;
-	float: left;
-}
-.groupAdmin-tabContent .control-group .form-control + .form-control {
+.groupAdmin-tabContent .form-control + .form-control {
 	margin-top: 1em;
+}
+.groupAdmin-tabContent .groupAdmin-tabTitle {
+	font-size: 18px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.groupAdmin-tabContent .groupAdmin-tabLeftHand {
+	float: left;
+	width: 40%;
+}
+.groupAdmin-tabContent .groupAdmin-tabRightHand {
+	float: left;
+	width: 60%;
 }
 .groupAdmin-tabContent .control-group.delete {
 	border-top: 1px solid #000;
