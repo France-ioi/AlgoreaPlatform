@@ -1,193 +1,196 @@
-<div ng-if="loading">
+<div class="groupAdmin">
+	<div ng-if="loading">
 	Chargement...
-</div>
-<div ng-show="error">{{error}}</div>
-<div ng-if="!loading">
+	</div>
+	<div ng-show="error">{{error}}</div>
+	<div ng-if="!loading">
 
-	{{group.sName}}
+		{{group.sName}}
 
-	<uib-tabset active="active">
-		<uib-tab heading="Descriptif">
-         <input type="text" ng-model="group.sName"/>
-		   <label class="control-label">Type :</label>
-         <div>
-           <select ng-model="group.sType" class="form-control">
-             <option value="{{key}}" ng-repeat="(key, value) in groupFields.sType.values" ng-selected="group.sType == key" ng-if="key!='Root'">{{value.label}}</option>
-           </select>
-         </div>
-         <input type="text" ng-model="group.sDescription"/>
-         <label class="control-label" ng-if="group.sType == 'Class'">Niveau :</label>
-         <div ng-if="group.sType == 'Class'">
-           <select ng-model="group.iGrade" class="form-control">
-             <option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
-           </select>
-         </div>
-         <input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails"/>
-		   <p>
-		      <a class="btn btn-primary" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
-		      <a class="btn btn-primary" ng-click="removeGroup()">Supprimer</a>
-		   </p>
-		</uib-tab>
+		<uib-tabset active="active">
+			<uib-tab heading="Descriptif">
+				<div class="groupAdmin-tabContent">
+					<input type="text" ng-model="group.sName"/>
+					<label class="control-label">Type :</label>
+					<div>
+						<select ng-model="group.sType" class="form-control">
+						<option value="{{key}}" ng-repeat="(key, value) in groupFields.sType.values" ng-selected="group.sType == key" ng-if="key!='Root'">{{value.label}}</option>
+						</select>
+					</div>
+					<input type="text" ng-model="group.sDescription"/>
+					<label class="control-label" ng-if="group.sType == 'Class'">Niveau :</label>
+					<div ng-if="group.sType == 'Class'">
+						<select ng-model="group.iGrade" class="form-control">
+						<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+						</select>
+					</div>
+					<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails"/>
+					<p>
+						<a class="btn btn-primary" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+						<a class="btn btn-primary" ng-click="removeGroup()">Supprimer</a>
+					</p>
+				</div>
+			</uib-tab>
 
-		<uib-tab heading="Membres">
-			Composition du groupe {{group.sName}}
-         <div class="form-group">
-            <label for="sLogin">Logins à ajouter (séparer par des espaces) :</label>
-            <input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins">
-         </div>
-         <button class="btn btn-primary" ng-click="inviteLogins()">ajouter logins</button>
-         <span ng-bind="invitationError"></span>
+			<uib-tab heading="Membres">
+				<div class="">Composition du groupe {{group.sName}}</div>
+				<div class="form-group">
+					<label for="sLogin">Logins à ajouter (séparer par des espaces) :</label>
+					<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins">
+				</div>
+				<button class="btn btn-primary" ng-click="inviteLogins()">ajouter logins</button>
+				<span ng-bind="invitationError"></span>
 
-         <table class="table table-bordered table-hover">
-            <tbody>
-               <tr ng-repeat="child in group.children | directOrInvitation">
-                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-                  <td>oeil</td>
-                  <td ng-clic="removeUser(child);">poubelle</td>
-               </tr>
-            </tbody>
-         </table>
+				<table class="table table-bordered table-hover">
+					<tbody>
+					<tr ng-repeat="child in group.children | directOrInvitation">
+						<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
+						<td>oeil</td>
+						<td ng-clic="removeUser(child);">poubelle</td>
+					</tr>
+					</tbody>
+				</table>
 
-         <br>
-		   <!--<field model="group" field="groups.bFreeAccess" />-->
-		   Code d'inscription:
-		   <input type="checkbox" ng-model="formValues.hasPassword" ng-change="passwordCheck();">
-		   <input type="text" ng-if="formValues.hasPassword" ng-model="group.sPassword" />
-		   <button ng-if="formValues.hasPassword" ng-click="refreshPassword()">Renouveler le code</button>
-		   Demandes d'adhésion spontanées <input type="checkbox" ng-model="group.bOpened">
-		   <div ng-if="group.bOpened">
-				<div ng-if="!showRequestTable()">
-		         <p>(aucune)</p>
-		      </div>
-		      <div ng-if="showRequestTable()">
-		         <table class="table table-bordered table-hover">
-		            <tbody>
-		               <tr ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
-		                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-		                  <td ng-click="refuseRequest(child);">refuse</td>
-		                  <td ng-click="acceptRequest(child);">accept</td>
-		               </tr>
-		            </tbody>
-		         </table>
-		      </div>
-		   </div>
-		</uib-tab>
+				<!--<field model="group" field="groups.bFreeAccess" />-->
+				<div class="">Code d'inscription:</div>
+				<input type="checkbox" ng-model="formValues.hasPassword" ng-change="passwordCheck();">
+				<input type="text" ng-if="formValues.hasPassword" ng-model="group.sPassword" />
+				<button ng-if="formValues.hasPassword" ng-click="refreshPassword()">Renouveler le code</button>
+				Demandes d'adhésion spontanées <input type="checkbox" ng-model="group.bOpened">
+				<div ng-if="group.bOpened">
+					<div ng-if="!showRequestTable()">
+						<p>(aucune)</p>
+					</div>
+					<div ng-if="showRequestTable()">
+					<table class="table table-bordered table-hover">
+						<tbody>
+							<tr ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
+								<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
+								<td ng-click="refuseRequest(child);">refuse</td>
+								<td ng-click="acceptRequest(child);">accept</td>
+							</tr>
+						</tbody>
+					</table>
+					</div>
+				</div>
+			</uib-tab>
 
-		<uib-tab heading="Progression du groupe">
+			<uib-tab heading="Progression du groupe">
 
-		Sélectionnez le type de progression :
-		<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label>
-		<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+				Sélectionnez le type de progression :
+				<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label>
+				<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
 
-		<div ng-if="progressionType != 'collective'">
-         <table class="table table-bordered table-hover">
-            <tbody>
-               <tr ng-repeat="child in group.children | confirmed">
-                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
-               </tr>
-            </tbody>
-         </table>
+				<div ng-if="progressionType != 'collective'">
+					<table class="table table-bordered table-hover">
+						<tbody>
+							<tr ng-repeat="child in group.children | confirmed">
+								<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
+							</tr>
+						</tbody>
+					</table>
 
-         Activité récente:
-	      <table class="table table-bordered table-hover">
-	         <thead>
-	            <tr>
-	               <th>Utilisateur</th>
-	               <th>Date</th>
-	               <th>Type</th>
-	               <th>Exercice</th>
-	            </tr>
-	         </thead>
-	         <tbody>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 18:30</td>
-	               <td>3e tentative de résolution</td>
-	               <td>Création</td>
-	            </tr>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 18:15</td>
-	               <td>valiation d'exercice</td>
-	               <td>Création</td>
-	            </tr>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 18:00</td>
-	               <td>Question sur le forum</td>
-	               <td>Titre vraiment très très très long</td>
-	            </tr>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 17:55</td>
-	               <td>Validation de chapitre</td>
-	               <td>Création</td>
-	            </tr>
-	         </tbody>
-	      </table>
+					Activité récente:
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Utilisateur</th>
+								<th>Date</th>
+								<th>Type</th>
+								<th>Exercice</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Prénom nom (login)</td>
+								<td>3/3/2016 18:30</td>
+								<td>3e tentative de résolution</td>
+								<td>Création</td>
+							</tr>
+							<tr>
+								<td>Prénom nom (login)</td>
+								<td>3/3/2016 18:15</td>
+								<td>valiation d'exercice</td>
+								<td>Création</td>
+							</tr>
+							<tr>
+								<td>Prénom nom (login)</td>
+								<td>3/3/2016 18:00</td>
+								<td>Question sur le forum</td>
+								<td>Titre vraiment très très très long</td>
+							</tr>
+							<tr>
+								<td>Prénom nom (login)</td>
+								<td>3/3/2016 17:55</td>
+								<td>Validation de chapitre</td>
+								<td>Création</td>
+							</tr>
+						</tbody>
+					</table>
 
-		</div>
+				</div>
 
-		<div ng-if="progressionType == 'collective'">
-			Parcours:
-			<select><option>Bob &amp; Max</option></select>
-         Niveau:
-         <select><option>Le premier niveau</option></select>
-			<table>
-	         <thead>
-	            <tr>
-	               <th>Nom</th>
-	               <th>Description</th>
-	               <th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
-	            </tr>
-	         </thead>
-	         <tbody>
-	            <tr ng-repeat="item in itemsList">
-	               <td>{{item.strings[0].sTitle}}</td>
-	               <td>{{item.strings[0].sDescription}}</td>
-	               <td ng-repeat="child in group.children | confirmed">
-	               	<span ng-init="thisUserItem = getUserItem(child, item);">
-	               	validated: {{thisUserItem.bValidated}}, score: {{thisUserItem.iScore}}/100, nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}, conseils demandés : {{thisUserItem.nbHintsCached}}
-                     <button ng-click="openPopup(child,item);">ouvrir popup</button>
-	               	</span>
-	               </td>
-	            </tr>
-	         </tbody>
-	      </table>
+				<div ng-if="progressionType == 'collective'">
+					Parcours:
+					<select><option>Bob &amp; Max</option></select>
+					Niveau:
+					<select><option>Le premier niveau</option></select>
+					<table>
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Description</th>
+								<th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="item in itemsList">
+								<td>{{item.strings[0].sTitle}}</td>
+								<td>{{item.strings[0].sDescription}}</td>
+								<td ng-repeat="child in group.children | confirmed">
+									<span ng-init="thisUserItem = getUserItem(child, item);">
+										validated: {{thisUserItem.bValidated}}, score: {{thisUserItem.iScore}}/100, nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}, conseils demandés : {{thisUserItem.nbHintsCached}}
+										<button ng-click="openPopup(child,item);">ouvrir popup</button>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
-		</div>
+				</div>
 
-		</uib-tab>
+			</uib-tab>
 
-		<uib-tab heading="Administration">
-		Administrateurs du groupe {{group.sName}} :
+			<uib-tab heading="Administration">
+				Administrateurs du groupe {{group.sName}} :
 
-      <table class="table table-bordered table-hover">
-         <thead>
-            <tr>
-               <th>Utilisateur</th>
-               <th>Administrateur</th>
-               <th>Observateur</th>
-               <th></th>
-            </tr>
-         </thead>
-         <tbody>
-            <tr ng-repeat="parent in group.parents">
-               <td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-               <td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'manager');"></td>
-               <td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'observer');"></td>
-               <td><button ng-click="removeAdmin(parent);">poubelle</button></td>
-            </tr>
-         </tbody>
-      </table>
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>Utilisateur</th>
+							<th>Administrateur</th>
+							<th>Observateur</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="parent in group.parents">
+							<td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
+							<td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'manager');"></td>
+							<td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'observer');"></td>
+							<td><button ng-click="removeAdmin(parent);">poubelle</button></td>
+						</tr>
+					</tbody>
+				</table>
 
-      <div class="form-group">
-         <label for="sLogin">Logins à ajouter (séparer par des espaces) :</label>
-         <input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins">
-      </div>
-      <button class="btn btn-primary" ng-click="inviteAdminLogins();">ajouter logins</button>
-      <span ng-bind="invitationError"></span>
-		</uib-tab>
-	</uib-tabset>
+				<div class="form-group">
+					<label for="sLogin">Logins à ajouter (séparer par des espaces) :</label>
+					<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins">
+				</div>
+				<button class="btn btn-primary" ng-click="inviteAdminLogins();">ajouter logins</button>
+				<span ng-bind="invitationError"></span>
+			</uib-tab>
+		</uib-tabset>
 
+	</div>
 </div>
