@@ -41,12 +41,14 @@
 						<select ng-model="group.iGrade" class="form-control">
 							<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
 						</select>
+						<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez"/>
 					</div>
-					<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails"/>
-					<p>
-						<a class="btn btn-primary" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
-						<a class="btn btn-primary" ng-click="removeGroup()">Supprimer</a>
-					</p>
+					<div class="control-group">
+						<a class="btn btn-primary pull-right" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+					</div>
+					<div class="control-group delete">
+						<a class="btn-delete" ng-click="removeGroup()">Supprimer le groupe</a>
+					</div>
 				</div>
 			</uib-tab>
 
