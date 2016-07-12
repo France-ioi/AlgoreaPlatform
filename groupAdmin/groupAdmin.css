@@ -4,6 +4,9 @@ Light grey : #edebed;
 Declick dark purple: #480a2a;
 Light purple: #a88996;
 Yellow-green: #D1D718;
+Blue-Green: #0fac8e;
+Pink: #e11782;
+Red : #e42c20;
 */
 .groupAdmin {
 	margin: 10px;
@@ -78,14 +81,30 @@ Yellow-green: #D1D718;
 .groupAdmin-tabContent .form-control + .form-control {
 	margin-top: 1em;
 }
+.groupAdmin-tabContent .checkboxSwitch {}
+.groupAdmin-tabContent .checkboxSwitch input.switch {
+	display: none;
 }
-.groupAdmin-tabContent .groupAdmin-tabLeftHand {
-	float: left;
-	width: 40%;
+.groupAdmin-tabContent .checkboxSwitch input.switch + label {
+	background-color: #480a2a;
+	width: 60px;
+	height: 30px;
+	border-radius: 15px;
+	position: relative;
 }
-.groupAdmin-tabContent .groupAdmin-tabRightHand {
-	float: left;
-	width: 60%;
+.groupAdmin-tabContent .checkboxSwitch input.switch + label span {
+	width: 20px;
+	height: 20px;
+	top: 5px;
+	left: 5px;
+	position: absolute;
+	border-radius: 50%;
+	background-color: #e42c20;
+	transition: all 250ms;
+}
+.groupAdmin-tabContent .checkboxSwitch input.switch:checked + label span {
+	background-color: #0fac8e;
+	left: 35px;
 }
 .groupAdmin-tabContent .block-delete {
 	border-top: 1px solid #000;
