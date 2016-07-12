@@ -71,7 +71,7 @@ article {
 	float: left;
 	width: 60%;
 }
-.groupAdmin-tabContent .control-group.delete {
+.groupAdmin-tabContent .block-delete {
 	border-top: 1px solid #000;
 	padding-top: 1em;
 	text-align: right;
