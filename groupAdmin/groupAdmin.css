@@ -1,0 +1,30 @@
+/*
+Colors:
+Light grey : #edebed;
+Declick dark purple: #480a2a;
+Light purple: #a88996;
+*/
+article {
+	display: flex;
+}
+.groupAdmin {
+	margin: 10px;
+	color: #480a2a;
+	font-family: "Roboto", sans-serif;
+	flex: 1;
+}
+.groupAdmin-home {
+	background-color: #edebed;
+	padding: 2em;
+}
+.groupAdmin-homeContent {
+	width: 50%;
+	margin: 0 auto;
+}
+.nav-tabs>li>a {
+	background-color: #a88996;
+}
+.groupAdmin-tabContent {
+	background-color: #edebed;
+	padding: 2em;
+}
