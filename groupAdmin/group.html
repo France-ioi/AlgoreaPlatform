@@ -68,7 +68,7 @@
 							</div>
 							<div class="row">
 								<div class="col-md-12 block-delete">
-									<a class="btn-delete" ng-click="removeGroup()">Supprimer le groupe</a>
+									<a class="group-delete" ng-click="removeGroup()">Supprimer le groupe</a>
 								</div>
 							</div>
 						</div>
@@ -80,19 +80,19 @@
 				<div class="groupAdmin-tabContent">
 					<div class="row">
 						<div class="col-md-4">
-							<div class="groupAdmin-tabTitle">Composition du groupe «{{group.sName}}»</div>
+							<div class="groupAdmin-title">Composition du groupe «{{group.sName}}»</div>
 							<table class="table table-utilisateur">
 								<tbody>
 								<tr ng-repeat="child in group.children | directOrInvitation">
 									<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-									<td><span class="button-icon view-more" title="voir"></span></td>
-									<td ng-clic="removeUser(child);"><span class="button-icon delete" title="supprimer"></span></td>
+									<td><button class="btn-icon btn-view-more btn-small" title="voir"><span class="btn-label">voir</span></button></td>
+									<td ng-clic="removeUser(child);"><button class="btn-icon btn-delete btn-small" title="supprimer"><span class="btn-label">supprimer</span></button></td>
 								</tr>
 								</tbody>
 							</table>
 						</div>
 						<div class="col-md-8">
-							<div class="groupAdmin-tabTitle">Gestion des inscriptions
+							<div class="groupAdmin-title">Gestion des inscriptions
 							<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
 							<div class="row">
 								<div class="col-md-6">
@@ -104,7 +104,7 @@
 									<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
 								</div>
 								<div class="col-md-6">
-									<button class="btn btn-primary" ng-click="inviteLogins()">ajouter logins</button>
+									<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
 								</div>
 							</div>
 							<span ng-bind="invitationError"></span>

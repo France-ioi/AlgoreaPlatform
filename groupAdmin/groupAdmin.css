@@ -46,30 +46,30 @@ Red : #e42c20;
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
 }
-.groupAdmin-tabContent .groupAdmin-tabTitle {
+.groupAdmin .groupAdmin-title {
 	font-size: 18px;
 	text-transform: uppercase;
 	font-weight: bold;
 	margin-bottom: 1em;
 }
-.groupAdmin-tabContent .groupAdmin-tabTitle span {
+.groupAdmin .groupAdmin-title span {
 	display: block;
 	font-size: 16px;
 	font-weight: normal;
 	font-style: italic;
 	text-transform: none;
 }
-.groupAdmin-tabContent .label-title {
+.groupAdmin .label-title {
 	font-weight: bold;
 	display: inline-block;
 	margin-bottom: 5px;
 	font-size: 18px;
 }
-.groupAdmin-tabContent .label-title.label-list-item {
+.groupAdmin .label-title.label-list-item {
 	display: list-item;
 	list-style-position: inside;
 }
-.groupAdmin-tabContent .label-description {
+.groupAdmin .label-description {
 	font-size: 14px;
 	font-style: italic;
 	color: #353535;
@@ -78,21 +78,21 @@ Red : #e42c20;
 	line-height: 1.2em;
 	text-shadow: 1px 1px 1px #fff;
 }
-.groupAdmin-tabContent .form-control + .form-control {
+.groupAdmin .form-control + .form-control {
 	margin-top: 1em;
 }
 .groupAdmin-tabContent .checkboxSwitch {}
-.groupAdmin-tabContent .checkboxSwitch input.switch {
+.groupAdmin .checkboxSwitch input.switch {
 	display: none;
 }
-.groupAdmin-tabContent .checkboxSwitch input.switch + label {
+.groupAdmin .checkboxSwitch input.switch + label {
 	background-color: #480a2a;
 	width: 70px;
 	height: 30px;
 	border-radius: 15px;
 	position: relative;
 }
-.groupAdmin-tabContent .checkboxSwitch input.switch + label span {
+.groupAdmin .checkboxSwitch input.switch + label span {
 	width: 20px;
 	height: 20px;
 	top: 5px;
@@ -102,26 +102,22 @@ Red : #e42c20;
 	background-color: #e42c20;
 	transition: all 250ms;
 }
-.groupAdmin-tabContent .checkboxSwitch input.switch:checked + label span {
+.groupAdmin .checkboxSwitch input.switch:checked + label span {
 	background-color: #0fac8e;
 	left: 45px;
 }
-.groupAdmin-tabContent .block-delete {
-	border-top: 1px solid #000;
-	padding-top: 1em;
-	text-align: right;
-}
-.groupAdmin-tabContent .table-utilisateur {
+
+.groupAdmin .table-utilisateur {
 	background-color: #fff;
-	border: 1px solid #480a2a;
+	border: 1px solid #a88996;
 }
-.groupAdmin-tabContent .table-utilisateur tr td {
+.groupAdmin .table-utilisateur tr td {
 	border: none;
 }
-.groupAdmin-tabContent .table-utilisateur tr td:first-child {
+.groupAdmin .table-utilisateur tr td:first-child {
 	width: 100%;
 }
-.groupAdmin-tabContent .table-utilisateur tr td + td {
+.groupAdmin .table-utilisateur tr td + td {
 	text-align: center;
 }
 .groupAdmin-tabContent .table-utilisateur .button-icon {
@@ -131,20 +127,20 @@ Red : #e42c20;
 	cursor: pointer;
 	transition: all 250ms;
 }
-.groupAdmin-tabContent .table-utilisateur .button-icon.view-more {
+.groupAdmin .btn-icon.btn-small.btn-view-more {
 	background: url(images/apercu.png) center center no-repeat;
 }
-.groupAdmin-tabContent .table-utilisateur .button-icon.view-more:active,
-.groupAdmin-tabContent .table-utilisateur .button-icon.view-more:focus,
-.groupAdmin-tabContent .table-utilisateur .button-icon.view-more:hover {
+.groupAdmin .btn-icon.btn-small.btn-view-more:active,
+.groupAdmin .btn-icon.btn-small.btn-view-more:focus,
+.groupAdmin .btn-icon.btn-small.btn-view-more:hover {
 	background-image: url(images/apercu-clic.png);
 }
-.groupAdmin-tabContent .table-utilisateur .button-icon.delete {
+.groupAdmin .btn-icon.btn-small.btn-delete {
 	background: url(images/petit-supprimer.png) center center no-repeat;
 }
-.groupAdmin-tabContent .table-utilisateur .button-icon.delete:active,
-.groupAdmin-tabContent .table-utilisateur .button-icon.delete:focus,
-.groupAdmin-tabContent .table-utilisateur .button-icon.delete:hover {
+.groupAdmin .btn-icon.btn-small.btn-delete:active,
+.groupAdmin .btn-icon.btn-small.btn-delete:focus,
+.groupAdmin .btn-icon.btn-small.btn-delete:hover {
 	background-image: url(images/petit-supprimer-clic.png);
 }
 .groupAdmin-tabContent .table-utilisateur .delete {}
@@ -159,7 +155,7 @@ Red : #e42c20;
 	background: url(images/grand-supprimer-clic.png) center right no-repeat;
 	transition: all 500ms;
 }
-.groupAdmin .btn-delete:hover {
+.groupAdmin .group-delete:hover {
 	text-decoration: none;
 	background-image: url(images/grand-supprimer.png);
 }
