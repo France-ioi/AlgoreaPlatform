@@ -43,6 +43,19 @@ Yellow-green: #D1D718;
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
 }
+.groupAdmin-tabContent .groupAdmin-tabTitle {
+	font-size: 18px;
+	text-transform: uppercase;
+	font-weight: bold;
+	margin-bottom: 1em;
+}
+.groupAdmin-tabContent .groupAdmin-tabTitle span {
+	display: block;
+	font-size: 16px;
+	font-weight: normal;
+	font-style: italic;
+	text-transform: none;
+}
 .groupAdmin-tabContent .label-description {
 	font-size: 14px;
 	font-style: italic;
@@ -55,10 +68,6 @@ Yellow-green: #D1D718;
 .groupAdmin-tabContent .form-control + .form-control {
 	margin-top: 1em;
 }
-.groupAdmin-tabContent .groupAdmin-tabTitle {
-	font-size: 18px;
-	text-transform: uppercase;
-	font-weight: bold;
 }
 .groupAdmin-tabContent .groupAdmin-tabLeftHand {
 	float: left;
