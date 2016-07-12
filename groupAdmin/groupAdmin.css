@@ -3,6 +3,7 @@ Colors:
 Light grey : #edebed;
 Declick dark purple: #480a2a;
 Light purple: #a88996;
+Yellow-green: #D1D718;
 */
 article {
 	display: flex;
@@ -21,10 +22,51 @@ article {
 	width: 50%;
 	margin: 0 auto;
 }
-.nav-tabs>li>a {
+.groupAdmin .nav-tabs>li>a {
 	background-color: #a88996;
+	margin-right: 1em;
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	transition: all 250ms;
+}
+.groupAdmin .nav-tabs>li>a:focus,
+.groupAdmin .nav-tabs>li>a:hover {
+	background-color: #480a2a;
+	border-color: transparent;
+}
+.groupAdmin .nav-tabs>li.active>a,
+.groupAdmin .nav-tabs>li.active>a:focus,
+.groupAdmin .nav-tabs>li.active>a:hover  {
+	color: #D1D718;
+	background-color: #480a2a;
 }
 .groupAdmin-tabContent {
 	background-color: #edebed;
 	padding: 2em;
+}
+.groupAdmin-tabContent .control-group {
+	clear: both;
+	width: 600px;
+	margin-bottom: 1em;
+	overflow: auto;
+}
+.groupAdmin-tabContent .control-label {
+	display: block;
+	float: left;
+	width: 33%;
+	padding-right: 1em;
+}
+.groupAdmin-tabContent .label-description {
+	font-size: 14px;
+	font-style: italic;
+	color: #353535;
+	display: block;
+	font-weight: normal;
+	line-height: 1.2em;
+	text-shadow: 1px 1px 1px #fff;
+}
+.control-group .form-control {
+	width: 67%;
 }

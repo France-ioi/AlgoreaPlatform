@@ -10,18 +10,36 @@
 		<uib-tabset active="active">
 			<uib-tab heading="Descriptif">
 				<div class="groupAdmin-tabContent">
-					<input type="text" ng-model="group.sName"/>
-					<label class="control-label">Type :</label>
-					<div>
+					<div class="control-group">
+						<label class="control-label">
+							<span class="label-title">Nom du groupe</span>
+							<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
+						</label>
+						<input type="text" ng-model="group.sName" class="form-control"/>
+					</div>
+					<div class="control-group">
+						<label class="control-label">
+							<span class="label-title">Type</span>
+							<span class="label-description">Sélectionnez le type de groupe</span>
+							</label>
 						<select ng-model="group.sType" class="form-control">
 						<option value="{{key}}" ng-repeat="(key, value) in groupFields.sType.values" ng-selected="group.sType == key" ng-if="key!='Root'">{{value.label}}</option>
 						</select>
 					</div>
-					<input type="text" ng-model="group.sDescription"/>
-					<label class="control-label" ng-if="group.sType == 'Class'">Niveau :</label>
-					<div ng-if="group.sType == 'Class'">
+					<div class="control-group">
+						<label class="control-label">
+							<span class="label-title">Description</span>
+							<span class="label-description">Ce champ est disponible si vous souhaitez ajouter une description à ce groupe</span>
+						</label>
+						<textarea ng-model="group.sDescription" class="form-control"></textarea>
+					</div>
+					<div ng-if="group.sType == 'Class'" class="control-group">
+						<label class="control-label" ng-if="group.sType == 'Class'">
+							<span class="label-title">Niveau</span>
+							<span class="label-description">Indiquez le niveau du groupe</span>
+						</label>
 						<select ng-model="group.iGrade" class="form-control">
-						<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+							<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
 						</select>
 					</div>
 					<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails"/>
