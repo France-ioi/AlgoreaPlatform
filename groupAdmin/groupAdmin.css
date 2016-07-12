@@ -14,10 +14,6 @@ Red : #e42c20;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
-.groupAdmin .btn.btn-primary {
-	background-color: #480a2a;
-	border-color: #480a2a;
-}
 .groupAdmin-home {
 	background-color: #edebed;
 	padding: 2em;
@@ -138,12 +134,22 @@ Red : #e42c20;
 .groupAdmin .table-utilisateur tr td + td {
 	text-align: center;
 }
-.groupAdmin-tabContent .table-utilisateur .button-icon {
-	width: 20px;
-	height: 20px;
+.groupAdmin .btn.btn-primary {
+	background-color: #480a2a;
+	border-color: #480a2a;
+}
+.groupAdmin .btn-icon {
+	width: 30px;
+	height: 30px;
 	display: inline-block;
 	cursor: pointer;
+	border: none;
 	transition: all 250ms;
+	vertical-align: middle;
+}
+.groupAdmin .btn-icon.btn-small {
+	width: 20px;
+	height: 20px;
 }
 .groupAdmin .btn-icon.btn-small.btn-view-more {
 	background: url(images/apercu.png) center center no-repeat;
@@ -160,6 +166,17 @@ Red : #e42c20;
 .groupAdmin .btn-icon.btn-small.btn-delete:focus,
 .groupAdmin .btn-icon.btn-small.btn-delete:hover {
 	background-image: url(images/petit-supprimer-clic.png);
+}
+.groupAdmin .btn-icon.btn-add {
+	background: url(images/ajouter.png) center no-repeat;
+}
+.groupAdmin .btn-icon.btn-add:active,
+.groupAdmin .btn-icon.btn-add:focus,
+.groupAdmin .btn-icon.btn-add:hover {
+	background-image: url(images/ajouter.png);
+}
+.groupAdmin .btn-icon .btn-label {
+	display: none;
 }
 .groupAdmin-tabContent .table-utilisateur .delete {}
 .groupAdmin .btn-delete {
