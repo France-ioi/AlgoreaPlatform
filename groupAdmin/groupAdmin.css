@@ -183,7 +183,7 @@ Red : #e42c20;
 	display: none;
 }
 .groupAdmin-tabContent .table-utilisateur .delete {}
-.groupAdmin .btn-delete {
+.groupAdmin .group-delete {
 	color: #480a2a;
 	display: inline-block;
 	font-size: 16px;
