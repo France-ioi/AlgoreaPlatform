@@ -87,7 +87,7 @@ Red : #e42c20;
 }
 .groupAdmin-tabContent .checkboxSwitch input.switch + label {
 	background-color: #480a2a;
-	width: 60px;
+	width: 70px;
 	height: 30px;
 	border-radius: 15px;
 	position: relative;
@@ -104,7 +104,7 @@ Red : #e42c20;
 }
 .groupAdmin-tabContent .checkboxSwitch input.switch:checked + label span {
 	background-color: #0fac8e;
-	left: 35px;
+	left: 45px;
 }
 .groupAdmin-tabContent .block-delete {
 	border-top: 1px solid #000;
