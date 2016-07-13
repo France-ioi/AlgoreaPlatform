@@ -14,32 +14,6 @@ Red : #e42c20;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
-.groupAdmin-home {
-	background-color: #edebed;
-	padding: 2em;
-}
-.groupAdmin-homeContent {
-	width: 50%;
-	margin: 0 auto;
-}
-.groupAdmin-homeContent .list {
-	border: 1px solid #a88996;
-	line-height: 1.5em;
-	list-style: none;
-	margin-bottom: 2em;
-	padding: 0;
-	background-color: #fff;
-}
-.groupAdmin-homeContent .list a {
-	padding: 0 1em;
-	color: #480a2a;
-	cursor: pointer;
-	display: block;
-}
-.groupAdmin-homeContent .list a:hover {
-	text-decoration: none;
-	background-color: #edebed;
-}
 
 /* Tabs */
 .groupAdmin .nav-tabs>li>a {
@@ -213,6 +187,32 @@ Red : #e42c20;
 }
 
 /* Group admin home */
+.groupAdmin-home {
+	background-color: #edebed;
+	padding: 2em;
+}
+.groupAdmin-homeContent {
+	width: 50%;
+	margin: 0 auto;
+}
+.groupAdmin-homeContent .list {
+	border: 1px solid #a88996;
+	line-height: 1.5em;
+	list-style: none;
+	margin-bottom: 2em;
+	padding: 0;
+	background-color: #fff;
+}
+.groupAdmin-homeContent .list a {
+	padding: 0 1em;
+	color: #480a2a;
+	cursor: pointer;
+	display: block;
+}
+.groupAdmin-homeContent .list a:hover {
+	text-decoration: none;
+	background-color: #edebed;
+}
 .groupAdmin-homeContent .form-inline {
 	position: relative;
 	padding-right: 45px;
