@@ -192,55 +192,59 @@
 						</div>
 					</div>
 
+					<div ng-if="progressionType != 'collective'" class="row">
+						<div class="col-md-4">
+							<div class="groupAdmin-title">Utilisateur <span>Cliquez sur un utilisateur pour obtenir le détail de son activité récente ou pour le déselectionner et voir l'activité récente du groupe dans son ensemble.</span></div>
+							<table class="table table-users">
+								<tbody>
+									<tr ng-repeat="child in group.children | confirmed">
+										<td><span class="user-status connected"></span></td>
+										<td class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-8">
+							<div class="groupAdmin-title">Activité récente</div>
+							<table class="table table-activity">
+								<thead>
+									<tr>
+										<th>Utilisateur</th>
+										<th>Date</th>
+										<th>Type</th>
+										<th>Exercice</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Prénom nom (login)</td>
+										<td>3/3/2016 18:30</td>
+										<td class="activity-type ">3e tentative de résolution</td>
+										<td>Création</td>
+									</tr>
+									<tr>
+										<td>Prénom nom (login)</td>
+										<td>3/3/2016 18:15</td>
+										<td>valiation d'exercice</td>
+										<td>Création</td>
+									</tr>
+									<tr>
+										<td>Prénom nom (login)</td>
+										<td>3/3/2016 18:00</td>
+										<td>Question sur le forum</td>
+										<td>Titre vraiment très très très long</td>
+									</tr>
+									<tr>
+										<td>Prénom nom (login)</td>
+										<td>3/3/2016 17:55</td>
+										<td>Validation de chapitre</td>
+										<td>Création</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
 
-				<div ng-if="progressionType != 'collective'">
-					<table class="table table-bordered table-hover">
-						<tbody>
-							<tr ng-repeat="child in group.children | confirmed">
-								<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
-							</tr>
-						</tbody>
-					</table>
-
-					Activité récente:
-					<table class="table table-bordered table-hover">
-						<thead>
-							<tr>
-								<th>Utilisateur</th>
-								<th>Date</th>
-								<th>Type</th>
-								<th>Exercice</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Prénom nom (login)</td>
-								<td>3/3/2016 18:30</td>
-								<td>3e tentative de résolution</td>
-								<td>Création</td>
-							</tr>
-							<tr>
-								<td>Prénom nom (login)</td>
-								<td>3/3/2016 18:15</td>
-								<td>valiation d'exercice</td>
-								<td>Création</td>
-							</tr>
-							<tr>
-								<td>Prénom nom (login)</td>
-								<td>3/3/2016 18:00</td>
-								<td>Question sur le forum</td>
-								<td>Titre vraiment très très très long</td>
-							</tr>
-							<tr>
-								<td>Prénom nom (login)</td>
-								<td>3/3/2016 17:55</td>
-								<td>Validation de chapitre</td>
-								<td>Création</td>
-							</tr>
-						</tbody>
-					</table>
-
-				</div>
 
 				<div ng-if="progressionType == 'collective'">
 					Parcours:
