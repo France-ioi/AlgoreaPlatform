@@ -109,12 +109,22 @@ Red : #e42c20;
 }
 .groupAdmin .table-utilisateur tr td {
 	border: none;
-}
-.groupAdmin .table-utilisateur tr td:first-child {
-	width: 100%;
-}
-.groupAdmin .table-utilisateur tr td + td {
 	text-align: center;
+	vertical-align: middle;
+}
+.groupAdmin .table-utilisateur tr td .user-status {
+	width: 15px;
+	height: 15px;
+	display: block;
+	border-radius: 50%;
+}
+.groupAdmin .table-utilisateur tr td .user-status.connected {
+	background-color: #e42c20;
+	border: 1px solid #e42c20;
+}
+.groupAdmin .table-utilisateur tr td.user-name {
+	width: 100%;
+	text-align: left;
 }
 .groupAdmin .table-utilisateur tr:hover {
 	background-color: #edebed;
