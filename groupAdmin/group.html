@@ -175,10 +175,23 @@
 			</uib-tab>
 
 			<uib-tab heading="Progression du groupe">
+					<div class="row">
+						<div class="col-md-6">
+							Sélectionnez le type de progression :
+							<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label>
+							<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+						</div>
+						<div ng-if="progressionType == 'collective'" class="col-md-4">
+							<ul class="legend">
+								<li><span class="legend-color green"></span><span class="legend-label">Exercice validé</span></li>
+								<li><span class="legend-color red"></span><span class="legend-label">Exercice non réussi</span></li>
+								<li><span class="legend-color orange"></span><span class="legend-label">Exercice validé malgré un scrore partiel</span></li>
+								<li><span class="legend-color dark-grey"></span><span class="legend-label">Exercice lu, sans essai</span></li>
+								<li><span class="legend-color light-grey"></span><span class="legend-label">Exercice jamais lu</span></li>
+							</ul>
+						</div>
+					</div>
 
-				Sélectionnez le type de progression :
-				<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label>
-				<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
 
 				<div ng-if="progressionType != 'collective'">
 					<table class="table table-bordered table-hover">
