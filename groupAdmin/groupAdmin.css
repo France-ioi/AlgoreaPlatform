@@ -129,7 +129,10 @@ Red : #e42c20;
 .groupAdmin .table-users tr:hover {
 	background-color: #edebed;
 }
-
+.groupAdmin .table-activity {
+	background-color: #fff;
+	border: 1px solid #a88996;
+}
 .groupAdmin .block-delete {
 	border-top: 1px solid #000;
 	padding-top: 1em;
