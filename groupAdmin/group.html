@@ -245,27 +245,6 @@
 						</div>
 					</div>
 
-					<table>
-						<thead>
-							<tr>
-								<th>Nom</th>
-								<th>Description</th>
-								<th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="item in itemsList">
-								<td>{{item.strings[0].sTitle}}</td>
-								<td>{{item.strings[0].sDescription}}</td>
-								<td ng-repeat="child in group.children | confirmed">
-									<span ng-init="thisUserItem = getUserItem(child, item);">
-										validated: {{thisUserItem.bValidated}}, score: {{thisUserItem.iScore}}/100, nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}, conseils demandés : {{thisUserItem.nbHintsCached}}
-										<button ng-click="openPopup(child,item);">ouvrir popup</button>
-									</span>
-								</td>
-							</tr>
-						</tbody>
-					</table>
 					<div ng-if="progressionType == 'collective'">
 						<div class="row">
 							<div class="col-md-6">
@@ -279,6 +258,39 @@
 								<span class=" pull-right">Afficher la vue globale<button class="btn-icon btn-zoom-out"></button></span>
 							</div>
 						</div>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Nom</th>
+									<th>Description</th>
+									<th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="item in itemsList">
+									<td>{{item.strings[0].sTitle}}</td>
+									<td>{{item.strings[0].sDescription}}</td>
+									<td ng-repeat="child in group.children | confirmed">
+										<table ng-init="thisUserItem = getUserItem(child, item);" class="status">
+											<tr>
+												<td>score: {{thisUserItem.iScore}}/100,</td>
+												<td>Date</td>
+												<td>Temps</td>
+											</tr>
+											<tr>
+												<td>nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}<button ng-click="openPopup(child,item);">ouvrir popup</button></td>
+												<td>conseils demandés : {{thisUserItem.nbHintsCached}}</td>
+												<td></td>
+											</tr>
+										</table>
+										<span ng-init="thisUserItem = getUserItem(child, item);" style="display:none">
+											validated: {{thisUserItem.bValidated}}, score: {{thisUserItem.iScore}}/100, nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}, conseils demandés : {{thisUserItem.nbHintsCached}}
+											<button ng-click="openPopup(child,item);">ouvrir popup</button>
+										</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 
 				</div>
 			</uib-tab>
