@@ -84,7 +84,8 @@
 							<table class="table table-utilisateur">
 								<tbody>
 								<tr ng-repeat="child in group.children | directOrInvitation">
-									<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
+									<td><span class="user-status connected"></span></td>
+									<td class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
 									<td><button class="btn-icon btn-view-more btn-small" title="voir"><span class="btn-label">voir</span></button></td>
 									<td ng-clic="removeUser(child);"><button class="btn-icon btn-delete btn-small" title="supprimer"><span class="btn-label">supprimer</span></button></td>
 								</tr>
