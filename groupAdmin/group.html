@@ -151,12 +151,12 @@
 											<p>(aucune)</p>
 										</div>
 										<div ng-if="showRequestTable()">
-											<table class="table table-bordered table-hover">
+											<table class="table  table-utilisateur">
 												<tbody>
 													<tr ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
-														<td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-														<td ng-click="refuseRequest(child);">refuse</td>
-														<td ng-click="acceptRequest(child);">accept</td>
+														<td class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
+														<td ng-click="acceptRequest(child);"><button class="btn-icon btn-small"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button></td>
+														<td ng-click="refuseRequest(child);"><button class="btn-icon btn-small"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></td>
 													</tr>
 												</tbody>
 											</table>
