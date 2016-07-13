@@ -253,7 +253,8 @@
 								<span class=" pull-right">Afficher la vue globale<button class="btn-icon btn-zoom-out"></button></span>
 							</div>
 						</div>
-						<table class="table">
+						<!-- TODO : swicth table class for detailed / global views (.progress-detail / .progress-global) -->
+						<table class="table-progress progress-detail">
 							<thead>
 								<tr>
 									<th>Nom</th>
@@ -265,19 +266,15 @@
 								<tr ng-repeat="item in itemsList">
 									<td>{{item.strings[0].sTitle}}</td>
 									<td>{{item.strings[0].sDescription}}</td>
-									<td ng-repeat="child in group.children | confirmed">
-										<table ng-init="thisUserItem = getUserItem(child, item);" class="status">
-											<tr>
-												<td>score: {{thisUserItem.iScore}}/100,</td>
-												<td>Date</td>
-												<td>Temps</td>
-											</tr>
-											<tr>
-												<td>nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}<button ng-click="openPopup(child,item);">ouvrir popup</button></td>
-												<td>conseils demandés : {{thisUserItem.nbHintsCached}}</td>
-												<td></td>
-											</tr>
-										</table>
+									<td ng-repeat="child in group.children | confirmed" class="status- ">
+										<ul ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
+												<li>score: {{thisUserItem.iScore}}/100,</li>
+												<li>Date</li>
+												<li>Temps</li>
+												<li>nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}<button ng-click="openPopup(child,item);">ouvrir popup</button></li>
+												<li>conseils demandés : {{thisUserItem.nbHintsCached}}</li>
+												<li>aide demandée : </li>
+										</ul>
 										<span ng-init="thisUserItem = getUserItem(child, item);" style="display:none">
 											validated: {{thisUserItem.bValidated}}, score: {{thisUserItem.iScore}}/100, nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}, conseils demandés : {{thisUserItem.nbHintsCached}}
 											<button ng-click="openPopup(child,item);">ouvrir popup</button>
