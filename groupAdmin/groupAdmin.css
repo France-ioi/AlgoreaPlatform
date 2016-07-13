@@ -114,7 +114,7 @@ Red : #e42c20;
 	line-height: 1.5em;
 	list-style: none;
 	margin-bottom: 2em;
-	padding: 1em;
+	padding: 1em 0.5em;
 }
 .groupAdmin .list-block .list-item {
 	padding: 0 0.5em;
@@ -141,6 +141,9 @@ Red : #e42c20;
 }
 .groupAdmin .list-groups a:hover {
 	text-decoration: none;
+}
+.groupAdmin .list-users .list-item.selected {
+	background-color: #edebed;
 }
 .groupAdmin .list-users .user-status {
 	width: 12px;
