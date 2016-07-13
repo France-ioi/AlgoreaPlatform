@@ -170,6 +170,8 @@ Red : #e42c20;
 .groupAdmin .btn-icon {
 	width: 30px;
 	height: 30px;
+	font-size: 28px;
+	line-height: 1;
 	padding: 0;
 	display: inline-block;
 	cursor: pointer;
@@ -181,6 +183,10 @@ Red : #e42c20;
 .groupAdmin .btn-icon.btn-small {
 	width: 20px;
 	height: 20px;
+	font-size: 16px;
+}
+.groupAdmin .btn-icon.btn-wide {
+	width: 5em;
 }
 .groupAdmin .btn-icon.btn-small.btn-view-more {
 	background: url(images/apercu.png) center center no-repeat;
