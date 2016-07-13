@@ -14,7 +14,11 @@ Red : #e42c20;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
-
+@media screen and (max-width: 750px) {
+	#main > article {
+		min-width: auto;
+	}
+}
 /* Tabs */
 .groupAdmin .nav-tabs>li>a {
 	font-size: 14px;
@@ -252,9 +256,11 @@ Red : #e42c20;
 	background-color: #edebed;
 	padding: 2em;
 }
-.groupAdmin-homeContent {
-	width: 50%;
-	margin: 0 auto;
+@media sreen and (min-width: 750px) {
+	.groupAdmin-homeContent {
+		width: 50%;
+		margin: 0 auto;
+	}
 }
 .groupAdmin-homeContent .form-inline {
 	position: relative;
