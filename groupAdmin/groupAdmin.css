@@ -179,6 +179,22 @@ Red : #e42c20;
 .groupAdmin .btn-icon.btn-add:hover {
 	background-image: url(images/ajouter.png);
 }
+.groupAdmin .btn-icon.btn-zoom-in {
+	background: url(images/vue-detaillee.png) center no-repeat;
+}
+.groupAdmin .btn-icon.btn-zoom-in:active,
+.groupAdmin .btn-icon.btn-zoom-in:focus,
+.groupAdmin .btn-icon.btn-zoom-in:hover {
+	background-image: url(images/vue-detaillee-clic.png);
+}
+.groupAdmin .btn-icon.btn-zoom-out {
+	background: url(images/vue-globale.png) center no-repeat;
+}
+.groupAdmin .btn-icon.btn-zoom-out:active,
+.groupAdmin .btn-icon.btn-zoom-out:focus,
+.groupAdmin .btn-icon.btn-zoom-out:hover {
+	background-image: url(images/vue-globale-clic.png);
+}
 .groupAdmin .btn-icon .btn-label {
 	display: none;
 }
