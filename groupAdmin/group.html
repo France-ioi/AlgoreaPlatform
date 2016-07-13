@@ -245,12 +245,6 @@
 						</div>
 					</div>
 
-
-				<div ng-if="progressionType == 'collective'">
-					Parcours:
-					<select><option>Bob &amp; Max</option></select>
-					Niveau:
-					<select><option>Le premier niveau</option></select>
 					<table>
 						<thead>
 							<tr>
@@ -272,9 +266,21 @@
 							</tr>
 						</tbody>
 					</table>
+					<div ng-if="progressionType == 'collective'">
+						<div class="row">
+							<div class="col-md-6">
+								Parcours :
+								<select><option>Bob &amp; Max</option></select>
+								Niveau :
+								<select><option>Le premier niveau</option></select>
+							</div>
+							<div class="col-md-6">
+								<!-- TODO: bouton vue détaillée / vu globale -->
+								<span class=" pull-right">Afficher la vue globale<button class="btn-icon btn-zoom-out"></button></span>
+							</div>
+						</div>
 
 				</div>
-
 			</uib-tab>
 
 			<uib-tab heading="Administration">
