@@ -191,14 +191,13 @@
 					<div ng-if="progressionType != 'collective'" class="row">
 						<div class="col-sm-4">
 							<div class="groupAdmin-title">Utilisateur <span>Cliquez sur un utilisateur pour obtenir le détail de son activité récente ou pour le déselectionner et voir l'activité récente du groupe dans son ensemble.</span></div>
-							<table class="table table-users">
-								<tbody>
-									<tr ng-repeat="child in group.children | confirmed">
-										<td><span class="user-status connected"></span></td>
-										<td class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
-									</tr>
-								</tbody>
-							</table>
+							<ul class="list list-block list-users">
+							<!-- TODO : add class toggle when selected -->
+									<li class="list-item seleted" ng-repeat="child in group.children | confirmed">
+										<span class="user-status connected"></span>
+										<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</span>
+									</li>
+							</ul>
 						</div>
 						<div class="col-sm-8">
 							<div class="groupAdmin-title">Activité récente</div>
