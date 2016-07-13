@@ -277,3 +277,29 @@ Red : #e42c20;
 	top: 0;
 	right: 0;
 }
+
+/* Group admin Progression */
+.table-progress {
+	background-color: #fff;
+	border-collapse: collapse;
+}
+.table-progress td,
+.table-progress th {
+	border: 1px solid #a88996;
+}
+.table-progress.progress-global .list-progress-details {}
+.table-progress.progress-detail .list-progress-details {
+
+}
+.table-progress.progress-detail .list-progress-details {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.table-progress.progress-detail .list-progress-details li {
+	display: inline-block;
+}
+.table-progress.progress-detail .list-progress-details li:nth-child(3)::after {
+	content: " ";
+	display: table;
+}
