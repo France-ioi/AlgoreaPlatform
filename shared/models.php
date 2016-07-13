@@ -343,7 +343,7 @@ $viewsModels = array(
       ),
       "filters" => array(
          "addUserID" => array(
-            "joins" => array("users"),
+            "joins" => array("usersLeft"),
             "ignoreValue" => true,
          ),
       ),

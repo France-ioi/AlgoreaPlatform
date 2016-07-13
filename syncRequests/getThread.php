@@ -69,7 +69,6 @@ class getThread {
          // $requests['users_answers']['filters']['getOtherUserItem'] = array('values' => array('idUser' => $thread['idUser']));
          $requests['users_answers']['filters']['idItem'] = array('values' => array('idItem' => $idItem));
          $requests['users_answers']['filters']['accessible'] = array('values' => array('idUser' => $thread['idUserCreated']));
-         $requests["users_answers"]["debugLogFunction"] = myDebugFunction;
 
          //$requests["users_items"]['model']["fields"]['bAccessSolutions'] = array('sql' => 'MAX(`groups_items`.`bCachedAccessSolutions`)');
          return [

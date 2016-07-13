@@ -16,6 +16,10 @@ require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 
+if (!$request) {
+  $request = $_GET;
+}
+
 if (!$request || !is_array($request) || !$request['action']) {
    echo '{"result": false, "error": "no argument given"}';
    return;
