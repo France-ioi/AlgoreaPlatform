@@ -103,30 +103,30 @@ Red : #e42c20;
 	left: 45px;
 }
 
-.groupAdmin .table-utilisateur {
+.groupAdmin .table-users {
 	background-color: #fff;
 	border: 1px solid #a88996;
 }
-.groupAdmin .table-utilisateur tr td {
+.groupAdmin .table-users tr td {
 	border: none;
 	text-align: center;
 	vertical-align: middle;
 }
-.groupAdmin .table-utilisateur tr td .user-status {
+.groupAdmin .table-users tr td .user-status {
 	width: 15px;
 	height: 15px;
 	display: block;
 	border-radius: 50%;
 }
-.groupAdmin .table-utilisateur tr td .user-status.connected {
+.groupAdmin .table-users tr td .user-status.connected {
 	background-color: #e42c20;
 	border: 1px solid #e42c20;
 }
-.groupAdmin .table-utilisateur tr td.user-name {
+.groupAdmin .table-users tr td.user-name {
 	width: 100%;
 	text-align: left;
 }
-.groupAdmin .table-utilisateur tr:hover {
+.groupAdmin .table-users tr:hover {
 	background-color: #edebed;
 }
 

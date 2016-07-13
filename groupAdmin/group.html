@@ -81,7 +81,7 @@
 					<div class="row">
 						<div class="col-md-4">
 							<div class="groupAdmin-title">Composition du groupe «{{group.sName}}»</div>
-							<table class="table table-utilisateur">
+							<table class="table table-users">
 								<tbody>
 								<tr ng-repeat="child in group.children | directOrInvitation">
 									<td><span class="user-status connected"></span></td>
@@ -151,7 +151,7 @@
 											<p>(aucune)</p>
 										</div>
 										<div ng-if="showRequestTable()">
-											<table class="table  table-utilisateur">
+											<table class="table table-users">
 												<tbody>
 													<tr ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
 														<td class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
