@@ -81,16 +81,16 @@
 					<div class="row">
 						<div class="col-md-4">
 							<div class="groupAdmin-title">Composition du groupe «{{group.sName}}»</div>
-							<table class="table table-users">
-								<tbody>
-								<tr ng-repeat="child in group.children | directOrInvitation">
-									<td><span class="user-status connected"></span></td>
-									<td class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-									<td><button class="btn-icon btn-view-more btn-small" title="voir"><span class="btn-label">voir</span></button></td>
-									<td ng-clic="removeUser(child);"><button class="btn-icon btn-delete btn-small" title="supprimer"><span class="btn-label">supprimer</span></button></td>
-								</tr>
-								</tbody>
-							</table>
+							<ul class="list list-block list-users">
+								<li class="list-item" ng-repeat="child in group.children | directOrInvitation">
+									<span class="user-status connected"></span>
+									<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
+									<span class="action">
+										<button class="btn-icon btn-view-more btn-small" title="voir"><span class="btn-label">voir</span></button>
+										<button class="btn-icon btn-delete btn-small" ng-clic="removeUser(child);" title="supprimer"><span class="btn-label">supprimer</span></button>
+									</span>
+								</li>
+							</ul>
 						</div>
 						<div class="col-md-8">
 							<div class="groupAdmin-title">Gestion des inscriptions
@@ -151,15 +151,12 @@
 											<p>(aucune)</p>
 										</div>
 										<div ng-if="showRequestTable()">
-											<table class="table table-users">
-												<tbody>
-													<tr ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
-														<td class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-														<td ng-click="acceptRequest(child);"><button class="btn-icon btn-small"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button></td>
-														<td ng-click="refuseRequest(child);"><button class="btn-icon btn-small"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></td>
-													</tr>
-												</tbody>
-											</table>
+											<ul class="list list-block list-applicants">
+													<li class="list-item" ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
+														<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
+														<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+													</li>
+											</ul>
 										</div>
 									</div>
 								</div>

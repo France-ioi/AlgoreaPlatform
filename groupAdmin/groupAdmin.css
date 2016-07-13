@@ -103,31 +103,55 @@ Red : #e42c20;
 	left: 45px;
 }
 
-.groupAdmin .table-users {
+
+.groupAdmin .list-block {
 	background-color: #fff;
 	border: 1px solid #a88996;
+	line-height: 1.5em;
+	list-style: none;
+	margin-bottom: 2em;
+	padding: 1em;
 }
-.groupAdmin .table-users tr td {
-	border: none;
-	text-align: center;
+.groupAdmin .list-block .list-item {
+	padding: 0 0.5em;
+	box-sizing: content-box;
+	clear: both;
+}
+.groupAdmin .list-block .list-item:hover {
+	background-color: #edebed;
+}
+.groupAdmin .list-block .list-item>* {
 	vertical-align: middle;
 }
-.groupAdmin .table-users tr td .user-status {
-	width: 15px;
-	height: 15px;
+.groupAdmin .list-block .list-item .action {
+	float: right;
+}
+.groupAdmin .list-groups {
+	max-height: 20em;
+	overflow: auto;
+}
+.groupAdmin .list-groups a {
+	color: #480a2a;
+	cursor: pointer;
 	display: block;
+}
+.groupAdmin .list-groups a:hover {
+	text-decoration: none;
+}
+.groupAdmin .list-users .user-status {
+	width: 12px;
+	height: 12px;
+	display: inline-block;
+	margin-right: 5px;
 	border-radius: 50%;
 }
-.groupAdmin .table-users tr td .user-status.connected {
+.groupAdmin .list-users .user-status.connected {
 	background-color: #e42c20;
 	border: 1px solid #e42c20;
 }
-.groupAdmin .table-users tr td.user-name {
-	width: 100%;
-	text-align: left;
-}
-.groupAdmin .table-users tr:hover {
-	background-color: #edebed;
+.groupAdmin .list-applicants {
+	max-height: 6em;
+	overflow: auto;
 }
 .groupAdmin .table-activity {
 	background-color: #fff;
@@ -225,24 +249,6 @@ Red : #e42c20;
 .groupAdmin-homeContent {
 	width: 50%;
 	margin: 0 auto;
-}
-.groupAdmin-homeContent .list {
-	border: 1px solid #a88996;
-	line-height: 1.5em;
-	list-style: none;
-	margin-bottom: 2em;
-	padding: 0;
-	background-color: #fff;
-}
-.groupAdmin-homeContent .list a {
-	padding: 0 1em;
-	color: #480a2a;
-	cursor: pointer;
-	display: block;
-}
-.groupAdmin-homeContent .list a:hover {
-	text-decoration: none;
-	background-color: #edebed;
 }
 .groupAdmin-homeContent .form-inline {
 	position: relative;

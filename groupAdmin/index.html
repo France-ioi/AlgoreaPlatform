@@ -13,10 +13,10 @@
 			</div>
 			<div ng-show="true">
 				<p class="groupAdmin-title">Consulter un groupe :</p>
-				<ul class="group-list list">
-					<li><a>Ceci est un groupe</a></li>
-					<li><a>Ceci est un autre groupe</a></li>
-					<li ng-repeat="group_group in myGroupAdmin.children"><a ng-click="goToGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+				<ul class="list list-block list-groups">
+					<li class="list-item"><a>Ceci est un groupe</a></li>
+					<li class="list-item"><a>Ceci est un autre groupe</a></li>
+					<li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="goToGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
 				</ul>
 			</div>
 			<div>
