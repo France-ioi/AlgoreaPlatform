@@ -143,11 +143,13 @@ Red : #e42c20;
 .groupAdmin .btn-icon {
 	width: 30px;
 	height: 30px;
+	padding: 0;
 	display: inline-block;
 	cursor: pointer;
 	border: none;
-	transition: all 250ms;
+	background-color: transparent;
 	vertical-align: middle;
+	transition: all 250ms;
 }
 .groupAdmin .btn-icon.btn-small {
 	width: 20px;
