@@ -144,20 +144,18 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-md-6 col-md-offset-6">
-									<div ng-if="group.bOpened">
-										<div ng-if="!showRequestTable()">
-											<p>(aucune)</p>
-										</div>
-										<div ng-if="showRequestTable()">
-											<ul class="list list-block list-applicants">
-													<li class="list-item" ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
-														<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
-														<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
-													</li>
-											</ul>
-										</div>
+							<div  ng-if="group.bOpened" class="row">
+								<div class="col-lg-6 col-lg-offset-6">
+									<div ng-if="!showRequestTable()">
+										<p>(aucune)</p>
+									</div>
+									<div ng-if="showRequestTable()">
+										<ul class="list list-block list-applicants">
+												<li class="list-item" ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
+													<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
+													<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+												</li>
+										</ul>
 									</div>
 								</div>
 							</div>
