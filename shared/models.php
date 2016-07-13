@@ -28,6 +28,8 @@ $tablesModels = array (
       "autoincrementID" => false,
       "fields" => array(
          "sName" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "iGrade" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sGradeDetails" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sDescription" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sDateCreated" => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
          "bOpened" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
@@ -334,6 +336,8 @@ $viewsModels = array(
       ),
       "fields" => array(
          "sName" => array(),
+         "iGrade" => array(),
+         "sGradeDetails" => array(),
          "sDescription" => array(),
          "sDateCreated" => array(),
          "bOpened" => array(),

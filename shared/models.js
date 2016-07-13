@@ -21,10 +21,29 @@ var models = {
          bImportant: {type: "boolean", label: "Dont le statut est classé comme important pour moi"}
       }
    },
-
    groups: {
       fields: {
          sName: {type: "string", label: "Nom"},
+         iGrade: {type: "enum", label: "Niveau", defaultValue: -2, nullInvalid: true,
+            values: {
+               "-4": {label: "Autre"},
+               "-2": {label: "Indéfini"},
+               "-1": {label: "Professeur", hidden: true},
+               "4": {label: "CM1"},
+               "5": {label: "CM2"},
+               "6": {label: "6ème"},
+               "7": {label: "5ème"},
+               "8": {label: "4ème"},
+               "9": {label: "3ème"},
+               "10": {label: "Seconde"},
+               "13": {label: "Seconde pro."},
+               "11": {label: "Première"},
+               "14": {label: "Première pro."},
+               "12": {label: "Terminale"},
+               "15": {label: "Terminale pro."}
+            }
+         },
+         sGradeDetails: {type: "string", label: "Détail du niveau"},
          idUser: {type: "key", label: "id de l'utilisateur"},
          sDescription: {type: "text", label: "Description"},
          sDateCreated: {type: "jsdate", label: "Date de création"},
