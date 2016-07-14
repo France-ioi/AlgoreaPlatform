@@ -19,6 +19,12 @@ Red : #e42c20;
 		min-width: auto;
 	}
 }
+.groupAdmin label input {
+	margin-right: 3px;
+}
+.groupAdmin .block-context {
+	overflow: auto;
+}
 /* Tabs */
 .groupAdmin .nav-tabs>li>a {
 	font-size: 14px;

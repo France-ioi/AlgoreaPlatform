@@ -173,9 +173,11 @@
 				<div class="groupAdmin-tabContent">
 					<div class="row">
 						<div class="col-sm-6">
-							Sélectionnez le type de progression :
-							<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label>
-							<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+							<span class="pull-left">Sélectionnez le type de progression : </span>
+							<div class="block-context">
+								<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label><br>
+								<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+							</div>
 						</div>
 						<div ng-if="progressionType == 'collective'" class="col-sm-4">
 							<ul class="legend">
