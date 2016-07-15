@@ -67,10 +67,24 @@ angular.module('algorea').
     };
   });
 
+angular.module('algorea').
+  filter('selectedUsersAndItems', function() {
+    return function(userItems, itemsListRev, usersSelected) {
+      var out = [];
+      angular.forEach(userItems, function(userItem) {
+         if (usersSelected[userItem.idUser] && itemsListRev[userItem.idItem] && userItem.sValidationDate) {
+            out.push(userItem);
+         }
+      });
+      return out;
+    };
+  });
+
 // one group
 
 angular.module('algorea')
    .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', function ($scope, $stateParams, itemService, $uibModal) {
+   'use strict';
    $scope.error = null;
 
    $scope.groupFields = models.groups.fields;
@@ -262,7 +276,7 @@ angular.module('algorea')
          console.error('debug0');
          delete(SyncQueue.requestSets.groupAdmin.minServerVersion);
          callback();
-      }, true);
+      }, false, true);
       SyncQueue.planToSend(0);
    };
    $scope.initGroup = function() {
@@ -271,6 +285,16 @@ angular.module('algorea')
          console.error('big problem!');
          return;
       }
+      $scope.usersSelected = {};
+      $scope.groupsSelected = {};
+      angular.forEach($scope.group.children, function(child_group_group) {
+         var child_group = child_group_group.child;
+         $scope.groupsSelected[child_group.ID] = true;
+         var user = child_group.userSelf[0];
+         if (!user) return;
+         $scope.usersSelected[user.ID] = true;
+      });
+      console.error($scope.usersSelected);
    };
 
    $scope.getUserItem = function(group_group, item) {
@@ -284,27 +308,88 @@ angular.module('algorea')
       return userItem;
    }
 
-   function fillItemsListWithSonsRec(itemsList, item) {
+   $scope.toggleUserRowSelection = function(group) {
+      console.error('pouet!');
+      $scope.groupsSelected[group.ID] = !$scope.groupsSelected[group.ID];
+      var user = group.userSelf[0];
+      if (!user) return;
+      $scope.usersSelected[user.ID] = !$scope.usersSelected[user.ID];
+      console.error($scope.usersSelected);
+   }
+
+   function fillItemsListWithSonsRec(itemsList, itemsListRev, item) {
+      if (!item) return;
       angular.forEach(item.children, function(child_item_item) {
          var child_item = child_item_item.child;
          if (child_item.sType != 'Course' && child_item.sType != 'Presentation') {
             itemsList.push(child_item);
+            itemsListRev[child_item.ID] = true;
          }
          if (child_item.children) {
-            fillItemsListWithSonsRec(itemsList, child_item)
+            fillItemsListWithSonsRec(itemsList, itemsListRev, child_item)
          }
       });
    }
 
-   $scope.initItems = function() {
-      var rootItemId = '1384877030317901919';
-      $scope.rootItem = ModelsManager.getRecord('items', rootItemId);
+   $scope.selectedItemId = 0;
+   $scope.dropdownSelections = [];
+
+   $scope.dropdownSelected = function(depth) {
+      if (depth === 0) { // final dropdown
+         depth = $scope.dropdownSelections.length;
+      }
+      var itemId = $scope.dropdownSelectionsIDs[depth];
+      if (itemId == 0) {
+         depth=depth-1;
+         itemId = $scope.dropdownSelections[depth].ID;
+      }
+      var newSelections = [];
+      var newSelectionsIDs = [];
+      for (var i = 0; i < depth; i++) {
+         newSelections[i] = $scope.dropdownSelections[i];
+         newSelectionsIDs[i] = $scope.dropdownSelections[i].ID;
+      }
+      var newRootItem = ModelsManager.getRecord('items', itemId);
+      newSelections[depth] = newRootItem;
+      newSelectionsIDs[depth] = newRootItem.ID;
+      $scope.dropdownSelections = newSelections;
+      $scope.dropdownSelectionsIDs = newSelectionsIDs;
+      $scope.itemSelected(newRootItem);
+   }
+
+   $scope.itemSelected = function(item) {
+      $scope.rootItem = item;
       $scope.itemsList = [];
-      fillItemsListWithSonsRec($scope.itemsList, $scope.rootItem);
+      $scope.itemsListRev = {};
+      fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
+   }
+
+   $scope.levelSelected = function(itemId) {
+      $scope.itemSelected($scope.formValues.selectedLevel);
+      $scope.dropdownSelections = [];
+      $scope.dropdownSelectionsIDs = [];
+      $scope.dropdownSelections[0] = $scope.formValues.selectedLevel;
+      $scope.dropdownSelectionsIDs[0] = $scope.formValues.selectedLevel.ID;
+   }
+
+   $scope.initItems = function() {
+      var officialRootItem = ModelsManager.getRecord('items', config.domains.current.OfficialProgressItemId);
+      var customRootItem = ModelsManager.getRecord('items', config.domains.current.CustomProgressItemId);
+      $scope.levels = [];
+      angular.forEach(officialRootItem.children, function(child) {
+         $scope.levels.push(child.child);
+      });
+      angular.forEach(customRootItem.children, function(child) {
+         $scope.levels.push(child.child);
+      });
+      $scope.formValues.selectedLevel = $scope.levels[0];
+      $scope.levelSelected($scope.levels[0].ID);
    };
    $scope.stopSync = function() {
       delete(SyncQueue.requestSets.groupAdmin);
    };
+
+   $scope.allUserItems = ModelsManager.curData.users_items;
 
    $scope.init = function() {
       $scope.loading = true;

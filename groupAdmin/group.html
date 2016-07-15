@@ -82,8 +82,8 @@
 		<div ng-if="progressionType != 'collective'">
          <table class="table table-bordered table-hover">
             <tbody>
-               <tr ng-repeat="child in group.children | confirmed">
-                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}</td>
+               <tr ng-repeat="child in group.children | confirmed" ng-click="toggleUserRowSelection(child.child);" ng-class="{row_selected: groupsSelected[child.idGroupChild] == true}">
+                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
                </tr>
             </tbody>
          </table>
@@ -99,29 +99,11 @@
 	            </tr>
 	         </thead>
 	         <tbody>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 18:30</td>
+	            <tr ng-repeat="(ID, userItem) in allUserItems | selectedUsersAndItems: itemsListRev:usersSelected | orderBy : '-sLastActivityDate' | limitTo:10">
+	               <td>{{userItem.user.sFirstName}} {{userItem.user.sLastName}} ({{userItem.user.sLogin}})</td>
+	               <td>{{userItem.sLastActivityDate | date}}</td>
 	               <td>3e tentative de résolution</td>
-	               <td>Création</td>
-	            </tr>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 18:15</td>
-	               <td>valiation d'exercice</td>
-	               <td>Création</td>
-	            </tr>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 18:00</td>
-	               <td>Question sur le forum</td>
-	               <td>Titre vraiment très très très long</td>
-	            </tr>
-	            <tr>
-	               <td>Prénom nom (login)</td>
-	               <td>3/3/2016 17:55</td>
-	               <td>Validation de chapitre</td>
-	               <td>Création</td>
+	               <td>{{userItem.item.strings[0].sTitle}}</td>
 	            </tr>
 	         </tbody>
 	      </table>
@@ -130,9 +112,16 @@
 
 		<div ng-if="progressionType == 'collective'">
 			Parcours:
-			<select><option>Bob &amp; Max</option></select>
-         Niveau:
-         <select><option>Le premier niveau</option></select>
+			<select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">
+			</select>
+         	<select ng-repeat="(depth, selectedItem) in dropdownSelections" ng-if="depth != 0" ng-change="dropdownSelected(depth)" ng-model="dropdownSelectionsIDs[depth]">
+         		<option value="">Tous</option>
+				<option ng-repeat="child in dropdownSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == dropdownSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+			</select>
+			<select ng-if="dropdownSelections[dropdownSelections.length-1].children.length" ng-change="dropdownSelected(0)" ng-model="dropdownSelectionsIDs[dropdownSelections.length]">
+				<option selected="selected" value="">Tous</option>
+				<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+			</select>
 			<table>
 	         <thead>
 	            <tr>
