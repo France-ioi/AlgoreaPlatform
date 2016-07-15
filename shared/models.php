@@ -654,6 +654,7 @@ $viewsModels = array(
         "groupInvitedSelf" => array("dstField" => "idGroupChild", "srcField" => "idGroupSelf", "srcTable" => "users", "dstTable" => "groups_groups"),
       ),
       "fields" => array(
+          "sLogin"                => array(),
           "sEmail"                => array(),
           "sFirstName"            => array(),
           "sLastName"             => array(),

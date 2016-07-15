@@ -98,6 +98,18 @@ var models = {
             label: "Type",
             nullInvalid: true
          },
+         sRole: {
+            type: 'enum',
+            values: {
+               owner: {label: "propriétaire"},
+               manager: {label: "administrateur"},
+               observer: {label: "observateur"},
+               member: {label: "membre"},
+            },
+            defaultValue: 'member',
+            label: "Rôle",
+            nullInvalid: true
+         },
          sStatusDate: {type: "jsdate", label: "date du dernier changement de statut"},
          idUserInviting: {type: "key", label: "Utilisateur invitant", refModel: "users", link: "userInviting"},
          sUserInvitingLogin: {type: "string", label: "login de l'invitant", readOnly: true},
