@@ -427,7 +427,7 @@ var models = {
 
    users_items: {
       fields: {
-          idUser: {type: "key", label: "User"},
+          idUser: {type: "key", label: "User", refModel: "users", link: "user"},
           idItem: {type: "key", label: "Item", refModel: "items", link: "item", invLink: "user_item"},
           iScore: {type: "float", label: "", readOnly: true},
           iScoreComputed: {type: "float", label: "", readOnly: true},
