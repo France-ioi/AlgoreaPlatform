@@ -162,9 +162,9 @@
          </thead>
          <tbody>
             <tr ng-repeat="parent in group.parents">
-               <td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-               <td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'manager');"></td>
-               <td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'observer');"></td>
+               <td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{parent.parent.userOwned[0].sLogin}})</td>
+               <td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');"></td>
+               <td><input type="radio" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');"></td>
                <td><button ng-click="removeAdmin(parent);">poubelle</button></td>
             </tr>
          </tbody>

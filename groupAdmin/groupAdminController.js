@@ -83,7 +83,7 @@ angular.module('algorea').
 // one group
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', function ($scope, $stateParams, itemService, $uibModal) {
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', function ($scope, $stateParams, itemService, $uibModal, $http) {
    'use strict';
    $scope.error = null;
 
@@ -193,6 +193,7 @@ angular.module('algorea')
          console.error("error calling invitations.php");
       });
    };
+
    $scope.inviteAdminLogins = function() {
       if (!$scope.formValues.adminLogins) {
          return;
@@ -211,20 +212,25 @@ angular.module('algorea')
             angular.forEach($scope.group.parents, function(parent, ID) {
                alreadyInvitedGroupIds[parent.idGroupParent] = ID;
             });
+            var groupsToInvite = [];
             angular.forEach(postRes.logins_groups, function(groupId, login) {
                if (alreadyInvitedGroupIds[groupId]) {
                   alreadyInvitedLogins.push(login);
+               } else {
+                  groupsToInvite.push(groupId);
                }
             });
             if (alreadyInvitedLogins.length) {
                $scope.adminInvitationError += 'Les logins suivants ont déjà un rôle dans le groupe : '+alreadyInvitedLogins.join(' ')+'. ';
             }
+            $scope.addAdminGroups(groupsToInvite);
          }
       })
       .error(function() {
          console.error("error calling invitations.php");
       });
    };
+
    $scope.getNextiChildOrder = function(group) {
       var res = 0;
       angular.forEach(group.children, function(child, ID) {
@@ -235,6 +241,7 @@ angular.module('algorea')
       });
       return res;
    };
+
    $scope.createInvitation = function(groupId, childLogin) {
       var invitation = ModelsManager.createRecord('groups_groups');
       invitation.idGroupParent = $scope.group.ID;
@@ -248,37 +255,89 @@ angular.module('algorea')
       ModelsManager.insertRecord('groups_groups', invitation);
    };
 
-   $scope.refreshPassword = function() {};
+   $scope.refreshPassword = function() {
+      $http.post('/groupAdmin/api.php', {action: 'refreshPassword', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            $scope.group.sPassword = postRes.newPass;   
+            $scope.$evalAsync($scope.$apply);            
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      });
+   };
 
-   $scope.addAdmin = function(groupId, login) {};
+   $scope.addAdminGroups = function(groups) {
+      $http.post('/groupAdmin/api.php', {action: 'addAdmins', idGroup: $scope.groupId, aAdminGroups: groups}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            SyncQueue.planToSend(0);
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      });
+   };
 
    $scope.saveGroup = function() {
       ModelsManager.updated('groups', $scope.groupId);
    };
 
    $scope.removeUser = function(group_group) {
-
+      $http.post('/groupAdmin/api.php', {action: 'removeUser', idGroup: $scope.groupId, idGroupUser: group_group.idGroupChild}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            SyncQueue.planToSend(0);
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      });
    };
 
-   $scope.removeAdmin = function(group_group) {};
-   $scope.changeAdminRole = function(group_group, sRole) {
+   $scope.removeAdmin = function(group_group) {
+      $http.post('/groupAdmin/api.php', {action: 'removeAdmin', idGroup: $scope.groupId, idGroupAdmin: group_group.idGroupParent}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            SyncQueue.planToSend(0);
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      }); 
+   };
 
+   $scope.changeAdminRole = function(group_group, sRole) {
+      $http.post('/groupAdmin/api.php', {action: 'changeAdminRole', idGroup: $scope.groupId, idGroupAdmin: group_group.idGroupParent, sRole: sRole}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            group_group.sRole = sRole;
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      }); 
    };
 
    $scope.startSync = function(groupId, itemId, callback) {
       SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minServerVersion: 0};
       // yeah...
-      console.error('debug1');
       console.error(SyncQueue.requestSets);
       SyncQueue.addSyncEndListeners('groupAdminController', function() {
          $scope.loading = false;
          SyncQueue.removeSyncEndListeners('groupAdminController');
-         console.error('debug0');
          delete(SyncQueue.requestSets.groupAdmin.minServerVersion);
          callback();
       }, false, true);
       SyncQueue.planToSend(0);
    };
+
    $scope.initGroup = function() {
       $scope.group = ModelsManager.getRecord('groups', $scope.groupId);
       if (!$scope.group) {
@@ -395,7 +454,6 @@ angular.module('algorea')
       $scope.loading = true;
       $scope.progressionType = 'chronological';
       $scope.groupId = '1321383987564998144';//$stateParams.idGroup;
-      $scope.itemId = '4021'; // TODO!
       $scope.error = '';
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
