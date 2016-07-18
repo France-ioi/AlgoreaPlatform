@@ -116,7 +116,9 @@ orange : #F29200;
 	left: 45px;
 }
 
-
+/*
+	Users lists
+*/
 .groupAdmin .list-block {
 	background-color: #fff;
 	border: 1px solid #a88996;
@@ -139,33 +141,33 @@ orange : #F29200;
 .groupAdmin .list-block .list-item .action {
 	float: right;
 }
-.groupAdmin .list-groups {
+.groupAdmin .list-block.list-groups {
 	max-height: 20em;
 	overflow: auto;
 }
-.groupAdmin .list-groups a {
+.groupAdmin .list-block.list-groups a {
 	color: #480a2a;
 	cursor: pointer;
 	display: block;
 }
-.groupAdmin .list-groups a:hover {
+.groupAdmin .list-block.list-groups a:hover {
 	text-decoration: none;
 }
-.groupAdmin .list-users .list-item.selected {
+.groupAdmin .list-block.list-users .list-item.selected {
 	background-color: #edebed;
 }
-.groupAdmin .list-users .user-status {
+.groupAdmin .list-block.list-users .user-status {
 	width: 12px;
 	height: 12px;
 	display: inline-block;
 	margin-right: 5px;
 	border-radius: 50%;
 }
-.groupAdmin .list-users .user-status.connected {
+.groupAdmin .list-block.list-users .user-status.connected {
 	background-color: #e42c20;
 	border: 1px solid #e42c20;
 }
-.groupAdmin .list-applicants {
+.groupAdmin .list-block.list-applicants {
 	max-height: 6em;
 	overflow: auto;
 }
