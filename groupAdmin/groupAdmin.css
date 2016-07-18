@@ -1,12 +1,15 @@
 /*
 Colors:
-Light grey : #edebed;
+legend dark-grey: #707070;
+legend light-grey: #C6C6C6;
+background Light grey : #edebed;
 Declick dark purple: #480a2a;
 Light purple: #a88996;
 Yellow-green: #D1D718;
-Blue-Green: #0fac8e;
 Pink: #e11782;
 Red : #e42c20;
+green : #0FAA8B;
+orange : #F29200;
 */
 .groupAdmin {
 	margin: 10px;
@@ -109,7 +112,7 @@ Red : #e42c20;
 	transition: all 250ms;
 }
 .groupAdmin .checkboxSwitch input.switch:checked + label span {
-	background-color: #0fac8e;
+	background-color: #0FAA8B;
 	left: 45px;
 }
 
