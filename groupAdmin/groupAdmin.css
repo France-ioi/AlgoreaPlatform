@@ -177,6 +177,7 @@ orange : #F29200;
 	padding-top: 1em;
 	text-align: right;
 }
+
 /* Buttons */
 .groupAdmin .btn.btn-primary {
 	background-color: #480a2a;
@@ -502,4 +503,32 @@ orange : #F29200;
 .groupAdmin .list-progress-details .help::before {
 	content: url(images/picto-aide.png);
 }
+.groupAdmin .legend {
+	list-style: none;
+	-webkit-column-count: 2;
+	   -moz-column-count: 2;
+	        column-count: 2;
+	-webkit-column-gap: 1em;
+	   -moz-column-gap: 1em;
+	        column-gap: 1em;
+}
+.groupAdmin .legend li {
+	break-inside: avoid;}
+.groupAdmin .legend-color {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+.groupAdmin .legend-color.green { background-color: #0FAA8B;}
+.groupAdmin .legend-color.red { background-color: #e42c20;}
+.groupAdmin .legend-color.orange { background-color: #F29200;}
+.groupAdmin .legend-color.dark-grey { background-color: #707070;}
+.groupAdmin .legend-color.light-grey { background-color: #C6C6C6;}
+.groupAdmin .view-switcher .btn-icon {
+	vertical-align: bottom;
+}
+.groupAdmin .block-context {
+	padding-left: 20px;
 }
