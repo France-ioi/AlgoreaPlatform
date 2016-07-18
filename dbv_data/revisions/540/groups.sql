@@ -7,3 +7,8 @@ ALTER TABLE `history_users` ADD KEY `idGroupOwned` (`idGroupOwned`);
 
 ALTER TABLE `groups` ADD `iGrade` INT(4) NOT NULL DEFAULT '-2' AFTER `sName`, ADD `sGradeDetails` VARCHAR(50) NULL DEFAULT NULL AFTER `iGrade`;
 ALTER TABLE `history_groups` ADD `iGrade` INT(4) NOT NULL DEFAULT '-2' AFTER `sName`, ADD `sGradeDetails` VARCHAR(50) NULL DEFAULT NULL AFTER `iGrade`;
+
+ALTER TABLE `users_items` ADD `sThreadStartDate` DATETIME NULL DEFAULT NULL AFTER `sLastActivityDate`, ADD `sLastAnswerDate` DATETIME NULL DEFAULT NULL AFTER `sThreadStartDate`;
+ALTER TABLE `history_users_items` ADD `sThreadStartDate` DATETIME NULL DEFAULT NULL AFTER `sLastActivityDate`, ADD `sLastAnswerDate` DATETIME NULL DEFAULT NULL AFTER `sThreadStartDate`;
+ALTER TABLE `users_items` ADD `sLastHintDate` DATETIME NULL DEFAULT NULL AFTER `sLastAnswerDate`;
+ALTER TABLE `history_users_items` ADD `sLastHintDate` DATETIME NULL DEFAULT NULL AFTER `sLastAnswerDate`;
