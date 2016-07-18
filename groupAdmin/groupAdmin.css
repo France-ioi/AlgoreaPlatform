@@ -171,10 +171,7 @@ orange : #F29200;
 	max-height: 6em;
 	overflow: auto;
 }
-.groupAdmin .table-activity {
-	background-color: #fff;
-	border: 1px solid #a88996;
-}
+
 .groupAdmin .block-delete {
 	border-top: 1px solid #000;
 	padding-top: 1em;
@@ -309,7 +306,43 @@ orange : #F29200;
 
 /* Group admin Progression */
 .table-progress {
+/* Activities */
+.groupAdmin .table-activity {
 	background-color: #fff;
+	border: 1px solid #480a2a;
+}
+.groupAdmin .table-activity th,
+.groupAdmin .table-activity td {
+	border: 1px solid #480a2a;
+}
+.groupAdmin .table-activity th {
+	font-weight: normal;
+	text-transform: uppercase;
+}
+.groupAdmin .table-activity .activity-type {
+	position: relative;
+}
+.groupAdmin .table-activity .activity-type .btn-modal {
+	width: 21px;
+	height: 15px;
+	display: block;
+	position: absolute;
+	cursor: pointer;
+	right: 3px;
+	bottom: 3px;
+	opacity: 0;
+	transition: all 250ms;
+}
+.groupAdmin .table-activity .activity-type:hover .btn-modal {
+	opacity: 1;
+}
+
+
+/*
+	Group admin: Progression
+*/
+
+.groupAdmin .table-progress {
 	border-collapse: collapse;
 }
 .table-progress td,
