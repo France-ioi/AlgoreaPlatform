@@ -251,9 +251,13 @@
 								Niveau :
 								<select><option>Le premier niveau</option></select>
 							</div>
-							<div class="col-sm-6">
-								<!-- TODO: bouton vue détaillée / vu globale -->
-								<span class=" pull-right">Afficher la vue globale<button class="btn-icon btn-zoom-out"></button></span>
+							<div class="view-switcher col-sm-6">
+								<!-- TODO: on button click, switch between global / detailed view
+									* toggle button class .btn-zoom-in / .btn-zoom-out
+									* toggle table.table-progress class (.progress-global / .progress-detail)
+									* display td.status content according to global / detailed view
+							  -->
+								<span class="pull-right">Afficher la vue globale <button class="btn-icon btn-zoom-out"></button></span>
 							</div>
 						</div>
 						<!-- TODO : swicth table class for detailed / global views (.progress-detail / .progress-global) -->
