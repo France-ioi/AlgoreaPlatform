@@ -260,32 +260,45 @@
 								<span class="pull-right">Afficher la vue globale <button class="btn-icon btn-zoom-out"></button></span>
 							</div>
 						</div>
-						<!-- TODO : swicth table class for detailed / global views (.progress-detail / .progress-global) -->
-						<table class="table-progress progress-detail">
+						<table class="table-progress progress-global">
 							<thead>
 								<tr>
-									<th>Nom</th>
-									<th>Description</th>
-									<th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
+									<th class="fixed-width">Nom du chapitre / étape</th>
+									<th class="fixed-width">Description</th>
+									<th ng-repeat="child in group.children | confirmed" class="text-center name"><div><span>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span></div></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr ng-repeat="item in itemsList">
-									<td>{{item.strings[0].sTitle}}</td>
-									<td>{{item.strings[0].sDescription}}</td>
-									<td ng-repeat="child in group.children | confirmed" class="status- ">
+									<td class="fixed-width">{{item.strings[0].sTitle}}</td>
+									<td class="fixed-width description">
+										<div>{{item.strings[0].sDescription}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div></td>
+									<td ng-repeat="child in group.children | confirmed" class="status validation">
+									<!-- if view progress detail
 										<ul ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
-												<li>score: {{thisUserItem.iScore}}/100,</li>
-												<li>Date</li>
-												<li>Temps</li>
-												<li>nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}<button ng-click="openPopup(child,item);">ouvrir popup</button></li>
-												<li>conseils demandés : {{thisUserItem.nbHintsCached}}</li>
-												<li>aide demandée : </li>
+												<li class="date">03/03 17:30</li>
+												<li class="time">00'30"</li>
+												<li class="help">0</li><span class="break"></span>
+												<li class="score">{{thisUserItem.iScore}}/100</li>
+												<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
+												<li class="questions">{{thisUserItem.nbHintsCached}}</li>
 										</ul>
-										<span ng-init="thisUserItem = getUserItem(child, item);" style="display:none">
-											validated: {{thisUserItem.bValidated}}, score: {{thisUserItem.iScore}}/100, nombre d'essais : {{thisUserItem.nbSubmissionsAttempts}}, conseils demandés : {{thisUserItem.nbHintsCached}}
-											<button ng-click="openPopup(child,item);">ouvrir popup</button>
-										</span>
+									-->
+									<!-- endif -->
+
+									<!-- if view progress global -->
+										<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
+										<button class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
+										<button class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button>
+										<ul ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
+												<li class="score">{{thisUserItem.iScore}}/100</li>
+												<li class="date">03/03 17:30</li>
+												<li class="time">00'30"</li>
+												<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)</li>
+												<li class="questions">{{thisUserItem.nbHintsCached}}</li>
+												<li class="help">0</li>
+										</ul>
+									<!-- endif -->
 									</td>
 								</tr>
 							</tbody>
