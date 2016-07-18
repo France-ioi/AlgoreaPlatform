@@ -214,6 +214,14 @@ orange : #F29200;
 .groupAdmin .btn-icon.btn-small.btn-view-more:hover {
 	background-image: url(images/apercu-clic.png);
 }
+.groupAdmin .btn-icon.btn-small.btn-preview {
+	background: url(images/petit-apercu.png) center center no-repeat;
+}
+.groupAdmin .btn-icon.btn-small.btn-preview:active,
+.groupAdmin .btn-icon.btn-small.btn-preview:focus,
+.groupAdmin .btn-icon.btn-small.btn-preview:hover {
+	background-image: url(images/petit-apercu-clic.png);
+}
 .groupAdmin .btn-icon.btn-small.btn-delete {
 	background: url(images/petit-supprimer.png) center center no-repeat;
 }
@@ -245,6 +253,14 @@ orange : #F29200;
 .groupAdmin .btn-icon.btn-zoom-out:focus,
 .groupAdmin .btn-icon.btn-zoom-out:hover {
 	background-image: url(images/vue-globale-clic.png);
+}
+.groupAdmin .btn-icon.btn-modal {
+	background: url(images/code.png) center no-repeat;
+}
+.groupAdmin .btn-modal:active,
+.groupAdmin .btn-modal:focus,
+.groupAdmin .btn-modal:hover {
+	background-image: url(images/code-clic.png);
 }
 .groupAdmin .btn-icon .btn-label {
 	font: 0/0 a;
