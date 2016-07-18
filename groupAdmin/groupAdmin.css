@@ -247,7 +247,9 @@ orange : #F29200;
 	background-image: url(images/vue-globale-clic.png);
 }
 .groupAdmin .btn-icon .btn-label {
-	display: none;
+	font: 0/0 a;
+	color: transparent;
+	text-shadow: none;
 }
 .groupAdmin .group-delete {
 	color: #480a2a;
