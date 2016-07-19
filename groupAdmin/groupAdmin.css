@@ -176,6 +176,13 @@ orange : #F29200;
 .groupAdmin .list-block.list-users .list-item.selected {
 	background-color: #edebed;
 }
+	.groupAdmin .tab-members .list-block.list-users .user-name {
+		display: inline-block;
+		max-width: 9em;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 .groupAdmin .list-block.list-users .user-status {
 	width: 12px;
 	height: 12px;
