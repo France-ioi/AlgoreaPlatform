@@ -15,6 +15,7 @@
     "jquery.layout": "latest",
     "jschannel": "*",
     "pem-platform": "France-ioi/pem-platform",
-    "paper": "^0.9.25"
+    "paper": "^0.9.25",
+    "lodash": "^4.13.1"
   }
 }

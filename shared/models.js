@@ -98,6 +98,18 @@ var models = {
             label: "Type",
             nullInvalid: true
          },
+         sRole: {
+            type: 'enum',
+            values: {
+               owner: {label: "propriétaire"},
+               manager: {label: "administrateur"},
+               observer: {label: "observateur"},
+               member: {label: "membre"},
+            },
+            defaultValue: 'member',
+            label: "Rôle",
+            nullInvalid: true
+         },
          sStatusDate: {type: "jsdate", label: "date du dernier changement de statut"},
          idUserInviting: {type: "key", label: "Utilisateur invitant", refModel: "users", link: "userInviting"},
          sUserInvitingLogin: {type: "string", label: "login de l'invitant", readOnly: true},
@@ -427,7 +439,7 @@ var models = {
 
    users_items: {
       fields: {
-          idUser: {type: "key", label: "User"},
+          idUser: {type: "key", label: "User", refModel: "users", link: "user"},
           idItem: {type: "key", label: "Item", refModel: "items", link: "item", invLink: "user_item"},
           iScore: {type: "float", label: "", readOnly: true},
           iScoreComputed: {type: "float", label: "", readOnly: true},
@@ -445,6 +457,9 @@ var models = {
           iAutonomy: {type: "int", label: ""},
           sStartDate: {type: "jsdate", label: ""},
           sValidationDate: {type: "jsdate", label: "", readOnly: true},
+          sLastAnswerDate: {type: "jsdate", label: "", readOnly: true},
+          sThreadStartDate: {type: "jsdate", label: "", readOnly: true},
+          sLastHintDate: {type: "jsdate", label: "", readOnly: true},
           sFinishDate: {type: "jsdate", label: ""},
           sLastActivityDate: {type: "jsdate", label: ""},
           bRanked: {type: "boolean", label: ""},

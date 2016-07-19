@@ -1,0 +1,595 @@
+/*
+Colors:
+legend dark-grey: #707070;
+legend light-grey: #C6C6C6;
+background Light grey : #edebed;
+Declick dark purple: #480a2a;
+Light purple: #a88996;
+Yellow-green: #D1D718;
+Pink: #e11782;
+Red : #e42c20;
+green : #0FAA8B;
+orange : #F29200;
+*/
+.groupAdmin {
+	margin: 10px;
+	color: #480a2a;
+	font-family: "Roboto", sans-serif;
+	font-size: 16px;
+}
+@media screen and (max-width: 750px) {
+	#main > article {
+		min-width: auto;
+	}
+}
+.groupAdmin label input {
+	margin-right: 3px;
+}
+.groupAdmin .block-context {
+	overflow: auto;
+}
+
+/*
+	Tabs
+*/
+.groupAdmin .nav-tabs>li>a {
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	transition: all 250ms;
+}
+.groupAdmin .nav-tabs>li.active>a,
+.groupAdmin .nav-tabs>li.active>a:focus,
+.groupAdmin .nav-tabs>li.active>a:hover  {
+	color: #D1D718;
+}
+.groupAdmin-tabContent {
+	background-color: #edebed;
+	padding: 2em;
+	overflow: auto;
+}
+.groupAdmin-tabContent .row {
+	margin-bottom: 1em;
+}
+
+/*
+	Text elements
+*/
+.groupAdmin .groupAdmin-title {
+	font-size: 18px;
+	text-transform: uppercase;
+	font-weight: bold;
+	margin-bottom: 1em;
+}
+.groupAdmin .groupAdmin-title span {
+	display: block;
+	font-size: 16px;
+	font-weight: normal;
+	font-style: italic;
+	text-transform: none;
+}
+.groupAdmin .label-title {
+	font-weight: bold;
+	display: inline-block;
+	margin-bottom: 5px;
+	font-size: 18px;
+}
+.groupAdmin .label-title.label-list-item {
+	display: list-item;
+	list-style-position: inside;
+}
+.groupAdmin .label-description {
+	font-size: 14px;
+	font-style: italic;
+	color: #353535;
+	display: block;
+	font-weight: normal;
+	line-height: 1.2em;
+	text-shadow: 1px 1px 1px #fff;
+}
+
+/*
+	Forms
+*/
+.groupAdmin-home .form-inline {
+	position: relative;
+	padding-right: 45px;
+}
+.groupAdmin-home .form-inline input {
+	width: 100%;
+}
+.groupAdmin-home .form-inline .btn-icon {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.groupAdmin .form-control {
+	border-color: #a88996;
+	border-radius: 0;
+}
+.groupAdmin .form-control + .form-control {
+	margin-top: 1em;
+}
+.groupAdmin .checkboxSwitch input.switch {
+	display: none;
+}
+.groupAdmin .checkboxSwitch input.switch + label {
+	background-color: #480a2a;
+	width: 70px;
+	height: 30px;
+	border-radius: 15px;
+	position: relative;
+}
+.groupAdmin .checkboxSwitch input.switch + label span {
+	width: 20px;
+	height: 20px;
+	top: 5px;
+	left: 5px;
+	position: absolute;
+	border-radius: 50%;
+	background-color: #e42c20;
+	transition: all 250ms;
+}
+.groupAdmin .checkboxSwitch input.switch:checked + label span {
+	background-color: #0FAA8B;
+	left: 45px;
+}
+
+/*
+	Users lists
+*/
+.groupAdmin .list-block {
+	background-color: #fff;
+	border: 1px solid #a88996;
+	line-height: 1.5em;
+	list-style: none;
+	margin-bottom: 2em;
+	padding: 1em 0.5em;
+}
+.groupAdmin .list-block .list-item {
+	padding: 0 0.5em;
+	box-sizing: content-box;
+	clear: both;
+}
+.groupAdmin .list-block .list-item:hover {
+	background-color: #edebed;
+}
+.groupAdmin .list-block .list-item>* {
+	vertical-align: middle;
+}
+.groupAdmin .list-block .list-item .action {
+	float: right;
+}
+.groupAdmin .list-block.list-groups {
+	max-height: 20em;
+	overflow: auto;
+}
+.groupAdmin .list-block.list-groups a {
+	color: #480a2a;
+	cursor: pointer;
+	display: block;
+}
+.groupAdmin .list-block.list-groups a:hover {
+	text-decoration: none;
+}
+.groupAdmin .list-block.list-users .list-item.selected {
+	background-color: #edebed;
+}
+.groupAdmin .list-block.list-users .user-status {
+	width: 12px;
+	height: 12px;
+	display: inline-block;
+	margin-right: 5px;
+	border-radius: 50%;
+}
+.groupAdmin .list-block.list-users .user-status.connected {
+	background-color: #e42c20;
+	border: 1px solid #e42c20;
+}
+.groupAdmin .list-block.list-applicants {
+	max-height: 6em;
+	overflow: auto;
+}
+
+.groupAdmin .block-delete {
+	border-top: 1px solid #000;
+	padding-top: 1em;
+	text-align: right;
+}
+
+/* Buttons */
+.groupAdmin .btn.btn-primary {
+	background-color: #480a2a;
+	border-color: #480a2a;
+}
+.groupAdmin .btn-icon {
+	width: 30px;
+	height: 30px;
+	font-size: 28px;
+	line-height: 1;
+	padding: 0;
+	display: inline-block;
+	cursor: pointer;
+	border: none;
+	background-color: transparent;
+	vertical-align: middle;
+	transition: all 250ms;
+}
+.groupAdmin .btn-icon.btn-small {
+	width: 21px;
+	height: 21px;
+	font-size: 16px;
+}
+.groupAdmin .btn-icon.btn-wide {
+	width: 5em;
+}
+.groupAdmin .btn-icon.btn-small.btn-view-more {
+	background: url(images/apercu.png) center center no-repeat;
+}
+.groupAdmin .btn-icon.btn-small.btn-view-more:active,
+.groupAdmin .btn-icon.btn-small.btn-view-more:focus,
+.groupAdmin .btn-icon.btn-small.btn-view-more:hover {
+	background-image: url(images/apercu-clic.png);
+}
+.groupAdmin .btn-icon.btn-small.btn-preview {
+	background: url(images/petit-apercu.png) left center no-repeat;
+}
+.groupAdmin .btn-icon.btn-small.btn-preview:active,
+.groupAdmin .btn-icon.btn-small.btn-preview:focus,
+.groupAdmin .btn-icon.btn-small.btn-preview:hover {
+	background-image: url(images/petit-apercu-clic.png);
+}
+.groupAdmin .btn-icon.btn-small.btn-delete {
+	background: url(images/petit-supprimer.png) center center no-repeat;
+}
+.groupAdmin .btn-icon.btn-small.btn-delete:active,
+.groupAdmin .btn-icon.btn-small.btn-delete:focus,
+.groupAdmin .btn-icon.btn-small.btn-delete:hover {
+	background-image: url(images/petit-supprimer-clic.png);
+}
+.groupAdmin .btn-icon.btn-add {
+	background: url(images/ajouter.png) center no-repeat;
+}
+.groupAdmin .btn-icon.btn-add:active,
+.groupAdmin .btn-icon.btn-add:focus,
+.groupAdmin .btn-icon.btn-add:hover {
+	background-image: url(images/ajouter.png);
+}
+.groupAdmin .btn-icon.btn-zoom-in {
+	background: url(images/vue-detaillee.png) center no-repeat;
+}
+.groupAdmin .btn-icon.btn-zoom-in:active,
+.groupAdmin .btn-icon.btn-zoom-in:focus,
+.groupAdmin .btn-icon.btn-zoom-in:hover {
+	background-image: url(images/vue-detaillee-clic.png);
+}
+.groupAdmin .btn-icon.btn-zoom-out {
+	background: url(images/vue-globale.png) center no-repeat;
+}
+.groupAdmin .btn-icon.btn-zoom-out:active,
+.groupAdmin .btn-icon.btn-zoom-out:focus,
+.groupAdmin .btn-icon.btn-zoom-out:hover {
+	background-image: url(images/vue-globale-clic.png);
+}
+.groupAdmin .btn-icon.btn-modal {
+	background: url(images/code.png) center no-repeat;
+}
+.groupAdmin .btn-modal:active,
+.groupAdmin .btn-modal:focus,
+.groupAdmin .btn-modal:hover {
+	background-image: url(images/code-clic.png);
+}
+.groupAdmin .btn-icon .btn-label {
+	font: 0/0 a;
+	color: transparent;
+	text-shadow: none;
+}
+.groupAdmin .group-delete {
+	color: #480a2a;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 30px;
+	padding-right: 40px;
+	cursor: pointer;
+	background: url(images/grand-supprimer-clic.png) center right no-repeat;
+	transition: all 500ms;
+}
+.groupAdmin .group-delete:hover {
+	text-decoration: none;
+	background-image: url(images/grand-supprimer.png);
+}
+
+/*
+	Home
+*/
+.groupAdmin-home {
+	background-color: #edebed;
+	padding: 2em;
+}
+@media sreen and (min-width: 750px) {
+	.groupAdmin-homeContent {
+		width: 50%;
+		margin: 0 auto;
+	}
+}
+
+/*
+	Tab: Progression
+*/
+.groupAdmin .validated {
+	background-color: #0faa8b !important;
+}
+.groupAdmin .failed {
+	background-color: #e42c20 !important;
+}
+.groupAdmin .validated_partial {
+	background-color: #F29200 !important;
+}
+.groupAdmin .read {
+	background-color: #707070 !important;
+}
+.groupAdmin .unread {
+	background-color: #C6C6C6 !important;
+}
+
+.groupAdmin .row_selected {
+	background-color: #707070 !important;	
+}
+
+/* Individual view */
+	/* Activities */
+.groupAdmin .table-activity {
+	background-color: #fff;
+	border: 1px solid #480a2a;
+}
+.groupAdmin .table-activity th,
+.groupAdmin .table-activity td {
+	border: 1px solid #480a2a;
+}
+.groupAdmin .table-activity th {
+	font-weight: normal;
+	text-transform: uppercase;
+}
+.groupAdmin .table-activity .activity-type {
+	position: relative;
+}
+.groupAdmin .table-activity .activity-type .btn-modal {
+	width: 21px;
+	height: 15px;
+	display: block;
+	position: absolute;
+	cursor: pointer;
+	right: 3px;
+	bottom: 3px;
+	opacity: 0;
+	transition: all 250ms;
+}
+.groupAdmin .table-activity .activity-type:hover .btn-modal {
+	opacity: 1;
+}
+
+/* Collective view */
+.groupAdmin .table-progress {
+	border-collapse: collapse;
+	margin-top: 150px;
+}
+.groupAdmin .table-progress td,
+.groupAdmin .table-progress th {
+	border: 1px solid #a88996;
+	padding: 3px;
+	max-width: 11em;
+	background-color: #fff;
+	background-clip: padding-box;
+}
+.groupAdmin .table-progress td.fixed-width,
+.groupAdmin .table-progress th.fixed-width {
+	max-width: 8em;
+	position: relative;
+}
+.groupAdmin .table-progress .description {
+	height: 74px; /* >div height + td top & bottom padding + border-width top and bottom */
+}
+.groupAdmin .table-progress .description>div {
+	font-size: 14px;
+	line-height: 1.2em;
+	height: 67px;
+	overflow: hidden;
+}
+.groupAdmin .table-progress .description>div:hover {
+	overflow: visible;
+	background-color: #fff;
+	height: auto;
+	border: 1px solid #480a2a;
+	padding: 5px;
+	opacity: 0.9;
+	z-index: 1;
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
+}
+.groupAdmin .table-progress th {
+	text-transform: uppercase;
+}
+.groupAdmin .table-progress td.status {
+	padding: 0;
+}
+
+.groupAdmin .table-progress.progress-global th.name {
+	white-space: nowrap;
+	width: 60px;
+	border: none;
+	background-color: transparent;
+}
+
+	/* Collective view: Global */
+.groupAdmin .table-progress.progress-global th.name div {
+	transform: rotate(-75deg) translate(-11px, 28px);
+	width: 30px;
+}
+.groupAdmin .table-progress.progress-global th.name div span {
+	border-bottom: 1px solid #a88996;
+	padding: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: inline-block;
+	width: 200px;
+	text-align: left;
+	line-height: 2.5em;
+}
+.groupAdmin .table-progress.progress-global td.status {
+	position: relative;
+	width: 60px;
+	padding: 3px;
+	vertical-align: bottom;
+}
+.groupAdmin .table-progress.progress-global td.status button {
+	opacity: 0;
+	transition: all 250ms;
+}
+.groupAdmin .table-progress.progress-global td.status:hover button {
+	opacity: 1;
+}
+.groupAdmin .table-progress.progress-global td.status .list-progress-details {
+	position: absolute;
+	display: none;
+	border: 1px solid #0FAA8B;
+	background-color: #fff;
+	list-style: none;
+	padding: 10px;
+	top: -20px;
+	right: -25px;
+	left: -25px;
+	font-size: 10px;
+	margin: 0;
+	line-height: 1.4;
+	z-index: 1;
+}
+/* TODO: change :hover to .visible */
+/*.groupAdmin .table-progress.progress-global td.status:hover .list-progress-details {
+	display: block;
+}*/
+.groupAdmin .table-progress.progress-global .list-progress-details li {
+	position: relative;
+	padding-left: 20px;
+	font-size: 12px;
+}
+
+	/* Collective view: Detailed */
+.groupAdmin .table-progress.progress-detail th.name {
+	word-break: break-word
+}
+.groupAdmin .table-progress.progress-detail .list-progress-details {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	display: table;
+}
+.groupAdmin .table-progress.progress-detail .list-progress-details .break {
+	display: table-row;
+}
+.groupAdmin .table-progress.progress-detail .list-progress-details li {
+	background-color: #eee;
+	display: table-cell;
+	width: 60px;
+	border: 1px solid #fff;
+	font-size: 10px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.groupAdmin .list-progress-details li::before {
+	margin-right: 5px;
+	display: inline-block;
+	width: 15px;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.groupAdmin .list-progress-details .score::before {
+	content: "S";
+}
+.groupAdmin .list-progress-details .date::before {
+	content: url(images/picto-calendrier.png);
+}
+.groupAdmin .list-progress-details .time::before {
+	content: url(images/picto-chronometre.png);
+}
+.groupAdmin .list-progress-details .submissions::before {
+	content: " ";
+}
+.groupAdmin .list-progress-details .questions::before {
+	content: url(images/picto-indice.png);
+}
+.groupAdmin .list-progress-details .help::before {
+	content: url(images/picto-aide.png);
+}
+.groupAdmin .legend {
+	list-style: none;
+	-webkit-column-count: 2;
+	   -moz-column-count: 2;
+	        column-count: 2;
+	-webkit-column-gap: 1em;
+	   -moz-column-gap: 1em;
+	        column-gap: 1em;
+}
+.groupAdmin .legend li {
+	break-inside: avoid;}
+.groupAdmin .legend-color {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+.groupAdmin .legend-color.green { background-color: #0FAA8B;}
+.groupAdmin .legend-color.red { background-color: #e42c20;}
+.groupAdmin .legend-color.orange { background-color: #F29200;}
+.groupAdmin .legend-color.dark-grey { background-color: #707070;}
+.groupAdmin .legend-color.light-grey { background-color: #C6C6C6;}
+.groupAdmin .view-switcher .btn-icon {
+	vertical-align: bottom;
+}
+.groupAdmin .block-context {
+	padding-left: 20px;
+}
+
+/*
+	Tab: Administration
+*/
+.groupAdmin .table-administrators {
+	max-height: 200px;
+	overflow: auto;
+	border: 1px solid #a88996;
+	margin-bottom: 2em;
+	background-color: #fff;
+	width: 100%;
+}
+.groupAdmin .table-administrators th,
+.groupAdmin .table-administrators td {
+	padding: 5px 10px;
+	text-align: center;
+	vertical-align: middle;
+}
+.groupAdmin .table-administrators th:first-child,
+.groupAdmin .table-administrators td:first-child {
+	text-align: left;
+}
+.groupAdmin .admin-form {
+	position: relative;
+	padding-right: 45px;
+}
+.groupAdmin .admin-form input {
+	width: 100%;
+}
+.groupAdmin .admin-form .btn-icon {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.groupAdmin .chapter_string {
+	font-weight: bold;
+}

@@ -209,6 +209,10 @@ angular.module('algorea')
          if ($scope.newThread) {
             ModelsManager.insertRecord('threads', $scope.thread);
             $scope.newThread = false;
+            var item = ModelsManager.getRecord('items', $scope.thread.idItem);
+            var userItem = itemService.getUserItem(item);
+            userItem.sThreadStartDate = new Date();
+            ModelsManager.updated('users_items', userItem.IDs);
             $scope.newMessage.sSubmissionDate = new Date();
             ModelsManager.insertRecord('messages', $scope.newMessage);
             $scope.createEmptyNewMessage();
@@ -221,6 +225,10 @@ angular.module('algorea')
       } else {
          if ($state.current.name == 'newThread') {
             ModelsManager.insertRecord('threads', $scope.thread);
+            var item = ModelsManager.getRecord('items', $scope.thread.idItem);
+            var userItem = itemService.getUserItem(item);
+            userItem.sThreadStartDate = new Date();
+            ModelsManager.updated('users_items', userItem.IDs);
             $scope.newMessage.sSubmissionDate = new Date();
             ModelsManager.insertRecord('messages', $scope.newMessage);
             $state.go('thread', {idThread: $scope.thread.ID});
