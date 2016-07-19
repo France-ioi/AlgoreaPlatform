@@ -309,33 +309,38 @@
 			</uib-tab>
 
 			<uib-tab heading="Administration">
-				Administrateurs du groupe {{group.sName}} :
+				<div class="groupAdmin-tabContent">
+					<div class="row">
+						<div class="col-sm-6 col-lg-4">
+							<div class="groupAdmin-title">Administrateurs du groupe «{{group.sName}}» :</div>
 
-				<table class="table table-bordered table-hover">
-					<thead>
-						<tr>
-							<th>Utilisateur</th>
-							<th>Administrateur</th>
-							<th>Observateur</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="parent in group.parents">
-							<td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
-							<td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'manager');"></td>
-							<td><input type="radio" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'observer');"></td>
-							<td><button ng-click="removeAdmin(parent);">poubelle</button></td>
-						</tr>
-					</tbody>
-				</table>
+							<table class="table-administrators">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Administrateur</th>
+										<th>Observateur</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="parent in group.parents">
+										<td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
+										<td><input type="checkbox" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'manager');"></td>
+										<td><input type="checkbox" ng-model="parent.sRole" ng-change="changeAdminRole(parent, 'observer');"></td>
+										<td><button class="btn-icon btn-delete btn-small" title="supprimer"><span class="btn-label">supprimer</span></button></td>
+									</tr>
+								</tbody>
+							</table>
 
-				<div class="form-group">
-					<label for="sLogin">Logins à ajouter (séparer par des espaces) :</label>
-					<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins">
+							<div class="form-inline admin-form">
+								<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" placeholder="Logins à ajouter (séparer par des espaces) :">
+								<button  ng-click="inviteAdminLogins();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
+							</div>
+							<span ng-bind="invitationError"></span>
+						</div>
+					</div>
 				</div>
-				<button class="btn btn-primary" ng-click="inviteAdminLogins();">ajouter logins</button>
-				<span ng-bind="invitationError"></span>
 			</uib-tab>
 		</uib-tabset>
 

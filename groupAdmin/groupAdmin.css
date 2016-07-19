@@ -545,3 +545,37 @@ orange : #F29200;
 .groupAdmin .block-context {
 	padding-left: 20px;
 }
+
+/*
+	Tab: Administration
+*/
+.groupAdmin .table-administrators {
+	max-height: 200px;
+	overflow: auto;
+	border: 1px solid #a88996;
+	margin-bottom: 2em;
+	background-color: #fff;
+	width: 100%;
+}
+.groupAdmin .table-administrators th,
+.groupAdmin .table-administrators td {
+	padding: 5px 10px;
+	text-align: center;
+	vertical-align: middle;
+}
+.groupAdmin .table-administrators th:first-child,
+.groupAdmin .table-administrators td:first-child {
+	text-align: left;
+}
+.groupAdmin .admin-form {
+	position: relative;
+	padding-right: 45px;
+}
+.groupAdmin .admin-form input {
+	width: 100%;
+}
+.groupAdmin .admin-form .btn-icon {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
