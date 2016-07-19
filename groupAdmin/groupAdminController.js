@@ -108,6 +108,25 @@ angular.module('algorea')
        });
    };
 
+   $scope.getClass = function(userItem) {
+      console.error(userItem);
+      if (!userItem || !userItem.sLastActivityDate) {
+         return 'unread';
+      }
+      if (userItem.bValidated) {
+         if (userItem.iScore != 100 && userItem.item.sType == 'Task') {
+            return 'validated_partial';
+         }
+         return 'validated';
+      } else {
+         if (userItem.nbSubmissionsAttempts && userItem.item.sType == 'Task') {
+            return 'failed';
+         }
+         return 'read';
+      }
+
+   }
+
    $scope.numberOfEvents = 10;
 
    var getTypeString = function(type, userItem) {

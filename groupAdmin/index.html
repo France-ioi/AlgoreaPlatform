@@ -1,22 +1,31 @@
-<div ng-if="loading">
-	Chargement...
-</div>
-<div ng-show="error">{{error}}</div>
-<div ng-if="!loading && !error">
+<div class="groupAdmin groupAdmin-home">
+	<div class="groupAdmin-homeContent">
+		<p style="font-weight: bold; color: red;">ok</p>
+		<div ng-if="loading">Chargement...</div>
+		<div ng-show="error">{{error}}</div>
+		<div ng-if="!loading && !error">
 
-	Bonjour blablabla
+			<p>Bonjour blablabla</p>
+			<p>Dans cet espace d'animation, vous pouvez constituer des groupes puis les administrer en leur assignant un parcours à réaliser. Vous avez également accès à un forum pour interagir avec l'équipe Declick.</p>
 
-	<div ng-hide="true">
-		Vous n'avez aucun groupe
+			<div ng-hide="true">
+				<p>Vous n'avez aucun groupe</p>
+			</div>
+			<div ng-show="true">
+				<p class="groupAdmin-title">Consulter un groupe :</p>
+				<ul class="list list-block list-groups">
+					<li class="list-item"><a>Ceci est un groupe</a></li>
+					<li class="list-item"><a>Ceci est un autre groupe</a></li>
+					<li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="goToGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+				</ul>
+			</div>
+			<div>
+			<p class="groupAdmin-title">Créer un nouveau groupe :</p>
+			<div class="form-inline">
+				<input type="text" ng-model="group.sName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
+				<button ng-click="newGroup();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
+			</div>
+			</div>
+		</div>
 	</div>
-	<div ng-show="true">
-		Liste des groupes :
-		<ul>
-			<li><a>Ceci est un groupe</a></li>
-			<li><a>Ceci est un autre groupe</a></li>
-			<li ng-repeat="group_group in myGroupAdmin.children"><a ng-click="goToGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
-		</ul>
-	</div>
-
-	<button ng-click="newGroup();">Ajouter un groupe</button>
 </div>
