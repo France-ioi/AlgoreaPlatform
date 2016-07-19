@@ -28,7 +28,10 @@ orange : #F29200;
 .groupAdmin .block-context {
 	overflow: auto;
 }
-/* Tabs */
+
+/*
+	Tabs
+*/
 .groupAdmin .nav-tabs>li>a {
 	font-size: 14px;
 	font-weight: bold;
@@ -49,7 +52,10 @@ orange : #F29200;
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
 }
-/* Text elements */
+
+/*
+	Text elements
+*/
 .groupAdmin .groupAdmin-title {
 	font-size: 18px;
 	text-transform: uppercase;
@@ -83,7 +89,21 @@ orange : #F29200;
 	text-shadow: 1px 1px 1px #fff;
 }
 
-/* Forms */
+/*
+	Forms
+*/
+.groupAdmin-home .form-inline {
+	position: relative;
+	padding-right: 45px;
+}
+.groupAdmin-home .form-inline input {
+	width: 100%;
+}
+.groupAdmin-home .form-inline .btn-icon {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
 .groupAdmin .form-control {
 	border-color: #a88996;
 	border-radius: 0;
@@ -281,7 +301,9 @@ orange : #F29200;
 	background-image: url(images/grand-supprimer.png);
 }
 
-/* Group admin home */
+/*
+	Home
+*/
 .groupAdmin-home {
 	background-color: #edebed;
 	padding: 2em;
@@ -292,19 +314,10 @@ orange : #F29200;
 		margin: 0 auto;
 	}
 }
-.groupAdmin-homeContent .form-inline {
-	position: relative;
-	padding-right: 45px;
-}
-.groupAdmin-homeContent .form-inline input {
-	width: 100%;
-}
-.groupAdmin-homeContent .form-inline .btn-icon {
-	position: absolute;
-	top: 0;
-	right: 0;
-}
 
+/*
+	Tab: Progression
+*/
 .groupAdmin .attempt {
 	background-color: #e42c20;
 }
@@ -315,7 +328,8 @@ orange : #F29200;
 	background-color: #0FAA8B;
 }
 
-/* Activities */
+/* Individual view */
+	/* Activities */
 .groupAdmin .table-activity {
 	background-color: #fff;
 	border: 1px solid #480a2a;
@@ -346,11 +360,7 @@ orange : #F29200;
 	opacity: 1;
 }
 
-
-/*
-	Group admin: Progression
-*/
-
+/* Collective view */
 .groupAdmin .table-progress {
 	border-collapse: collapse;
 }
@@ -403,7 +413,8 @@ orange : #F29200;
 	border: none;
 	background-color: transparent;
 }
-/* Global view */
+
+	/* Collective view: Global */
 .groupAdmin .table-progress.progress-global th.name div {
 	transform: rotate(-75deg) translate(-71px, 54px);
 	width: 30px;
@@ -454,7 +465,7 @@ orange : #F29200;
 	font-size: 12px;
 }
 
-/* Detailed view */
+	/* Collective view: Detailed */
 .groupAdmin .table-progress.progress-detail th.name {
 	word-break: break-word
 }
