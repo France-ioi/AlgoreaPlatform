@@ -109,7 +109,6 @@ angular.module('algorea')
    };
 
    $scope.getClass = function(userItem) {
-      console.error(userItem);
       if (!userItem || !userItem.sLastActivityDate) {
          return 'unread';
       }
@@ -162,7 +161,6 @@ angular.module('algorea')
    };
 
    $scope.updateEvents = function() {
-      console.error('updateEvents');
       $scope.events = [];
       $scope.oldestEventDate = new Date("2012-01-15");
       var usersItems = ModelsManager.curData.users_items;
@@ -461,6 +459,7 @@ angular.module('algorea')
       var user = group.userSelf[0];
       if (!user) return;
       $scope.usersSelected[user.ID] = !$scope.usersSelected[user.ID];
+      $scope.updateEvents();
    }
 
    function fillItemsListWithSonsRec(itemsList, itemsListRev, item) {
@@ -522,7 +521,7 @@ angular.module('algorea')
       });
    }
 
-   $scope.levelSelected = function(itemId) {
+   $scope.levelSelected = function() {
       $scope.itemSelected($scope.formValues.selectedLevel);
       $scope.dropdownSelections = [];
       $scope.dropdownSelectionsIDs = [];
@@ -540,8 +539,10 @@ angular.module('algorea')
       angular.forEach(customRootItem.children, function(child) {
          $scope.levels.push(child.child);
       });
-      $scope.formValues.selectedLevel = $scope.levels[0];
-      $scope.levelSelected($scope.levels[0].ID);
+      if (!$scope.formValues.selectedLevel) {
+         $scope.formValues.selectedLevel = $scope.levels[0];
+         $scope.levelSelected($scope.levels[0].ID);
+      }
    };
 
    $scope.stopSync = function() {
