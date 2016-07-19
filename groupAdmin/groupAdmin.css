@@ -363,6 +363,7 @@ orange : #F29200;
 /* Collective view */
 .groupAdmin .table-progress {
 	border-collapse: collapse;
+	margin-top: 150px;
 }
 .groupAdmin .table-progress td,
 .groupAdmin .table-progress th {
@@ -407,7 +408,6 @@ orange : #F29200;
 	background-color: #C6C6C6;
 }
 .groupAdmin .table-progress.progress-global th.name {
-	height: 200px;
 	white-space: nowrap;
 	width: 60px;
 	border: none;
@@ -416,7 +416,7 @@ orange : #F29200;
 
 	/* Collective view: Global */
 .groupAdmin .table-progress.progress-global th.name div {
-	transform: rotate(-75deg) translate(-71px, 54px);
+	transform: rotate(-75deg) translate(-11px, 28px);
 	width: 30px;
 }
 .groupAdmin .table-progress.progress-global th.name div span {
@@ -427,10 +427,12 @@ orange : #F29200;
 	display: inline-block;
 	width: 200px;
 	text-align: left;
+	line-height: 2.5em;
 }
 .groupAdmin .table-progress.progress-global td.status {
 	position: relative;
 	width: 60px;
+	padding: 3px;
 	vertical-align: bottom;
 }
 .groupAdmin .table-progress.progress-global td.status button {
