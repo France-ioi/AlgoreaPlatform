@@ -233,7 +233,7 @@ orange : #F29200;
 	background-image: url(images/apercu-clic.png);
 }
 .groupAdmin .btn-icon.btn-small.btn-preview {
-	background: url(images/petit-apercu.png) center center no-repeat;
+	background: url(images/petit-apercu.png) left center no-repeat;
 }
 .groupAdmin .btn-icon.btn-small.btn-preview:active,
 .groupAdmin .btn-icon.btn-small.btn-preview:focus,
