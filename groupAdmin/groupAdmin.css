@@ -318,14 +318,24 @@ orange : #F29200;
 /*
 	Tab: Progression
 */
-.groupAdmin .attempt {
-	background-color: #e42c20;
+.groupAdmin .validated {
+	background-color: #0faa8b !important;
 }
-.groupAdmin .question {
-	background-color: #a88996;
+.groupAdmin .failed {
+	background-color: #e42c20 !important;
 }
-.groupAdmin .validation {
-	background-color: #0FAA8B;
+.groupAdmin .validated_partial {
+	background-color: #F29200 !important;
+}
+.groupAdmin .read {
+	background-color: #707070 !important;
+}
+.groupAdmin .unread {
+	background-color: #C6C6C6 !important;
+}
+
+.groupAdmin .row_selected {
+	background-color: #707070 !important;	
 }
 
 /* Individual view */
@@ -405,8 +415,8 @@ orange : #F29200;
 }
 .groupAdmin .table-progress td.status {
 	padding: 0;
-	background-color: #C6C6C6;
 }
+
 .groupAdmin .table-progress.progress-global th.name {
 	white-space: nowrap;
 	width: 60px;
@@ -578,4 +588,8 @@ orange : #F29200;
 	position: absolute;
 	top: 0;
 	right: 0;
+}
+
+.groupAdmin .chapter_string {
+	font-weight: bold;
 }
