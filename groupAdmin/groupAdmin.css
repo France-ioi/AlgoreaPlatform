@@ -308,7 +308,7 @@ orange : #F29200;
 	background-color: #edebed;
 	padding: 2em;
 }
-@media sreen and (min-width: 750px) {
+@media screen and (min-width: 750px) {
 	.groupAdmin-homeContent {
 		width: 50%;
 		margin: 0 auto;
