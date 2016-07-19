@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('franceIOILogin', [])
-     .service('loginService', ['$http', '$rootScope', function ($http, $rootScope) {
+     .service('loginService', ['$http', '$rootScope', '$sce', function ($http, $rootScope, $sce) {
         var state = 'not-ready';
         var tempUser = false;
         var userID = null;
@@ -138,6 +138,7 @@ angular.module('franceIOILogin', [])
            });
         }
         return {
+           loginUrl: $sce.trustAsResourceUrl('https://oldloginfranceioi.eroux.fr/login.html'),
            getState: function() {
               return state;
            },
