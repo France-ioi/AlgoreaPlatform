@@ -38,6 +38,11 @@ $stmt = $db->prepare($query);
 // }
 
 require_once("../shared/listeners.php");
+if (file_exists( __DIR__."/../shared/debug.php")) {
+   include_once __DIR__."/../shared/debug.php"; // not required
+} else {
+   function syncDebug($type, $b_or_e, $subtype='') {}
+}
 
 function getRandomPass() {
    $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -74,7 +79,7 @@ function removeAdmin($idGroup, $idGroupAdmin) {
       echo json_encode(array('success' => false, 'error' => 'missing idGroupAdmin argument.'));
       exit();
    }
-   $query = 'delete from groups_groups where idGroupChild = :idGroup and idGroupParent = :idGroupUser;';
+   $query = 'delete from groups_groups where idGroupChild = :idGroup and idGroupParent = :idGroupAdmin;';
    $stmt = $db->prepare($query);
    $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup]);
    Listeners::groupsGroupsAfter($db);
@@ -88,13 +93,13 @@ function addAdmins($idGroup, $groupArray) {
       exit();
    }
    $nextIChildOrder = 0;
-   $query = 'select max(iChildOrder) from groups_groups where idGroupChild = :idGroup and idGroupParent = :idGroupAdmin;';
-   $stmt = $db->prepare($query);
-   $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup]);
-   $nextIChildOrder = intval($stmt->fetchColumn()+1);
-   $query = 'insert into groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate, idUserInviting) values (:idGroupAdmin, :idGroup, :nextIChildOrder, \'direct\', \'observer\', NOW(), :myUserId);';
-   $stmt = $db->prepare($query);
+   $queryChildOrder = 'select max(iChildOrder) from groups_groups where idGroupChild = :idGroup and idGroupParent = :idGroupAdmin;';
+   $queryInsert = 'insert ignore into groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate, idUserInviting) values (:idGroupAdmin, :idGroup, :nextIChildOrder, \'direct\', \'observer\', NOW(), :myUserId);';
    foreach ($groupArray as $idGroupAdmin) {
+      $stmt = $db->prepare($queryChildOrder);
+      $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup]);
+      $nextIChildOrder = intval($stmt->fetchColumn()+1);
+      $stmt = $db->prepare($queryInsert);
       $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup, 'nextIChildOrder' => $nextIChildOrder, 'myUserId' => $_SESSION['login']['ID']]);   
    }
    Listeners::groupsGroupsAfter($db);
@@ -124,7 +129,7 @@ if ($request['action'] == 'refreshCode') {
 } elseif ($request['action'] == 'removeAdmin') {
    removeAdmin($idGroup, $request['idGroupAdmin']);
 } elseif ($request['action'] == 'addAdmins') {
-   addAdmin($idGroup, $request['aAdminGroups']);
+   addAdmins($idGroup, $request['aAdminGroups']);
 } elseif ($request['action'] == 'changeAdminRole') {
    changeAdminRole($idGroup, $request['idGroupAdmin'], $request['sRole']);
 } else {

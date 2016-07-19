@@ -40,7 +40,7 @@
 
          <table class="table table-bordered table-hover">
             <tbody>
-               <tr ng-repeat="child in group.children | directOrInvitation">
+               <tr ng-repeat="child in group.children | directOrInvitation | userSort">
                   <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
                   <td>oeil</td>
                   <td ng-clic="removeUser(child);">poubelle</td>
@@ -62,7 +62,7 @@
 		      <div ng-if="showRequestTable()">
 		         <table class="table table-bordered table-hover">
 		            <tbody>
-		               <tr ng-repeat="child in group.children | byRequest" class="{success: invitation.success}">
+		               <tr ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
 		                  <td>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</td>
 		                  <td ng-click="refuseRequest(child);">refuse</td>
 		                  <td ng-click="acceptRequest(child);">accept</td>
@@ -99,11 +99,11 @@
 	            </tr>
 	         </thead>
 	         <tbody>
-	            <tr ng-repeat="(ID, userItem) in allUserItems | selectedUsersAndItems: itemsListRev:usersSelected | orderBy : '-sLastActivityDate' | limitTo:10">
-	               <td>{{userItem.user.sFirstName}} {{userItem.user.sLastName}} ({{userItem.user.sLogin}})</td>
-	               <td>{{userItem.sLastActivityDate | date}}</td>
-	               <td>3e tentative de résolution</td>
-	               <td>{{userItem.item.strings[0].sTitle}}</td>
+	            <tr ng-repeat="event in events">
+	               <td>{{event.userStr}}</td>
+	               <td>{{event.date | date}}</td>
+	               <td>{{event.eventStr}}</td>
+	               <td>{{event.itemStr}}</td>
 	            </tr>
 	         </tbody>
 	      </table>
@@ -127,7 +127,7 @@
 	            <tr>
 	               <th>Nom</th>
 	               <th>Description</th>
-	               <th ng-repeat="child in group.children | confirmed">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
+	               <th ng-repeat="child in group.children | confirmed | userSort">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</th>
 	            </tr>
 	         </thead>
 	         <tbody>
@@ -161,7 +161,7 @@
             </tr>
          </thead>
          <tbody>
-            <tr ng-repeat="parent in group.parents">
+            <tr ng-repeat="parent in group.parents | userSort: true:true">
                <td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{parent.parent.userOwned[0].sLogin}})</td>
                <td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');"></td>
                <td><input type="radio" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');"></td>

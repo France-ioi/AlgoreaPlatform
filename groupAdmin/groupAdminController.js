@@ -80,6 +80,17 @@ angular.module('algorea').
     };
   });
 
+angular.module('algorea').
+  filter('userSort', function() {
+    return function(groups_groups, parent, owned) {
+      return _.sortBy(groups_groups, function(g_g) {
+         var group = parent ? g_g.parent : g_g.child;
+         var user = owned ? group.userOwned[0] : group.userSelf[0];
+         return user.sFirstName;
+      });
+    };
+  });
+
 // one group
 
 angular.module('algorea')
@@ -97,7 +108,68 @@ angular.module('algorea')
        });
    };
 
+   $scope.numberOfEvents = 10;
 
+   var getTypeString = function(type, userItem) {
+      if (type == 'hint') {
+         return userItem.nbHintsCached+'e. demande d\'indice';
+      }
+      if (type == 'answer') {
+         return userItem.nbSubmissionsAttempts+'e. soumission d\'une réponse';
+      }
+      if (type == 'validation') {
+         return 'validation';
+      }
+      if (type == 'newThread') {
+         return 'demande d\'aide sur le forum';
+      }
+   };
+
+   var insertEvent = function(userItem, type, date) {
+      var eventStr = getTypeString(type, userItem);
+      var userStr = userItem.user.sFirstName+' '+userItem.user.sLastName+' ('+userItem.user.sLogin+')';
+      var event = {
+         'date': date,
+         'userStr': userStr,
+         'eventStr': eventStr,
+         'itemStr': userItem.item.strings[0].sTitle
+      };
+      // insertion in a sorted array:
+      $scope.events.splice(_.sortedIndexBy($scope.events, event, function(event) {return event.date;}), 0, event);
+      if ($scope.events.length >= $scope.numberOfEvents) {
+         $scope.events.pop();
+         $scope.oldestEventDate = $scope.events[$scope.events.length-1].date;   
+      }
+   };
+
+   $scope.updateEvents = function() {
+      console.error('updateEvents');
+      $scope.events = [];
+      $scope.oldestEventDate = new Date("2012-01-15");
+      var usersItems = ModelsManager.curData.users_items;
+      angular.forEach(usersItems, function(userItem) {
+         if (!$scope.usersSelected[userItem.idUser] || !$scope.itemsListRev[userItem.idItem]) {
+            return;
+         }
+         if (userItem.sValidationDate > $scope.oldestEventDate) {
+            insertEvent(userItem, 'validation', userItem.sValidationDate);
+         }
+         if (userItem.sLastAnswerDate > $scope.oldestEventDate && userItem.sLastAnswerDate != userItem.sValidationDate) {
+            insertEvent(userItem, 'answer', userItem.sLastAnswerDate);
+         }
+         if (userItem.item.sType == 'task' && userItem.sLastHintDate > $scope.oldestEventDate) {
+            insertEvent(userItem, 'hint', userItem.sLastHintDate);
+         }
+         if (userItem.sThreadStartDate > $scope.oldestEventDate) {
+            insertEvent(userItem, 'newThread', userItem.sThreadStartDate);  
+         }
+      });
+   };
+
+   var needToUpdateAtEndOfSync = false;
+   ModelsManager.addListener('users_items', 'deleted', 'groupAdminDeleted', function() {needToUpdateAtEndOfSync = true;});
+   ModelsManager.addListener('users_items', 'inserted', 'groupAdminInserted', function() {needToUpdateAtEndOfSync = true;});
+   ModelsManager.addListener('users_items', 'updated', 'groupAdminUpdated', function() {needToUpdateAtEndOfSync = true;});
 
    $scope.invitationError = null;
    $scope.newInvitationOpened = false;
@@ -198,9 +270,9 @@ angular.module('algorea')
       if (!$scope.formValues.adminLogins) {
          return;
       }
-      var logins = $scope.formValues.currentLogins.split(' ');
+      var logins = $scope.formValues.adminLogins.split(' ');
       $scope.adminInvitationError = '';
-      $http.post('/admin/invitations.php', {action: 'inviteAdminGroupFromLogins', logins: logins, idGroup: $scope.group.ID}, {responseType: 'json'}).success(function(postRes) {
+      $http.post('/admin/invitations.php', {action: 'getAdminGroupsFromLogins', logins: logins, idGroup: $scope.group.ID}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin invitation handler: "+postRes.error);
          } else {
@@ -328,7 +400,6 @@ angular.module('algorea')
    $scope.startSync = function(groupId, itemId, callback) {
       SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minServerVersion: 0};
       // yeah...
-      console.error(SyncQueue.requestSets);
       SyncQueue.addSyncEndListeners('groupAdminController', function() {
          $scope.loading = false;
          SyncQueue.removeSyncEndListeners('groupAdminController');
@@ -353,7 +424,6 @@ angular.module('algorea')
          if (!user) return;
          $scope.usersSelected[user.ID] = true;
       });
-      console.error($scope.usersSelected);
    };
 
    $scope.getUserItem = function(group_group, item) {
@@ -368,12 +438,10 @@ angular.module('algorea')
    }
 
    $scope.toggleUserRowSelection = function(group) {
-      console.error('pouet!');
       $scope.groupsSelected[group.ID] = !$scope.groupsSelected[group.ID];
       var user = group.userSelf[0];
       if (!user) return;
       $scope.usersSelected[user.ID] = !$scope.usersSelected[user.ID];
-      console.error($scope.usersSelected);
    }
 
    function fillItemsListWithSonsRec(itemsList, itemsListRev, item) {
@@ -417,10 +485,22 @@ angular.module('algorea')
    }
 
    $scope.itemSelected = function(item) {
+      if ($scope.rootItem == item) return;
       $scope.rootItem = item;
       $scope.itemsList = [];
       $scope.itemsListRev = {};
       fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
+      $scope.startSync($scope.groupId, item.ID, function() {
+         $scope.initItems();
+         $scope.initGroup();
+         SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
+            if (needToUpdateAtEndOfSync) {
+               $scope.updateEvents();
+               needToUpdateAtEndOfSync = false;
+            }
+         });
+         $scope.updateEvents();
+      });
    }
 
    $scope.levelSelected = function(itemId) {
@@ -444,8 +524,13 @@ angular.module('algorea')
       $scope.formValues.selectedLevel = $scope.levels[0];
       $scope.levelSelected($scope.levels[0].ID);
    };
+
    $scope.stopSync = function() {
       delete(SyncQueue.requestSets.groupAdmin);
+      SyncQueue.removeSyncEndListeners('groupAdminUsersItems');
+      ModelsManager.removeListener('users_items', 'deleted', 'groupAdminDeleted');
+      ModelsManager.removeListener('users_items', 'inserted', 'groupAdminInserted');
+      ModelsManager.removeListener('users_items', 'updated', 'groupAdminUpdated');
    };
 
    $scope.allUserItems = ModelsManager.curData.users_items;
@@ -469,6 +554,12 @@ angular.module('algorea')
          $scope.startSync($scope.groupId, $scope.itemId, function() {
             $scope.initItems();
             $scope.initGroup();
+            SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
+               if (needToUpdateAtEndOfSync) {
+                  $scope.updateEvents();
+                  needToUpdateAtEndOfSync = false;
+               }
+            });
          });
       }
    };
