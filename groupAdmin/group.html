@@ -240,15 +240,11 @@
 							</select>
 						</div>
 						<div class="view-switcher col-sm-6">
-							<!-- TODO: on button click, switch between global / detailed view
-								* toggle button class .btn-zoom-in / .btn-zoom-out
-								* toggle table.table-progress class (.progress-global / .progress-detail)
-								* display td.status content according to global / detailed view
-						  -->
-							<span class="pull-right">Afficher la vue globale <button class="btn-icon btn-zoom-out"></button></span>
+							<span ng-if="!formValues.detailedView" class="pull-right" ng-click="formValues.detailedView=true;">Afficher la vue détaillée <button class="btn-icon btn-zoom-in"></button></span>
+							<span ng-if="formValues.detailedView" class="pull-right" ng-click="formValues.detailedView=false;">Afficher la vue globale <button class="btn-icon btn-zoom-out"></button></span>
 						</div>
 					</div>
-					<table class="table-progress progress-global">
+					<table class="table-progress" ng-class="{'progress-global': !formValues.detailedView, 'progress-detail': formValues.detailedView}">
 						<thead>
 							<tr>
 								<th class="fixed-width">Nom du chapitre / étape</th>
@@ -261,30 +257,24 @@
 								<td class="fixed-width" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
 								<td class="fixed-width description">{{item.strings[0].sDescription}}</td>
 								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
-								<!-- if view progress detail
-									<ul ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
-											<li class="date">03/03 17:30</li>
-											<li class="time">00'30"</li>
-											<li class="help">0</li><span class="break"></span>
-											<li class="score">{{thisUserItem.iScore}}/100</li>
-											<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
-											<li class="questions">{{thisUserItem.nbHintsCached}}</li>
+									<ul ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
+										<li class="date">03/03 17:30</li>
+										<li class="time">00'30"</li>
+										<li class="help">0</li><span class="break"></span>
+										<li class="score">{{thisUserItem.iScore}}/100</li>
+										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
+										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
 									</ul>
-								-->
-								<!-- endif -->
-
-								<!-- if view progress global -->
 									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
-									<button class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
-									<button class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button>
-									<ul class="list-progress-details">
-											<li class="score">{{thisUserItem.iScore}}/100</li>
-											<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
-											<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)</li>
-											<li class="questions">{{thisUserItem.nbHintsCached}}</li>
-											<li class="help">0</li>
+									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
+									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button>
+									<ul ng-if="!formValues.detailedView" class="list-progress-details">
+										<li class="score">{{thisUserItem.iScore}}/100</li>
+										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
+										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)</li>
+										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
+										<li class="help">0</li>
 									</ul>
-								<!-- endif -->
 								</td>
 							</tr>
 						</tbody>
