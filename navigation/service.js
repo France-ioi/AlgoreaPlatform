@@ -268,6 +268,9 @@ angular.module('algorea')
             var user_item = this.getUserItem(item);
             if (user_item) {
                user_item.sLastActivityDate = new Date();
+               if (!user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+                  user_item.sStartDate = user_item.sLastActivityDate;
+               }
                ModelsManager.updated('users_items', user_item.ID, false, true);
                $rootScope.$broadcast('algorea.itemTriggered', item.ID);
             }

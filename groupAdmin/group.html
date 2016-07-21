@@ -258,9 +258,9 @@
 								<td class="fixed-width description">{{item.strings[0].sDescription}}</td>
 								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 									<ul ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
-										<li class="date">03/03 17:30</li>
-										<li class="time">00'30"</li>
-										<li class="help">0</li><span class="break"></span>
+										<li class="date">{{thisUserItem.sFirstSeenDate}}</li>
+										<li class="time">{{getDuration(thisUserItem)}}</li>
+										<li class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</li><span class="break"></span>
 										<li class="score">{{thisUserItem.iScore}}/100</li>
 										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
 										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
@@ -273,7 +273,7 @@
 										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
 										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)</li>
 										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
-										<li class="help">0</li>
+										<li class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
 									</ul>
 								</td>
 							</tr>

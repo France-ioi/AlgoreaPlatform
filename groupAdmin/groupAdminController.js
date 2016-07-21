@@ -68,19 +68,6 @@ angular.module('algorea').
   });
 
 angular.module('algorea').
-  filter('selectedUsersAndItems', function() {
-    return function(userItems, itemsListRev, usersSelected) {
-      var out = [];
-      angular.forEach(userItems, function(userItem) {
-         if (usersSelected[userItem.idUser] && itemsListRev[userItem.idItem] && userItem.sValidationDate) {
-            out.push(userItem);
-         }
-      });
-      return out;
-    };
-  });
-
-angular.module('algorea').
   filter('userSort', function() {
     return function(groups_groups, parent, owned) {
       return _.sortBy(groups_groups, function(g_g) {
@@ -142,6 +129,40 @@ angular.module('algorea')
          return 'demande d\'aide sur le forum';
       }
    };
+
+   var durationToStr = function(date1, date2) {
+      var timeDiffMs = Math.abs(date2.getTime() - date1.getTime());
+      var diffHours = Math.floor(timeDiffMs / (1000 * 3600));
+      if (diffHours < 24) {
+         var diffMinutes = Math.floor(timeDiffMs / (1000 * 60));
+         if (diffMinutes < 60) {
+            return diffMinutes+'mn';
+         }
+         diffMinutes = diffMinutes - 60*diffHours;
+         return diffHours+'h '+diffMinutes+'mn';
+      }
+      var diffDays = Math.floor(timeDiffMs / (1000 * 3600 * 24));
+      if (diffDays < 90) {
+         return '> '+diffDays+' jours';
+      }
+      var diffMonth = Math.floor(timeDiffMs / (1000 * 3600 * 24 * 30));
+      if (diffMonth < 24) {
+         return '> '+diffMonth+' mois';
+      }
+      var diffYear = Math.floor(timeDiffMs / (1000 * 3600 * 24 * 365));
+      return '> '+diffYear+' ans';
+   }
+
+   $scope.getDuration = function(user_item) {
+      if (!user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+         return '-';
+      }
+      if (user_item.bValidated) {
+         return durationToStr(user_item.sStartDate, user_item.sValidationDate);
+      }
+      var now = new Date();
+      return durationToStr(user_item.sStartDate, now);
+   }
 
    var insertEvent = function(userItem, type, date) {
       var eventStr = getTypeString(type, userItem);
