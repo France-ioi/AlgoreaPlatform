@@ -57,13 +57,6 @@ var models = {
             defaultValue: "Class",
             nullInvalid: true
          },
-         sRole: {
-            type: "enum",
-            values: {owner: {label: "Propriétaire", hidden: true}, manager: {label: "Administrateur"}, observer: {label: "Observateur"}, member: {label: "Membre"},},
-            label: "Rôle",
-            defaultValue: "member",
-            nullInvalid: true
-         },
          bSendEmails: {type: "boolean", label: "Envoi d'emails"}
       },
       links: {
@@ -101,7 +94,7 @@ var models = {
          sRole: {
             type: 'enum',
             values: {
-               owner: {label: "propriétaire"},
+               owner: {label: "propriétaire", hidden: true},
                manager: {label: "administrateur"},
                observer: {label: "observateur"},
                member: {label: "membre"},
