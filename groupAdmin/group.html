@@ -19,7 +19,7 @@
 									</label>
 								</div>
 								<div class="col-sm-8">
-									<input type="text" ng-model="group.sName" class="form-control"/>
+									<input type="text" ng-model="group.sName" class="form-control" ng-readonly="!adminOnGroup"/>
 								</div>
 							</div>
 							<div class="row">
@@ -30,7 +30,7 @@
 									</label>
 								</div>
 								<div class="col-sm-8">
-									<select ng-model="group.sType" class="form-control">
+									<select ng-model="group.sType" class="form-control" ng-disabled="!adminOnGroup">
 									<option value="{{key}}" ng-repeat="(key, value) in groupFields.sType.values" ng-selected="group.sType == key" ng-if="key!='Root'">{{value.label}}</option>
 									</select>
 								</div>
@@ -43,7 +43,7 @@
 									</label>
 								</div>
 								<div class="col-sm-8">
-									<textarea ng-model="group.sDescription" class="form-control"></textarea>
+									<textarea ng-model="group.sDescription" class="form-control" ng-readonly="!adminOnGroup"></textarea>
 								</div>
 							</div>
 							<div ng-if="group.sType == 'Class'" class="row">
@@ -57,15 +57,15 @@
 									<select ng-model="group.iGrade" class="form-control">
 										<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
 									</select>
-									<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez"/>
+									<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row" ng-if="adminOnGroup">
 								<div class="col-sm-12">
 									<a class="btn btn-primary pull-right" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row" ng-if="adminOnGroup">
 								<div class="col-sm-12 block-delete">
 									<a class="group-delete" ng-click="removeGroup()">Supprimer le groupe</a>
 								</div>
@@ -262,7 +262,7 @@
 										<li class="time">{{getDuration(thisUserItem)}}</li>
 										<li class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</li><span class="break"></span>
 										<li class="score">{{thisUserItem.iScore}}/100</li>
-										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
+										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
 										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
 									</ul>
 									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
@@ -271,7 +271,7 @@
 									<ul ng-if="!formValues.detailedView" class="list-progress-details">
 										<li class="score">{{thisUserItem.iScore}}/100</li>
 										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
-										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)</li>
+										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
 										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
 										<li class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
 									</ul>
@@ -283,7 +283,7 @@
 			</div>
 		</uib-tab>
 
-		<uib-tab heading="Administration">
+		<uib-tab heading="Administration" ng-if="adminOnGroup">
 			<div class="groupAdmin-tabContent">
 				<div class="row">
 					<div class="col-sm-6 col-lg-4">

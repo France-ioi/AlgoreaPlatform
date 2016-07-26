@@ -462,6 +462,16 @@ angular.module('algorea')
          if (!user) return;
          $scope.usersSelected[user.ID] = true;
       });
+      $scope.adminOnGroup = false;
+      angular.forEach($scope.group.parents, function(parent_group_group) {
+         var parent = parent_group_group.parent;
+         if (parent.ID == SyncQueue.requests.loginData.idGroupOwned) {
+            if (parent_group_group.sRole == 'manager' || parent_group_group.sRole == 'owner') {
+               $scope.adminOnGroup = true;
+            }
+            return false;
+         }
+      });
    };
 
    $scope.getUserItem = function(group_group, item) {
@@ -579,7 +589,7 @@ angular.module('algorea')
    $scope.init = function() {
       $scope.loading = true;
       $scope.progressionType = 'chronological';
-      $scope.groupId = '1321383987564998144';//$stateParams.idGroup;
+      $scope.groupId = $stateParams.idGroup; //'1321383987564998144';//
       $scope.error = '';
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
