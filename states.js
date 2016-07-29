@@ -96,7 +96,7 @@ angular.module('algorea')
                    controller: 'groupAdminIndexController',
                 },
                 'breadcrumbs': {
-                   template: '',
+                   template: '<div><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Groupes</span></div>',
                 },
              },
           }).state("groupAdminGroup", {
@@ -110,7 +110,8 @@ angular.module('algorea')
                    controller: 'groupAdminController',
                 },
                 'breadcrumbs': {
-                   template: '',
+                   template: '<div><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupAdmin()">Groupes</a></span> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{groupName}}</span></div>',
+                   controller: 'groupAdminBreadCrumbsController',
                 },
              },
           }).state("concourir", {

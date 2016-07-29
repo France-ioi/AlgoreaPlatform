@@ -78,10 +78,28 @@ angular.module('algorea').
     };
   });
 
-// one group
+angular.module('algorea')
+   .controller('groupAdminBreadCrumbsController', ['$scope', '$stateParams', function ($scope, $stateParams) {
+   'use strict';
+   $scope.groupName = 'chargement...';
+   if ($stateParams.idGroup == 'new') {
+      $scope.groupName = 'Nouveau groupe';
+   }
+   $scope.$on('algorea.groupSynced', function() {
+      var groupId = $stateParams.idGroup;
+      console.error('trying to access group name');
+      var group = ModelsManager.getRecord('groups', groupId);
+      if (!group) {
+         $scope.groupName = 'error!';
+         return;
+      }
+      $scope.groupName = group.sName;
+   });
+}]);
+
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', function ($scope, $stateParams, itemService, $uibModal, $http) {
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout) {
    'use strict';
    $scope.error = null;
 
