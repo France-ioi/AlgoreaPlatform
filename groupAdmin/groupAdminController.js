@@ -87,7 +87,6 @@ angular.module('algorea')
    }
    $scope.$on('algorea.groupSynced', function() {
       var groupId = $stateParams.idGroup;
-      console.error('trying to access group name');
       var group = ModelsManager.getRecord('groups', groupId);
       if (!group) {
          $scope.groupName = 'error!';
@@ -269,13 +268,11 @@ angular.module('algorea')
       ModelsManager.deleted('groups_groups', group_group.ID);
    };
    $scope.acceptRequest = function(group_group) {
-      return;
       group_group.sType = 'requestAccepted';
       group_group.sStatusDate = new Date();
       ModelsManager.updated('groups_groups', group_group.ID);
    };
    $scope.refuseRequest = function(group_group) {
-      return;
       group_group.sType = 'requestRefused';
       group_group.sStatusDate = new Date();
       ModelsManager.updated('groups_groups', group_group.ID);
@@ -291,7 +288,7 @@ angular.module('algorea')
             console.error("got error from invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.invitationError = + "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.invitationError = "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -384,11 +381,11 @@ angular.module('algorea')
    };
 
    $scope.refreshPassword = function() {
-      $http.post('/groupAdmin/api.php', {action: 'refreshPassword', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
+      $http.post('/groupAdmin/api.php', {action: 'refreshCode', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
-            $scope.group.sPassword = postRes.newPass;   
+            $scope.group.sPassword = postRes.newPass;
             $scope.$evalAsync($scope.$apply);            
          }
       })
@@ -399,6 +396,7 @@ angular.module('algorea')
 
    $scope.addAdminGroups = function(groups) {
       $http.post('/groupAdmin/api.php', {action: 'addAdmins', idGroup: $scope.groupId, aAdminGroups: groups}, {responseType: 'json'}).success(function(postRes) {
+         $scope.formValues.adminLogins = '';
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
@@ -412,6 +410,22 @@ angular.module('algorea')
 
    $scope.saveGroup = function() {
       ModelsManager.updated('groups', $scope.groupId);
+   };
+
+   $scope.deleteGroup = function() {
+      if (window.confirm("Êtes-vous certain de vouloir supprimer le groupe "+$scope.group.sName+' ? Cette opération est irréversible.')) { 
+         $http.post('/groupAdmin/api.php', {action: 'deleteGroup', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
+            if (!postRes || !postRes.success) {
+               console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+            } else {
+               SyncQueue.planToSend(0);
+               $state.go('groupAdmin');
+            }
+         })
+         .error(function() {
+            console.error("error calling groupAdmin/api.php");
+         });
+      }
    };
 
    $scope.removeUser = function(group_group) {
@@ -432,6 +446,7 @@ angular.module('algorea')
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
+            // this synchro is very hazardous but seems to work...
             SyncQueue.planToSend(0);
          }
       })
@@ -461,6 +476,7 @@ angular.module('algorea')
          SyncQueue.removeSyncEndListeners('groupAdminController');
          delete(SyncQueue.requestSets.groupAdmin.minServerVersion);
          callback();
+         $rootScope.$broadcast('algorea.groupSynced');
       }, false, true);
       SyncQueue.planToSend(0);
    };
@@ -470,6 +486,9 @@ angular.module('algorea')
       if (!$scope.group) {
          console.error('big problem!');
          return;
+      }
+      if ($scope.group.sPassword) {
+         $scope.formValues.hasPassword = true;
       }
       $scope.usersSelected = {};
       $scope.groupsSelected = {};
@@ -604,6 +623,29 @@ angular.module('algorea')
 
    $scope.allUserItems = ModelsManager.curData.users_items;
 
+   // not used, maybe later
+   $scope.newGroup = function (callback) {
+      if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser) {
+         $scope.error = 'Vous ne pouvez créer des groupes qu\'en était connecté';
+         return;
+      }
+      $scope.group = ModelsManager.createRecord('groups');
+      $scope.group.idUser = SyncQueue.requests.loginData.ID;
+      $scope.group.sDateCreated = new Date();
+      $scope.groupId = $scope.group.ID;
+      $scope.group.sName = 'Noueau groupe';
+      $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            $state.go('groupAdminGroup', {idGroup: $scope.group.ID}).then(function(){$stateParams.idGroup = $scope.group.ID;});
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      }); 
+   };
+
    $scope.init = function() {
       $scope.loading = true;
       $scope.progressionType = 'chronological';
@@ -616,21 +658,20 @@ angular.module('algorea')
          //$scope.loading = false;
          //return;
       }
-      if ($scope.groupId == '0') {
-         // TODO: create group
-         console.error('oops!');
-      } else {
-         $scope.startSync($scope.groupId, $scope.itemId, function() {
-            $scope.initItems();
-            $scope.initGroup();
-            SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
-               if (needToUpdateAtEndOfSync) {
-                  $scope.updateEvents();
-                  needToUpdateAtEndOfSync = false;
-               }
-            });
-         });
+      if (!$scope.groupId || $scope.groupId == 'new') {
+         $scope.newGroup();
+         return;
       }
+      $scope.startSync($scope.groupId, $scope.itemId, function() {
+         $scope.initItems();
+         $scope.initGroup();
+         SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
+            if (needToUpdateAtEndOfSync) {
+               $scope.updateEvents();
+               needToUpdateAtEndOfSync = false;
+            }
+         });
+      });
    };
 
    $scope.$on('$destroy', function() {

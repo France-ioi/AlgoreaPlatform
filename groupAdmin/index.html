@@ -7,10 +7,10 @@
 			<p>Bonjour,</p>
 			<p>Dans cet espace d'animation, vous pouvez constituer des groupes puis les administrer en leur assignant un parcours à réaliser. Vous avez également accès à un forum pour interagir avec l'équipe Declick.</p>
 
-			<div ng-hide="true">
+			<div ng-hide="myGroupAdmin.children.length">
 				<p>Vous n'avez aucun groupe</p>
 			</div>
-			<div ng-show="true">
+			<div ng-show="myGroupAdmin.children.length">
 				<p class="groupAdmin-title">Consulter un groupe :</p>
 				<ul class="list list-block list-groups">
 					<li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
