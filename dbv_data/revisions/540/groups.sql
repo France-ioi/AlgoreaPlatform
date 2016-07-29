@@ -12,3 +12,5 @@ ALTER TABLE `users_items` ADD `sThreadStartDate` DATETIME NULL DEFAULT NULL AFTE
 ALTER TABLE `history_users_items` ADD `sThreadStartDate` DATETIME NULL DEFAULT NULL AFTER `sLastActivityDate`, ADD `sLastAnswerDate` DATETIME NULL DEFAULT NULL AFTER `sThreadStartDate`;
 ALTER TABLE `users_items` ADD `sLastHintDate` DATETIME NULL DEFAULT NULL AFTER `sLastAnswerDate`;
 ALTER TABLE `history_users_items` ADD `sLastHintDate` DATETIME NULL DEFAULT NULL AFTER `sLastAnswerDate`;
+
+ALTER TABLE `history_groups_ancestors` CHANGE `iNextVersion` `iNextVersion` INT(11) NULL DEFAULT NULL;
