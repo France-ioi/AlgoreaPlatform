@@ -67,7 +67,7 @@
 							</div>
 							<div class="row" ng-if="adminOnGroup">
 								<div class="col-sm-12 block-delete">
-									<a class="group-delete" ng-click="removeGroup()">Supprimer le groupe</a>
+									<a class="group-delete" ng-click="deleteGroup();">Supprimer le groupe</a>
 								</div>
 							</div>
 						</div>
@@ -283,16 +283,17 @@
 			</div>
 		</uib-tab>
 
-		<uib-tab heading="Administration" ng-if="adminOnGroup">
+		<uib-tab heading="Administration">
 			<div class="groupAdmin-tabContent">
 				<div class="row">
-					<div class="col-sm-6 col-lg-4">
+					<div class="col-sm-8 col-lg-6">
 						<div class="groupAdmin-title">Administrateurs du groupe «&nbsp;{{group.sName}}&nbsp;» :</div>
 
 						<table class="table-administrators">
 							<thead>
 								<tr>
 									<th></th>
+									<th>Propriétaire</th>
 									<th>Administrateur</th>
 									<th>Observateur</th>
 									<th></th>
@@ -300,15 +301,16 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="parent in group.parents">
-									<td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{parent.parent.userSelf[0].sLogin}})</td>
-									<td><input type="checkbox" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');"></td>
-									<td><input type="checkbox" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');"></td>
-									<td><button class="btn-icon btn-delete btn-small" title="supprimer"><span class="btn-label">supprimer</span></button></td>
+									<td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{parent.parent.userOwned[0].sLogin}})</td>
+									<td><span ng-if="parent.sRole == 'owner'" class="glyphicon glyphicon-ok"></span></td>
+									<td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'manager' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
+									<td><input type="radio" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'observer' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
+									<td><button class="btn-icon btn-delete btn-small" title="supprimer" ng-if="adminOnGroup && parent.sRole != 'owner'" ng-click="removeAdmin(parent);"><span class="btn-label">supprimer</span></button></td>
 								</tr>
 							</tbody>
 						</table>
 
-						<div class="form-inline admin-form">
+						<div class="form-inline admin-form" ng-if="adminOnGroup">
 							<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" placeholder="Logins à ajouter (séparer par des espaces) :">
 							<button  ng-click="inviteAdminLogins();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
 						</div>
