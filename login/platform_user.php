@@ -67,6 +67,7 @@ function createTempUser($db) {
    ));
    $_SESSION['login'] = array(
       'idGroupSelf' => $userSelfGroupId,
+      'idGroupOwned' => $userAdminGroupId,
       'tempUser'    => 1,
       'ID'          => $userId,
       'sLogin'      => $sLogin,

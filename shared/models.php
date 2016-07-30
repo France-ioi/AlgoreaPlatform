@@ -271,6 +271,9 @@ $tablesModels = array (
           "iAutonomy"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
           "sStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
           "sValidationDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sLastAnswerDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sThreadStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sLastHintDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "sFinishDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
           "sLastActivityDate"  => array("type" => "date", 'skipHistory' => true, "access" => array("write" => array("user"), "read" => array("user"))),
           "bRanked"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
@@ -325,6 +328,7 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
          "myGroupAncestors" => array("dstField" => "idGroupAncestor", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_ancestors"),
+         "myGroupParents" => array("dstField" => "idGroupParent", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_groups"),
          "myGroupDescendants" => array("dstField" => "idGroupChild", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "groups_ancestors"),
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
          "usersLeft" => array('type' => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "ID", "srcTable" => "groups", "dstTable" => "users"),
@@ -354,6 +358,10 @@ $viewsModels = array(
             "joins" => array("myGroupAncestors"),
             "condition"  => '`[PREFIX]myGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroup',
          ),
+         "parents" => array(
+            "joins" => array("myGroupParents"),
+            "condition"  => '`[PREFIX]myGroupParents`.`idGroupChild` = :[PREFIX_FIELD]idGroup',
+         ),
          "descendants" => array(
             "joins" => array("myGroupDescendants"),
             "condition"  => '`[PREFIX]myGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroup',
@@ -371,7 +379,7 @@ $viewsModels = array(
          "myGroupDescendantsLeft" => array("type" => "LEFT", "dstField" => "idGroupChild", "srcField" => "idGroupParent", "srcTable" => "groups_groups", "dstTable" => "groups_ancestors"),
          "myGroupDescendants" => array("dstField" => "idGroupChild", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "groups_ancestors"),
          "myGroupDescendantsAncestors" => array("type" => "LEFT", "dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "myGroupDescendants", "dstTable" => "groups_ancestors"),
-         "myGroupAncestors" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "groups_ancestors"),
+         "myGroupAncestors" => array("dstField" => "idGroupChild", "srcField" => "idGroupParent", "srcTable" => "groups_groups", "dstTable" => "groups_ancestors"),
          "userInviting" => array('type' => 'LEFT', "dstField" => "ID", "srcField" => "idUserInviting", "srcTable" => "groups_groups", "dstTable" => "users"),
          "usersLeft" => array("type" => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users"),
          "users" => array("dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users"),
@@ -408,6 +416,10 @@ $viewsModels = array(
             "joins" => array("myGroupAncestors"),
             "condition"  => '`[PREFIX]myGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroup',
          ),
+         "parents" => array(
+            "joins" => array(),
+            "condition"  => '`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroup',
+         ),
          "invitationsAndDescendantsWrite" => array(
             "joins" => array("myGroupDescendantsLeft"),
             "condition"  => '(`[PREFIX]groups_groups`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf AND `[PREFIX]groups_groups`.`idGroupParent` != :[PREFIX_FIELD]idRootSelf) OR `[PREFIX]myGroupDescendantsLeft`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned)',
@@ -438,7 +450,6 @@ $viewsModels = array(
          "bHintsAllowed" => array(),
          "sValidationType" => array(),
          "iValidationMin" => array(),
-         "sAccessType" => array(),
          "idItemUnlocked" => array(),
          "sSupportedLangProg" => array(),
          "sAccessOpenDate" => array(),
@@ -651,10 +662,12 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
         "groupDescendantsOwned" => array("dstField" => "idGroupChild", "srcField" => "idGroupOwned", "srcTable" => "users", "dstTable" => "groups_ancestors"),
+        "groupAncestersOwned" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupOwned", "srcTable" => "users", "dstTable" => "groups_ancestors"),
         "groupAncestorsSelf" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupSelf", "srcTable" => "users", "dstTable" => "groups_ancestors"),
         "groupInvitedSelf" => array("dstField" => "idGroupChild", "srcField" => "idGroupSelf", "srcTable" => "users", "dstTable" => "groups_groups"),
       ),
       "fields" => array(
+          "sLogin"                => array(),
           "sEmail"                => array(),
           "sFirstName"            => array(),
           "sLastName"             => array(),
@@ -683,6 +696,10 @@ $viewsModels = array(
             "joins" => array("groupAncestorsSelf"),
             "condition"  => '`[PREFIX]groupAncestorsSelf`.`idGroupChild` = :[PREFIX_FIELD]idGroup',
          ),
+         "ancestorsOwned" => array(
+            "joins" => array("groupAncestersOwned"),
+            "condition"  => '`[PREFIX]groupAncestersOwned`.`idGroupChild` = :[PREFIX_FIELD]idGroup',
+         ),
          "descendants" => array(
             "joins" => array("groupDescendantsOwned"),
             "condition"  => '`[PREFIX]groupDescendantsOwned`.`idGroupAncestor` = :[PREFIX_FIELD]idGroup',
@@ -708,10 +725,9 @@ $viewsModels = array(
           "sName"        => array(),
           "sAnswer"      => array(),
           "sLangProg"    => array(),
-          "sSaveDate"    => array(),
+          "sSubmissionDate"    => array(),
           "iScore"       => array(),
           "bValidated"   => array(),
-          "sGradingDate" => array(),
       ),
       "filters" => array(
          "accessible" => array(
@@ -748,13 +764,15 @@ $viewsModels = array(
           "iPrecision"            => array('readOnly' => true),
           "iAutonomy"             => array('readOnly' => true),
           "sStartDate"            => array(),
-          "sValidationDate"       => array(),
+          "sValidationDate"       => array('readOnly' => true),
+          "sLastAnswerDate"       => array('readOnly' => true),
+          "sThreadStartDate"      => array('readOnly' => true),
+          "sLastHintDate"         => array('readOnly' => true),
           "sFinishDate"           => array(),
           "sLastActivityDate"     => array(),
           "bRanked"               => array('readOnly' => true),
           "sAllLangProg"          => array(),
-          "sState"                => array(),
-          "sToken"                => array()
+          "sState"                => array()
       ),
       "filters" => array(
          "accessible" => array(
