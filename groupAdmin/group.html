@@ -76,7 +76,7 @@
 		</uib-tab>
 
 		<uib-tab heading="Membres">
-				<div class="groupAdmin-tabContent">
+				<div class="groupAdmin-tabContent tab-members">
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="groupAdmin-title">Composition du groupe «{{group.sName}}»</div>
@@ -111,11 +111,11 @@
 
 							<!--<field model="group" field="groups.bFreeAccess" />-->
 							<div class="row">
-								<div class="col-sm-6">
+								<div class="col-md-6 col-sm-8">
 									<div class="label-title label-list-item">Code d'inscription :</div>
 									<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
 								</div>
-								<div class="col-sm-6">
+								<div class="col-md-6 col-sm-4">
 									<div class="checkboxSwitch">
 										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordCheck();">
 										<label for="codeInscr"><span></span></label>
@@ -123,28 +123,28 @@
 								</div>
 							</div>
 							<div class="row" ng-if="formValues.hasPassword">
-								<div class="col-sm-6">
+								<div class="col-md-6 col-sm-8">
 									<p>Code d'inscription à transmettre aux élèves</p>
 								</div>
-								<div class="col-sm-6 form-inline">
+								<div class="col-md-6 col-sm-4 form-inline">
 									<input type="text" class="form-control" ng-model="group.sPassword" />
 									<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-6">
+								<div class="col-md-6 col-sm-8">
 									<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
 									<p>Autoriser les demandes spontanées</p>
 								</div>
-								<div class="col-sm-6">
+								<div class="col-md-6 col-sm-4">
 									<div class="checkboxSwitch">
 										<input type="checkbox" id="demSpont" class="switch" ng-model="group.bOpened">
 										<label for="demSpont"><span></span></label>
 									</div>
 								</div>
 							</div>
-							<div  ng-if="group.bOpened" class="row">
-								<div class="col-lg-6 col-lg-offset-6">
+							<div  class="row" ng-if="group.bOpened">
+								<div class="col-lg-8">
 									<div ng-if="!showRequestTable()">
 										<p>(aucune)</p>
 									</div>
@@ -161,8 +161,8 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-sm-12">
-							<a class="btn btn-primary pull-right">Enregistrer</a>
+						<div class="col-sm-4 col-sm-offset-8">
+							<a class="btn btn-primary">Enregistrer</a>
 						</div>
 					</div>
 				</div>
@@ -172,10 +172,12 @@
 			<div class="groupAdmin-tabContent">
 				<div class="row">
 					<div class="col-sm-6">
-						<span class="pull-left">Sélectionnez le type de progression : </span>
-						<div class="block-context">
-							<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label><br>
-							<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+						<div class="row">
+							<span class="col-md-6">Sélectionnez le type de progression : </span>
+							<div class="col-md-6">
+								<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label><br>
+								<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+							</div>
 						</div>
 					</div>
 					<div ng-if="progressionType == 'collective'" class="col-sm-6">
