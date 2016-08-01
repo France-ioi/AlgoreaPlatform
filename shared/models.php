@@ -347,6 +347,7 @@ $viewsModels = array(
          "bOpened" => array(),
          "bFreeAccess" => array(),
          "sPassword" => array(),
+         "sType" => [],
          "bSendEmails" => array(),
       ),
       "filters" => array(
@@ -639,6 +640,7 @@ $viewsModels = array(
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfUserDescendants" => array("srcTable" => "threads", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUserCreated"),
          "selfGroupDescendants" => array("srcTable" => "selfUserDescendants", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
+         "itemDescendants" => array("srcTable" => "threads", "dstTable" => "items_ancestors", "srcField" => "idItem", "dstField" => "idItemChild"),
       ),
       "fields" => array(
           "sType"             => array(),
@@ -646,7 +648,6 @@ $viewsModels = array(
           "idUserCreated"     => array(),
           "idItem"            => array(),
           "sTitle"            => array(),
-          "sMessage"          => array(),
           "bAdminHelpAsked"   => array(),
           "bHidden"           => array(),
       ),
@@ -654,6 +655,14 @@ $viewsModels = array(
          "accessible" => array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
             "condition"  => '((`[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :idGroupSelf AND `[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :idGroupOwned)',
+         ),
+         "groupDescendants" => array(
+            "joins" => array("selfUserDescendants", "selfGroupDescendants"),
+            "condition"  => '`selfGroupDescendants`.`idGroupAncestor` = :idGroup',
+         ),
+         "itemDescendants" => array(
+            "joins" => array("itemDescendants"),
+            "condition"  => '`itemDescendants`.`idItemAncestor` = :idItem',
          ),
       ),
    ),

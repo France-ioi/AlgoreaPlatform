@@ -55,9 +55,11 @@ function getRandomPass() {
    for ($i = 0; $i < 10; $i++) {
       $string .= $characters[mt_rand(0, strlen($characters) - 1)];
    }
+   return $string;
 }
 
 function refreshCode($idGroup) {
+   global $db;
    $newPass = getRandomPass();
    $query = 'update groups set sPassword = :newPass where ID = :idGroup';
    $stmt = $db->prepare($query);

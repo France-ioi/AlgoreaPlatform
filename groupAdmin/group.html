@@ -3,9 +3,6 @@
 </div>
 <div ng-show="error">{{error}}</div>
 <div ng-if="!loading" class="groupAdmin">
-
-	{{group.sName}}
-
 	<uib-tabset active="active">
 		<uib-tab heading="Descriptif">
 				<div class="groupAdmin-tabContent">
@@ -62,7 +59,7 @@
 							</div>
 							<div class="row" ng-if="adminOnGroup">
 								<div class="col-sm-12">
-									<a class="btn btn-primary pull-right" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
 								</div>
 							</div>
 							<div class="row" ng-if="adminOnGroup">
@@ -85,8 +82,7 @@
 									<span class="user-status connected"></span>
 									<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
 									<span class="action">
-										<button class="btn-icon btn-view-more btn-small" title="voir"><span class="btn-label">voir</span></button>
-										<button class="btn-icon btn-delete btn-small" ng-clic="removeUser(child);" title="supprimer"><span class="btn-label">supprimer</span></button>
+										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child);" title="supprimer"><span class="btn-label">supprimer</span></button>
 									</span>
 								</li>
 							</ul>
@@ -117,7 +113,7 @@
 								</div>
 								<div class="col-sm-6">
 									<div class="checkboxSwitch">
-										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordCheck();">
+										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
 										<label for="codeInscr"><span></span></label>
 									</div>
 								</div>
@@ -127,7 +123,7 @@
 									<p>Code d'inscription à transmettre aux élèves</p>
 								</div>
 								<div class="col-sm-6 form-inline">
-									<input type="text" class="form-control" ng-model="group.sPassword" />
+									<input type="text" class="form-control" ng-model="group.sPassword" readonly/>
 									<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
 								</div>
 							</div>
@@ -138,12 +134,12 @@
 								</div>
 								<div class="col-sm-6">
 									<div class="checkboxSwitch">
-										<input type="checkbox" id="demSpont" class="switch" ng-model="group.bOpened">
+										<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
 										<label for="demSpont"><span></span></label>
 									</div>
 								</div>
 							</div>
-							<div  ng-if="group.bOpened" class="row">
+							<div ng-if="group.bOpened" class="row">
 								<div class="col-lg-6 col-lg-offset-6">
 									<div ng-if="!showRequestTable()">
 										<p>Aucune demande spontannée.</p>
@@ -158,11 +154,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12">
-							<a class="btn btn-primary pull-right">Enregistrer</a>
 						</div>
 					</div>
 				</div>
@@ -261,15 +252,15 @@
 										<li class="date">{{thisUserItem.sFirstSeenDate}}</li>
 										<li class="time">{{getDuration(thisUserItem)}}</li>
 										<li class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</li><span class="break"></span>
-										<li class="score">{{thisUserItem.iScore}}/100</li>
-										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
+										<li class="score">{{thisUserItem.iScore}}%</li>
+										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
 										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
 									</ul>
 									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
 									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
 									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button>
 									<ul ng-if="!formValues.detailedView" class="list-progress-details">
-										<li class="score">{{thisUserItem.iScore}}/100</li>
+										<li class="score">{{thisUserItem.iScore}}%</li>
 										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
 										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
 										<li class="questions">{{thisUserItem.nbHintsCached}}</li>

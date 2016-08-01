@@ -2,7 +2,7 @@
 
 class groupAdmin {
    public static function getSyncRequests($requestSet, $minServerVersion) {
-      $baseRequests = syncGetTablesRequests(array('groups' => true, 'groups_groups' => true, 'users' => true, 'users_items' => true), false);
+      $baseRequests = syncGetTablesRequests(array('groups' => true, 'groups_groups' => true, 'users' => true, 'users_items' => true, 'threads' => true), false);
 
       $groupId = $requestSet['groupId'];
       $itemId = $requestSet['itemId'];
@@ -10,6 +10,7 @@ class groupAdmin {
       // TODO: check if user can access this group and item
 
       $requests = [];
+      $requests['groupAdminThreadsDescendants'] = $baseRequests['threads'];
       $requests['groupAdminGroupsParents'] = $baseRequests['groups'];
       $requests['groupAdminGroupsDescendants'] = $baseRequests['groups'];
       $requests['groupAdminGroupsInvited'] = $baseRequests['groups'];
@@ -30,6 +31,8 @@ class groupAdmin {
          }
       }
 
+      $requests['groupAdminThreadsDescendants']["filters"]["groupDescendants"] = ['values' => ['idGroup' => $groupId]];
+      $requests['groupAdminThreadsDescendants']["filters"]["itemDescendants"] = ['values' => ['idItem' => $itemId]];
       $requests['groupAdminGroupsParents']["filters"]["parents"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminGroupsDescendants']["filters"]["descendants"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminGroupsInvited']["filters"]["invited"] = ['values' => ['idGroup' => $groupId]];

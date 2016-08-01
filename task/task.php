@@ -164,7 +164,7 @@ function graderResult($request, $db) {
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
    $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), sLastActivityDate = NOW(), sLastAnswerDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    if ($bValidated) {
-      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = NOW(), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = LOWEST(NOW(),IFNULL(sValidationDate,NOW()), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    }
    $stmt = $db->prepare($query);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));

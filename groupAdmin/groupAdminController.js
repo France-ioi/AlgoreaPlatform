@@ -96,7 +96,6 @@ angular.module('algorea')
    });
 }]);
 
-
 angular.module('algorea')
    .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout) {
    'use strict';
@@ -104,11 +103,31 @@ angular.module('algorea')
 
    $scope.groupFields = models.groups.fields;
    
-   $scope.openPopup = function(group_group, item) {
-      var groupId = group_group.child.ID;
+   function getThread(user_item) {
+      if (!user_item.item) {
+         return null;
+      }
+      var res = null;
+      angular.forEach(user_item.item.threads, function(thread) {
+         if (thread.idUser == user_item.idUser) {
+            res = thread;
+            return false;
+         }
+      });
+      return res;
+   }
+
+   $scope.openPopup = function(user_item) {
+      var thread = getThread(user_item);
       var modalInstance = $uibModal.open({
-         template: 'Une belle modal',
+         templateUrl: 'forum/thread.html',
+         controller: 'forumThreadController',
          size: 800,
+         scope: {
+            user_item: user_item,
+            thread: thead,
+            readOnlyIfNoThread: true
+         }
        });
    };
 
@@ -192,8 +211,8 @@ angular.module('algorea')
       };
       // insertion in a sorted array:
       $scope.events.splice(_.sortedIndexBy($scope.events, event, function(event) {return event.date;}), 0, event);
-      if ($scope.events.length >= $scope.numberOfEvents) {
-         $scope.events.pop();
+      if ($scope.events.length > $scope.numberOfEvents) {
+         $scope.events.shift();
          $scope.oldestEventDate = $scope.events[$scope.events.length-1].date;   
       }
    };
@@ -219,6 +238,7 @@ angular.module('algorea')
             insertEvent(userItem, 'newThread', userItem.sThreadStartDate);  
          }
       });
+      _.reverse($scope.events);
    };
 
    var needToUpdateAtEndOfSync = false;
@@ -300,6 +320,8 @@ angular.module('algorea')
                   var child = $scope.group.children[alreadyInvitedGroupIds[groupId]];
                   if (child.sType == 'invitationSent' || child.sType == 'invitationAccepted' || child.sType == 'requestSent' || child.sType == 'requestAccepted' || child.sType == 'direct') {
                      alreadyInvitedLogins.push(login);
+                     console.error('already invited!');
+                     console.error(child);
                   } else {
                      child.sType = 'invitationSent';
                      child.sStatusDate = new Date();
@@ -380,18 +402,33 @@ angular.module('algorea')
       ModelsManager.insertRecord('groups_groups', invitation);
    };
 
-   $scope.refreshPassword = function() {
-      $http.post('/groupAdmin/api.php', {action: 'refreshCode', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
-         if (!postRes || !postRes.success) {
-            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+   $scope.generatePassword = function() {
+      var string = '';
+      var stringOfAllowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      for (var i = 0; i < 10;  i++) {
+         string += stringOfAllowedChars.charAt(Math.floor(Math.random()*stringOfAllowedChars.length));
+      }
+      return string;
+   }
+
+   $scope.passwordChecked = function() {
+      if ($scope.formValues.hasPassword) {
+         if ($scope.oldPassword) {
+            $scope.group.sPassword = $scope.oldPassword;
+            $scope.saveGroup();
          } else {
-            $scope.group.sPassword = postRes.newPass;
-            $scope.$evalAsync($scope.$apply);            
+            $scope.refreshPassword();
          }
-      })
-      .error(function() {
-         console.error("error calling groupAdmin/api.php");
-      });
+      } else {
+         $scope.oldPassword = $scope.group.sPassword;
+         $scope.group.sPassword = null;
+         $scope.saveGroup();
+      }
+   }
+
+   $scope.refreshPassword = function(callback) {
+      $scope.group.sPassword = $scope.generatePassword();
+      $scope.saveGroup();
    };
 
    $scope.addAdminGroups = function(groups) {
@@ -409,6 +446,7 @@ angular.module('algorea')
    };
 
    $scope.saveGroup = function() {
+      console.error('saveGroup');
       ModelsManager.updated('groups', $scope.groupId);
    };
 
@@ -429,16 +467,8 @@ angular.module('algorea')
    };
 
    $scope.removeUser = function(group_group) {
-      $http.post('/groupAdmin/api.php', {action: 'removeUser', idGroup: $scope.groupId, idGroupUser: group_group.idGroupChild}, {responseType: 'json'}).success(function(postRes) {
-         if (!postRes || !postRes.success) {
-            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
-         } else {
-            SyncQueue.planToSend(0);
-         }
-      })
-      .error(function() {
-         console.error("error calling groupAdmin/api.php");
-      });
+      group_group.sType = 'removed';
+      ModelsManager.updated('groups_groups', group_group.ID);
    };
 
    $scope.removeAdmin = function(group_group) {

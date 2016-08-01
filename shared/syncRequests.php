@@ -657,7 +657,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       switch ($params["requests"]["algorea"]['type']) {
          case 'getItemsFromAncestors':
             // temporary
-            unset($requests['groups']);
+            //unset($requests['groups']);
             //unset($requests['groups_groups']);
             getItemsFromAncestors($params, $requests, $db, $minServerVersion);
             break;
