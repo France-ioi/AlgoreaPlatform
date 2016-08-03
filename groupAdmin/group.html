@@ -28,7 +28,9 @@
 								</div>
 								<div class="col-sm-8">
 									<select ng-model="group.sType" class="form-control" ng-disabled="!adminOnGroup">
-									<option value="{{key}}" ng-repeat="(key, value) in groupFields.sType.values" ng-selected="group.sType == key" ng-if="key!='Root'">{{value.label}}</option>
+										<option value="Class" ng-selected="group.sType == 'Class'">Classe</option>
+										<option value="Friends" ng-selected="group.sType == 'Friends'">Équipe</option>
+										<option value="Other" ng-selected="group.sType == 'Other'">Autre</option>
 									</select>
 								</div>
 							</div>
@@ -163,10 +165,10 @@
 			<div class="groupAdmin-tabContent">
 				<div class="row">
 					<div class="col-sm-6">
-						<span class="pull-left">Sélectionnez le type de progression : </span>
+						<span class="pull-left">Sélectionnez le type de progression&nbsp;:</span>
 						<div class="block-context">
-							<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label><br>
-							<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+							<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique</label><br>
+							<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours</label>
 						</div>
 					</div>
 					<div ng-if="progressionType == 'collective'" class="col-sm-6">
@@ -258,7 +260,7 @@
 									</ul>
 									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
 									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
-									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button>
+									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button>
 									<ul ng-if="!formValues.detailedView" class="list-progress-details">
 										<li class="score">{{thisUserItem.iScore}}%</li>
 										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
