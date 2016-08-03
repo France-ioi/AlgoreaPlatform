@@ -1,9 +1,3 @@
-<div ng-if="error">
-   {{error}}
-</div>
-<div ng-if="loading && !error">
-   <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
-</div>
 <uib-tabset active="active">
    <uib-tab heading="Mon compte">
    </uib-tab>
@@ -12,17 +6,17 @@
       <div ng-if="!error && !loading">
          <form class="form">
             <div class="form-group">
-               <label for="lookupString">Rechercher par nom :</label>
-               <input type="text" class="form-control" name="lookupString" ng-model="pageData.lookupString">
-            </div>
-            <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
-         </form>
-         <form class="form">
-            <div class="form-group">
                <label for="askedPassword">Rejoindre avec un mot de passe :</label>
                <input type="text" class="form-control" name="askedPassword" ng-model="pageData.askedPassword">
             </div>
             <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword">Rejoindre</button>
+         </form>
+         <form class="form">
+            <div class="form-group">
+               <label for="lookupString">Rechercher par nom :</label>
+               <input type="text" class="form-control" name="lookupString" ng-model="pageData.lookupString">
+            </div>
+            <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
          </form>
          <p>{{resultsError}}</p>
          <div ng-if="results" ng-repeat="result in results">
@@ -31,10 +25,10 @@
                <p>{{result.sDescription}}</p>
                <div ng-switch="result.relationType">
                   <p ng-switch-when="invitationSent">Vous avez reçu une invitation pour ce groupe.</p>
-                  <p ng-switch-when="invitationAccepted">Vous faites déjà partie de ce groupe.</p>
-                  <p ng-switch-when="requestAccepted">Vous faites déjà partie de ce groupe.</p>
-                  <p ng-switch-when="direct">Vous faites déjà partie de ce groupe.</p>
-                  <p ng-switch-when="requestSent">Vous avez déjà fait une demande pour rejoindre ce groupe.</p>
+                  <p ng-switch-when="invitationAccepted">Vous faites partie de ce groupe.</p>
+                  <p ng-switch-when="requestAccepted">Vous faites partie de ce groupe.</p>
+                  <p ng-switch-when="direct">Vous faites partie de ce groupe.</p>
+                  <p ng-switch-when="requestSent">Vous avez fait une demande pour rejoindre ce groupe.</p>
                   <div ng-switch-default>
                      <div class="form-group" ng-if="result.hasPassword && result.bOpened">
                         <label for="password">Ce groupe nécessite un mot de passe :</label>
@@ -74,7 +68,7 @@
                <td>
                   <div ng-if="mygroupgroup.sType == 'invitationSent'">
                      <button class="btn btn-default" ng-click="acceptInvitation(mygroupgroup)">Accepter</button>
-                     <button class="btn btn-default" ng-click="refuseInvitation(mygroupgroup)">Refuser</button>
+                     <button class="btn btn-default" confirm="refuseInvitation(mygroupgroup)" rel="Êtes-vous sûr de vouloir refuser l'invitation au groupe {{group_group.parent.sName}} ?">Refuser</button>
                   </div>
                   <div ng-if="mygroupgroup.sType == 'requestSent'">
                      <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)">Annuler</button>
@@ -107,3 +101,9 @@
       <button class="btn btn-standard" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength">Marquer comme lu</button>
    </uib-tab>
 </uib-tabset>
+<div ng-if="error">
+   {{error}}
+</div>
+<div ng-if="loading && !error">
+   <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+</div>
