@@ -24,8 +24,8 @@ class groupAdmin {
 
       foreach($requests as $requestName => &$request) {
          $request['requestSet'] = ['name' => 'groupAdmin'];
-         if (isset($requestSet['minServerVersion'])) {
-            $request['minVersion'] = $requestSet['minServerVersion'];
+         if (isset($requestSet['minVersion'])) {
+            $request['minVersion'] = $requestSet['minVersion'];
          } else {
             $request['minVersion'] = $minServerVersion;
          }
@@ -44,7 +44,6 @@ class groupAdmin {
       $requests['groupAdminUsersInvited']["filters"]["invited"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminUsersItemsDescendants']["filters"]["groupDescendants"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminUsersItemsDescendants']["filters"]["itemsDescendants"] = ['values' => ['idItem' => $itemId]];
-      $requests['groupAdminGroupsGroupsParents']['debugLogFunction'] = myDebugFunction;
       return $requests;
    }
 }

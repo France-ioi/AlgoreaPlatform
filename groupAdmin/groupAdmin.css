@@ -11,6 +11,11 @@ Red : #e42c20;
 green : #0FAA8B;
 orange : #F29200;
 */
+
+.groupAdmin-modal > .modal-dialog {
+	width: 90% !important;
+}
+
 .groupAdmin {
 	margin: 10px;
 	color: #480a2a;

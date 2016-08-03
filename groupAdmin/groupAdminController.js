@@ -97,6 +97,18 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
+   .controller('groupAdminPopupController', ['$scope', '$uibModalInstance', 'popupData', function ($scope, $uibModalInstance, popupData) {
+   'use strict';
+   $scope.user_item = popupData.user_item;
+   $scope.item = popupData.item;
+   $scope.thread = popupData.thread;
+   $scope.inPopup = true;
+   $scope.close = function () {
+      $uibModalInstance.close();
+   };
+}]);
+
+angular.module('algorea')
    .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout) {
    'use strict';
    $scope.error = null;
@@ -119,16 +131,27 @@ angular.module('algorea')
 
    $scope.openPopup = function(user_item) {
       var thread = getThread(user_item);
-      var modalInstance = $uibModal.open({
-         templateUrl: 'forum/thread.html',
-         controller: 'forumThreadController',
-         size: 800,
-         scope: {
-            user_item: user_item,
-            thread: thead,
-            readOnlyIfNoThread: true
-         }
-       });
+      var my_user_item = itemService.getUserItem(user_item.item);
+      var item = user_item.item;
+      if (my_user_item.bValidated || item.bAccessSolutions || item.bOwnerAccess || item.bManagerAccess) {
+         var popupData = {
+               user_item: user_item,
+               thread: thread,
+               readOnlyIfNoThread: true,
+               item: user_item.item
+            };
+         var modalInstance = $uibModal.open({
+            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button><div ng-include="\'forum/thread.html\'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>',
+            controller: 'groupAdminPopupController',
+            resolve: {popupData: () => popupData},
+            windowClass: 'groupAdmin-modal'
+          });
+      } else {
+         var modalInstance = $uibModal.open({
+            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>Vous n\'avez pas validé cet exercice et vous n\'avez pas les droits suffisants pour voir les soumission',
+            controller: ''
+          });
+      }
    };
 
    $scope.getClass = function(userItem) {
@@ -190,7 +213,7 @@ angular.module('algorea')
    }
 
    $scope.getDuration = function(user_item) {
-      if (!user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+      if (!user_item || !user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
          return '-';
       }
       if (user_item.bValidated) {
@@ -499,12 +522,12 @@ angular.module('algorea')
    };
 
    $scope.startSync = function(groupId, itemId, callback) {
-      SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minServerVersion: 0};
+      SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minVersion: 0};
       // yeah...
       SyncQueue.addSyncEndListeners('groupAdminController', function() {
          $scope.loading = false;
          SyncQueue.removeSyncEndListeners('groupAdminController');
-         delete(SyncQueue.requestSets.groupAdmin.minServerVersion);
+         delete(SyncQueue.requestSets.groupAdmin.minVersion);
          callback();
          $rootScope.$broadcast('algorea.groupSynced');
       }, false, true);

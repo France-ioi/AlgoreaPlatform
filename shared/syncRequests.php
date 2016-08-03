@@ -134,18 +134,8 @@ function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
    array_push($requests["items"]["fields"], 'bAccessSolutions');
    $requests["items"]['model']["fields"]['bAccessSolutions'] = array('sql' => 'MAX(`groups_items`.`bCachedAccessSolutions`)');
    $requests["items"]["model"]["fields"]["sType"]["groupBy"] = "`items`.`ID`";
-   //$requests["items"]["debugLogFunction"] = myDebugFunction;
 
    $requests["items_strings"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
-
-   // if (!isset($requests["users_items"])) {
-   //    $users_items_model = createViewModelFromTable("users_items", true);
-   //    $requests["users_items"] = array(
-   //       "modelName" => "users_items",
-   //       "model" => $users_items_model,
-   //       "fields" => $users_items_model['fields'],
-   //    );
-   // }
 
    $requests['users_items']['filters']['idUser'] = array(
       'values' => ['idUser' => $_SESSION['login']['ID']],
@@ -190,7 +180,7 @@ function myDebugFunction($query, $values, $moment = '') {
    foreach ($values as $valueName => $value) {
       $res = str_replace(':'.$valueName, $db->quote($value), $res);
    }
-   file_put_contents(__DIR__.'/../logs/threads.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
+   file_put_contents(__DIR__.'/../logs/sync-debug.log', date(DATE_RFC822).'  '.$moment.' '.$res.";\n", FILE_APPEND);
 }
 
 function getGroups ($params, &$requests) {
@@ -534,7 +524,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
             'values' => array('idUser' => $_SESSION['login']['ID']),
          );
 
-         //$requests["users_threads"]["debugLogFunction"] = myDebugFunction;
+         //$requests["threads"]["debugLogFunction"] = myDebugFunction;
 
       } else {
          //unset($requests["users_items"]);
@@ -559,8 +549,8 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       switch ($params["requests"]["algorea"]['type']) {
          case 'getItemsFromAncestors':
             // temporary
-            unset($requests['groups']);
-            unset($requests['groups_groups']);
+            //unset($requests['groups']);
+            //unset($requests['groups_groups']);
             getItemsFromAncestors($params, $requests, $db, $minServerVersion);
             unset($requests['groups_items']);
             break;
