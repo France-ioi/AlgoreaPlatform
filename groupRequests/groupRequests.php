@@ -7,7 +7,6 @@ ini_set('display_errors', '1');
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 
-$config = json_decode(file_get_contents("../config.json"));
 session_start();
 header('Content-Type: application/json');
 
@@ -21,7 +20,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
 }
 
 require_once __DIR__."/../shared/connect.php";
-require_once __DIR__."/../modelsManager/modelsTools.inc.php"; // for getRandomID
+require_once __DIR__."/../commonFramework/modelsManager/modelsTools.inc.php"; // for getRandomID
 
 function getGroupsMathing($request, $db) {
    if (!isset($request['lookupString']) || !$request['lookupString']) {
@@ -44,12 +43,18 @@ function getGroupsMathing($request, $db) {
 }
 
 function joinGroup($request, $db) {
-   if (!isset($request['ID']) || !$request['ID']) {
+   if ((!isset($request['ID']) || !$request['ID']) && (!isset($request['password']) || !$request['password'])) {
       echo json_encode(array('result' => false, 'error' => 'missing arguments in request'));
       return;
    }
    $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.ID = :ID group by groups.ID;';
-   $values = array('ID' => $request['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
+   if (isset($request['ID'])) {
+      $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.ID = :ID group by groups.ID;';
+      $values = array('ID' => $request['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
+   } else {
+      $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.sPassword = :password group by groups.ID;';
+      $values = array('password' => $request['password'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
+   }
    $stmt = $db->prepare($query);
    $stmt->execute($values);
    $result = $stmt->fetch();
@@ -70,7 +75,7 @@ function joinGroup($request, $db) {
       return;
    }
    $groupGroupType = 'requestSent';
-   if (!$result['sPassword'] && $result['bFreeAccess'] == 1) {
+   if (isset($request['password']) || (!$result['sPassword'] && $result['bFreeAccess'] == 1)) {
       $groupGroupType = 'requestAccepted';
    }
    $groupGroupID = $result['ggID'];

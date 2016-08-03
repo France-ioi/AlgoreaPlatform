@@ -2,6 +2,11 @@
    <p ng-show="(item_item == undefined) || (group_group == undefined)">
       <b>Sélectionnez d'abord l'item et le groupe pour lesquels vous souhaitez configurer les accès.</b>
    </p>
+   <div ng-if="item_item && group_group">
+      <a target="_self" ng-href="zip_export.php?itemId={{item_item.idItemChild}}&groupId={{group_group.idGroupChild}}">
+         <button>Exporter un zip avec toutes les soumissions</button>
+      </a>
+   </div>
    <span ng-if="item_item != undefined">
       <span class="accessTitleCell accessItemCell">
          Accès

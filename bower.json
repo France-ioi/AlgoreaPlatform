@@ -13,9 +13,12 @@
     "jquery": "1.*",
     "jquery-ui": "latest",
     "jquery.layout": "latest",
-    "jschannel": "*",
+    "jschannel": "https://github.com/France-ioi/jschannel.git#01f53a1",
     "pem-platform": "France-ioi/pem-platform",
     "paper": "^0.9.25",
     "lodash": "^4.13.1"
+  },
+  "resolutions": {
+    "jschannel": "01f53a1"
   }
 }

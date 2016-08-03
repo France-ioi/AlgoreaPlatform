@@ -28,9 +28,9 @@ require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
 
 function getTokenParams($request) {
    global $config;
-   $tokenParser = new TokenParser($config->platform->public_key);
+   $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
    try {
-      $params = $tokenParser->decodeToken($request['sToken']);
+      $params = $tokenParser->decodeJWS($request['sToken']);
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage()));
       exit;
@@ -62,15 +62,15 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       exit;
    }
    if (!$platform['bUsesTokens']) {
-      return 10 * floatval($request['score']);  // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+      return floatval($request['score']);  // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
    }
    if (!$otherPlatformToken) {
       echo json_encode(array('result' => false, 'error' => 'platform token was ommited, please transmit it.', 'token' => $params));
       exit;
    }
-   $tokenParser = new TokenParser($platform['sPublicKey']);
+   $tokenParser = new TokenParser($platform['sPublicKey'], $platform['sUri']);
    try {
-      $params = $tokenParser->decodeToken($otherPlatformToken);
+      $params = $tokenParser->decodeJWS($otherPlatformToken);
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage(), 'platform' => $platform));
       exit;
@@ -80,16 +80,16 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       error_log('possible hack attempt from user ID '.$_SESSION['login']['ID']);
       exit;
    }
-   return 10 * floatval($params['score']); // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+   return floatval($params['score']); // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
 }
 
 // function returning the idUserAnswer field of $otherPlatformToken, an
 // answerToken as returned by askHint()
 function getIdUserAnswer($params, $answerToken) {
    global $config;
-   $tokenParser = new TokenParser($config->platform->public_key);
+   $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
    try {
-      $answerParams = $tokenParser->decodeToken($answerToken);
+      $answerParams = $tokenParser->decodeJWS($answerToken);
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage()));
       exit;
@@ -128,11 +128,12 @@ function askValidation($request, $db) {
       'sAnswer' => $request['sAnswer'],
       'idUser' => intval($_SESSION['login']['ID']),
       'idItem' => intval($params['idItem']),
+      'itemUrl' => intval($params['itemUrl']),
       'idItemLocal' => intval($params['idItemLocal']),
       'idUserAnswer' => $ID
    );
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-   $answerToken = $tokenGenerator->generateToken($answerParams);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+   $answerToken = $tokenGenerator->encodeJWS($answerParams);
    echo json_encode(array('result' => true, 'sAnswerToken' => $answerToken, 'answer' => $answerParams));
 }
 
@@ -146,8 +147,8 @@ function askHint($request, $db) {
    Listeners::UserItemsAfter($db);
 
    $params['nbHintsGiven'] = $params['nbHintsGiven'] + 1;
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-   $token = $tokenGenerator->generateToken($params);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+   $token = $tokenGenerator->encodeJWS($params);
    echo json_encode(array('result' => true, 'sToken' => $token));
 }
 
@@ -164,7 +165,7 @@ function graderResult($request, $db) {
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
    $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), sLastActivityDate = NOW(), sLastAnswerDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    if ($bValidated) {
-      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = NOW(), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = LOWEST(NOW(),IFNULL(sValidationDate,NOW()), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    }
    $stmt = $db->prepare($query);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
@@ -174,15 +175,15 @@ function graderResult($request, $db) {
    $token = $request['sToken'];
    if ($bValidated && !$params['bAccessSolutions']) {
       $params['bAccessSolutions'] = true;
-      $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-      $token = $tokenGenerator->generateToken($params);
+      $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+      $token = $tokenGenerator->encodeJWS($params);
    }
    echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'sToken' => $token));
 }
 
 function getToken($request, $db) {
    global $config;
-   $query = 'select `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
+   $query = 'select `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
    'from `items` '.
    'join `groups_items` on `groups_items`.`idItem` = `items`.`ID` '.
    'join `users_items` on `users_items`.`idItem` = `items`.`ID` '.
@@ -218,12 +219,13 @@ function getToken($request, $db) {
       'idUser' => intval($_SESSION['login']['ID']),
       'idItemLocal' => intval($request['idItem']),
       'idItem' => $data['sTextId'],
+      'itemUrl' => $data['sUrl'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],
       'bHasSolvedTask' => $data['bValidated'],
    );
    $tokenArgs['id'+$data['sType']] = $tokenArgs['idItem']; // TODO: should disapear
-   $tokenGenerator = new TokenGenerator($config->platform->name, $config->platform->private_key);
-   $sToken = $tokenGenerator->generateToken($tokenArgs);
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+   $sToken = $tokenGenerator->encodeJWS($tokenArgs);
    echo json_encode(array('result' => true, 'sToken' => $stoken, 'tokenArgs' => $tokenArgs));
 }
 
