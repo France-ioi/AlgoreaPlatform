@@ -13,19 +13,10 @@ require_once(__DIR__.'/../shared/connect.php');
 require_once(__DIR__.'/../shared/listeners.php');
 require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
 
-$postdata = file_get_contents("php://input");
-$request = (array) json_decode($postdata);
-
-if (!$request) {
-  $request = $_GET;
+$loginToken = $_GET['loginToken'];
+if (!$loginToken) {
+   die('missing loginToken param');
 }
-
-if (!$request || !is_array($request) || !$request['action']) {
-   echo '{"result": false, "error": "no argument given"}';
-   return;
-}
-
-$action = $request['action'];
 
 session_start();
 if (!isset($_SESSION['login'])) { $_SESSION['login'] = array(); };
@@ -71,7 +62,6 @@ function createTempUser($db) {
    ));
    $_SESSION['login'] = array(
       'idGroupSelf' => $userSelfGroupId,
-      'idGroupOwned' => $userAdminGroupId,
       'tempUser'    => 1,
       'ID'          => $userId,
       'sLogin'      => $sLogin,
@@ -80,52 +70,50 @@ function createTempUser($db) {
    echo json_encode(array('result' => true, 'sLogin' => $sLogin, 'ID' => $userId));
 }
 
-if ($action == 'login') {
-  // user has logged through login platform, we receive the token here:
-  // we fill the session and, if not already creted, create a new user
-   require_once(dirname(__FILE__)."/../shared/TokenParser.php");
-   $tokenParser = new TokenParser($config->login->public_key, $config->login->name);
-   $params = $tokenParser->decodeJWS($request['token']);
-   if (!$params || empty($params)) {
-      echo '{"result": false, "error": "invalid or empty token"}';
-      return;
-   }
-   foreach ($params as $param_k => $param_v) {
-      $_SESSION['login'][$param_k] = $param_v;
-   }
-   $_SESSION['login']['sToken'] = $request['token'];
-   $_SESSION['login']['tempUser'] = 0;
-   $_SESSION['login']['loginId'] = $params['idUser'];
-   $query = 'select ID, idGroupSelf, idGroupOwned, bIsAdmin from users where `loginID`= :idUser ;';
-   $stm = $db->prepare($query);
-   $stm->execute(array('idUser' => $params['idUser']));
-   if(! $stm->rowCount()) {
-      list($userAdminGroupId, $userSelfGroupId) = createGroupsFromLogin($db, $params['sLogin']);
-      $userId = getRandomID();
-      $query = "insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`) values ('$userId', '".$params['idUser']."', '".$params['sLogin']."', '0', NOW(), $userSelfGroupId, $userAdminGroupId);";
-      $db->exec($query);
-      $_SESSION['login']['ID'] = $userId;
-      $_SESSION['login']['idGroupSelf'] = $userSelfGroupId;
-      $_SESSION['login']['idGroupOwned'] = $userAdminGroupId;
-      $_SESSION['login']['bIsAdmin'] = false;
-   } else {
-      $res = $stm->fetch();
-      $_SESSION['login']['ID'] = $res['ID'];
-      $_SESSION['login']['idGroupSelf'] = $res['idGroupSelf'];
-      $_SESSION['login']['idGroupOwned'] = $res['idGroupOwned'];
-      $_SESSION['login']['bIsAdmin'] = $res['bIsAdmin'];
-   }
-   echo json_encode(array('result' => true, 'sLogin' => $params['sLogin'], 'ID' => $_SESSION['login']['ID'], 'loginData' => $_SESSION['login']));
-} else if ($action == 'notLogged') {
-  // user is not logged through login platform, we create a temporary user here
-  // is there already a temporary user in the session?
-  if (isset($_SESSION['login']['tempUser']) && $_SESSION['login']['tempUser'] == 1) {
-     echo json_encode(array('result'    => true, 'sLogin' => $_SESSION['login']['sLogin'], 'ID' => $_SESSION['login']['ID'], 'loginData' => $_SESSION['login']));
-  } else {
-     $_SESSION = array();
-     createTempUser($db);
-  }
-} else if ($action == 'logout') {
-   $_SESSION = array();
-   createTempUser($db);
+// user has logged through login platform, we receive the token here:
+// we fill the session and, if not already creted, create a new user
+require_once(dirname(__FILE__)."/../shared/TokenParser.php");
+$tokenParser = new TokenParser($config->login->public_key, $config->login->name);
+$params = $tokenParser->decodeJWS($loginToken);
+if (!$params || empty($params)) {
+   echo '{"result": false, "error": "invalid or empty token"}';
+   return;
 }
+foreach ($params as $param_k => $param_v) {
+   $_SESSION['login'][$param_k] = $param_v;
+}
+$_SESSION['login']['sToken'] = $loginToken;
+$_SESSION['login']['tempUser'] = 0;
+$_SESSION['login']['loginId'] = $params['idUser'];
+$query = 'select ID, idGroupSelf, idGroupOwned, bIsAdmin from users where `loginID`= :idUser ;';
+$stm = $db->prepare($query);
+$stm->execute(array('idUser' => $params['idUser']));
+if(! $stm->rowCount()) {
+   list($userAdminGroupId, $userSelfGroupId) = createGroupsFromLogin($db, $params['sLogin']);
+   $userId = getRandomID();
+   $query = "insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`) values ('$userId', '".$params['idUser']."', '".$params['sLogin']."', '0', NOW(), $userSelfGroupId, $userAdminGroupId);";
+   $db->exec($query);
+   $_SESSION['login']['ID'] = $userId;
+   $_SESSION['login']['idGroupSelf'] = $userSelfGroupId;
+   $_SESSION['login']['idGroupOwned'] = $userAdminGroupId;
+   $_SESSION['login']['bIsAdmin'] = false;
+} else {
+   $res = $stm->fetch();
+   $_SESSION['login']['ID'] = $res['ID'];
+   $_SESSION['login']['idGroupSelf'] = $res['idGroupSelf'];
+   $_SESSION['login']['idGroupOwned'] = $res['idGroupOwned'];
+   $_SESSION['login']['bIsAdmin'] = $res['bIsAdmin'];
+}
+
+?>
+
+<!doctype html>
+<html>
+   <head>
+   <script>
+      window.parent.location.href = "/";
+   </script>
+   </head>
+   <body>
+   </body>
+</html>

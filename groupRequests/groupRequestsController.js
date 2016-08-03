@@ -149,6 +149,11 @@ angular.module('algorea')
          console.error("error calling groupRequests.php");
       });
    };
+
+   $scope.joinWithPassword = function() {
+      $scope.joinGroup({password: $scope.pageData.askedPassword});
+   };
+
    $scope.joinGroup = function(result) {
       result.joinLog = "chargement...";
       $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
@@ -163,7 +168,7 @@ angular.module('algorea')
                record.sType = postRes.type;
                result.joinLog = null;
             } else {
-               SyncQueue.planToSend();
+               SyncQueue.planToSend(0);
             }
          }
       })

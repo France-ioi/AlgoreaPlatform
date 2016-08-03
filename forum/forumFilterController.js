@@ -22,7 +22,6 @@ angular.module('algorea')
    $scope.showFilters = false;
    $scope.plusActiveVar = false;
    $scope.filters = [];
-   $scope.myUserID = null;
    // using object here due to prototypal inheritance / scope mess, see
    // here: https://github.com/angular-ui/bootstrap/issues/2540
    $scope.data = {};
@@ -102,8 +101,6 @@ angular.module('algorea')
    };
    itemService.onNewLoad(function() {
       $scope.loading = false;
-      $scope.myUserID = loginService.getUser();
-      $scope.myUserID = $scope.myUserID.userID;
       $scope.filters = ModelsManager.getRecords('filters');
       if (!$scope.filters || isObjEmpty($scope.filters)) {
          var filter = ModelsManager.createRecord('filters');
@@ -153,13 +150,6 @@ angular.module('algorea')
       return true;
    }
    function checkAgainstTab(thread, tab, userID) {
-      // TODO: temporary hack, should be done server-side:
-      if (thread.idItem) {
-         var item = ModelsManager.getRecord('items', thread.idItem);
-         if (!item || !item.sType) {
-            return false;
-         }
-      }
       if (tab == 'getHelp')
          return thread.sType === 'Help' && thread.idUserCreated == userID;
       if (tab == 'helpOthers')

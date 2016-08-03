@@ -4,93 +4,106 @@
 <div ng-if="loading && !error">
    <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
 </div>
-<h2 ng-hide="loading || error">Rejoindre un groupe</h2>
-<div ng-if="!error && !loading">
-   <form class="form">
-      <div class="form-group">
-         <label for="lookupString">Groupe recherché :</label>
-         <input type="text" class="form-control" name="lookupString" ng-model="pageData.lookupString">
-      </div>
-      <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
-   </form>
-   <p>{{resultsError}}</p>
-   <div ng-if="results" ng-repeat="result in results">
-      <h4><a ng-click="toggleExpanded()">[<span ng-hide="expanded">+</span><span ng-show="expanded">-</span>]</a> {{result.sName}} ({{result.sType}})</h4>
-      <div ng-show="expanded">
-         <p>{{result.sDescription}}</p>
-         <div ng-switch="result.relationType">
-            <p ng-switch-when="invitationSent">Vous avez reçu une invitation pour ce groupe.</p>
-            <p ng-switch-when="invitationAccepted">Vous faites déjà partie de ce groupe.</p>
-            <p ng-switch-when="requestAccepted">Vous faites déjà partie de ce groupe.</p>
-            <p ng-switch-when="direct">Vous faites déjà partie de ce groupe.</p>
-            <p ng-switch-when="requestSent">Vous avez déjà fait une demande pour rejoindre ce groupe.</p>
-            <div ng-switch-default>
-               <div class="form-group" ng-if="result.hasPassword && result.bOpened">
-                  <label for="password">Ce groupe nécessite un mot de passe :</label>
-                  <input type="text" name="password" class="form-control" ng-model="result.password">
+<uib-tabset active="active">
+   <uib-tab heading="Mon compte">
+   </uib-tab>
+   <uib-tab heading="Mes groupes">
+      <h2 ng-hide="loading || error">Rejoindre un groupe</h2>
+      <div ng-if="!error && !loading">
+         <form class="form">
+            <div class="form-group">
+               <label for="lookupString">Rechercher par nom :</label>
+               <input type="text" class="form-control" name="lookupString" ng-model="pageData.lookupString">
+            </div>
+            <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
+         </form>
+         <form class="form">
+            <div class="form-group">
+               <label for="askedPassword">Rejoindre avec un mot de passe :</label>
+               <input type="text" class="form-control" name="askedPassword" ng-model="pageData.askedPassword">
+            </div>
+            <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword">Rejoindre</button>
+         </form>
+         <p>{{resultsError}}</p>
+         <div ng-if="results" ng-repeat="result in results">
+            <h4><a ng-click="toggleExpanded()">[<span ng-hide="expanded">+</span><span ng-show="expanded">-</span>]</a> {{result.sName}} ({{result.sType}})</h4>
+            <div ng-show="expanded">
+               <p>{{result.sDescription}}</p>
+               <div ng-switch="result.relationType">
+                  <p ng-switch-when="invitationSent">Vous avez reçu une invitation pour ce groupe.</p>
+                  <p ng-switch-when="invitationAccepted">Vous faites déjà partie de ce groupe.</p>
+                  <p ng-switch-when="requestAccepted">Vous faites déjà partie de ce groupe.</p>
+                  <p ng-switch-when="direct">Vous faites déjà partie de ce groupe.</p>
+                  <p ng-switch-when="requestSent">Vous avez déjà fait une demande pour rejoindre ce groupe.</p>
+                  <div ng-switch-default>
+                     <div class="form-group" ng-if="result.hasPassword && result.bOpened">
+                        <label for="password">Ce groupe nécessite un mot de passe :</label>
+                        <input type="text" name="password" class="form-control" ng-model="result.password">
+                     </div>
+                     <p ng-if="!result.hasPassword && result.bOpened">
+                        Ce groupe est ouvert à tous. <span ng-hide="result.bFreeAccess">Vous ne ferez partie du groupe qu'une fois qu'un modérateur aura validé votre demande.</span>
+                     </p>
+                     <p ng-if="!result.bOpened">Ce groupe est actuellement fermé.</p>
+                     <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)">Rejoindre le groupe</button>
+                     <div class="alert alert-warning" role="alert" ng-show="result.joinLog">{{result.joinLog}}</div>
+                  </div>
                </div>
-               <p ng-if="!result.hasPassword && result.bOpened">
-                  Ce groupe est ouvert à tous. <span ng-hide="result.bFreeAccess">Vous ne ferez partie du groupe qu'une fois qu'un modérateur aura validé votre demande.</span>
-               </p>
-               <p ng-if="!result.bOpened">Ce groupe est actuellement fermé.</p>
-               <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)">Rejoindre le groupe</button>
-               <div class="alert alert-warning" role="alert" ng-show="result.joinLog">{{result.joinLog}}</div>
             </div>
          </div>
       </div>
-   </div>
-</div>
 
-<h2 ng-hide="loading">Les groupes dont je fais partie</h2>
+      <h2 ng-hide="loading">Les groupes dont je fais partie</h2>
 
-<div ng-if="!loading && !showTable()">
-   <p>Vous ne faites actuellement partie d'aucun groupe.</p>
-</div>
-<table class="table table-bordered table-hover" ng-if="showTable()">
-   <thead>
-      <tr>
-         <th>Groupe</th>
-         <th>Date</th>
-         <th>État</th>
-         <th>Action</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr ng-repeat="mygroupgroup in getMyGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType != 'invitationRefused' && mygroupgroup.sType != 'requestRefused' && mygroupgroup.sType != 'left' && mygroupgroup.sType != 'removed'">
-         <td>{{mygroupgroup.parent.sName}}</td>
-         <td>{{mygroupgroup.sStatusDate | date}}</td>
-         <td>{{printType(mygroupgroup.sType)}}</td>
-         <td>
-            <div ng-if="mygroupgroup.sType == 'invitationSent'">
-               <button class="btn btn-default" ng-click="acceptInvitation(mygroupgroup)">Accepter</button>
-               <button class="btn btn-default" ng-click="refuseInvitation(mygroupgroup)">Refuser</button>
-            </div>
-            <div ng-if="mygroupgroup.sType == 'requestSent'">
-               <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)">Annuler</button>
-            </div>
-            <div ng-if="mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'direct' ">
-               <button class="btn btn-default" confirm="leaveGroup(mygroupgroup)" rel="Êtes-vous sûr de vouloir quitter le groupe {{group_group.parent.sName}} ?'">Quitter le groupe</button>
-            </div>
-         </td>
-      </tr>
-   </tbody>
-</table>
+      <div ng-if="!loading && !showTable()">
+         <p>Vous ne faites actuellement partie d'aucun groupe.</p>
+      </div>
+      <table class="table table-bordered table-hover" ng-if="showTable()">
+         <thead>
+            <tr>
+               <th>Groupe</th>
+               <th>Date</th>
+               <th>État</th>
+               <th>Action</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr ng-repeat="mygroupgroup in getMyGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType != 'invitationRefused' && mygroupgroup.sType != 'requestRefused' && mygroupgroup.sType != 'left' && mygroupgroup.sType != 'removed'">
+               <td>{{mygroupgroup.parent.sName}}</td>
+               <td>{{mygroupgroup.sStatusDate | date}}</td>
+               <td>{{printType(mygroupgroup.sType)}}</td>
+               <td>
+                  <div ng-if="mygroupgroup.sType == 'invitationSent'">
+                     <button class="btn btn-default" ng-click="acceptInvitation(mygroupgroup)">Accepter</button>
+                     <button class="btn btn-default" ng-click="refuseInvitation(mygroupgroup)">Refuser</button>
+                  </div>
+                  <div ng-if="mygroupgroup.sType == 'requestSent'">
+                     <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)">Annuler</button>
+                  </div>
+                  <div ng-if="mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'direct' ">
+                     <button class="btn btn-default" confirm="leaveGroup(mygroupgroup)" rel="Êtes-vous sûr de vouloir quitter le groupe {{group_group.parent.sName}} ?'">Quitter le groupe</button>
+                  </div>
+               </td>
+            </tr>
+         </tbody>
+      </table>
 
-<h2 ng-hide="loading">Historique complet</h2>
+      <h2 ng-hide="loading">Historique complet</h2>
 
-<ul ng-if="!loading">
-   <li ng-repeat="mygroupgroup in getMyGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
-      {{mygroupgroup.sStatusDate | date}}: 
-      <span ng-switch="mygroupgroup.sType">
-         <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-         <span ng-switch-when="requestRefused">vous avez été refusé dans le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-         <span ng-switch-when="invitationSent">vous avez été invité au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-         <span ng-switch-when="requestSent">vous avez demandé de rejoindre le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-         <span ng-switch-when="left">vous avez quitté le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-         <span ng-switch-when="removed">vous avez été supprimé du groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-         <span ng-switch-default>vous avez rejoint le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-      </span>
-   </li>
-</ul>
-<button class="btn btn-standard" ng-click="addHistoryLimit()" ng-if="!loading && parentsLength && parentsLength > historyLimit">Voir 10 de plus</button>
-<button class="btn btn-standard" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength">Marquer comme lu</button>
+      <ul ng-if="!loading">
+         <li ng-repeat="mygroupgroup in getMyGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
+            {{mygroupgroup.sStatusDate | date}}: 
+            <span ng-switch="mygroupgroup.sType">
+               <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="requestRefused">vous avez été refusé dans le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="invitationSent">vous avez été invité au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="requestSent">vous avez demandé de rejoindre le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="left">vous avez quitté le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-when="removed">vous avez été supprimé du groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+               <span ng-switch-default>vous avez rejoint le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+            </span>
+         </li>
+      </ul>
+      <button class="btn btn-standard" ng-click="addHistoryLimit()" ng-if="!loading && parentsLength && parentsLength > historyLimit">Voir 10 de plus</button>
+      <button class="btn btn-standard" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength">Marquer comme lu</button>
+   </uib-tab>
+</uib-tabset>
