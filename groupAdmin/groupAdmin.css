@@ -378,13 +378,16 @@ orange : #F29200;
 }
 
 /* Collective view */
+.groupAdmin .view-switcher {
+	overflow: auto;
+}
 .groupAdmin .table-progress {
 	border-collapse: collapse;
-	margin-top: 150px;
+	margin-top: 80px;
 }
 .groupAdmin .table-progress td,
 .groupAdmin .table-progress th {
-	border: 1px solid #a88996;
+	border: 1px solid #480a2a;
 	padding: 3px;
 	max-width: 11em;
 	background-color: #fff;
@@ -424,19 +427,21 @@ orange : #F29200;
 	padding: 0;
 }
 
-.groupAdmin .table-progress.progress-global th.name {
+.groupAdmin .table-progress.view-global th.name {
 	white-space: nowrap;
 	width: 60px;
 	border: none;
 	background-color: transparent;
+	padding: 0;
 }
 
 	/* Collective view: Global */
-.groupAdmin .table-progress.progress-global th.name div {
-	transform: rotate(-75deg) translate(-11px, 28px);
+.groupAdmin .table-progress.view-global th.name div {
+	transform: rotate(-45deg) translate(11px, 45px);
 	width: 30px;
+	text-transform: none;
 }
-.groupAdmin .table-progress.progress-global th.name div span {
+.groupAdmin .table-progress.view-global th.name div span {
 	border-bottom: 1px solid #a88996;
 	padding: 5px;
 	overflow: hidden;
@@ -444,70 +449,78 @@ orange : #F29200;
 	display: inline-block;
 	width: 200px;
 	text-align: left;
-	line-height: 2.5em;
 }
-.groupAdmin .table-progress.progress-global td.status {
+.groupAdmin .table-progress.view-global td.status {
 	position: relative;
 	width: 60px;
 	padding: 3px;
 	vertical-align: bottom;
 }
-.groupAdmin .table-progress.progress-global td.status button {
+.groupAdmin .table-progress.view-global td.status button {
 	opacity: 0;
 	transition: all 250ms;
 }
-.groupAdmin .table-progress.progress-global td.status:hover button {
+.groupAdmin .table-progress.view-global td.status:hover button {
 	opacity: 1;
 }
-.groupAdmin .table-progress.progress-global td.status .list-progress-details {
+.groupAdmin .table-progress.view-global td.status .progress-details {
 	position: absolute;
-	display: none;
 	border: 1px solid #0FAA8B;
 	background-color: #fff;
 	list-style: none;
-	padding: 10px;
-	top: -20px;
-	right: -25px;
-	left: -25px;
-	font-size: 10px;
-	margin: 0;
+	font-size: 14px;
 	line-height: 1.4;
-	z-index: 1;
+	margin: 0;
+	padding: 10px;
+	bottom: 40px;
+	left: -60px;
+	display: none;
+	width: 120px;
 }
-/* TODO: change :hover to .visible */
-/*.groupAdmin .table-progress.progress-global td.status:hover .list-progress-details {
+.groupAdmin .table-progress.view-global td.status button.btn-preview:hover + * + ul.progress-details {
 	display: block;
-}*/
-.groupAdmin .table-progress.progress-global .list-progress-details li {
+}
+.groupAdmin .table-progress.view-global .progress-details li {
 	position: relative;
 	padding-left: 20px;
-	font-size: 12px;
 }
 
 	/* Collective view: Detailed */
-.groupAdmin .table-progress.progress-detail th.name {
+.groupAdmin .table-progress.view-detail th.name {
 	word-break: break-word
 }
-.groupAdmin .table-progress.progress-detail .list-progress-details {
-	padding: 0;
-	margin: 0;
-	list-style: none;
+.groupAdmin .table-progress.view-detail .progress-details {
 	display: table;
+	width: 100%;
 }
-.groupAdmin .table-progress.progress-detail .list-progress-details .break {
+.groupAdmin .table-progress.view-detail .progress-details .details-row {
 	display: table-row;
-}
-.groupAdmin .table-progress.progress-detail .list-progress-details li {
-	background-color: #eee;
-	display: table-cell;
-	width: 60px;
-	border: 1px solid #fff;
-	font-size: 10px;
-	vertical-align: middle;
 	text-align: center;
 }
-
-.groupAdmin .list-progress-details li::before {
+.groupAdmin .table-progress.view-detail .progress-details .details-row:first-child {
+	border-bottom: 1px solid #fff;
+	border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div {
+	display: table-cell;
+	height: 54px;
+	vertical-align: middle;
+	border-left: 1px solid #fff;
+	border-left: 1px solid rgba(255,255,255,0.2);
+	width: 58px;
+}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
+	border-left: none;
+}
+.groupAdmin .table-progress.view-detail .status.unread .progress-details .details-row > div,
+.groupAdmin .table-progress.view-detail .status.read .progress-details .details-row > div {
+	color: transparent;
+}
+.groupAdmin .table-progress.view-detail .status.unread .btn-modal,
+.groupAdmin .table-progress.view-detail .status.read .btn-modal {
+	display: none;
+}
+.groupAdmin .progress-details li::before {
 	margin-right: 5px;
 	display: inline-block;
 	width: 15px;
@@ -515,23 +528,27 @@ orange : #F29200;
 	left: 0;
 	top: 0;
 }
-.groupAdmin .list-progress-details .score::before {
+.groupAdmin .progress-details .score::before {
 	content: "S";
 }
-.groupAdmin .list-progress-details .date::before {
+.groupAdmin .progress-details .date::before {
 	content: url(images/picto-calendrier.png);
 }
-.groupAdmin .list-progress-details .time::before {
+.groupAdmin .progress-details .time::before {
 	content: url(images/picto-chronometre.png);
 }
-.groupAdmin .list-progress-details .submissions::before {
+.groupAdmin .progress-details .submissions::before {
 	content: " ";
 }
-.groupAdmin .list-progress-details .questions::before {
+.groupAdmin .progress-details .questions::before {
 	content: url(images/picto-indice.png);
 }
-.groupAdmin .list-progress-details .help::before {
+.groupAdmin .progress-details .help::before {
 	content: url(images/picto-aide.png);
+}
+.groupAdmin .view-detail .status.unread .progress-details .details-row > div::before,
+.groupAdmin .view-detail .status.read .progress-details .details-row > div::before {
+	content: normal;
 }
 .groupAdmin .legend {
 	list-style: none;

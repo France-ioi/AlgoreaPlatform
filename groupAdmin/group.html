@@ -244,12 +244,12 @@
 							<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
 						</select>
 					</div>
-					<table class="table-progress" ng-class="{'progress-global': !formValues.detailedView, 'progress-detail': formValues.detailedView}">
+					<table class="table-progress" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 						<thead>
 							<tr>
 								<th class="fixed-width">Nom du chapitre / étape</th>
 								<th class="fixed-width">Description</th>
-								<th ng-repeat="child in group.children | confirmed" class="text-center name"><div><span>{{child.child.userSelf[0].sLogin}} <span class="user_name"> ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></span></div></th>
+								<th ng-repeat="child in group.children | confirmed" class="text-center name"><div><span>{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></div></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -257,18 +257,22 @@
 								<td class="fixed-width" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
 								<td class="fixed-width description">{{item.strings[0].sDescription}}</td>
 								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
-									<ul ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
-										<li class="date">{{thisUserItem.sFirstSeenDate}}</li>
-										<li class="time">{{getDuration(thisUserItem)}}</li>
-										<li class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</li><span class="break"></span>
-										<li class="score">{{thisUserItem.iScore}}/100</li>
-										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
-										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
-									</ul>
+									<div ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="progress-details">
+										<div class="details-row">
+											<div class="date">{{thisUserItem.sFirstSeenDate}}</div>
+											<div class="time">{{getDuration(thisUserItem)}}</div>
+											<div class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+										</div>
+										<div class="details-row">
+											<div class="score">{{thisUserItem.iScore}}/100</div>
+											<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></div>
+											<div class="questions">{{thisUserItem.nbHintsCached}}</div>
+										</div>
+									</div>
 									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
 									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
 									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button>
-									<ul ng-if="!formValues.detailedView" class="list-progress-details">
+									<ul ng-if="!formValues.detailedView" class="progress-details">
 										<li class="score">{{thisUserItem.iScore}}/100</li>
 										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
 										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
