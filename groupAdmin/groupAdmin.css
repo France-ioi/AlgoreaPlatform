@@ -498,7 +498,8 @@ orange : #F29200;
 
 	/* Collective view: Detailed */
 .groupAdmin .table-progress.view-detail th.name {
-	word-break: break-word
+	word-break: break-word;
+	text-transform: none;
 }
 .groupAdmin .table-progress.view-detail .progress-details {
 	display: table;
@@ -510,14 +511,14 @@ orange : #F29200;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row:first-child {
 	border-bottom: 1px solid #fff;
-	border-bottom: 1px solid rgba(255,255,255,0.2);
+	border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div {
 	display: table-cell;
 	height: 54px;
 	vertical-align: middle;
 	border-left: 1px solid #fff;
-	border-left: 1px solid rgba(255,255,255,0.2);
+	border-left: 1px solid rgba(255,255,255,0.1);
 	width: 58px;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
@@ -525,10 +526,6 @@ orange : #F29200;
 }
 .groupAdmin .table-progress.view-detail .status.unread .progress-details .details-row > div,
 .groupAdmin .table-progress.view-detail .status.read .progress-details .details-row > div {
-	color: transparent;
-}
-.groupAdmin .table-progress.view-detail .status.unread .btn-modal,
-.groupAdmin .table-progress.view-detail .status.read .btn-modal {
 	display: none;
 }
 .groupAdmin .progress-details li::before {
@@ -539,6 +536,11 @@ orange : #F29200;
 	left: 0;
 	top: 0;
 }
+.groupAdmin .progress-details .details-row div::before {
+	margin-right: 5px;
+	display: inline-block;
+	width: 15px;
+}
 .groupAdmin .progress-details .score::before {
 	content: "S";
 }
@@ -547,9 +549,6 @@ orange : #F29200;
 }
 .groupAdmin .progress-details .time::before {
 	content: url(images/picto-chronometre.png);
-}
-.groupAdmin .progress-details .submissions::before {
-	content: " ";
 }
 .groupAdmin .progress-details .questions::before {
 	content: url(images/picto-indice.png);
@@ -560,6 +559,12 @@ orange : #F29200;
 .groupAdmin .view-detail .status.unread .progress-details .details-row > div::before,
 .groupAdmin .view-detail .status.read .progress-details .details-row > div::before {
 	content: normal;
+}
+.groupAdmin .view-detail .status.unread .progress-details .details-row,
+.groupAdmin .view-detail .status.read .progress-details .details-row,
+.groupAdmin .view-detail .status.unread .progress-details .details-row > div,
+.groupAdmin .view-detail .status.read .progress-details .details-row > div {
+	border: none;
 }
 .groupAdmin .legend {
 	list-style: none;
