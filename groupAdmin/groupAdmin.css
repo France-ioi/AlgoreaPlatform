@@ -341,12 +341,16 @@ orange : #F29200;
 	background-color: #C6C6C6 !important;
 }
 
-.groupAdmin .row_selected {
-	background-color: #c6c6c6 !important;
-}
-
 /* Individual view */
 	/* Activities */
+.groupAdmin .list-users .row_selected {
+	background-color: #edebed;
+}
+.groupAdmin .list-users li {
+	padding-left: 3px;
+	margin: 5px 0;
+	line-height: normal;
+}
 .groupAdmin .table-activity {
 	background-color: #fff;
 	border: 1px solid #480a2a;
@@ -362,6 +366,13 @@ orange : #F29200;
 .groupAdmin .table-activity .activity-type {
 	position: relative;
 }
+.groupAdmin .table-activity .activity-type.validation {
+	background-color: #0faa8b;
+}
+.groupAdmin .table-activity .activity-type.answer {
+	background-color: #e42c20;
+}
+/*
 .groupAdmin .table-activity .activity-type .btn-modal {
 	width: 21px;
 	height: 15px;
@@ -376,7 +387,7 @@ orange : #F29200;
 .groupAdmin .table-activity .activity-type:hover .btn-modal {
 	opacity: 1;
 }
-
+*/
 /* Collective view */
 .groupAdmin .view-switcher {
 	overflow: auto;

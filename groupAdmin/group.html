@@ -202,7 +202,6 @@
 					</div>
 					<div class="col-sm-8">
 						<div class="groupAdmin-title">Activité récente</div>
-						<!-- TODO : class for each activity type -->
 						<table class="table table-activity">
 							<thead>
 								<tr>
@@ -216,7 +215,7 @@
 								<tr ng-repeat="event in events">
 									<td>{{event.userStr}}</td>
 									<td>{{event.date | date}}</td>
-									<td>{{event.eventStr}}</td>
+									<td class="activity-type {{event.eventStr}}">{{event.eventStr}}</td>
 									<td>{{event.itemStr}}</td>
 								</tr>
 							</tbody>
