@@ -550,7 +550,7 @@ orange : #F29200;
 	display: none;
 	width: 300px;
 }
-.groupAdmin .table-progress.view-global td.status button.btn-preview:hover + * + ul.progress-details {
+.groupAdmin .table-progress.view-global td.status button.btn-preview:hover + ul.progress-details {
 	display: block;
 }
 .groupAdmin .table-progress.view-global .progress-details li {
