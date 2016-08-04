@@ -546,9 +546,9 @@ orange : #F29200;
 	margin: 0;
 	padding: 10px;
 	bottom: 40px;
-	left: -60px;
+	right: 0;
 	display: none;
-	width: 120px;
+	width: 300px;
 }
 .groupAdmin .table-progress.view-global td.status button.btn-preview:hover + * + ul.progress-details {
 	display: block;

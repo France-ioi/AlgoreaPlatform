@@ -255,11 +255,14 @@
 									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
 									<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button>
 									<ul ng-if="!formValues.detailedView" class="progress-details">
-										<li class="score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</li>
-										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
+										<li class="score" ng-if="item.sType == 'Task'">Score : {{thisUserItem.iScore}}%</li>
+										<li class="date" ng-if="!user_item.sValidationDate">Date dernière activité : {{thisUserItem.sLastActivityDate | date}}</li>
+										<li class="date" ng-if="user_item.sValidationDate">Date de validation : {{thisUserItem.sLastActivityDate | date}}</li>
+										<li class="time" ng-if="!user_item.sValidationDate">Temps depuis première lecture : {{getDuration(thisUserItem)}}</li>
+										<li class="time" ng-if="user_item.sValidationDate">Temps jusqu'à validation : {{getDuration(thisUserItem)}}</li>
 										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
-										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
-										<li class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+										<li class="questions">Demandes d'aide sur le forum : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+										<li class="help">Indices demandés : {{thisUserItem.nbHintsCached}}</li>
 									</ul>
 								</td>
 							</tr>
