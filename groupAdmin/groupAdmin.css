@@ -582,6 +582,7 @@ orange : #F29200;
 	border-left: 1px solid #fff;
 	border-left: 1px solid rgba(255,255,255,0.1);
 	width: 58px;
+	padding: 0 4px;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
 	border-left: none;
