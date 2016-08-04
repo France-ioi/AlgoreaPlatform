@@ -1,3 +1,5 @@
+
+
 /*
 Colors:
 legend dark-grey: #707070;
@@ -11,6 +13,7 @@ Red : #e42c20;
 green : #0FAA8B;
 orange : #F29200;
 */
+
 .groupAdmin {
 	margin: 10px;
 	color: #480a2a;
@@ -38,6 +41,7 @@ orange : #F29200;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	transition: all 250ms;
+	outline: 0;
 }
 .groupAdmin .nav-tabs>li.active>a,
 .groupAdmin .nav-tabs>li.active>a:focus,
