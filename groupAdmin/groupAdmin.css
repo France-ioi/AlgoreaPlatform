@@ -630,15 +630,21 @@ orange : #F29200;
 }
 .groupAdmin .legend {
 	list-style: none;
-	-webkit-column-count: 2;
-	   -moz-column-count: 2;
-	        column-count: 2;
-	-webkit-column-gap: 1em;
-	   -moz-column-gap: 1em;
-	        column-gap: 1em;
 }
-.groupAdmin .legend li {
-	break-inside: avoid;}
+@media only screen and (min-width: 1200px) {
+	.groupAdmin .legend {
+		-webkit-column-count: 2;
+		   -moz-column-count: 2;
+		        column-count: 2;
+		-webkit-column-gap: 1em;
+		   -moz-column-gap: 1em;
+		        column-gap: 1em;
+	}
+	.groupAdmin .legend li {
+		break-inside: avoid;
+	}
+}
+
 .groupAdmin .legend-color {
 	width: 15px;
 	height: 15px;
