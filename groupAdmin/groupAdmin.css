@@ -330,6 +330,25 @@ orange : #F29200;
 }
 
 /*
+	Tab: Descriptif
+*/
+.tab-group-description .flex-container {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+	margin-bottom: 1em;
+}
+.tab-group-description .flex-container .item-label {
+	flex-basis: auto;
+	width: 256px;
+	margin-right: 1em;
+}
+.tab-group-description .flex-container .item-control {
+	flex-basis: auto;
+	width: 480px;
+}
+
+/*
 	Tab: Progression
 */
 .groupAdmin .validated {

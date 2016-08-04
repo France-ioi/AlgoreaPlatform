@@ -2,72 +2,54 @@
 <div ng-if="!loading" class="groupAdmin">
 	<uib-tabset active="active">
 		<uib-tab heading="Descriptif">
-				<div class="groupAdmin-tabContent">
-					<div class="row">
-						<div class="col-lg-5">
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
-										<span class="label-title">Nom du groupe</span>
-										<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
-									</label>
-								</div>
-								<div class="col-sm-8">
-									<input type="text" ng-model="group.sName" class="form-control" ng-readonly="!adminOnGroup"/>
-								</div>
+				<div class="groupAdmin-tabContent tab-group-description">
+							<div class="flex-container">
+								<label class="control-label item-label">
+									<span class="label-title">Nom du groupe</span>
+									<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
+								</label>
+								<input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
 							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
-										<span class="label-title">Type</span>
-										<span class="label-description">Sélectionnez le type de groupe</span>
-									</label>
-								</div>
-								<div class="col-sm-8">
-									<select ng-model="group.sType" class="form-control" ng-disabled="!adminOnGroup">
-										<option value="Class" ng-selected="group.sType == 'Class'">Classe</option>
-										<option value="Friends" ng-selected="group.sType == 'Friends'">Équipe</option>
-										<option value="Other" ng-selected="group.sType == 'Other'">Autre</option>
-									</select>
-								</div>
+							<div class="flex-container">
+								<label class="control-label item-label">
+									<span class="label-title">Type</span>
+									<span class="label-description">Sélectionnez le type de groupe</span>
+								</label>
+								<select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
+									<option value="Class" ng-selected="group.sType == 'Class'">Classe</option>
+									<option value="Friends" ng-selected="group.sType == 'Friends'">Équipe</option>
+									<option value="Other" ng-selected="group.sType == 'Other'">Autre</option>
+								</select>
 							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
+							<div class="flex-container">
+									<label class="control-label item-label">
 										<span class="label-title">Description</span>
 										<span class="label-description">Ce champ est disponible si vous souhaitez ajouter une description à ce groupe</span>
 									</label>
-								</div>
-								<div class="col-sm-8">
-									<textarea ng-model="group.sDescription" class="form-control" ng-readonly="!adminOnGroup"></textarea>
-								</div>
+									<textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
 							</div>
-							<div ng-if="group.sType == 'Class'" class="row">
-								<div class="col-sm-4">
-									<label class="control-label" ng-if="group.sType == 'Class'">
+							<div ng-if="group.sType == 'Class'" class="flex-container">
+									<label class="control-label item-label" ng-if="group.sType == 'Class'">
 										<span class="label-title">Niveau</span>
 										<span class="label-description">Indiquez le niveau du groupe</span>
 									</label>
-								</div>
-								<div class="col-sm-8">
-									<select ng-model="group.iGrade" class="form-control">
-										<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
-									</select>
-									<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
+									<div class="item-control">
+										<select ng-model="group.iGrade" class="form-control">
+											<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+										</select>
+										<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
 								</div>
 							</div>
-							<div class="row" ng-if="adminOnGroup">
-								<div class="col-sm-12">
+							<div class="" ng-if="adminOnGroup">
+								<div class="">
 									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
 								</div>
 							</div>
-							<div class="row" ng-if="adminOnGroup">
-								<div class="col-sm-12 block-delete">
+							<div class="" ng-if="adminOnGroup">
+								<div class=" block-delete">
 									<a class="group-delete" ng-click="deleteGroup();">Supprimer le groupe</a>
 								</div>
 							</div>
-						</div>
-					</div>
 				</div>
 		</uib-tab>
 
