@@ -241,14 +241,15 @@
 								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 									<div ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="progress-details">
 										<div class="details-row">
-											<div class="date">{{getDate(thisUserItem)}}</div>
-											<div class="time">{{getDuration(thisUserItem)}}</div>
-											<div class="help" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+											<div class="date" title="Date dernière activité">{{getDate(thisUserItem)}}</div>
+											<div class="time" title="Temps depuis première lecture">{{getDuration(thisUserItem)}}</div>
+											<div class="help" title="Indices demandés">{{thisUserItem.nbHintsCached}}</div>
 										</div>
 										<div class="details-row">
-											<div class="score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
-											<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="voir le code" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><span class="btn-label">Voir plus</span></button></div>
-											<div class="questions">{{thisUserItem.nbHintsCached}}</div>
+											<div class="score" title="Score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
+											<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
+											<div class="questions" title="Demandes d'aide sur le forum" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+											<div ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="Voir le détail"><span class="btn-label">Voir plus</span></button></div>
 										</div>
 									</div>
 									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
