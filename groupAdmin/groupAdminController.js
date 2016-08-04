@@ -238,7 +238,7 @@ angular.module('algorea')
 
    var insertEvent = function(userItem, type, date) {
       var eventStr = getTypeString(type, userItem);
-      var userStr = userItem.user.sFirstName+' '+userItem.user.sLastName+' ('+userItem.user.sLogin+')';
+      var userStr = userItem.user.sLogin+' ('+userItem.user.sFirstName+' '+userItem.user.sLastName+')';
       var event = {
          'date': date,
          'userStr': userStr,
