@@ -157,7 +157,8 @@ orange : #F29200;
 	box-sizing: content-box;
 	clear: both;
 }
-.groupAdmin .list-block.list-users li {
+.groupAdmin .list-block.list-users li,
+.groupAdmin .list-block.list-applicants li {
 	position: relative;
 	padding-left: 20px;
 	padding-right: 25px;
