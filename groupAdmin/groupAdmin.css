@@ -466,21 +466,21 @@ orange : #F29200;
 	background-color: #fff;
 	background-clip: padding-box;
 }
-.groupAdmin .table-progress td.fixed-width,
-.groupAdmin .table-progress th.fixed-width {
+.groupAdmin .table-progress td.fixed-width.step-name,
+.groupAdmin .table-progress th.fixed-width.step-name {
 	max-width: 8em;
 	position: relative;
 }
-.groupAdmin .table-progress .description {
-	height: 74px; /* >div height + td top & bottom padding + border-width top and bottom */
+.groupAdmin .table-progress .step-descr {
+	width: 400px;
 }
-.groupAdmin .table-progress .description>div {
+.groupAdmin .table-progress .step-descr>div {
 	font-size: 14px;
 	line-height: 1.2em;
 	height: 67px;
 	overflow: hidden;
 }
-.groupAdmin .table-progress .description>div:hover {
+.groupAdmin .table-progress .step-descr>div:hover {
 	overflow: visible;
 	background-color: #fff;
 	height: auto;

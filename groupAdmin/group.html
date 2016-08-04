@@ -229,15 +229,15 @@
 					<table class="table-progress" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 						<thead>
 							<tr>
-								<th class="fixed-width">Nom du chapitre / étape</th>
-								<th class="fixed-width">Description</th>
+								<th class="fixed-width step-name">Nom du chapitre / étape</th>
+								<th class="fixed-width step-descr">Description</th>
 								<th ng-repeat="child in group.children | confirmed" class="text-center name"><div><span>{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></div></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="item in itemsList">
-								<td class="fixed-width" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
-								<td class="fixed-width description">{{item.strings[0].sDescription}}</td>
+								<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
+								<td class="fixed-width  step-descr">{{item.strings[0].sDescription}}</td>
 								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 									<div ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="progress-details">
 										<div class="details-row">
