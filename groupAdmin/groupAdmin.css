@@ -583,8 +583,7 @@ orange : #F29200;
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
 	border-left: none;
 }
-.groupAdmin .table-progress.view-detail .status.unread .progress-details .details-row > div,
-.groupAdmin .table-progress.view-detail .status.read .progress-details .details-row > div {
+.groupAdmin .table-progress.view-detail .status.unread .progress-details .details-row > div {
 	display: none;
 }
 .groupAdmin .progress-details li::before {
