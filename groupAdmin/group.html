@@ -75,7 +75,7 @@
 				<div class="groupAdmin-tabContent tab-members">
 					<div class="row">
 						<div class="col-sm-4">
-							<div class="groupAdmin-title">Composition du groupe «{{group.sName}}»</div>
+							<div class="groupAdmin-title">Composition du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
 							<ul class="list list-block list-users">
 								<li class="list-item" ng-repeat="child in group.children | directOrInvitation | userSort">
 									<span class="user-status connected"></span>
@@ -102,7 +102,7 @@
 									<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
 								</div>
 							</div>
-							<span ng-bind="invitationError"></span>
+							<span ng-if="invitationError" style="font-weight:bold;">Erreur&nbsp;:</span> <span ng-bind="invitationError"></span>
 
 							<!--<field model="group" field="groups.bFreeAccess" />-->
 							<div class="row">
@@ -153,11 +153,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-4 col-sm-offset-8">
-							<a class="btn btn-primary">Enregistrer</a>
 						</div>
 					</div>
 				</div>
@@ -312,7 +307,8 @@
 							<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" placeholder="Logins à ajouter (séparer par des espaces) :">
 							<button  ng-click="inviteAdminLogins();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
 						</div>
-						<span ng-bind="invitationError"></span>
+						<span ng-bind="adminInvitationError"></span>
+						<span ng-show="adminLoading">Chargement...</span>
 					</div>
 				</div>
 			</div>

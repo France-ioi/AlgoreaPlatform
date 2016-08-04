@@ -46,7 +46,7 @@ angular.module('algorea').
     return function(children) {
       var out = [];
       angular.forEach(children, function(child) {
-         if (child.sType != 'requestSent' && child.sType != 'requestRefused') {
+         if (child.sType != 'requestSent' && child.sType != 'requestRefused' && child.sType != 'removed' && child.sType != 'left') {
             out.push(child);
          }
       });
@@ -133,7 +133,7 @@ angular.module('algorea')
       var thread = getThread(user_item);
       var my_user_item = itemService.getUserItem(user_item.item);
       var item = user_item.item;
-      if (my_user_item.bValidated || item.bAccessSolutions || item.bOwnerAccess || item.bManagerAccess) {
+      if (my_user_item && (my_user_item.bValidated || item.bAccessSolutions || item.bOwnerAccess || item.bManagerAccess)) {
          var popupData = {
                user_item: user_item,
                thread: thread,
@@ -149,7 +149,8 @@ angular.module('algorea')
       } else {
          var modalInstance = $uibModal.open({
             template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>Vous n\'avez pas validé cet exercice et vous n\'avez pas les droits suffisants pour voir les soumission',
-            controller: ''
+            controller: 'groupAdminPopupController',
+            resolve: {popupData: () => {}},
           });
       }
    };
@@ -343,8 +344,6 @@ angular.module('algorea')
                   var child = $scope.group.children[alreadyInvitedGroupIds[groupId]];
                   if (child.sType == 'invitationSent' || child.sType == 'invitationAccepted' || child.sType == 'requestSent' || child.sType == 'requestAccepted' || child.sType == 'direct') {
                      alreadyInvitedLogins.push(login);
-                     console.error('already invited!');
-                     console.error(child);
                   } else {
                      child.sType = 'invitationSent';
                      child.sStatusDate = new Date();
@@ -357,6 +356,7 @@ angular.module('algorea')
             if (alreadyInvitedLogins.length) {
                $scope.invitationError += 'Les logins suivants ont déjà reçu une invitation ou font déjà partie du groupe : '+alreadyInvitedLogins.join(' ')+'. ';
             }
+            $scope.formValues.currentLogins = '';
          }
       })
       .error(function() {
@@ -369,13 +369,13 @@ angular.module('algorea')
          return;
       }
       var logins = $scope.formValues.adminLogins.split(' ');
-      $scope.adminInvitationError = '';
+      $scope.adminLoading = true;
       $http.post('/admin/invitations.php', {action: 'getAdminGroupsFromLogins', logins: logins, idGroup: $scope.group.ID}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.adminInvitationError = + "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.adminInvitationError = "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -393,7 +393,11 @@ angular.module('algorea')
             if (alreadyInvitedLogins.length) {
                $scope.adminInvitationError += 'Les logins suivants ont déjà un rôle dans le groupe : '+alreadyInvitedLogins.join(' ')+'. ';
             }
-            $scope.addAdminGroups(groupsToInvite);
+            if (groupsToInvite.length) {
+               $scope.addAdminGroups(groupsToInvite);
+            } else {
+               $scope.adminLoading = false;
+            }
          }
       })
       .error(function() {
@@ -417,7 +421,7 @@ angular.module('algorea')
       invitation.idGroupParent = $scope.group.ID;
       invitation.idGroupChild = groupId;
       invitation.idGroupParent = $scope.group.ID;
-      invitation.idUserInviting = $scope.loginData.ID;
+      invitation.idUserInviting = SyncQueue.requests.loginData.ID;
       invitation.sChildLogin = childLogin;
       invitation.iChildOrder = $scope.getNextiChildOrder($scope.group);
       invitation.sType = 'invitationSent';
@@ -462,6 +466,7 @@ angular.module('algorea')
          } else {
             SyncQueue.planToSend(0);
          }
+         $scope.adminLoading = false;
       })
       .error(function() {
          console.error("error calling groupAdmin/api.php");
@@ -495,12 +500,14 @@ angular.module('algorea')
    };
 
    $scope.removeAdmin = function(group_group) {
+      $scope.adminLoading = true;
       $http.post('/groupAdmin/api.php', {action: 'removeAdmin', idGroup: $scope.groupId, idGroupAdmin: group_group.idGroupParent}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
             // this synchro is very hazardous but seems to work...
             SyncQueue.planToSend(0);
+            $scope.adminLoading = false;
          }
       })
       .error(function() {
@@ -702,7 +709,7 @@ angular.module('algorea')
    $scope.init = function() {
       $scope.loading = true;
       $scope.progressionType = 'chronological';
-      $scope.groupId = $stateParams.idGroup; //'1321383987564998144';//
+      $scope.groupId = $stateParams.idGroup;
       $scope.error = '';
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
@@ -730,11 +737,8 @@ angular.module('algorea')
    $scope.$on('$destroy', function() {
       $scope.stopSync();
    });
-
-   $scope.$on('syncResetted', function() {
-      $scope.init();
-   });
    
-   $scope.init();
+   $scope.loading = true;
+   itemService.onNewLoad($scope.init);
 
 }]);
