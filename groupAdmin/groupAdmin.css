@@ -463,7 +463,6 @@ orange : #F29200;
 .groupAdmin .table-progress th {
 	border: 1px solid #480a2a;
 	padding: 3px;
-	max-width: 11em;
 	background-color: #fff;
 	background-clip: padding-box;
 }
@@ -564,26 +563,22 @@ orange : #F29200;
 	word-break: break-word;
 	text-transform: none;
 }
-.groupAdmin .table-progress.view-detail .progress-details {
-	display: table;
-	width: 100%;
-}
 .groupAdmin .table-progress.view-detail .progress-details .details-row {
-	display: table-row;
 	text-align: center;
+	display: flex;
+	flex-flow: row;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row:first-child {
 	border-bottom: 1px solid #fff;
-	border-bottom: 1px solid rgba(255,255,255,0.1);
+	border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div {
-	display: table-cell;
-	height: 54px;
 	vertical-align: middle;
 	border-left: 1px solid #fff;
-	border-left: 1px solid rgba(255,255,255,0.1);
-	width: 58px;
+	border-left: 1px solid rgba(255,255,255,0.2);
 	padding: 0 4px;
+	text-align: center;
+	flex: 1 1 auto;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
 	border-left: none;
