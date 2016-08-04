@@ -55,8 +55,10 @@
 
 		<uib-tab heading="Membres">
 				<div class="groupAdmin-tabContent tab-members">
-					<div class="row">
-						<div class="col-sm-4">
+
+					<div class="flex-container">
+
+						<div class="members-col">
 							<div class="groupAdmin-title">Composition du groupe «{{group.sName}}»</div>
 							<ul class="list list-block list-users">
 								<li class="list-item" ng-repeat="child in group.children | directOrInvitation | userSort">
@@ -68,60 +70,61 @@
 								</li>
 							</ul>
 						</div>
-						<div class="col-sm-8">
-							<div class="groupAdmin-title">Gestion des inscriptions
-							<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="label-title label-list-item">Ajout d'utilisateurs</div>
+
+						<div class="action-col">
+							<div class="bloc-inscription">
+								<div class="groupAdmin-title">Gestion des inscriptions
+								<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
+								<div class="label-title label-list-item">Ajout d'utilisateurs</div>
+								<div class="flex-container">
+									<div class="left-col">
+										<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
+									</div>
+									<div class="right-col">
+										<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
+									</div>
 								</div>
+								<span ng-bind="invitationError"></span>
 							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
-								</div>
-								<div class="col-sm-6">
-									<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
-								</div>
-							</div>
-							<span ng-bind="invitationError"></span>
 
 							<!--<field model="group" field="groups.bFreeAccess" />-->
-							<div class="row">
-								<div class="col-md-6 col-sm-8">
-									<div class="label-title label-list-item">Code d'inscription :</div>
-									<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
+							<div class="bloc-inscription">
+								<div class="flex-container">
+									<div class="left-col">
+										<div class="label-title label-list-item">Code d'inscription :</div>
+										<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
+									</div>
+									<div class="right-col">
+										<div class="checkboxSwitch">
+											<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
+											<label for="codeInscr"><span></span></label>
+										</div>
+									</div>
 								</div>
-								<div class="col-md-6 col-sm-4">
-									<div class="checkboxSwitch">
-										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
-										<label for="codeInscr"><span></span></label>
+								<div class="flex-container" ng-if="formValues.hasPassword">
+									<div class="left-col">
+										<p>Code d'inscription à transmettre aux élèves</p>
+									</div>
+									<div class="right-col form-inline">
+										<input type="text" class="form-control" ng-model="group.sPassword" readonly/>
+										<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
 									</div>
 								</div>
 							</div>
-							<div class="row" ng-if="formValues.hasPassword">
-								<div class="col-md-6 col-sm-8">
-									<p>Code d'inscription à transmettre aux élèves</p>
-								</div>
-								<div class="col-md-6 col-sm-4 form-inline">
-									<input type="text" class="form-control" ng-model="group.sPassword" readonly/>
-									<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-6 col-sm-8">
-									<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
-									<p>Autoriser les demandes spontanées</p>
-								</div>
-								<div class="col-md-6 col-sm-4">
-									<div class="checkboxSwitch">
-										<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
-										<label for="demSpont"><span></span></label>
+							<div class="bloc-inscription">
+								<div class="flex-container">
+									<div class="left-col">
+										<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
+										<p>Autoriser les demandes spontanées</p>
+									</div>
+									<div class="right-col">
+										<div class="checkboxSwitch">
+											<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
+											<label for="demSpont"><span></span></label>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div  ng-if="group.bOpened" class="row">
-								<div class="col-lg-8">
+								<div  ng-if="group.bOpened" class="">
 									<div ng-if="!showRequestTable()">
 										<p>Aucune demande spontannée.</p>
 									</div>
@@ -129,16 +132,12 @@
 										<ul class="list list-block list-applicants">
 												<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
 													<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
-													<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+													<span class="action"><button class="btn-icon btn-small" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
 												</li>
 										</ul>
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-4 col-sm-offset-8">
 							<a class="btn btn-primary">Enregistrer</a>
 						</div>
 					</div>

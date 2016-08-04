@@ -159,6 +159,11 @@ orange : #F29200;
 	box-sizing: content-box;
 	clear: both;
 }
+.groupAdmin .tab-members .list-block .list-item {
+	position: relative;
+	padding-left: 20px;
+	padding-right: 25px;
+}
 .groupAdmin .list-block .list-item:hover {
 	background-color: #edebed;
 }
@@ -166,7 +171,9 @@ orange : #F29200;
 	vertical-align: middle;
 }
 .groupAdmin .list-block .list-item .action {
-	float: right;
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 .groupAdmin .list-block.list-groups {
 	max-height: 20em;
@@ -185,7 +192,7 @@ orange : #F29200;
 }
 .groupAdmin .tab-members .list-block.list-users .user-name {
 	display: inline-block;
-	max-width: 80%;
+	max-width: 100%;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -193,9 +200,11 @@ orange : #F29200;
 .groupAdmin .list-block.list-users .user-status {
 	width: 12px;
 	height: 12px;
-	display: inline-block;
-	margin-right: 5px;
+	display: block;
 	border-radius: 50%;
+	position: absolute;
+	left: 0;
+	top: 4px;
 }
 .groupAdmin .list-block.list-users .user-status.connected {
 	background-color: #e42c20;
@@ -204,6 +213,7 @@ orange : #F29200;
 .groupAdmin .list-block.list-applicants {
 	max-height: 6em;
 	overflow: auto;
+	max-width: 580px;
 }
 
 .groupAdmin .block-delete {
@@ -346,6 +356,34 @@ orange : #F29200;
 .tab-group-description .flex-container .item-control {
 	flex-basis: auto;
 	width: 480px;
+}
+
+/*
+	Tab: Membres
+*/
+.tab-members .flex-container {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+}
+.tab-members .members-col {
+	flex: 1 0 0;
+	margin-right: 2em;
+	min-width: 200px;
+}
+.tab-members .action-col {
+	flex: 2 0 0;
+	min-width: 400px;
+}
+.tab-members .action-col .flex-container .left-col {
+	flex: 1 1 0;
+	margin-right: 2em;
+}
+.tab-members .action-col .flex-container .right-col {
+	flex: 1 1 0;
+}
+.tab-members .action-col .bloc-inscription {
+	margin-bottom: 2em;
 }
 
 /*
