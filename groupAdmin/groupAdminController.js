@@ -42,11 +42,11 @@ angular.module('algorea').
   });
 
 angular.module('algorea').
-  filter('directOrInvitation', function() {
+  filter('invitation', function() {
     return function(children) {
       var out = [];
       angular.forEach(children, function(child) {
-         if (child.sType != 'requestSent' && child.sType != 'requestRefused' && child.sType != 'removed' && child.sType != 'left') {
+         if (child.sType == 'invitationSent' || child.sType == 'invitationRefused') {
             out.push(child);
          }
       });
@@ -87,12 +87,11 @@ angular.module('algorea')
    }
    $scope.$on('algorea.groupSynced', function() {
       var groupId = $stateParams.idGroup;
-      var group = ModelsManager.getRecord('groups', groupId);
-      if (!group) {
-         $scope.groupName = 'error!';
+      $scope.group = ModelsManager.getRecord('groups', groupId);
+      if (!$scope.group) {
+         $scope.group = {sName: 'error!'};
          return;
       }
-      $scope.groupName = group.sName;
    });
 }]);
 
@@ -109,7 +108,7 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout) {
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter) {
    'use strict';
    $scope.error = null;
 
@@ -224,6 +223,19 @@ angular.module('algorea')
       return durationToStr(user_item.sStartDate, now);
    }
 
+   $scope.getDate = function(user_item) {
+      if (!user_item || !user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+         return '-';
+      }
+      if (user_item.sValidationDate) {
+         return $filter('date')(new Date(user_item.sValidationDate), 'dd/MM/yyyy');
+      }
+      if (user_item.sLastActivityDate) {
+         return $filter('date')(new Date(user_item.sLastActivityDate), 'dd/MM/yyyy');
+      }
+      return '-';
+   }
+
    var insertEvent = function(userItem, type, date) {
       var eventStr = getTypeString(type, userItem);
       var userStr = userItem.user.sFirstName+' '+userItem.user.sLastName+' ('+userItem.user.sLogin+')';
@@ -295,31 +307,44 @@ angular.module('algorea')
       });
       return res;
    };
-   $scope.showRequestTable = function() {
-      var res = false;
+
+   $scope.updateGroupsGroups = function() {
+      $scope.showRequestTable = false;
+      $scope.showInvitationTable = false;
       angular.forEach($scope.group.children, function(child) {
          if (child.sType == 'requestSent') {
-            res = true;
-            return false;
+            $scope.showRequestTable = true;
+            return;
+         }
+         if (child.sType == 'invitationSent' || child.sType == 'invitationRefused') {
+            $scope.showInvitationTable = true;
          }
       });
-      return res;
-   };
+   }
+
+   var needToUpdateGroupsGroupsAtEndOfSync = false;
+   ModelsManager.addListener('groups_groups', 'updated', 'groupAdminGpsGpsDeleted', function() {needToUpdateGroupsGroupsAtEndOfSync = true;}, true);
+   ModelsManager.addListener('groups_groups', 'inserted', 'groupAdminGpsGpsInserted', function() {needToUpdateGroupsGroupsAtEndOfSync = true;}, true);
+   ModelsManager.addListener('groups_groups', 'deleted', 'groupAdminGpsGpsDeleted', function() {needToUpdateGroupsGroupsAtEndOfSync = true;}, true);
+
    $scope.printType = function(type) {
       return models.groups_groups.fields.sType.values[type].label;
    };
    $scope.cancelInvitation = function(group_group) {
       ModelsManager.deleted('groups_groups', group_group.ID);
+      $scope.updateGroupsGroups();
    };
    $scope.acceptRequest = function(group_group) {
       group_group.sType = 'requestAccepted';
       group_group.sStatusDate = new Date();
       ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateGroupsGroups();
    };
    $scope.refuseRequest = function(group_group) {
       group_group.sType = 'requestRefused';
       group_group.sStatusDate = new Date();
       ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateGroupsGroups();
    };
    $scope.inviteLogins = function() {
       if (!$scope.formValues.currentLogins) {
@@ -644,6 +669,10 @@ angular.module('algorea')
                $scope.updateEvents();
                needToUpdateAtEndOfSync = false;
             }
+            if (needToUpdateGroupsGroupsAtEndOfSync) {
+               $scope.updateGroupsGroups();
+               needToUpdateGroupsGroupsAtEndOfSync = false;
+            }
          });
          $scope.updateEvents();
       });
@@ -679,6 +708,9 @@ angular.module('algorea')
       ModelsManager.removeListener('users_items', 'deleted', 'groupAdminDeleted');
       ModelsManager.removeListener('users_items', 'inserted', 'groupAdminInserted');
       ModelsManager.removeListener('users_items', 'updated', 'groupAdminUpdated');
+      ModelsManager.removeListener('groups_groups', 'deleted', 'groupAdminGpsGpsDeleted');
+      ModelsManager.removeListener('groups_groups', 'inserted', 'groupAdminGpsGpsInserted');
+      ModelsManager.removeListener('groups_groups', 'updated', 'groupAdminGpsGpsUpdated');
    };
 
    $scope.allUserItems = ModelsManager.curData.users_items;
@@ -729,6 +761,10 @@ angular.module('algorea')
             if (needToUpdateAtEndOfSync) {
                $scope.updateEvents();
                needToUpdateAtEndOfSync = false;
+            }
+            if (needToUpdateGroupsGroupsAtEndOfSync) {
+               $scope.updateGroupsGroups();
+               needToUpdateGroupsGroupsAtEndOfSync = false;
             }
          });
       });

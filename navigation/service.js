@@ -293,7 +293,9 @@ angular.module('algorea')
          onSeen: function(item) {
             var user_item = this.getUserItem(item);
             if (user_item) {
-               user_item.sLastActivityDate = new Date();
+               if (!user_item.sLastActivityDate || user_item.sLastActivityDate.getYear() < 100) {
+                  user_item.sLastActivityDate = new Date();
+               }
                if (!user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
                   user_item.sStartDate = user_item.sLastActivityDate;
                }

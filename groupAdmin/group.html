@@ -1,4 +1,3 @@
-<div style="width:40px;height:25px;"></div>
 <div ng-if="!loading" class="groupAdmin">
 	<uib-tabset active="active">
 		<uib-tab heading="Descriptif">
@@ -77,13 +76,21 @@
 						<div class="col-sm-4">
 							<div class="groupAdmin-title">Composition du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
 							<ul class="list list-block list-users">
-								<li class="list-item" ng-repeat="child in group.children | directOrInvitation | userSort">
+								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort">
 									<span class="user-status connected"></span>
 									<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
 									<span class="action">
 										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child);" title="supprimer"><span class="btn-label">supprimer</span></button>
 									</span>
 								</li>
+							</ul>
+							<div ng-if="!showInvitationTable">Aucune invitation</div>
+							<div class="groupAdmin-title" ng-if="showInvitationTable">Liste des invitations</div>
+							<ul class="list list-block list-applicants" ng-if="showInvitationTable">
+									<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
+										<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}) <span ng-if="child.sType == 'invitationRefused'">(invitation refusée)</span></span>
+										<span class="action" ng-if="child.sType == 'invitationSent'"><button class="btn-icon btn-small btn-wide" ng-click="cancelInvitation(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+									</li>
 							</ul>
 						</div>
 						<div class="col-sm-8">
@@ -140,10 +147,10 @@
 							</div>
 							<div  ng-if="group.bOpened" class="row">
 								<div class="col-lg-8">
-									<div ng-if="!showRequestTable()">
+									<div ng-if="!showRequestTable">
 										<p>Aucune demande spontannée.</p>
 									</div>
-									<div ng-if="showRequestTable()">
+									<div ng-if="showRequestTable">
 										<ul class="list list-block list-applicants">
 												<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
 													<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
@@ -248,7 +255,7 @@
 								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 									<div ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="progress-details">
 										<div class="details-row">
-											<div class="date">{{thisUserItem.sFirstSeenDate}}</div>
+											<div class="date">{{getDate(thisUserItem)}}</div>
 											<div class="time">{{getDuration(thisUserItem)}}</div>
 											<div class="help" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
 										</div>
