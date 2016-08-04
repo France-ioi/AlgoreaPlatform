@@ -103,21 +103,17 @@ angular.module('algorea')
       return false;
    };
    $scope.refuseInvitation = function(group_group) {
-      if (confirm('Êtes-vous sûr de vouloir refuser l\'invitation au groupe '+group_group.parent.sName+' ?')) {
-         group_group.sType = 'invitationRefused';
-         group_group.sStatusDate = new Date();
-         ModelsManager.updated('groups_groups', group_group.ID);
-         $scope.updateResults(group_group);
-      }
+      group_group.sType = 'invitationRefused';
+      group_group.sStatusDate = new Date();
+      ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateResults(group_group);
       return false;
    };
    $scope.leaveGroup = function(group_group) {
-      if (confirm('Êtes-vous sûr de vouloir quitter le groupe '+group_group.parent.sName+' ?')) {
-         group_group.sType = 'left';
-         group_group.sStatusDate = new Date();
-         ModelsManager.updated('groups_groups', group_group.ID);
-         $scope.updateResults(group_group);
-      }
+      group_group.sType = 'left';
+      group_group.sStatusDate = new Date();
+      ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateResults(group_group);
    };
    $scope.groupGroups = ModelsManager.curData['groups_groups'];
    $scope.toggleExpanded = function() {

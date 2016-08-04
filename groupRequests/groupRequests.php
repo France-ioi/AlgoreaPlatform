@@ -27,7 +27,7 @@ function getGroupsMathing($request, $db) {
       echo json_encode(array('result' => false, 'error' => 'missing arguments in request'));
       return;
    }
-   $query = 'select groups.ID as ID, bOpened, bFreeAccess, groups.sType as sType, sName, sDescription, groups_groups.sType as relationType, IF(STRCMP(\'\', sPassword),1,0) as hasPassword from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.sName like :lookupString and groups.sType != \'UserSelf\' and groups.sType != \'UserAdmin\' and groups.sType != \'RootAdmin\' and groups.sType != \'RootSelf\' group by groups.ID;';
+   $query = 'select groups.ID as ID, bOpened, bFreeAccess, groups.sType as sType, sName, sDescription, groups_groups.sType as relationType, IF(STRCMP(\'\', sPassword),1,0) as hasPassword from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.sName like :lookupString and groups.bOpened = 1 and groups.sType != \'UserSelf\' and groups.sType != \'UserAdmin\' and groups.sType != \'RootAdmin\' and groups.sType != \'Root\' and groups.sType != \'RootSelf\' group by groups.ID;';
    $values = array('lookupString' => '%'.$request['lookupString'].'%', 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
    $stmt = $db->prepare($query);
    $stmt->execute($values);

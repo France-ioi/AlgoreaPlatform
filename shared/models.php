@@ -691,11 +691,11 @@ $viewsModels = array(
          ),
          "groupDescendants" => array(
             "joins" => array("selfUserDescendants", "selfGroupDescendants"),
-            "condition"  => '`selfGroupDescendants`.`idGroupAncestor` = :idGroup',
+            "condition"  => '`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroup',
          ),
          "itemDescendants" => array(
             "joins" => array("itemDescendants"),
-            "condition"  => '`itemDescendants`.`idItemAncestor` = :idItem',
+            "condition"  => '`[PREFIX]itemDescendants`.`idItemAncestor` = :[PREFIX_FIELD]idItem',
          ),
          "accessibleWrite" => array(
             "condition"  => "(`[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
@@ -760,6 +760,7 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
          "groups_items" =>  array("srcTable" => "users_answers", "srcField" => "idItem", "dstField" => "idItem"),
+         "items_ancestors" => array("srcTable" => "users_answers", "srcField" => "idItem", "dstField" => "idItemChild"),
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfUserDescendants" => array("srcTable" => "users_answers", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUser"),
          "selfGroupDescendants" => array("srcTable" => "selfUserDescendants", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
@@ -779,9 +780,13 @@ $viewsModels = array(
           "sGradingDate" => array(),
       ),
       "filters" => array(
-         "accessibleForumRead" => array(
+         "accessibleForumReadSelf" => array(
             "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
-            "condition"  => '((`[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf) AND (`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned))',
+            "condition"  => '((`[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
+         ),
+        "accessibleForumReadOwned" => array(
+            "joins" => array("groups_items", "selfGroupAncestors", "selfUserDescendants", "selfGroupDescendants"),
+            "condition"  => '((`[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
          "accessible" => array(
             "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser",
@@ -795,8 +800,8 @@ $viewsModels = array(
             "condition"  => "`[PREFIX]other_users_items`.`idUser` = :[PREFIX_FIELD]idUser",
          ),
          "idItem" => array(
-            "joins" => array("items"),
-            "condition"  => "`[PREFIX]items`.`ID` = :[PREFIX_FIELD]idItem",
+            "joins" => array(),
+            "condition"  => "`[PREFIX]users_answers`.`idItem` = :[PREFIX_FIELD]idItem",
          ),
       ),
    ),
@@ -805,6 +810,7 @@ $viewsModels = array(
       "adminOnly" => false,
       "joins" => array(
          "groups_items" =>  array("srcTable" => "users_items", "srcField" => "idItem", "dstField" => "idItem"),
+         "items_ancestors" => array("srcTable" => "users_items", "srcField" => "idItem", "dstField" => "idItemChild"),
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "users" => array("srcTable" => "users_items", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUser"),
          "selfGroupDescendants" => array("srcTable" => "users", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),

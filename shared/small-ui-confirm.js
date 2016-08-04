@@ -1,5 +1,5 @@
 angular.module('small-ui-confirm', ['ui.bootstrap'])
-.directive('confirm', ['$modal', function($modal) {
+.directive('confirm', ['$uibModal', function($uibModal) {
   return {
     restrict: 'A',
     scope: {
@@ -8,15 +8,15 @@ angular.module('small-ui-confirm', ['ui.bootstrap'])
     },
     link: function(scope, elem, attrs) {
       elem.on('click', function() {
-        var modalInstance = $modal.open({
-          templateUrl: 'shared/small-ui-confirm.html',
-          controller: ["$scope", "$modalInstance", "text", function($scope, $modalInstance, text) {
+        var modalInstance = $uibModal.open({
+          template: '<div class="modal-header"><h3 class="modal-title">Confirmation</h3></div><div class="modal-body">{{text}}</div><div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Annuler</button></div>',
+          controller: ["$scope", "$uibModalInstance", "text", function($scope, $uibModalInstance, text) {
             $scope.text = text;
             $scope.ok = function () {
-              $modalInstance.close(/*$scope.text*/);
+              $uibModalInstance.close(/*$scope.text*/);
             };
             $scope.cancel = function () {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           }],
           resolve: {

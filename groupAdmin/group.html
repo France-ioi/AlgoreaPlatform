@@ -1,7 +1,4 @@
-<div ng-if="loading">
-	Chargement...
-</div>
-<div ng-show="error">{{error}}</div>
+<div style="width:40px;height:25px;"></div>
 <div ng-if="!loading" class="groupAdmin">
 	<uib-tabset active="active">
 		<uib-tab heading="Descriptif">
@@ -258,19 +255,19 @@
 										<div class="details-row">
 											<div class="date">{{thisUserItem.sFirstSeenDate}}</div>
 											<div class="time">{{getDuration(thisUserItem)}}</div>
-											<div class="help">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+											<div class="help" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
 										</div>
 										<div class="details-row">
-											<div class="score">{{thisUserItem.iScore}}%</div>
-											<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button></div>
+											<div class="score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
+											<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}<button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="voir le code" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><span class="btn-label">Voir plus</span></button></div>
 											<div class="questions">{{thisUserItem.nbHintsCached}}</div>
 										</div>
 									</div>
 									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
 									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
-									<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button>
+									<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button>
 									<ul ng-if="!formValues.detailedView" class="progress-details">
-										<li class="score">{{thisUserItem.iScore}}%</li>
+										<li class="score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</li>
 										<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
 										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
 										<li class="questions">{{thisUserItem.nbHintsCached}}</li>
@@ -321,5 +318,8 @@
 			</div>
 		</uib-tab>
 	</uib-tabset>
-
 </div>
+<div ng-if="loading">
+	Chargement...
+</div>
+<div ng-show="error">{{error}}</div>

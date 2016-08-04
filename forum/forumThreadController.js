@@ -1,10 +1,14 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('forumThreadController', ['$scope', '$state', 'itemService', 'loginService', '$http', '$timeout', '$rootScope',  function ($scope, $state, itemService, loginService, $http, $timeout, $rootScope) {
+   .controller('forumThreadController', ['$scope', '$state', 'itemService', 'loginService', '$http', '$timeout', '$rootScope', function ($scope, $state, itemService, loginService, $http, $timeout, $rootScope) {
    if (!$scope.inTask) {
-      $scope.layout.isOnePage(true);
-      $scope.user_item = {};
+      if ($scope.layout) {
+         $scope.layout.isOnePage(true);
+      }
+      if (!$scope.inPopup) {
+         $scope.user_item = {};
+      }
    } else {
       $scope.other_user_item = $scope.user_item; // a bit convoluted... this variable is forced as user_item for the task in the thread. In the case where the thread is itself in a task, we need this
    }
@@ -63,8 +67,8 @@ angular.module('algorea')
       $scope.user_thread.sLastWriteDate = new Date();
       ModelsManager.updated('users_threads', $scope.user_thread.ID);
    };
-   function fetchThread(idThread) {
-      itemService.syncThread(idThread, function() {
+   function fetchThread(idThread, idItem, idUser) {
+      itemService.syncThread(idThread, idItem, idUser, function() {
          var thread = itemService.getRecord('threads', idThread);
          $scope.thread = thread;
          $scope.loading = false;
@@ -112,11 +116,42 @@ angular.module('algorea')
          $scope.updateReadDate();
       });
    }
+   function fetchUsersAnswers(idItem, idUser) {
+      itemService.syncThread(null, idItem, idUser, function() {
+         $scope.loading = false;
+         $scope.ownThread = false;
+         $scope.events = [];
+         if (!$scope.inTask) {
+            $scope.other_user_item = $scope.user_item;
+            var typeStr = itemService.getItemTypeStr($scope.item);
+            $scope.itemStr = typeStr+' : '+($scope.item.strings[0] ? $scope.item.strings[0].sTitle : '');
+            if ($scope.item.sType && $scope.item.sType == "Task") {
+               $scope.hasTask = true;
+               var currentAnswer = itemService.getCurrentAnswer($scope.item, idUser);
+               $scope.answers = itemService.getAnswers($scope.item, idUser);
+               $scope.events = $scope.answers;
+               $scope.openAnswer(currentAnswer);
+               $scope.taskLoading = false;
+               $scope.synchronizeEvents();
+            }
+         } else if ($scope.inTask) {
+            $scope.answers = itemService.getAnswers($scope.item);
+            $scope.events = $scope.answers;
+            $scope.hasTask = true;
+            $scope.taskLoading = false;
+            $scope.synchronizeEvents();
+         }
+      });
+   }
    $scope.synchronizeEvents = function() {
       SyncQueue.addSyncEndListeners('forumThreadController', function() {
-         $scope.events = $scope.thread.messages.slice(0);
-         $scope.answers = itemService.getAnswers($scope.item, $scope.thread.idUserCreated);
-         $scope.events = $scope.events.concat($scope.answers);
+         if ($scope.fakeThread) {
+            $scope.events = itemService.getAnswers($scope.item, $scope.user_item.idUser);
+         } else {
+            $scope.events = $scope.thread.messages.slice(0);
+            $scope.answers = itemService.getAnswers($scope.item, $scope.thread.idUserCreated);
+            $scope.events = $scope.events.concat($scope.answers);   
+         }
       }, true);
    }
    $scope.$on('$destroy', function() {
@@ -135,9 +170,11 @@ angular.module('algorea')
             newThread.idItem = item.ID;
             newThread.sTitle = item.strings[0].sTitle;
             newThread.sType = 'Help';
-            $scope.answers = $scope.item.user_answers;
+            if (!scope.user_item) {
+               $scope.user_item = itemService.getUserItem($scope.item);
+            }
+            $scope.answers = itemService.getAnswers($scope.item, $scope.user_item.idUser);
             $scope.events = $scope.answers;
-            $scope.user_item = itemService.getUserItem($scope.item);
             $scope.hasTask = true;
             $scope.taskLoading = false;
          }
@@ -166,13 +203,24 @@ angular.module('algorea')
          if (!$scope.thread) {
             startNewThread($scope.item);
          } else {
-            fetchThread($scope.thread.ID);
+            fetchThread($scope.thread.ID, $scope.thread.idItem, $scope.thread.idUserCreated);
          }
       } else {
          if ($state.current.name == 'newThread') {
             startNewThread();
          } else {
-            fetchThread($state.params.idThread);
+            if ($scope.inPopup) {
+               if ($scope.thread) {
+                  fetchThread($scope.thread.ID, $scope.thread.idItem, $scope.thread.idUserCreated);
+               } else {
+                  // we're only visualizing the answers, this is not a real thread
+                  $scope.readOnly = true;
+                  $scope.fakeThread = true;
+                  fetchUsersAnswers($scope.item.ID, $scope.user_item.idUser);
+               }
+            } else {
+               fetchThread($state.params.idThread);
+            }
          }
       }
       $scope.canValidate = $scope.user_item && $scope.user_item.bValidated != 0 && $scope.item.sValidationType == 'Manual';
@@ -182,7 +230,7 @@ angular.module('algorea')
       $scope.loading = true;
       itemService.onNewLoad(function() {
          initThread();
-         $timeout($scope.$apply);
+         //$timeout($scope.$apply);
       });   
    }
    $scope.init();
