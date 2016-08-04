@@ -1,79 +1,63 @@
 <div ng-if="!loading" class="groupAdmin">
 	<uib-tabset active="active">
 		<uib-tab heading="Descriptif">
-				<div class="groupAdmin-tabContent">
-					<div class="row">
-						<div class="col-lg-5">
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
-										<span class="label-title">Nom du groupe</span>
-										<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
-									</label>
-								</div>
-								<div class="col-sm-8">
-									<input type="text" ng-model="group.sName" class="form-control" ng-readonly="!adminOnGroup"/>
-								</div>
+				<div class="groupAdmin-tabContent tab-group-description">
+							<div class="flex-container">
+								<label class="control-label item-label">
+									<span class="label-title">Nom du groupe</span>
+									<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
+								</label>
+								<input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
 							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
-										<span class="label-title">Type</span>
-										<span class="label-description">Sélectionnez le type de groupe</span>
-									</label>
-								</div>
-								<div class="col-sm-8">
-									<select ng-model="group.sType" class="form-control" ng-disabled="!adminOnGroup">
-										<option value="Class" ng-selected="group.sType == 'Class'">Classe</option>
-										<option value="Friends" ng-selected="group.sType == 'Friends'">Équipe</option>
-										<option value="Other" ng-selected="group.sType == 'Other'">Autre</option>
-									</select>
-								</div>
+							<div class="flex-container">
+								<label class="control-label item-label">
+									<span class="label-title">Type</span>
+									<span class="label-description">Sélectionnez le type de groupe</span>
+								</label>
+								<select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
+									<option value="Class" ng-selected="group.sType == 'Class'">Classe</option>
+									<option value="Friends" ng-selected="group.sType == 'Friends'">Équipe</option>
+									<option value="Other" ng-selected="group.sType == 'Other'">Autre</option>
+								</select>
 							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
+							<div class="flex-container">
+									<label class="control-label item-label">
 										<span class="label-title">Description</span>
 										<span class="label-description">Ce champ est disponible si vous souhaitez ajouter une description à ce groupe</span>
 									</label>
-								</div>
-								<div class="col-sm-8">
-									<textarea ng-model="group.sDescription" class="form-control" ng-readonly="!adminOnGroup"></textarea>
-								</div>
+									<textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
 							</div>
-							<div ng-if="group.sType == 'Class'" class="row">
-								<div class="col-sm-4">
-									<label class="control-label" ng-if="group.sType == 'Class'">
+							<div ng-if="group.sType == 'Class'" class="flex-container">
+									<label class="control-label item-label" ng-if="group.sType == 'Class'">
 										<span class="label-title">Niveau</span>
 										<span class="label-description">Indiquez le niveau du groupe</span>
 									</label>
-								</div>
-								<div class="col-sm-8">
-									<select ng-model="group.iGrade" class="form-control">
-										<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
-									</select>
-									<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
+									<div class="item-control">
+										<select ng-model="group.iGrade" class="form-control">
+											<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+										</select>
+										<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
 								</div>
 							</div>
-							<div class="row" ng-if="adminOnGroup">
-								<div class="col-sm-12">
+							<div class="" ng-if="adminOnGroup">
+								<div class="">
 									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
 								</div>
 							</div>
-							<div class="row" ng-if="adminOnGroup">
-								<div class="col-sm-12 block-delete">
+							<div class="" ng-if="adminOnGroup">
+								<div class=" block-delete">
 									<a class="group-delete" ng-click="deleteGroup();">Supprimer le groupe</a>
 								</div>
 							</div>
-						</div>
-					</div>
 				</div>
 		</uib-tab>
 
 		<uib-tab heading="Membres">
 				<div class="groupAdmin-tabContent tab-members">
-					<div class="row">
-						<div class="col-sm-4">
+
+					<div class="flex-container">
+
+						<div class="members-col">
 							<div class="groupAdmin-title">Composition du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
 							<ul class="list list-block list-users">
 								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort">
@@ -93,60 +77,62 @@
 									</li>
 							</ul>
 						</div>
-						<div class="col-sm-8">
-							<div class="groupAdmin-title">Gestion des inscriptions
-							<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="label-title label-list-item">Ajout d'utilisateurs</div>
+
+						<div class="action-col">
+							<div class="bloc-inscription">
+								<div class="groupAdmin-title">Gestion des inscriptions
+								<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
+								<div class="label-title label-list-item">Ajout d'utilisateurs</div>
+								<div class="flex-container">
+									<div class="left-col">
+										<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
+									</div>
+									<div class="right-col">
+										<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
+									</div>
 								</div>
+								<span ng-if="invitationError" style="font-weight:bold;">Erreur&nbsp;:</span> <span ng-bind="invitationError"></span>
 							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
-								</div>
-								<div class="col-sm-6">
-									<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
-								</div>
-							</div>
-							<span ng-if="invitationError" style="font-weight:bold;">Erreur&nbsp;:</span> <span ng-bind="invitationError"></span>
 
 							<!--<field model="group" field="groups.bFreeAccess" />-->
-							<div class="row">
-								<div class="col-md-6 col-sm-8">
-									<div class="label-title label-list-item">Code d'inscription :</div>
-									<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
+							<div class="bloc-inscription">
+								<div class="flex-container">
+									<div class="left-col">
+										<div class="label-title label-list-item">Code d'inscription :</div>
+										<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
+									</div>
+									<div class="right-col">
+										<div class="checkboxSwitch">
+											<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
+											<label for="codeInscr"><span></span></label>
+										</div>
+									</div>
 								</div>
-								<div class="col-md-6 col-sm-4">
-									<div class="checkboxSwitch">
-										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
-										<label for="codeInscr"><span></span></label>
+								<div class="flex-container" ng-if="formValues.hasPassword">
+									<div class="left-col">
+										<p>Code d'inscription à transmettre aux élèves</p>
+									</div>
+									<div class="right-col form-inline">
+										<input type="text" class="form-control" ng-model="group.sPassword" readonly/>
+										<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
 									</div>
 								</div>
 							</div>
-							<div class="row" ng-if="formValues.hasPassword">
-								<div class="col-md-6 col-sm-8">
-									<p>Code d'inscription à transmettre aux élèves</p>
-								</div>
-								<div class="col-md-6 col-sm-4 form-inline">
-									<input type="text" class="form-control" ng-model="group.sPassword" readonly/>
-									<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-6 col-sm-8">
-									<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
-									<p>Autoriser les demandes spontanées</p>
-								</div>
-								<div class="col-md-6 col-sm-4">
-									<div class="checkboxSwitch">
-										<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
-										<label for="demSpont"><span></span></label>
+							<div class="bloc-inscription">
+								<div class="flex-container">
+									<div class="left-col">
+										<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
+										<p>Autoriser les demandes spontanées</p>
+									</div>
+									<div class="right-col">
+										<div class="checkboxSwitch">
+											<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
+											<label for="demSpont"><span></span></label>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div  ng-if="group.bOpened" class="row">
-								<div class="col-lg-8">
+
+								<div  ng-if="group.bOpened" class="">
 									<div ng-if="!showRequestTable">
 										<p>Aucune demande spontannée.</p>
 									</div>
@@ -154,7 +140,7 @@
 										<ul class="list list-block list-applicants">
 												<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
 													<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
-													<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+													<span class="action"><button class="btn-icon btn-small" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
 												</li>
 										</ul>
 									</div>
