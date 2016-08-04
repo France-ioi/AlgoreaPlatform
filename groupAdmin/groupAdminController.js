@@ -658,7 +658,7 @@ angular.module('algorea')
    $scope.itemSelected = function(item) {
       if ($scope.rootItem == item) return;
       $scope.rootItem = item;
-      $scope.itemsList = [];
+      $scope.itemsList = [item];
       $scope.itemsListRev = {};
       fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
       $scope.startSync($scope.groupId, item.ID, function() {
