@@ -132,7 +132,7 @@
 										<ul class="list list-block list-applicants">
 												<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
 													<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
-													<span class="action"><button class="btn-icon btn-small" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+													<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
 												</li>
 										</ul>
 									</div>

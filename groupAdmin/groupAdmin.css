@@ -157,7 +157,7 @@ orange : #F29200;
 	box-sizing: content-box;
 	clear: both;
 }
-.groupAdmin .tab-members .list-block .list-item {
+.groupAdmin .list-block.list-users li {
 	position: relative;
 	padding-left: 20px;
 	padding-right: 25px;
@@ -201,8 +201,8 @@ orange : #F29200;
 	display: block;
 	border-radius: 50%;
 	position: absolute;
-	left: 0;
-	top: 4px;
+	left: 2px;
+	top: 5px;
 }
 .groupAdmin .list-block.list-users .user-status.connected {
 	background-color: #e42c20;
@@ -244,7 +244,7 @@ orange : #F29200;
 	font-size: 16px;
 }
 .groupAdmin .btn-icon.btn-wide {
-	width: 5em;
+	width: 2.5em;
 }
 .groupAdmin .btn-icon.btn-small.btn-view-more {
 	background: url(images/apercu.png) center center no-repeat;
