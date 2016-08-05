@@ -22,19 +22,18 @@ angular.module('algorea')
             return;
          }
          $scope.loginLoading = false;
-         $rootScope.loginData = res;
-         var listenerName = $scope.rightPanel ? 'getGroupsRight' : 'getGroups';
-         SyncQueue.addSyncEndListeners(listenerName, function() {
+         SyncQueue.addSyncEndListeners('getGroups', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
                $scope.loading = false;
                $scope.myGroup = myGroup;
-               $scope.user = ModelsManager.getRecord('users', $rootScope.loginData.ID);
+               $scope.user = ModelsManager.getRecord('users', res.ID);
             });
-            SyncQueue.removeSyncEndListeners(listenerName);
+            SyncQueue.removeSyncEndListeners('getGroups');
          });
       });
    };
-   $scope.init();
+   $scope.loading = true;
+   itemService.onNewLoad($scope.init);
    $scope.$on('login.login', function(event, data) {
       $scope.loading = true;
       $scope.loginLoading = true;
