@@ -485,6 +485,7 @@ orange : #F29200;
 	padding: 3px;
 	background-color: #fff;
 	background-clip: padding-box;
+	max-width: 14em;
 }
 .groupAdmin .table-progress td.fixed-width.step-name,
 .groupAdmin .table-progress th.fixed-width.step-name {
@@ -534,7 +535,7 @@ orange : #F29200;
 	width: 30px;
 	text-transform: none;
 }
-.groupAdmin .table-progress.view-global th.name div > span {
+.groupAdmin .table-progress.view-global th.name .user-info {
 	border-bottom: 1px solid #a88996;
 	padding: 5px;
 	overflow: hidden;
@@ -583,8 +584,14 @@ orange : #F29200;
 	word-break: break-word;
 	text-transform: none;
 }
-.groupAdmin .table-progress.view-detail th.name span {
+.groupAdmin .table-progress.view-detail th.name .user-info span {
 	display: block;
+}
+.groupAdmin .table-progress.view-detail th.name .user-info .user-name {
+	max-width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row {
 	text-align: center;
