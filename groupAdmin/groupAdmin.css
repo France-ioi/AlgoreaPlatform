@@ -125,6 +125,7 @@ orange : #F29200;
 	height: 30px;
 	border-radius: 15px;
 	position: relative;
+	vertical-align: middle;
 }
 .groupAdmin .checkboxSwitch input.switch + label span {
 	width: 20px;
@@ -454,6 +455,12 @@ orange : #F29200;
 /* Collective view */
 .groupAdmin .view-switcher {
 	overflow: auto;
+}
+.tab-progression .checkboxSwitch {
+	margin-left: 1em;
+}
+.tab-progression .checkboxSwitch > span {
+	margin-right: 0.5em;
 }
 .groupAdmin .table-progress {
 	border-collapse: collapse;
