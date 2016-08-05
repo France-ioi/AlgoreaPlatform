@@ -230,7 +230,7 @@
 							<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
 						</select>
 					</div>
-					<table class="table-progress" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
+					<table class="table-progress" fixed-header ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 						<thead>
 							<tr>
 								<th class="fixed-width step-name">Nom du chapitre / étape</th>

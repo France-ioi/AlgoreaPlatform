@@ -412,6 +412,9 @@ orange : #F29200;
 	background-color: #C6C6C6 !important;
 }
 
+.groupAdmin table[fixed-header] {
+	height: 500px;
+}
 /* Individual view */
 	/* Activities */
 .groupAdmin .list-users .row_selected {
