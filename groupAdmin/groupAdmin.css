@@ -478,7 +478,7 @@ orange : #F29200;
 }
 .groupAdmin .table-progress td.fixed-width.step-name,
 .groupAdmin .table-progress th.fixed-width.step-name {
-	max-width: 8em;
+	max-width: 14em;
 	position: relative;
 }
 .groupAdmin .table-progress .step-descr {
@@ -520,7 +520,7 @@ orange : #F29200;
 
 	/* Collective view: Global */
 .groupAdmin .table-progress.view-global th.name div {
-	transform: rotate(-45deg) translate(11px, 45px);
+	transform: rotate(-45deg) translate(32px, 33px);
 	width: 30px;
 	text-transform: none;
 }
