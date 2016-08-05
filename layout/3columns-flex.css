@@ -32,8 +32,8 @@ body {
 }
 
 .fixed-header-room {
-   -webkit-flex: 0 0 100px;
-   flex: 0 0 100px;
+   -webkit-flex: 0 0 125px;
+   flex: 0 0 125px;
 }
 
 .fixed-header-room-toggled {

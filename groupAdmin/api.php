@@ -175,7 +175,7 @@ function createGroup($idGroup, $sName) {
    if (!$idGroup) {
       $idGroup = getRandomID();
    }
-   $stmt = $db->prepare('insert into groups (ID, sName, sDateCreated) values (:idGroup, :sName, NOW());');
+   $stmt = $db->prepare('insert into groups (ID, sName, sDateCreated, sType) values (:idGroup, :sName, NOW(), \'Class\');');
    $stmt->execute(['idGroup' => $idGroup, 'sName' => $sName]);
    $stmt = $db->prepare('insert into groups_groups (idGroupChild, idGroupParent, sRole) values (:idGroup, :idGroupOwned, \'owner\');');
    $stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']]);

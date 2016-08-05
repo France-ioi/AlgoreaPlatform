@@ -203,10 +203,10 @@ angular.module('algorea')
             if (!item) return null;
             var result_user_item = null;
             if (!idUser) {
-               if (!$rootScope.loginData) {
+               if (!SyncQueue.requests.loginData) {
                   return null;
                }
-               idUser = $rootScope.loginData.ID;
+               idUser = SyncQueue.requests.loginData.ID;
             }
             angular.forEach(item.user_item, function(user_item) {
                if (user_item.idUser == idUser) {
