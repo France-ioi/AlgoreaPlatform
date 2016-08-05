@@ -3,7 +3,7 @@
 // index of groups
 
 angular.module('algorea')
-   .controller('groupAdminIndexController', ['$scope', '$state', '$http', function ($scope, $state, $http) {
+   .controller('groupAdminIndexController', ['$scope', '$state', '$http', 'itemService', function ($scope, $state, $http, itemService) {
    $scope.error = '';
    $scope.loading = true;
    $scope.formValues = {};
@@ -62,10 +62,10 @@ angular.module('algorea')
    $scope.init = function() {
    	$scope.loading = true;
    	$scope.error = '';
-   	if (SyncQueue.requests.loginData.tempUser == 1) {
-   		//$scope.error = 'Vous devez être connecté pour accéder à cette interface.';
-   		//$scope.loading = false;
-   		//return;
+   	if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser == 1) {
+   		$scope.error = 'Vous devez être connecté(e) pour accéder à l\'interface de gestion des groupes.';
+   		$scope.loading = false;
+   		return;
    	}
       $scope.loginData = SyncQueue.requests.loginData;
    	$scope.startSync(function() {
@@ -76,11 +76,8 @@ angular.module('algorea')
    $scope.$on('$destroy', function() {
    	$scope.stopSync();
    });
-
-	$scope.$on('syncResetted', function() {
-      $scope.init();
-   });
    
-	$scope.init();
+	$scope.loading = true;
+   itemService.onNewLoad($scope.init);
 
 }]);
