@@ -464,7 +464,10 @@ orange : #F29200;
 }
 .groupAdmin .table-progress {
 	border-collapse: collapse;
-	margin-top: 80px;
+	margin-top: 40px;
+}
+.groupAdmin .table-progress.view-global {
+	margin-top: 120px;
 }
 .groupAdmin .table-progress td,
 .groupAdmin .table-progress th {
