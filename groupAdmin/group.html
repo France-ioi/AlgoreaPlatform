@@ -39,13 +39,11 @@
 										<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
 								</div>
 							</div>
-							<div class="" ng-if="adminOnGroup">
-								<div class="">
+							<div class="group-action" ng-if="adminOnGroup">
+								<div class="group-save">
 									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
 								</div>
-							</div>
-							<div class="" ng-if="adminOnGroup">
-								<div class=" block-delete">
+								<div class="block-delete">
 									<a class="group-delete" ng-click="deleteGroup();">Supprimer le groupe</a>
 								</div>
 							</div>

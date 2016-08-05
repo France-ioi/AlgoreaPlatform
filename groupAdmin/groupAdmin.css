@@ -216,12 +216,6 @@ orange : #F29200;
 	max-width: 580px;
 }
 
-.groupAdmin .block-delete {
-	border-top: 1px solid #000;
-	padding-top: 1em;
-	text-align: right;
-}
-
 /* Buttons */
 .groupAdmin .btn.btn-primary {
 	background-color: #480a2a;
@@ -356,6 +350,19 @@ orange : #F29200;
 .tab-group-description .flex-container .item-control {
 	flex-basis: auto;
 	width: 480px;
+}
+.groupAdmin .tab-group-description .group-action {
+	max-width: 752px;
+}
+.groupAdmin .tab-group-description .btn-save {
+	margin-bottom: 10px;
+	clear: both;
+	overflow: auto;
+}
+.groupAdmin .tab-group-description .block-delete {
+	border-top: 1px solid #000;
+	padding-top: 1em;
+	text-align: right;
 }
 
 /*
