@@ -574,6 +574,7 @@ orange : #F29200;
 	text-align: center;
 	display: flex;
 	flex-flow: row;
+	align-items: center;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row:first-child {
 	border-bottom: 1px solid #fff;
@@ -593,6 +594,9 @@ orange : #F29200;
 .groupAdmin .table-progress.view-detail .status.unread .progress-details .details-row > div {
 	display: none;
 }
+.groupAdmin .table-progress.view-detail .progress-details .details-row .btn-icon {
+	height: 1em;
+}
 .groupAdmin .progress-details li::before {
 	margin-right: 5px;
 	display: inline-block;
@@ -607,7 +611,14 @@ orange : #F29200;
 	width: 15px;
 }
 .groupAdmin .progress-details .score::before {
-	content: "S";
+	font-family: "Glyphicons Halflings";
+	font-size: 12px;
+}
+.groupAdmin .progress-details .score.validated::before {
+	content: "\e013";
+}
+.groupAdmin .progress-details .score.failed::before {
+	content: "\e014";
 }
 .groupAdmin .progress-details .date::before {
 	content: url(images/picto-calendrier.png);
