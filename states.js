@@ -110,7 +110,7 @@ angular.module('algorea')
                    controller: 'groupAdminController',
                 },
                 'breadcrumbs': {
-                   template: '<div><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupAdmin()">Groupes</a></span> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{groupName}}</span></div>',
+                   template: '<div><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupAdmin()">Groupes</a></span> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{group.sName}}</span></div>',
                    controller: 'groupAdminBreadCrumbsController',
                 },
              },

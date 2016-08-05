@@ -37,7 +37,9 @@ angular.module('algorea')
          if (this.item && this.item.ID == config.domains.current.ProgressRootItemId && !from) {type = 'progressroot';}
          if ( ! from) {
             if (type == 'chapter' || type == 'section' || type == 'level') {
-               type = 'blank';
+               if (config.domains.current.useMap) {
+                  type = 'blank';
+               }
                this.layout.hasMap('always');
             } else if (type == 'task' || type == 'course') {
                this.layout.hasMap('button', this.firstApply);
@@ -190,6 +192,10 @@ angular.module('algorea')
             that.strings = itemService.getStrings(item);
             that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
+            if (!that.user_item) {
+               console.error('cannot find user item for item '+item.ID);
+               return;
+            }
             if (that.pathParams.parentItemID && that.pathParams.parentItemID != -2) {
                that.item_item = $scope.selectItemItem(item, that.pathParams.parentItemID);
             } else {

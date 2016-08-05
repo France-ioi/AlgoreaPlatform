@@ -532,6 +532,11 @@ angular.module('algorea')
             if (!postRes || !postRes.success) {
                console.error("got error from admin groupAdmin/api.php: "+postRes.error);
             } else {
+               // deleting on the js side due to limitations of the requestSet deletion algorithm
+               angular.forEach($scope.group.parents, function(parent) {
+                  ModelsManager.deleted('groups_groups', parent.ID);   
+               });
+               ModelsManager.deleted('groups', $scope.group.ID);
                SyncQueue.planToSend(0);
                $state.go('groupAdmin');
             }
