@@ -635,6 +635,7 @@ orange : #F29200;
 .groupAdmin .progress-details .score::before {
 	font-family: "Glyphicons Halflings";
 	font-size: 12px;
+	content: normal;
 }
 .groupAdmin .progress-details .score.top-score::before {
 	content: "\e013";
