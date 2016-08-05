@@ -806,5 +806,3 @@ angular.module('algorea')
    itemService.onNewLoad($scope.init);
 
 }]);
-
-angular.module('algorea', ['anguFixedHeaderTable']);
