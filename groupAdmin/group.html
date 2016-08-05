@@ -212,6 +212,8 @@
 					<div class="view-switcher">
 						<span ng-if="!formValues.detailedView" class="pull-right" ng-click="formValues.detailedView=true;">Afficher la vue détaillée <button class="btn-icon btn-zoom-in"></button></span>
 						<span ng-if="formValues.detailedView" class="pull-right" ng-click="formValues.detailedView=false;">Afficher la vue globale <button class="btn-icon btn-zoom-out"></button></span>
+						<span ng-if="!formValues.showDescription" class="pull-right" ng-click="formValues.showDescription=true;">Afficher les descriptions <button class="btn-icon btn-zoom-in"></button></span>
+						<span ng-if="formValues.showDescription" class="pull-right" ng-click="formValues.showDescription=false;">Masquer les descriptions <button class="btn-icon btn-zoom-out"></button></span>
 					</div>
 					<div>
 						Parcours :
@@ -230,14 +232,14 @@
 						<thead>
 							<tr>
 								<th class="fixed-width step-name">Nom du chapitre / étape</th>
-								<th class="fixed-width step-descr">Description</th>
+								<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
 								<th ng-repeat="child in group.children | confirmed" class="text-center name"><div><span>{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></div></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="item in itemsList">
 								<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
-								<td class="fixed-width  step-descr">{{item.strings[0].sDescription}}</td>
+								<td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
 								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 									<div ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="progress-details">
 										<div class="details-row">
