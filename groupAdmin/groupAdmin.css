@@ -624,10 +624,10 @@ orange : #F29200;
 	font-family: "Glyphicons Halflings";
 	font-size: 12px;
 }
-.groupAdmin .progress-details .score.validated::before {
+.groupAdmin .progress-details .score.top-score::before {
 	content: "\e013";
 }
-.groupAdmin .progress-details .score.failed::before {
+.groupAdmin .progress-details .score.not-top-score::before {
 	content: "\e014";
 }
 .groupAdmin .progress-details .date::before {
