@@ -485,7 +485,6 @@ orange : #F29200;
 	padding: 3px;
 	background-color: #fff;
 	background-clip: padding-box;
-	max-width: 14em;
 }
 .groupAdmin .table-progress td.fixed-width.step-name,
 .groupAdmin .table-progress th.fixed-width.step-name {
@@ -588,7 +587,7 @@ orange : #F29200;
 	display: block;
 }
 .groupAdmin .table-progress.view-detail th.name .user-info .user-name {
-	max-width: 100%;
+	max-width: 14em;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
