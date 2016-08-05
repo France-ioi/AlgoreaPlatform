@@ -66,12 +66,12 @@
 									</span>
 								</li>
 							</ul>
-							<div ng-if="!showInvitationTable">Aucune invitation</div>
-							<div class="groupAdmin-title" ng-if="showInvitationTable">Liste des invitations</div>
+							<div ng-if="!showInvitationTable">Aucune invitation en attente</div>
+							<div class="groupAdmin-title" ng-if="showInvitationTable">Utilisateurs invités</div>
 							<ul class="list list-block list-applicants" ng-if="showInvitationTable">
 									<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
-										<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}}) <span ng-if="child.sType == 'invitationRefused'">(invitation refusée)</span></span>
-										<span class="action" ng-if="child.sType == 'invitationSent'"><button class="btn-icon btn-small btn-wide" ng-click="cancelInvitation(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+										<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})<span ng-if="child.sType == 'invitationRefused'"> (invitation refusée)</span></span>
+										<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" title="Annuler"><span class="btn-label">Annuler</span></button></span>
 									</li>
 							</ul>
 						</div>
@@ -199,7 +199,7 @@
 									<td>{{event.userStr}}</td>
 									<td>{{event.date | date}}</td>
 									<td class="activity-type {{event.eventStr}}">{{event.eventStr}}</td>
-									<td>{{event.itemStr}}</td>
+									<td>{{event.itemStr}}  <button ng-click="openPopup(event.user_item);">lien vers activité</button></td>
 								</tr>
 							</tbody>
 						</table>

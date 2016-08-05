@@ -98,9 +98,11 @@ angular.module('algorea')
 angular.module('algorea')
    .controller('groupAdminPopupController', ['$scope', '$uibModalInstance', 'popupData', function ($scope, $uibModalInstance, popupData) {
    'use strict';
-   $scope.user_item = popupData.user_item;
-   $scope.item = popupData.item;
-   $scope.thread = popupData.thread;
+   if (popupData) {
+      $scope.user_item = popupData.user_item;
+      $scope.item = popupData.item;
+      $scope.thread = popupData.thread;
+   }
    $scope.inPopup = true;
    $scope.close = function () {
       $uibModalInstance.close();
@@ -147,7 +149,7 @@ angular.module('algorea')
           });
       } else {
          var modalInstance = $uibModal.open({
-            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>Vous n\'avez pas validé cet exercice et vous n\'avez pas les droits suffisants pour voir les soumission',
+            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>Vous n\'avez pas validé cet exercice et vous n\'avez pas les droits suffisants pour voir les soumissions',
             controller: 'groupAdminPopupController',
             resolve: {popupData: () => {}},
           });
@@ -236,14 +238,35 @@ angular.module('algorea')
       return '-';
    }
 
+   function getUserStr(user) {
+      if (!user) {
+         return 'Utilisateur inconnu';
+      }
+      var res = user.sLogin;
+      if (user.sFirstName || user.sLastName) {
+         res += ' (';
+      }
+      if (user.sFirstName) {
+         res += user.sFirstName + (user.sLastName ? ' ' : '');
+      }
+      if (user.sLastName) {
+         res += user.sLastName;
+      }
+      if (user.sFirstName || user.sLastName) {
+         res += ')';
+      }
+      return res;
+   }
+
    var insertEvent = function(userItem, type, date) {
       var eventStr = getTypeString(type, userItem);
-      var userStr = userItem.user.sLogin+' ('+userItem.user.sFirstName+' '+userItem.user.sLastName+')';
+      var userStr = getUserStr(userItem.user);
       var event = {
          'date': date,
          'userStr': userStr,
          'eventStr': eventStr,
-         'itemStr': userItem.item.strings[0].sTitle
+         'itemStr': userItem.item.strings[0].sTitle,
+         'user_item': userItem
       };
       // insertion in a sorted array:
       $scope.events.splice(_.sortedIndexBy($scope.events, event, function(event) {return event.date;}), 0, event);
