@@ -235,7 +235,7 @@
 							<tr>
 								<th class="fixed-width step-name">Nom du chapitre / étape</th>
 								<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
-								<th ng-repeat="child in group.children | confirmed" class="text-center name"><div><span>{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></div></th>
+								<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})"><div><span><span>{{child.child.userSelf[0].sLogin}}</span> <span>({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></span></div></th>
 							</tr>
 						</thead>
 						<tbody>
