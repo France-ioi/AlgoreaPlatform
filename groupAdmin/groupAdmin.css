@@ -216,12 +216,6 @@ orange : #F29200;
 	max-width: 580px;
 }
 
-.groupAdmin .block-delete {
-	border-top: 1px solid #000;
-	padding-top: 1em;
-	text-align: right;
-}
-
 /* Buttons */
 .groupAdmin .btn.btn-primary {
 	background-color: #480a2a;
@@ -357,6 +351,19 @@ orange : #F29200;
 	flex-basis: auto;
 	width: 480px;
 }
+.groupAdmin .tab-group-description .group-action {
+	max-width: 752px;
+}
+.groupAdmin .tab-group-description .btn-save {
+	margin-bottom: 10px;
+	clear: both;
+	overflow: auto;
+}
+.groupAdmin .tab-group-description .block-delete {
+	border-top: 1px solid #000;
+	padding-top: 1em;
+	text-align: right;
+}
 
 /*
 	Tab: Membres
@@ -464,7 +471,10 @@ orange : #F29200;
 }
 .groupAdmin .table-progress {
 	border-collapse: collapse;
-	margin-top: 80px;
+	margin-top: 40px;
+}
+.groupAdmin .table-progress.view-global {
+	margin-top: 120px;
 }
 .groupAdmin .table-progress td,
 .groupAdmin .table-progress th {
@@ -475,7 +485,7 @@ orange : #F29200;
 }
 .groupAdmin .table-progress td.fixed-width.step-name,
 .groupAdmin .table-progress th.fixed-width.step-name {
-	max-width: 8em;
+	max-width: 14em;
 	position: relative;
 }
 .groupAdmin .table-progress .step-descr {
@@ -517,7 +527,7 @@ orange : #F29200;
 
 	/* Collective view: Global */
 .groupAdmin .table-progress.view-global th.name div {
-	transform: rotate(-45deg) translate(11px, 45px);
+	transform: rotate(-45deg) translate(32px, 33px);
 	width: 30px;
 	text-transform: none;
 }
@@ -574,6 +584,7 @@ orange : #F29200;
 	text-align: center;
 	display: flex;
 	flex-flow: row;
+	align-items: center;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row:first-child {
 	border-bottom: 1px solid #fff;
@@ -593,6 +604,9 @@ orange : #F29200;
 .groupAdmin .table-progress.view-detail .status.unread .progress-details .details-row > div {
 	display: none;
 }
+.groupAdmin .table-progress.view-detail .progress-details .details-row .btn-icon {
+	height: 1em;
+}
 .groupAdmin .progress-details li::before {
 	margin-right: 5px;
 	display: inline-block;
@@ -607,7 +621,14 @@ orange : #F29200;
 	width: 15px;
 }
 .groupAdmin .progress-details .score::before {
-	content: "S";
+	font-family: "Glyphicons Halflings";
+	font-size: 12px;
+}
+.groupAdmin .progress-details .score.validated::before {
+	content: "\e013";
+}
+.groupAdmin .progress-details .score.failed::before {
+	content: "\e014";
 }
 .groupAdmin .progress-details .date::before {
 	content: url(images/picto-calendrier.png);
