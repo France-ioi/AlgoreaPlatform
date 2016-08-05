@@ -52,7 +52,6 @@ orange : #F29200;
 .groupAdmin-tabContent {
 	background-color: #edebed;
 	padding: 2em;
-	overflow: auto;
 }
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
