@@ -166,7 +166,9 @@ angular.module('algorea')
                   scope.user_item.sToken = postRes.sToken;
                   scope.user_item.bValidated = true;
                   scope.user_item.sValidationDate = new Date();
-                  mapService.updateSteps();
+                  if (config.domains.current.useMap) {
+                     mapService.updateSteps();
+                  }
                   ModelsManager.updated('users_items', scope.user_item.ID, false, true);
                   $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                   scope.task.updateToken(postRes.sToken, function() {
@@ -175,6 +177,7 @@ angular.module('algorea')
                         scope.setTabs(views);
                      });
                   });
+                  $rootScope.$evalAsync($rootScope.$apply);
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
                if (success) { success(postRes.bValidated); } else { return postRes.bValidated; };
