@@ -9,12 +9,13 @@ angular.module('algorea')
       restrict: 'EA',
       scope: false,
       template: function(elem, attrs) {
-        return '<iframe ng-src="{{taskUrl}}" id="{{taskName}}" build-task allowfullscreen></iframe>';
+        var userItemVarStr = attrs.userItemVar ? 'user-item-var="'+attrs.userItemVar+'"' : '';
+        return '<iframe ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen></iframe>';
       },
       link: function(scope, elem, attrs) {
          // user-item-var can be used to take a variable other than
          // $scope.user_item for the user_item. This is used in the forum.
-         if (typeof attrs.userItemVar !== 'undefined') {
+         if (attrs.userItemVar) {
             scope.user_item = scope[attrs.userItemVar];
          }
          if (attrs.readOnly) {
@@ -77,10 +78,10 @@ angular.module('algorea')
       scope.moveToNext = function() {
          scope.goRightLink();
       };
-      scope.platform.askHint = function(success, error) {
+      scope.platform.askHint = function(hintToken, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
-         $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken}, {responseType: 'json'}).success(function(postRes) {
+         $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken, hintToken: hintToken}, {responseType: 'json'}).success(function(postRes) {
             if ( ! postRes.result) {
                error("got error from task.php: "+postRes.error);
             } else if (!scope.canGetState || scope.user_item.ID != scope.askHintUserItemID) {
@@ -222,6 +223,9 @@ angular.module('algorea')
       restrict: 'EA',
       scope: false,
       link:function(scope, elem, attrs){
+         if (attrs.userItemVar) {
+            scope.user_item = scope[attrs.userItemVar];
+         }
          var name = 'task-'+scope.panel;
          if (scope.inForum) {
             name = 'task-'+Math.floor((Math.random() * 10000) + 1);// could be better...

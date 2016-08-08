@@ -22,19 +22,18 @@ angular.module('algorea')
             return;
          }
          $scope.loginLoading = false;
-         $rootScope.loginData = res;
-         var listenerName = $scope.rightPanel ? 'getGroupsRight' : 'getGroups';
-         SyncQueue.addSyncEndListeners(listenerName, function() {
+         SyncQueue.addSyncEndListeners('getGroups', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
                $scope.loading = false;
                $scope.myGroup = myGroup;
-               $scope.user = ModelsManager.getRecord('users', $rootScope.loginData.ID);
+               $scope.user = ModelsManager.getRecord('users', res.ID);
             });
-            SyncQueue.removeSyncEndListeners(listenerName);
+            SyncQueue.removeSyncEndListeners('getGroups');
          });
       });
    };
-   $scope.init();
+   $scope.loading = true;
+   itemService.onNewLoad($scope.init);
    $scope.$on('login.login', function(event, data) {
       $scope.loading = true;
       $scope.loginLoading = true;
@@ -103,21 +102,17 @@ angular.module('algorea')
       return false;
    };
    $scope.refuseInvitation = function(group_group) {
-      if (confirm('Êtes-vous sûr de vouloir refuser l\'invitation au groupe '+group_group.parent.sName+' ?')) {
-         group_group.sType = 'invitationRefused';
-         group_group.sStatusDate = new Date();
-         ModelsManager.updated('groups_groups', group_group.ID);
-         $scope.updateResults(group_group);
-      }
+      group_group.sType = 'invitationRefused';
+      group_group.sStatusDate = new Date();
+      ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateResults(group_group);
       return false;
    };
    $scope.leaveGroup = function(group_group) {
-      if (confirm('Êtes-vous sûr de vouloir quitter le groupe '+group_group.parent.sName+' ?')) {
-         group_group.sType = 'left';
-         group_group.sStatusDate = new Date();
-         ModelsManager.updated('groups_groups', group_group.ID);
-         $scope.updateResults(group_group);
-      }
+      group_group.sType = 'left';
+      group_group.sStatusDate = new Date();
+      ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateResults(group_group);
    };
    $scope.groupGroups = ModelsManager.curData['groups_groups'];
    $scope.toggleExpanded = function() {
@@ -149,6 +144,11 @@ angular.module('algorea')
          console.error("error calling groupRequests.php");
       });
    };
+
+   $scope.joinWithPassword = function() {
+      $scope.joinGroup({password: $scope.pageData.askedPassword});
+   };
+
    $scope.joinGroup = function(result) {
       result.joinLog = "chargement...";
       $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
@@ -163,7 +163,7 @@ angular.module('algorea')
                record.sType = postRes.type;
                result.joinLog = null;
             } else {
-               SyncQueue.planToSend();
+               SyncQueue.planToSend(0);
             }
          }
       })

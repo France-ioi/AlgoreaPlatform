@@ -42,11 +42,11 @@ angular.module('algorea').
   });
 
 angular.module('algorea').
-  filter('directOrInvitation', function() {
+  filter('invitation', function() {
     return function(children) {
       var out = [];
       angular.forEach(children, function(child) {
-         if (child.sType != 'requestSent' && child.sType != 'requestRefused') {
+         if (child.sType == 'invitationSent' || child.sType == 'invitationRefused') {
             out.push(child);
          }
       });
@@ -68,19 +68,6 @@ angular.module('algorea').
   });
 
 angular.module('algorea').
-  filter('selectedUsersAndItems', function() {
-    return function(userItems, itemsListRev, usersSelected) {
-      var out = [];
-      angular.forEach(userItems, function(userItem) {
-         if (usersSelected[userItem.idUser] && itemsListRev[userItem.idItem] && userItem.sValidationDate) {
-            out.push(userItem);
-         }
-      });
-      return out;
-    };
-  });
-
-angular.module('algorea').
   filter('userSort', function() {
     return function(groups_groups, parent, owned) {
       return _.sortBy(groups_groups, function(g_g) {
@@ -91,21 +78,82 @@ angular.module('algorea').
     };
   });
 
-// one group
+angular.module('algorea')
+   .controller('groupAdminBreadCrumbsController', ['$scope', '$stateParams', function ($scope, $stateParams) {
+   'use strict';
+   $scope.groupName = 'chargement...';
+   if ($stateParams.idGroup == 'new') {
+      $scope.groupName = 'Nouveau groupe';
+   }
+   $scope.$on('algorea.groupSynced', function() {
+      var groupId = $stateParams.idGroup;
+      $scope.group = ModelsManager.getRecord('groups', groupId);
+      if (!$scope.group) {
+         $scope.group = {sName: 'error!'};
+         return;
+      }
+   });
+}]);
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', function ($scope, $stateParams, itemService, $uibModal, $http) {
+   .controller('groupAdminPopupController', ['$scope', '$uibModalInstance', 'popupData', function ($scope, $uibModalInstance, popupData) {
+   'use strict';
+   if (popupData) {
+      $scope.user_item = popupData.user_item;
+      $scope.item = popupData.item;
+      $scope.thread = popupData.thread;
+   }
+   $scope.inPopup = true;
+   $scope.close = function () {
+      $uibModalInstance.close();
+   };
+}]);
+
+angular.module('algorea')
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter) {
    'use strict';
    $scope.error = null;
 
    $scope.groupFields = models.groups.fields;
    
-   $scope.openPopup = function(group_group, item) {
-      var groupId = group_group.child.ID;
-      var modalInstance = $uibModal.open({
-         template: 'Une belle modal',
-         size: 800,
-       });
+   function getThread(user_item) {
+      if (!user_item.item) {
+         return null;
+      }
+      var res = null;
+      angular.forEach(user_item.item.threads, function(thread) {
+         if (thread.idUser == user_item.idUser) {
+            res = thread;
+            return false;
+         }
+      });
+      return res;
+   }
+
+   $scope.openPopup = function(user_item) {
+      var thread = getThread(user_item);
+      var my_user_item = itemService.getUserItem(user_item.item);
+      var item = user_item.item;
+      if (my_user_item && (my_user_item.bValidated || item.bAccessSolutions || item.bOwnerAccess || item.bManagerAccess)) {
+         var popupData = {
+               user_item: user_item,
+               thread: thread,
+               readOnlyIfNoThread: true,
+               item: user_item.item
+            };
+         var modalInstance = $uibModal.open({
+            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button><div ng-include="\'forum/thread.html\'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>',
+            controller: 'groupAdminPopupController',
+            resolve: {popupData: () => popupData},
+            windowClass: 'groupAdmin-modal'
+          });
+      } else {
+         var modalInstance = $uibModal.open({
+            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>Vous n\'avez pas validé cet exercice et vous n\'avez pas les droits suffisants pour voir les soumissions',
+            controller: 'groupAdminPopupController',
+            resolve: {popupData: () => {}},
+          });
+      }
    };
 
    $scope.getClass = function(userItem) {
@@ -143,19 +191,87 @@ angular.module('algorea')
       }
    };
 
+   var durationToStr = function(date1, date2) {
+      var timeDiffMs = Math.abs(date2.getTime() - date1.getTime());
+      var diffHours = Math.floor(timeDiffMs / (1000 * 3600));
+      if (diffHours < 24) {
+         var diffMinutes = Math.floor(timeDiffMs / (1000 * 60));
+         if (diffMinutes < 60) {
+            return diffMinutes+'mn';
+         }
+         diffMinutes = diffMinutes - 60*diffHours;
+         return diffHours+'h '+diffMinutes+'mn';
+      }
+      var diffDays = Math.floor(timeDiffMs / (1000 * 3600 * 24));
+      if (diffDays < 90) {
+         return '> '+diffDays+' jours';
+      }
+      var diffMonth = Math.floor(timeDiffMs / (1000 * 3600 * 24 * 30));
+      if (diffMonth < 24) {
+         return '> '+diffMonth+' mois';
+      }
+      var diffYear = Math.floor(timeDiffMs / (1000 * 3600 * 24 * 365));
+      return '> '+diffYear+' ans';
+   }
+
+   $scope.getDuration = function(user_item) {
+      if (!user_item || !user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+         return '-';
+      }
+      if (user_item.bValidated) {
+         return durationToStr(user_item.sStartDate, user_item.sValidationDate);
+      }
+      var now = new Date();
+      return durationToStr(user_item.sStartDate, now);
+   }
+
+   $scope.getDate = function(user_item) {
+      if (!user_item || !user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+         return '-';
+      }
+      if (user_item.sValidationDate) {
+         return $filter('date')(new Date(user_item.sValidationDate), 'dd/MM/yyyy');
+      }
+      if (user_item.sLastActivityDate) {
+         return $filter('date')(new Date(user_item.sLastActivityDate), 'dd/MM/yyyy');
+      }
+      return '-';
+   }
+
+   function getUserStr(user) {
+      if (!user) {
+         return 'Utilisateur inconnu';
+      }
+      var res = user.sLogin;
+      if (user.sFirstName || user.sLastName) {
+         res += ' (';
+      }
+      if (user.sFirstName) {
+         res += user.sFirstName + (user.sLastName ? ' ' : '');
+      }
+      if (user.sLastName) {
+         res += user.sLastName;
+      }
+      if (user.sFirstName || user.sLastName) {
+         res += ')';
+      }
+      return res;
+   }
+
    var insertEvent = function(userItem, type, date) {
       var eventStr = getTypeString(type, userItem);
-      var userStr = userItem.user.sFirstName+' '+userItem.user.sLastName+' ('+userItem.user.sLogin+')';
+      var userStr = getUserStr(userItem.user);
       var event = {
          'date': date,
          'userStr': userStr,
          'eventStr': eventStr,
-         'itemStr': userItem.item.strings[0].sTitle
+         'itemStr': userItem.item.strings[0].sTitle,
+         'user_item': userItem
       };
       // insertion in a sorted array:
       $scope.events.splice(_.sortedIndexBy($scope.events, event, function(event) {return event.date;}), 0, event);
-      if ($scope.events.length >= $scope.numberOfEvents) {
-         $scope.events.pop();
+      if ($scope.events.length > $scope.numberOfEvents) {
+         $scope.events.shift();
          $scope.oldestEventDate = $scope.events[$scope.events.length-1].date;   
       }
    };
@@ -181,6 +297,7 @@ angular.module('algorea')
             insertEvent(userItem, 'newThread', userItem.sThreadStartDate);  
          }
       });
+      _.reverse($scope.events);
    };
 
    var needToUpdateAtEndOfSync = false;
@@ -213,33 +330,44 @@ angular.module('algorea')
       });
       return res;
    };
-   $scope.showRequestTable = function() {
-      var res = false;
+
+   $scope.updateGroupsGroups = function() {
+      $scope.showRequestTable = false;
+      $scope.showInvitationTable = false;
       angular.forEach($scope.group.children, function(child) {
          if (child.sType == 'requestSent') {
-            res = true;
-            return false;
+            $scope.showRequestTable = true;
+            return;
+         }
+         if (child.sType == 'invitationSent' || child.sType == 'invitationRefused') {
+            $scope.showInvitationTable = true;
          }
       });
-      return res;
-   };
+   }
+
+   var needToUpdateGroupsGroupsAtEndOfSync = false;
+   ModelsManager.addListener('groups_groups', 'updated', 'groupAdminGpsGpsDeleted', function() {needToUpdateGroupsGroupsAtEndOfSync = true;}, true);
+   ModelsManager.addListener('groups_groups', 'inserted', 'groupAdminGpsGpsInserted', function() {needToUpdateGroupsGroupsAtEndOfSync = true;}, true);
+   ModelsManager.addListener('groups_groups', 'deleted', 'groupAdminGpsGpsDeleted', function() {needToUpdateGroupsGroupsAtEndOfSync = true;}, true);
+
    $scope.printType = function(type) {
       return models.groups_groups.fields.sType.values[type].label;
    };
    $scope.cancelInvitation = function(group_group) {
       ModelsManager.deleted('groups_groups', group_group.ID);
+      $scope.updateGroupsGroups();
    };
    $scope.acceptRequest = function(group_group) {
-      return;
       group_group.sType = 'requestAccepted';
       group_group.sStatusDate = new Date();
       ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateGroupsGroups();
    };
    $scope.refuseRequest = function(group_group) {
-      return;
       group_group.sType = 'requestRefused';
       group_group.sStatusDate = new Date();
       ModelsManager.updated('groups_groups', group_group.ID);
+      $scope.updateGroupsGroups();
    };
    $scope.inviteLogins = function() {
       if (!$scope.formValues.currentLogins) {
@@ -252,7 +380,7 @@ angular.module('algorea')
             console.error("got error from invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.invitationError = + "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.invitationError = "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -276,6 +404,7 @@ angular.module('algorea')
             if (alreadyInvitedLogins.length) {
                $scope.invitationError += 'Les logins suivants ont déjà reçu une invitation ou font déjà partie du groupe : '+alreadyInvitedLogins.join(' ')+'. ';
             }
+            $scope.formValues.currentLogins = '';
          }
       })
       .error(function() {
@@ -288,13 +417,13 @@ angular.module('algorea')
          return;
       }
       var logins = $scope.formValues.adminLogins.split(' ');
-      $scope.adminInvitationError = '';
+      $scope.adminLoading = true;
       $http.post('/admin/invitations.php', {action: 'getAdminGroupsFromLogins', logins: logins, idGroup: $scope.group.ID}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.adminInvitationError = + "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.adminInvitationError = "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -312,7 +441,11 @@ angular.module('algorea')
             if (alreadyInvitedLogins.length) {
                $scope.adminInvitationError += 'Les logins suivants ont déjà un rôle dans le groupe : '+alreadyInvitedLogins.join(' ')+'. ';
             }
-            $scope.addAdminGroups(groupsToInvite);
+            if (groupsToInvite.length) {
+               $scope.addAdminGroups(groupsToInvite);
+            } else {
+               $scope.adminLoading = false;
+            }
          }
       })
       .error(function() {
@@ -336,7 +469,7 @@ angular.module('algorea')
       invitation.idGroupParent = $scope.group.ID;
       invitation.idGroupChild = groupId;
       invitation.idGroupParent = $scope.group.ID;
-      invitation.idUserInviting = $scope.loginData.ID;
+      invitation.idUserInviting = SyncQueue.requests.loginData.ID;
       invitation.sChildLogin = childLogin;
       invitation.iChildOrder = $scope.getNextiChildOrder($scope.group);
       invitation.sType = 'invitationSent';
@@ -344,27 +477,44 @@ angular.module('algorea')
       ModelsManager.insertRecord('groups_groups', invitation);
    };
 
-   $scope.refreshPassword = function() {
-      $http.post('/groupAdmin/api.php', {action: 'refreshPassword', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
-         if (!postRes || !postRes.success) {
-            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+   $scope.generatePassword = function() {
+      var string = '';
+      var stringOfAllowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      for (var i = 0; i < 10;  i++) {
+         string += stringOfAllowedChars.charAt(Math.floor(Math.random()*stringOfAllowedChars.length));
+      }
+      return string;
+   }
+
+   $scope.passwordChecked = function() {
+      if ($scope.formValues.hasPassword) {
+         if ($scope.oldPassword) {
+            $scope.group.sPassword = $scope.oldPassword;
+            $scope.saveGroup();
          } else {
-            $scope.group.sPassword = postRes.newPass;   
-            $scope.$evalAsync($scope.$apply);            
+            $scope.refreshPassword();
          }
-      })
-      .error(function() {
-         console.error("error calling groupAdmin/api.php");
-      });
+      } else {
+         $scope.oldPassword = $scope.group.sPassword;
+         $scope.group.sPassword = null;
+         $scope.saveGroup();
+      }
+   }
+
+   $scope.refreshPassword = function(callback) {
+      $scope.group.sPassword = $scope.generatePassword();
+      $scope.saveGroup();
    };
 
    $scope.addAdminGroups = function(groups) {
       $http.post('/groupAdmin/api.php', {action: 'addAdmins', idGroup: $scope.groupId, aAdminGroups: groups}, {responseType: 'json'}).success(function(postRes) {
+         $scope.formValues.adminLogins = '';
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
             SyncQueue.planToSend(0);
          }
+         $scope.adminLoading = false;
       })
       .error(function() {
          console.error("error calling groupAdmin/api.php");
@@ -372,28 +522,45 @@ angular.module('algorea')
    };
 
    $scope.saveGroup = function() {
+      console.error('saveGroup');
       ModelsManager.updated('groups', $scope.groupId);
    };
 
+   $scope.deleteGroup = function() {
+      if (window.confirm("Êtes-vous certain de vouloir supprimer le groupe "+$scope.group.sName+' ? Cette opération est irréversible.')) { 
+         $http.post('/groupAdmin/api.php', {action: 'deleteGroup', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
+            if (!postRes || !postRes.success) {
+               console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+            } else {
+               // deleting on the js side due to limitations of the requestSet deletion algorithm
+               angular.forEach($scope.group.parents, function(parent) {
+                  ModelsManager.deleted('groups_groups', parent.ID);   
+               });
+               ModelsManager.deleted('groups', $scope.group.ID);
+               SyncQueue.planToSend(0);
+               $state.go('groupAdmin');
+            }
+         })
+         .error(function() {
+            console.error("error calling groupAdmin/api.php");
+         });
+      }
+   };
+
    $scope.removeUser = function(group_group) {
-      $http.post('/groupAdmin/api.php', {action: 'removeUser', idGroup: $scope.groupId, idGroupUser: group_group.idGroupChild}, {responseType: 'json'}).success(function(postRes) {
-         if (!postRes || !postRes.success) {
-            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
-         } else {
-            SyncQueue.planToSend(0);
-         }
-      })
-      .error(function() {
-         console.error("error calling groupAdmin/api.php");
-      });
+      group_group.sType = 'removed';
+      ModelsManager.updated('groups_groups', group_group.ID);
    };
 
    $scope.removeAdmin = function(group_group) {
+      $scope.adminLoading = true;
       $http.post('/groupAdmin/api.php', {action: 'removeAdmin', idGroup: $scope.groupId, idGroupAdmin: group_group.idGroupParent}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
+            // this synchro is very hazardous but seems to work...
             SyncQueue.planToSend(0);
+            $scope.adminLoading = false;
          }
       })
       .error(function() {
@@ -415,13 +582,14 @@ angular.module('algorea')
    };
 
    $scope.startSync = function(groupId, itemId, callback) {
-      SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minServerVersion: 0};
+      SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minVersion: 0};
       // yeah...
       SyncQueue.addSyncEndListeners('groupAdminController', function() {
          $scope.loading = false;
          SyncQueue.removeSyncEndListeners('groupAdminController');
-         delete(SyncQueue.requestSets.groupAdmin.minServerVersion);
+         delete(SyncQueue.requestSets.groupAdmin.minVersion);
          callback();
+         $rootScope.$broadcast('algorea.groupSynced');
       }, false, true);
       SyncQueue.planToSend(0);
    };
@@ -432,6 +600,9 @@ angular.module('algorea')
          console.error('big problem!');
          return;
       }
+      if ($scope.group.sPassword) {
+         $scope.formValues.hasPassword = true;
+      }
       $scope.usersSelected = {};
       $scope.groupsSelected = {};
       angular.forEach($scope.group.children, function(child_group_group) {
@@ -440,6 +611,16 @@ angular.module('algorea')
          var user = child_group.userSelf[0];
          if (!user) return;
          $scope.usersSelected[user.ID] = true;
+      });
+      $scope.adminOnGroup = false;
+      angular.forEach($scope.group.parents, function(parent_group_group) {
+         var parent = parent_group_group.parent;
+         if (parent.ID == SyncQueue.requests.loginData.idGroupOwned) {
+            if (parent_group_group.sRole == 'manager' || parent_group_group.sRole == 'owner') {
+               $scope.adminOnGroup = true;
+            }
+            return false;
+         }
       });
    };
 
@@ -505,7 +686,7 @@ angular.module('algorea')
    $scope.itemSelected = function(item) {
       if ($scope.rootItem == item) return;
       $scope.rootItem = item;
-      $scope.itemsList = [];
+      $scope.itemsList = [item];
       $scope.itemsListRev = {};
       fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
       $scope.startSync($scope.groupId, item.ID, function() {
@@ -515,6 +696,10 @@ angular.module('algorea')
             if (needToUpdateAtEndOfSync) {
                $scope.updateEvents();
                needToUpdateAtEndOfSync = false;
+            }
+            if (needToUpdateGroupsGroupsAtEndOfSync) {
+               $scope.updateGroupsGroups();
+               needToUpdateGroupsGroupsAtEndOfSync = false;
             }
          });
          $scope.updateEvents();
@@ -551,14 +736,40 @@ angular.module('algorea')
       ModelsManager.removeListener('users_items', 'deleted', 'groupAdminDeleted');
       ModelsManager.removeListener('users_items', 'inserted', 'groupAdminInserted');
       ModelsManager.removeListener('users_items', 'updated', 'groupAdminUpdated');
+      ModelsManager.removeListener('groups_groups', 'deleted', 'groupAdminGpsGpsDeleted');
+      ModelsManager.removeListener('groups_groups', 'inserted', 'groupAdminGpsGpsInserted');
+      ModelsManager.removeListener('groups_groups', 'updated', 'groupAdminGpsGpsUpdated');
    };
 
    $scope.allUserItems = ModelsManager.curData.users_items;
 
+   // not used, maybe later
+   $scope.newGroup = function (callback) {
+      if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser) {
+         $scope.error = 'Vous ne pouvez créer des groupes qu\'en était connecté';
+         return;
+      }
+      $scope.group = ModelsManager.createRecord('groups');
+      $scope.group.idUser = SyncQueue.requests.loginData.ID;
+      $scope.group.sDateCreated = new Date();
+      $scope.groupId = $scope.group.ID;
+      $scope.group.sName = 'Noueau groupe';
+      $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            $state.go('groupAdminGroup', {idGroup: $scope.group.ID}).then(function(){$stateParams.idGroup = $scope.group.ID;});
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      }); 
+   };
+
    $scope.init = function() {
       $scope.loading = true;
       $scope.progressionType = 'chronological';
-      $scope.groupId = '1321383987564998144';//$stateParams.idGroup;
+      $scope.groupId = $stateParams.idGroup;
       $scope.error = '';
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
@@ -567,31 +778,31 @@ angular.module('algorea')
          //$scope.loading = false;
          //return;
       }
-      if ($scope.groupId == '0') {
-         // TODO: create group
-         console.error('oops!');
-      } else {
-         $scope.startSync($scope.groupId, $scope.itemId, function() {
-            $scope.initItems();
-            $scope.initGroup();
-            SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
-               if (needToUpdateAtEndOfSync) {
-                  $scope.updateEvents();
-                  needToUpdateAtEndOfSync = false;
-               }
-            });
-         });
+      if (!$scope.groupId || $scope.groupId == 'new') {
+         $scope.newGroup();
+         return;
       }
+      $scope.startSync($scope.groupId, $scope.itemId, function() {
+         $scope.initItems();
+         $scope.initGroup();
+         SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
+            if (needToUpdateAtEndOfSync) {
+               $scope.updateEvents();
+               needToUpdateAtEndOfSync = false;
+            }
+            if (needToUpdateGroupsGroupsAtEndOfSync) {
+               $scope.updateGroupsGroups();
+               needToUpdateGroupsGroupsAtEndOfSync = false;
+            }
+         });
+      });
    };
 
    $scope.$on('$destroy', function() {
       $scope.stopSync();
    });
-
-   $scope.$on('syncResetted', function() {
-      $scope.init();
-   });
    
-   $scope.init();
+   $scope.loading = true;
+   itemService.onNewLoad($scope.init);
 
 }]);

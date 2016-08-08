@@ -242,12 +242,15 @@ angular.module('algorea')
       $scope.newGroup = function(groupGroupID) {
          var group = ModelsManager.createRecord("groups");
          group.sName = "Nouveau groupe";
+         group.sType = "Class";
          group.sDateCreated = new Date();
          ModelsManager.insertRecord("groups", group);
          var groupGroupParent = ModelsManager.getRecord("groups_groups", groupGroupID);
          var groupGroup = ModelsManager.createRecord("groups_groups");
          groupGroup.idGroupParent = groupGroupParent.child.ID;
          groupGroup.idGroupChild = group.ID;
+         groupGroup.sRole = 'owner';
+         groupGroup.sType = 'direct';
          groupGroup.iChildOrder = $scope.groupsTreeView1.firstAvailableOrder(group);
          ModelsManager.insertRecord("groups_groups", groupGroup);
          $scope.groupGroup = groupGroup;

@@ -1,157 +1,142 @@
-<div ng-if="loading">
-	Chargement...
-</div>
-<div ng-show="error">{{error}}</div>
 <div ng-if="!loading" class="groupAdmin">
-
-	{{group.sName}}
-
 	<uib-tabset active="active">
 		<uib-tab heading="Descriptif">
-				<div class="groupAdmin-tabContent">
-					<div class="row">
-						<div class="col-lg-5">
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
-										<span class="label-title">Nom du groupe</span>
-										<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
-									</label>
-								</div>
-								<div class="col-sm-8">
-									<input type="text" ng-model="group.sName" class="form-control"/>
-								</div>
+				<div class="groupAdmin-tabContent tab-group-description">
+							<div class="flex-container">
+								<label class="control-label item-label">
+									<span class="label-title">Nom du groupe</span>
+									<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
+								</label>
+								<input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
 							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
-										<span class="label-title">Type</span>
-										<span class="label-description">Sélectionnez le type de groupe</span>
-									</label>
-								</div>
-								<div class="col-sm-8">
-									<select ng-model="group.sType" class="form-control">
-									<option value="{{key}}" ng-repeat="(key, value) in groupFields.sType.values" ng-selected="group.sType == key" ng-if="key!='Root'">{{value.label}}</option>
-									</select>
-								</div>
+							<div class="flex-container">
+								<label class="control-label item-label">
+									<span class="label-title">Type</span>
+									<span class="label-description">Sélectionnez le type de groupe</span>
+								</label>
+								<select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
+									<option value="Class" ng-selected="group.sType == 'Class'">Classe</option>
+									<option value="Friends" ng-selected="group.sType == 'Friends'">Équipe</option>
+									<option value="Other" ng-selected="group.sType == 'Other'">Autre</option>
+								</select>
 							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<label class="control-label">
+							<div class="flex-container">
+									<label class="control-label item-label">
 										<span class="label-title">Description</span>
 										<span class="label-description">Ce champ est disponible si vous souhaitez ajouter une description à ce groupe</span>
 									</label>
-								</div>
-								<div class="col-sm-8">
-									<textarea ng-model="group.sDescription" class="form-control"></textarea>
-								</div>
+									<textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
 							</div>
-							<div ng-if="group.sType == 'Class'" class="row">
-								<div class="col-sm-4">
-									<label class="control-label" ng-if="group.sType == 'Class'">
+							<div ng-if="group.sType == 'Class'" class="flex-container">
+									<label class="control-label item-label" ng-if="group.sType == 'Class'">
 										<span class="label-title">Niveau</span>
 										<span class="label-description">Indiquez le niveau du groupe</span>
 									</label>
-								</div>
-								<div class="col-sm-8">
-									<select ng-model="group.iGrade" class="form-control">
-										<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
-									</select>
-									<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez"/>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-12">
-									<a class="btn btn-primary pull-right" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+									<div class="item-control">
+										<select ng-model="group.iGrade" class="form-control">
+											<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+										</select>
+										<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-sm-12 block-delete">
-									<a class="group-delete" ng-click="removeGroup()">Supprimer le groupe</a>
+							<div class="group-action" ng-if="adminOnGroup">
+								<div class="group-save">
+									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+								</div>
+								<div class="block-delete">
+									<a class="group-delete" ng-click="deleteGroup();">Supprimer le groupe</a>
 								</div>
 							</div>
-						</div>
-					</div>
 				</div>
 		</uib-tab>
 
 		<uib-tab heading="Membres">
-				<div class="groupAdmin-tabContent">
-					<div class="row">
-						<div class="col-sm-4">
-							<div class="groupAdmin-title">Composition du groupe «{{group.sName}}»</div>
+				<div class="groupAdmin-tabContent tab-members">
+
+					<div class="flex-container">
+
+						<div class="members-col">
+							<div class="groupAdmin-title">Composition du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
 							<ul class="list list-block list-users">
-								<li class="list-item" ng-repeat="child in group.children | directOrInvitation | userSort">
+								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort">
 									<span class="user-status connected"></span>
-									<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
+									<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
 									<span class="action">
-										<button class="btn-icon btn-view-more btn-small" title="voir"><span class="btn-label">voir</span></button>
-										<button class="btn-icon btn-delete btn-small" ng-clic="removeUser(child);" title="supprimer"><span class="btn-label">supprimer</span></button>
+										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child);" title="supprimer"><span class="btn-label">supprimer</span></button>
 									</span>
 								</li>
 							</ul>
+							<div class="groupAdmin-title">Utilisateurs invités</div>
+							<ul class="list list-block list-applicants">
+									<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
+										<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})<span ng-if="child.sType == 'invitationRefused'"> (invitation refusée)</span></span>
+										<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" title="Annuler"><span class="btn-label">Annuler</span></button></span>
+									</li>
+							</ul>
 						</div>
-						<div class="col-sm-8">
-							<div class="groupAdmin-title">Gestion des inscriptions
-							<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="label-title label-list-item">Ajout d'utilisateurs</div>
+
+						<div class="action-col">
+							<div class="bloc-inscription">
+								<div class="groupAdmin-title">Gestion des inscriptions
+								<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
+								<div class="label-title label-list-item">Invitation d'utilisateurs</div>
+								<div class="flex-container">
+									<div class="left-col">
+										<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
+									</div>
+									<div class="right-col">
+										<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
+									</div>
 								</div>
+								<span ng-if="invitationError" style="font-weight:bold;">Erreur&nbsp;:</span> <span ng-bind="invitationError"></span>
 							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
-								</div>
-								<div class="col-sm-6">
-									<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
-								</div>
-							</div>
-							<span ng-bind="invitationError"></span>
 
 							<!--<field model="group" field="groups.bFreeAccess" />-->
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="label-title label-list-item">Code d'inscription :</div>
-									<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
+							<div class="bloc-inscription">
+								<div class="flex-container">
+									<div class="left-col">
+										<div class="label-title label-list-item">Code d'inscription :</div>
+										<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
+									</div>
+									<div class="right-col">
+										<div class="checkboxSwitch">
+											<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
+											<label for="codeInscr"><span></span></label>
+										</div>
+									</div>
 								</div>
-								<div class="col-sm-6">
-									<div class="checkboxSwitch">
-										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordCheck();">
-										<label for="codeInscr"><span></span></label>
+								<div class="flex-container" ng-if="formValues.hasPassword">
+									<div class="left-col">
+										<p>Code d'inscription à transmettre aux élèves</p>
+									</div>
+									<div class="right-col form-inline">
+										<input type="text" class="form-control" ng-model="group.sPassword" readonly/>
+										<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
 									</div>
 								</div>
 							</div>
-							<div class="row" ng-if="formValues.hasPassword">
-								<div class="col-sm-6">
-									<p>Code d'inscription à transmettre aux élèves</p>
-								</div>
-								<div class="col-sm-6 form-inline">
-									<input type="text" class="form-control" ng-model="group.sPassword" />
-									<button ng-click="refreshPassword()" class="btn btn-primary">Renouveler le code</button>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
-									<p>Autoriser les demandes spontanées</p>
-								</div>
-								<div class="col-sm-6">
-									<div class="checkboxSwitch">
-										<input type="checkbox" id="demSpont" class="switch" ng-model="group.bOpened">
-										<label for="demSpont"><span></span></label>
+							<div class="bloc-inscription">
+								<div class="flex-container">
+									<div class="left-col">
+										<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
+										<p>Autoriser les demandes spontanées</p>
+									</div>
+									<div class="right-col">
+										<div class="checkboxSwitch">
+											<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
+											<label for="demSpont"><span></span></label>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div  ng-if="group.bOpened" class="row">
-								<div class="col-lg-6 col-lg-offset-6">
-									<div ng-if="!showRequestTable()">
-										<p>(aucune)</p>
+
+								<div  ng-if="group.bOpened" class="">
+									<div ng-if="!showRequestTable">
+										<p>Aucune demande spontannée.</p>
 									</div>
-									<div ng-if="showRequestTable()">
+									<div ng-if="showRequestTable">
 										<ul class="list list-block list-applicants">
 												<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
-													<span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
+													<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
 													<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
 												</li>
 										</ul>
@@ -160,22 +145,19 @@
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-sm-12">
-							<a class="btn btn-primary pull-right">Enregistrer</a>
-						</div>
-					</div>
 				</div>
 		</uib-tab>
 
-		<uib-tab heading="Progression du groupe">
-			<div class="groupAdmin-tabContent">
+		<uib-tab heading="Progression">
+			<div class="groupAdmin-tabContent tab-progression">
 				<div class="row">
 					<div class="col-sm-6">
-						<span class="pull-left">Sélectionnez le type de progression : </span>
-						<div class="block-context">
-							<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique, élève par élève</label><br>
-							<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours, vue collective</label>
+						<div class="row">
+							<span class="col-md-6">Sélectionnez le type de visualisation&nbsp;: </span>
+							<div class="col-md-6">
+								<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique</label><br>
+								<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours</label>
+							</div>
 						</div>
 					</div>
 					<div ng-if="progressionType == 'collective'" class="col-sm-6">
@@ -196,13 +178,12 @@
 						<!-- TODO : add class toggle when selected -->
 								<li ng-repeat="child in group.children | confirmed" ng-click="toggleUserRowSelection(child.child);" ng-class="{row_selected: groupsSelected[child.idGroupChild] == true}">
 				                  <span class="user-status connected"></span>
-				                  <span class="user-name">{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span>
+				                  <span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
 				               </li>
 						</ul>
 					</div>
 					<div class="col-sm-8">
 						<div class="groupAdmin-title">Activité récente</div>
-						<!-- TODO : class for each activity type -->
 						<table class="table table-activity">
 							<thead>
 								<tr>
@@ -213,82 +194,86 @@
 								</tr>
 							</thead>
 							<tbody>
-					            <tr ng-repeat="event in events">
-					               <td>{{event.userStr}}</td>
-					               <td>{{event.date | date}}</td>
-					               <td>{{event.eventStr}}</td>
-					               <td>{{event.itemStr}}</td>
-					            </tr>
+								<tr ng-repeat="event in events">
+									<td>{{event.userStr}}</td>
+									<td>{{event.date | date}}</td>
+									<td class="activity-type {{event.eventStr}}">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" title="lien vers activité"><span class="btn-label">lien vers activité</span></button></td>
+									<td>{{event.itemStr}}</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
 
 				<div ng-if="progressionType == 'collective'">
-					<div class="row">
-						<div class="col-sm-6">
-							Parcours :
-							<select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">	
-							</select>
-				         	<select ng-repeat="(depth, selectedItem) in dropdownSelections" ng-if="depth != 0" ng-change="dropdownSelected(depth)" ng-model="dropdownSelectionsIDs[depth]">
-				         		<option value="">Tous</option>
-								<option ng-repeat="child in dropdownSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == dropdownSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
-							</select>
-							<select ng-if="dropdownSelections[dropdownSelections.length-1].children.length" ng-change="dropdownSelected(0)" ng-model="dropdownSelectionsIDs[dropdownSelections.length]">
-								<option selected="selected" value="">Tous</option>
-								<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
-							</select>
-						</div>
-						<div class="view-switcher col-sm-6">
-							<!-- TODO: on button click, switch between global / detailed view
-								* toggle button class .btn-zoom-in / .btn-zoom-out
-								* toggle table.table-progress class (.progress-global / .progress-detail)
-								* display td.status content according to global / detailed view
-						  -->
-							<span class="pull-right">Afficher la vue globale <button class="btn-icon btn-zoom-out"></button></span>
-						</div>
+					<div class="checkboxSwitch pull-right">
+						<span>Afficher la vue détaillée</span>
+						<input type="checkbox" id="switchView" class="switch" ng-click="formValues.detailedView=!formValues.detailedView">
+						<label for="switchView"><span></span></label>
 					</div>
-					<table class="table-progress progress-global">
-						<thead>
-							<tr>
-								<th class="fixed-width">Nom du chapitre / étape</th>
-								<th class="fixed-width">Description</th>
-								<th ng-repeat="child in group.children | confirmed" class="text-center name"><div><span>{{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}} ({{child.child.userSelf[0].sLogin}})</span></div></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="item in itemsList">
-								<td class="fixed-width" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
-								<td class="fixed-width description">{{item.strings[0].sDescription}}</td>
-								<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
-								<!-- if view progress detail
-									<ul ng-init="thisUserItem = getUserItem(child, item);" class="list-progress-details">
-											<li class="date">03/03 17:30</li>
-											<li class="time">00'30"</li>
-											<li class="help">0</li><span class="break"></span>
-											<li class="score">{{thisUserItem.iScore}}/100</li>
-											<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)<button class="btn-icon btn-modal" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button></li>
-											<li class="questions">{{thisUserItem.nbHintsCached}}</li>
-									</ul>
-								-->
-								<!-- endif -->
-
-								<!-- if view progress global -->
-									<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
-									<button class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
-									<button class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(child,item);" title="voir le code"><span class="btn-label">Voir plus</span></button>
-									<ul class="list-progress-details">
-											<li class="score">{{thisUserItem.iScore}}/100</li>
-											<li class="date">{{thisUserItem.sLastActivityDate | date}}</li>
-											<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai(s)</li>
-											<li class="questions">{{thisUserItem.nbHintsCached}}</li>
-											<li class="help">0</li>
-									</ul>
-								<!-- endif -->
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<div class="checkboxSwitch pull-right">
+						<span for="switchDescription">Afficher les descriptions</span>
+						<input type="checkbox" id="switchDescription" class="switch" ng-click="formValues.showDescription=!formValues.showDescription">
+						<label for="switchDescription"><span></span></label>
+					</div>
+					<div>
+						Parcours :
+						<select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">
+						</select>
+						<select ng-repeat="(depth, selectedItem) in dropdownSelections" ng-if="depth != 0" ng-change="dropdownSelected(depth)" ng-model="dropdownSelectionsIDs[depth]">
+							<option value="">Tous</option>
+							<option ng-repeat="child in dropdownSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == dropdownSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+						</select>
+						<select ng-if="dropdownSelections[dropdownSelections.length-1].children.length" ng-change="dropdownSelected(0)" ng-model="dropdownSelectionsIDs[dropdownSelections.length]">
+							<option selected="selected" value="">Tous</option>
+							<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+						</select>
+					</div>
+					<div class="table-wrapper">
+						<table class="table-progress" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
+							<thead>
+								<tr>
+									<th class="fixed-width step-name">Nom du chapitre / étape</th>
+									<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
+									<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf[0].sLogin}}</span> <span class="user-name">({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></span></div></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="item in itemsList">
+									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
+									<td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
+									<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
+										<div ng-if="formValues.detailedView" ng-init="thisUserItem = getUserItem(child, item);" class="progress-details">
+											<div class="details-row">
+												<div class="date" title="Date dernière activité">{{getDate(thisUserItem)}}</div>
+												<div class="time" title="Temps depuis première lecture">{{getDuration(thisUserItem)}}</div>
+												<div class="help" title="Indices demandés">{{thisUserItem.nbHintsCached}}</div>
+											</div>
+											<div class="details-row">
+												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" title="Score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
+												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
+												<div class="questions" title="Demandes d'aide sur le forum" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+												<div ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="Voir le détail"><span class="btn-label">Voir plus</span></button></div>
+											</div>
+										</div>
+										<!-- TODO: btn-preview toggle class .visible on ul.list-progress-details -->
+										<button ng-if="!formValues.detailedView" class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
+										<ul ng-if="!formValues.detailedView" class="progress-details">
+											<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'">Score : {{thisUserItem.iScore}}%</li>
+											<li class="date" ng-if="!user_item.sValidationDate">Date dernière activité : {{thisUserItem.sLastActivityDate | date}}</li>
+											<li class="date" ng-if="user_item.sValidationDate">Date de validation : {{thisUserItem.sLastActivityDate | date}}</li>
+											<li class="time" ng-if="!user_item.sValidationDate">Temps depuis première lecture : {{getDuration(thisUserItem)}}</li>
+											<li class="time" ng-if="user_item.sValidationDate">Temps jusqu'à validation : {{getDuration(thisUserItem)}}</li>
+											<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
+											<li class="questions">Demandes d'aide sur le forum : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+											<li class="help">Indices demandés : {{thisUserItem.nbHintsCached}}</li>
+										</ul>
+										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</uib-tab>
@@ -303,6 +288,7 @@
 							<thead>
 								<tr>
 									<th></th>
+									<th>Propriétaire</th>
 									<th>Administrateur</th>
 									<th>Observateur</th>
 									<th></th>
@@ -310,23 +296,28 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="parent in group.parents">
-									<td>{{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}} ({{parent.parent.userSelf[0].sLogin}})</td>
-									<td><input type="checkbox" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');"></td>
-									<td><input type="checkbox" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');"></td>
-									<td><button class="btn-icon btn-delete btn-small" title="supprimer"><span class="btn-label">supprimer</span></button></td>
+									<td>{{parent.parent.userOwned[0].sLogin}} ({{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}})</td>
+									<td><span ng-if="parent.sRole == 'owner'" class="glyphicon glyphicon-ok"></span></td>
+									<td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'manager' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
+									<td><input type="radio" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'observer' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
+									<td><button class="btn-icon btn-delete btn-small" title="supprimer" ng-if="adminOnGroup && parent.sRole != 'owner'" ng-click="removeAdmin(parent);"><span class="btn-label">supprimer</span></button></td>
 								</tr>
 							</tbody>
 						</table>
 
-						<div class="form-inline admin-form">
+						<div class="form-inline admin-form" ng-if="adminOnGroup">
 							<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" placeholder="Logins à ajouter (séparer par des espaces) :">
 							<button  ng-click="inviteAdminLogins();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
 						</div>
-						<span ng-bind="invitationError"></span>
+						<span ng-bind="adminInvitationError"></span>
+						<span ng-show="adminLoading">Chargement...</span>
 					</div>
 				</div>
 			</div>
 		</uib-tab>
 	</uib-tabset>
-
 </div>
+<div ng-if="loading">
+	Chargement...
+</div>
+<div ng-show="error">{{error}}</div>

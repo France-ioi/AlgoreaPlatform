@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('forumIndexController', ['$scope', 'itemService', 'loginService', '$state', function ($scope, itemService, loginService, $state) {
+   .controller('forumIndexController', ['$scope', 'itemService', 'loginService', '$state', '$timeout', '$rootScope', function ($scope, itemService, loginService, $state, $timeout, $rootScope) {
    $scope.layout.isOnePage(true);
    $scope.loading = true;
    $scope.threads = {};
@@ -16,12 +16,20 @@ angular.module('algorea')
       $scope.currentGlobalFilter = filter;
    };
    $scope.currentGlobalFilter = $scope.globalFilters.all;
-   // build temporary user_thread for threads which don't have any
-   itemService.onNewLoad(function() {
-      $scope.loading = false;
-      $scope.myUserID = loginService.getUser();
-      $scope.myUserID = $scope.myUserID.userID;
+   $scope.init = function() {
+      $scope.myUserID = $rootScope.myUserID;
       $scope.threads = ModelsManager.getRecords('threads');
+      $scope.loading = false;
+      $timeout($scope.$apply);
+   }
+   itemService.onNewLoad(function() {
+      $scope.init();
+   });
+   $scope.$on('syncResetted', function() {
+      $scope.loading = true;
+      itemService.onNewLoad(function() {
+         $scope.init();
+      });
    });
    $scope.tabs = {
       'helpOthers': {active: true, length: 0},
@@ -60,6 +68,7 @@ angular.module('algorea')
    if (!$scope.thread.idItem) {
       $scope.accessible = true;
    }
+
    if ($scope.thread.idItem && $scope.thread.item) {
       $scope.user_item = itemService.getUserItem($scope.thread.item);
       if (($scope.user_item && $scope.user_item.bValidated == 1) || $scope.thread.idUserCreated == $scope.myUserID) {

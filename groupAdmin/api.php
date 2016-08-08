@@ -12,7 +12,7 @@ require_once __DIR__.'/../config.php';
 session_start();
 header('Content-Type: application/json');
 
-if (!isset($request['action']) || !isset($request['idGroup'])) {
+if (!isset($request['action']) || ($request['action'] != 'createGroup' && !isset($request['idGroup']))) {
    echo json_encode(array('success' => false, 'error' => 'missing action or idGroup'));
    exit();
 }
@@ -21,21 +21,26 @@ if (!isset($request['action']) || !isset($request['idGroup'])) {
 //    exit();
 // }
 
-$idGroup = $request['idGroup'];
 //$idGroupOwned = $_SESSION['login']['idGroupOwned'];
 
 require_once __DIR__.'/../shared/connect.php';
+require_once __DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php';
 
-// verify access rights on group:
-$query = 'select sRole from group_group where idGroupChild = :idGroup and idGroupParent = :idGroupOwned;';
-$stmt = $db->prepare($query);
-//$stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $idGroupOwned]);
-//$sRole = $stmt->fetchColumn();
+if (isset($request['idGroup'])) {
+   // verify access rights on group:
+   $idGroup = $request['idGroup'];
+   $query = 'select sRole from group_group where idGroupChild = :idGroup and idGroupParent = :idGroupOwned;';
+   $stmt = $db->prepare($query);
+   //$stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $idGroupOwned]);
+   //$sRole = $stmt->fetchColumn();
 
-// if ($sRole != 'manager' && $sRole != 'owner') {
-//    echo json_encode(array('success' => false, 'error' => 'you do not have the rights to modify this group', 'idGroupOwned' => $idGroupOwned));
-//    exit();	
-// }
+   // if ($sRole != 'manager' && $sRole != 'owner') {
+   //    echo json_encode(array('success' => false, 'error' => 'you do not have the rights to modify this group', 'idGroupOwned' => $idGroupOwned));
+   //    exit();	
+   // }
+} else {
+   $idGroup = null;
+}
 
 require_once("../shared/listeners.php");
 if (file_exists( __DIR__."/../shared/debug.php")) {
@@ -50,9 +55,11 @@ function getRandomPass() {
    for ($i = 0; $i < 10; $i++) {
       $string .= $characters[mt_rand(0, strlen($characters) - 1)];
    }
+   return $string;
 }
 
 function refreshCode($idGroup) {
+   global $db;
    $newPass = getRandomPass();
    $query = 'update groups set sPassword = :newPass where ID = :idGroup';
    $stmt = $db->prepare($query);
@@ -78,6 +85,27 @@ function removeAdmin($idGroup, $idGroupAdmin) {
    if (!$idGroupAdmin) {
       echo json_encode(array('success' => false, 'error' => 'missing idGroupAdmin argument.'));
       exit();
+   }
+   $query = 'select sRole from groups_groups where idGroupChild = :idGroup and idGroupParent = :idGroupAdmin;';
+   $stmt = $db->prepare($query);
+   $stmt->execute(['idGroup' => $idGroup, 'idGroupAdmin' => $idGroupAdmin]);
+   $sRole = $stmt->fetchColumn();
+   if (!$sRole) {
+      echo json_encode(array('success' => false, 'error' => 'operation impossible: the admin is not part of the group.'));
+      exit();
+   }
+   if ($sRole == 'owner') {
+      echo json_encode(array('success' => false, 'error' => 'operation impossible: you cannot remove the owner.'));
+      exit();
+   }
+   if ($sRole == 'manager') {
+      $query = 'select count(ID) from groups_groups where idGroupChild = :idGroup and sRole = \'manager\' or sRole = \'owner\';';
+      $stmt = $db->prepare($query);
+      $stmt->execute(['idGroup' => $idGroup]);
+      $nbParents = $stmt->fetchColumn();
+      if (intval($nbParents) < 2) {
+         die(json_encode(array('success' => false, 'error' => 'operation impossible: the group would not have any manager.', 'nbParents' => $nbParents)));
+      }
    }
    $query = 'delete from groups_groups where idGroupChild = :idGroup and idGroupParent = :idGroupAdmin;';
    $stmt = $db->prepare($query);
@@ -116,9 +144,42 @@ function changeAdminRole($idGroup, $idGroupAdmin, $sRole) {
       echo json_encode(array('success' => false, 'error' => 'missing idGroupAdmin argument.'));
       exit();
    }
+   if ($sRole == 'observer') {
+      $query = 'select count(ID) from groups_groups where idGroupChild = :idGroup and sRole = \'manager\' or sRole = \'owner\';';
+      $stmt = $db->prepare($query);
+      $stmt->execute(['idGroup' => $idGroup]);
+      $nbAdminParents = $stmt->fetchColumn();
+      if ($nbAdminParents < 2) {
+         die(json_encode(array('success' => false, 'error' => 'operation impossible: the group would not have any manager.')));
+      }
+   }
    $query = 'update groups_groups set sRole = :sRole where idGroupParent = :idGroupAdmin and idGroupChild = :idGroup;';
    $stmt = $db->prepare($query);
    $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup, 'sRole' => $sRole]);
+   echo json_encode(array('success' => true));
+}
+
+function deleteGroup($idGroup) {
+   global $db;
+   $stmt = $db->prepare('delete from groups_groups where idGroupParent = :idGroup or idGroupChild = :idGroup;');
+   $stmt->execute(['idGroup' => $idGroup]);
+   $stmt = $db->prepare('delete from groups where ID = :idGroup;');
+   $stmt->execute(['idGroup' => $idGroup]);
+   Listeners::groupsGroupsAfter($db);
+   echo json_encode(array('success' => true));
+}
+
+function createGroup($idGroup, $sName) {
+   global $db;
+   if (!$sName) {$sName = 'Nouveau groupe';}
+   if (!$idGroup) {
+      $idGroup = getRandomID();
+   }
+   $stmt = $db->prepare('insert into groups (ID, sName, sDateCreated, sType) values (:idGroup, :sName, NOW(), \'Class\');');
+   $stmt->execute(['idGroup' => $idGroup, 'sName' => $sName]);
+   $stmt = $db->prepare('insert into groups_groups (idGroupChild, idGroupParent, sRole) values (:idGroup, :idGroupOwned, \'owner\');');
+   $stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']]);
+   Listeners::groupsGroupsAfter($db);
    echo json_encode(array('success' => true));
 }
 
@@ -132,7 +193,11 @@ if ($request['action'] == 'refreshCode') {
    addAdmins($idGroup, $request['aAdminGroups']);
 } elseif ($request['action'] == 'changeAdminRole') {
    changeAdminRole($idGroup, $request['idGroupAdmin'], $request['sRole']);
+} elseif ($request['action'] == 'deleteGroup') {
+   deleteGroup($idGroup);
+} elseif ($request['action'] == 'createGroup') {
+   createGroup($idGroup, $request['sName']);
 } else {
-   echo json_encode(array('success' => false, 'error' => 'unknown role: '.$sRole));
+   echo json_encode(array('success' => false, 'error' => 'unknown action: '.$request['action']));
    exit();
 }

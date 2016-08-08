@@ -11,6 +11,10 @@ Red : #e42c20;
 green : #0FAA8B;
 orange : #F29200;
 */
+
+.groupAdmin-modal > .modal-dialog {
+	width: 90% !important;
+}
 .groupAdmin {
 	margin: 10px;
 	color: #480a2a;
@@ -38,6 +42,7 @@ orange : #F29200;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	transition: all 250ms;
+	outline: 0;
 }
 .groupAdmin .nav-tabs>li.active>a,
 .groupAdmin .nav-tabs>li.active>a:focus,
@@ -47,7 +52,6 @@ orange : #F29200;
 .groupAdmin-tabContent {
 	background-color: #edebed;
 	padding: 2em;
-	overflow: auto;
 }
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
@@ -120,6 +124,7 @@ orange : #F29200;
 	height: 30px;
 	border-radius: 15px;
 	position: relative;
+	vertical-align: middle;
 }
 .groupAdmin .checkboxSwitch input.switch + label span {
 	width: 20px;
@@ -152,6 +157,12 @@ orange : #F29200;
 	box-sizing: content-box;
 	clear: both;
 }
+.groupAdmin .list-block.list-users li,
+.groupAdmin .list-block.list-applicants li {
+	position: relative;
+	padding-left: 20px;
+	padding-right: 25px;
+}
 .groupAdmin .list-block .list-item:hover {
 	background-color: #edebed;
 }
@@ -159,7 +170,9 @@ orange : #F29200;
 	vertical-align: middle;
 }
 .groupAdmin .list-block .list-item .action {
-	float: right;
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 .groupAdmin .list-block.list-groups {
 	max-height: 20em;
@@ -176,12 +189,21 @@ orange : #F29200;
 .groupAdmin .list-block.list-users .list-item.selected {
 	background-color: #edebed;
 }
+.groupAdmin .tab-members .list-block.list-users .user-name {
+	display: inline-block;
+	max-width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 .groupAdmin .list-block.list-users .user-status {
 	width: 12px;
 	height: 12px;
-	display: inline-block;
-	margin-right: 5px;
+	display: block;
 	border-radius: 50%;
+	position: absolute;
+	left: 2px;
+	top: 5px;
 }
 .groupAdmin .list-block.list-users .user-status.connected {
 	background-color: #e42c20;
@@ -190,12 +212,7 @@ orange : #F29200;
 .groupAdmin .list-block.list-applicants {
 	max-height: 6em;
 	overflow: auto;
-}
-
-.groupAdmin .block-delete {
-	border-top: 1px solid #000;
-	padding-top: 1em;
-	text-align: right;
+	max-width: 580px;
 }
 
 /* Buttons */
@@ -222,7 +239,7 @@ orange : #F29200;
 	font-size: 16px;
 }
 .groupAdmin .btn-icon.btn-wide {
-	width: 5em;
+	width: 2.5em;
 }
 .groupAdmin .btn-icon.btn-small.btn-view-more {
 	background: url(images/apercu.png) center center no-repeat;
@@ -308,11 +325,71 @@ orange : #F29200;
 	background-color: #edebed;
 	padding: 2em;
 }
-@media sreen and (min-width: 750px) {
+@media screen and (min-width: 750px) {
 	.groupAdmin-homeContent {
 		width: 50%;
 		margin: 0 auto;
 	}
+}
+
+/*
+	Tab: Descriptif
+*/
+.tab-group-description .flex-container {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+	margin-bottom: 1em;
+}
+.tab-group-description .flex-container .item-label {
+	flex-basis: auto;
+	width: 256px;
+	margin-right: 1em;
+}
+.tab-group-description .flex-container .item-control {
+	flex-basis: auto;
+	width: 480px;
+}
+.groupAdmin .tab-group-description .group-action {
+	max-width: 752px;
+}
+.groupAdmin .tab-group-description .btn-save {
+	margin-bottom: 10px;
+	clear: both;
+	overflow: auto;
+}
+.groupAdmin .tab-group-description .block-delete {
+	border-top: 1px solid #000;
+	padding-top: 1em;
+	text-align: right;
+}
+
+/*
+	Tab: Membres
+*/
+.tab-members .flex-container {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+}
+.tab-members .members-col {
+	flex: 1 0 0;
+	margin-right: 2em;
+	min-width: 200px;
+}
+.tab-members .action-col {
+	flex: 2 0 0;
+	min-width: 400px;
+}
+.tab-members .action-col .flex-container .left-col {
+	flex: 1 1 0;
+	margin-right: 2em;
+}
+.tab-members .action-col .flex-container .right-col {
+	flex: 1 1 0;
+}
+.tab-members .action-col .bloc-inscription {
+	margin-bottom: 2em;
 }
 
 /*
@@ -334,12 +411,16 @@ orange : #F29200;
 	background-color: #C6C6C6 !important;
 }
 
-.groupAdmin .row_selected {
-	background-color: #707070 !important;	
-}
-
 /* Individual view */
 	/* Activities */
+.groupAdmin .list-users .row_selected {
+	background-color: #edebed;
+}
+.groupAdmin .list-users li {
+	padding-left: 3px;
+	margin: 5px 0;
+	line-height: normal;
+}
 .groupAdmin .table-activity {
 	background-color: #fff;
 	border: 1px solid #480a2a;
@@ -354,7 +435,20 @@ orange : #F29200;
 }
 .groupAdmin .table-activity .activity-type {
 	position: relative;
+	background-color: #C6C6C6;
 }
+.groupAdmin .table-activity .activity-type.validation {
+	background-color: #0faa8b;
+}
+.groupAdmin .table-activity .activity-type.answer {
+	background-color: #e42c20;
+}
+.groupAdmin .table-activity .activity-type button {
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
+}
+/*
 .groupAdmin .table-activity .activity-type .btn-modal {
 	width: 21px;
 	height: 15px;
@@ -369,35 +463,46 @@ orange : #F29200;
 .groupAdmin .table-activity .activity-type:hover .btn-modal {
 	opacity: 1;
 }
-
+*/
 /* Collective view */
+.groupAdmin .view-switcher {
+	overflow: auto;
+}
+.tab-progression .checkboxSwitch {
+	margin-left: 1em;
+}
+.tab-progression .checkboxSwitch > span {
+	margin-right: 0.5em;
+}
 .groupAdmin .table-progress {
 	border-collapse: collapse;
-	margin-top: 150px;
+	margin-top: 40px;
+}
+.groupAdmin .table-progress.view-global {
+	margin-top: 120px;
 }
 .groupAdmin .table-progress td,
 .groupAdmin .table-progress th {
-	border: 1px solid #a88996;
+	border: 1px solid #480a2a;
 	padding: 3px;
-	max-width: 11em;
 	background-color: #fff;
 	background-clip: padding-box;
 }
-.groupAdmin .table-progress td.fixed-width,
-.groupAdmin .table-progress th.fixed-width {
-	max-width: 8em;
+.groupAdmin .table-progress td.fixed-width.step-name,
+.groupAdmin .table-progress th.fixed-width.step-name {
+	max-width: 14em;
 	position: relative;
 }
-.groupAdmin .table-progress .description {
-	height: 74px; /* >div height + td top & bottom padding + border-width top and bottom */
+.groupAdmin .table-progress .step-descr {
+	width: 400px;
 }
-.groupAdmin .table-progress .description>div {
+.groupAdmin .table-progress .step-descr>div {
 	font-size: 14px;
 	line-height: 1.2em;
 	height: 67px;
 	overflow: hidden;
 }
-.groupAdmin .table-progress .description>div:hover {
+.groupAdmin .table-progress .step-descr>div:hover {
 	overflow: visible;
 	background-color: #fff;
 	height: auto;
@@ -417,19 +522,21 @@ orange : #F29200;
 	padding: 0;
 }
 
-.groupAdmin .table-progress.progress-global th.name {
+.groupAdmin .table-progress.view-global th.name {
 	white-space: nowrap;
 	width: 60px;
 	border: none;
 	background-color: transparent;
+	padding: 0;
 }
 
 	/* Collective view: Global */
-.groupAdmin .table-progress.progress-global th.name div {
-	transform: rotate(-75deg) translate(-11px, 28px);
+.groupAdmin .table-progress.view-global th.name div {
+	transform: rotate(-45deg) translate(32px, 33px);
 	width: 30px;
+	text-transform: none;
 }
-.groupAdmin .table-progress.progress-global th.name div span {
+.groupAdmin .table-progress.view-global th.name .user-info {
 	border-bottom: 1px solid #a88996;
 	padding: 5px;
 	overflow: hidden;
@@ -437,70 +544,84 @@ orange : #F29200;
 	display: inline-block;
 	width: 200px;
 	text-align: left;
-	line-height: 2.5em;
 }
-.groupAdmin .table-progress.progress-global td.status {
+.groupAdmin .table-progress.view-global td.status {
 	position: relative;
 	width: 60px;
 	padding: 3px;
 	vertical-align: bottom;
 }
-.groupAdmin .table-progress.progress-global td.status button {
+.groupAdmin .table-progress.view-global td.status button {
 	opacity: 0;
 	transition: all 250ms;
 }
-.groupAdmin .table-progress.progress-global td.status:hover button {
+.groupAdmin .table-progress.view-global td.status:hover button {
 	opacity: 1;
 }
-.groupAdmin .table-progress.progress-global td.status .list-progress-details {
+.groupAdmin .table-progress.view-global td.status .progress-details {
 	position: absolute;
-	display: none;
 	border: 1px solid #0FAA8B;
 	background-color: #fff;
 	list-style: none;
-	padding: 10px;
-	top: -20px;
-	right: -25px;
-	left: -25px;
-	font-size: 10px;
-	margin: 0;
+	font-size: 14px;
 	line-height: 1.4;
-	z-index: 1;
+	margin: 0;
+	padding: 10px;
+	bottom: 40px;
+	right: 0;
+	display: none;
+	width: 300px;
 }
-/* TODO: change :hover to .visible */
-/*.groupAdmin .table-progress.progress-global td.status:hover .list-progress-details {
+.groupAdmin .table-progress.view-global td.status button.btn-preview:hover + ul.progress-details {
 	display: block;
-}*/
-.groupAdmin .table-progress.progress-global .list-progress-details li {
+}
+.groupAdmin .table-progress.view-global .progress-details li {
 	position: relative;
 	padding-left: 20px;
-	font-size: 12px;
 }
 
 	/* Collective view: Detailed */
-.groupAdmin .table-progress.progress-detail th.name {
-	word-break: break-word
+.groupAdmin .table-progress.view-detail th.name {
+	word-break: break-word;
+	text-transform: none;
 }
-.groupAdmin .table-progress.progress-detail .list-progress-details {
-	padding: 0;
-	margin: 0;
-	list-style: none;
-	display: table;
+.groupAdmin .table-progress.view-detail th.name .user-info span {
+	display: block;
 }
-.groupAdmin .table-progress.progress-detail .list-progress-details .break {
-	display: table-row;
+.groupAdmin .table-progress.view-detail th.name .user-info .user-name {
+	max-width: 14em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
-.groupAdmin .table-progress.progress-detail .list-progress-details li {
-	background-color: #eee;
-	display: table-cell;
-	width: 60px;
-	border: 1px solid #fff;
-	font-size: 10px;
-	vertical-align: middle;
+.groupAdmin .table-progress.view-detail .progress-details .details-row {
 	text-align: center;
+	display: flex;
+	flex-flow: row;
+	align-items: center;
 }
-
-.groupAdmin .list-progress-details li::before {
+.groupAdmin .table-progress.view-detail .progress-details .details-row:first-child {
+	border-bottom: 1px solid #fff;
+	border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div {
+	vertical-align: middle;
+	border-left: 1px solid #fff;
+	border-left: 1px solid rgba(255,255,255,0.2);
+	padding: 0 4px;
+	text-align: center;
+	flex: 1 1 auto;
+}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
+	border-left: none;
+}
+.groupAdmin .table-progress.view-detail .status.unread .progress-details .details-row > div {
+	display: none;
+}
+.groupAdmin .table-progress.view-detail .progress-details .details-row .btn-icon {
+	height: 1em;
+}
+.groupAdmin .progress-details li::before {
 	margin-right: 5px;
 	display: inline-block;
 	width: 15px;
@@ -508,35 +629,61 @@ orange : #F29200;
 	left: 0;
 	top: 0;
 }
-.groupAdmin .list-progress-details .score::before {
-	content: "S";
+.groupAdmin .progress-details .details-row div::before {
+	margin-right: 5px;
+	display: inline-block;
+	width: 15px;
 }
-.groupAdmin .list-progress-details .date::before {
+.groupAdmin .progress-details .score::before {
+	font-family: "Glyphicons Halflings";
+	font-size: 12px;
+	content: normal;
+}
+.groupAdmin .progress-details .score.top-score::before {
+	content: "\e013";
+}
+.groupAdmin .progress-details .score.not-top-score::before {
+	content: "\e014";
+}
+.groupAdmin .progress-details .date::before {
 	content: url(images/picto-calendrier.png);
 }
-.groupAdmin .list-progress-details .time::before {
+.groupAdmin .progress-details .time::before {
 	content: url(images/picto-chronometre.png);
 }
-.groupAdmin .list-progress-details .submissions::before {
-	content: " ";
-}
-.groupAdmin .list-progress-details .questions::before {
+.groupAdmin .progress-details .questions::before {
 	content: url(images/picto-indice.png);
 }
-.groupAdmin .list-progress-details .help::before {
+.groupAdmin .progress-details .help::before {
 	content: url(images/picto-aide.png);
+}
+.groupAdmin .view-detail .status.unread .progress-details .details-row > div::before,
+.groupAdmin .view-detail .status.read .progress-details .details-row > div::before {
+	content: normal;
+}
+.groupAdmin .view-detail .status.unread .progress-details .details-row,
+.groupAdmin .view-detail .status.read .progress-details .details-row,
+.groupAdmin .view-detail .status.unread .progress-details .details-row > div,
+.groupAdmin .view-detail .status.read .progress-details .details-row > div {
+	border: none;
 }
 .groupAdmin .legend {
 	list-style: none;
-	-webkit-column-count: 2;
-	   -moz-column-count: 2;
-	        column-count: 2;
-	-webkit-column-gap: 1em;
-	   -moz-column-gap: 1em;
-	        column-gap: 1em;
 }
-.groupAdmin .legend li {
-	break-inside: avoid;}
+@media only screen and (min-width: 1200px) {
+	.groupAdmin .legend {
+		-webkit-column-count: 2;
+		   -moz-column-count: 2;
+		        column-count: 2;
+		-webkit-column-gap: 1em;
+		   -moz-column-gap: 1em;
+		        column-gap: 1em;
+	}
+	.groupAdmin .legend li {
+		break-inside: avoid;
+	}
+}
+
 .groupAdmin .legend-color {
 	width: 15px;
 	height: 15px;
@@ -551,9 +698,6 @@ orange : #F29200;
 .groupAdmin .legend-color.light-grey { background-color: #C6C6C6;}
 .groupAdmin .view-switcher .btn-icon {
 	vertical-align: bottom;
-}
-.groupAdmin .block-context {
-	padding-left: 20px;
 }
 
 /*

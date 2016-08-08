@@ -1,11 +1,13 @@
 <div ng-if="loading">
    <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
 </div>
-<div ng-if="!loading && !thread">
+<div ng-if="!loading && !thread && !fakeThread">
    Désolé, la discussion demandée n'existe pas.
 </div>
-<div ng-if="thread">
-   <div ng-form="threadForm" ng-if="ownThread || newThread">
+<div ng-if="!loading && (thread || fakeThread)">
+   <div ng-if="inPopup">Activités de {{user_item.user.sLogin}} sur l'exercice {{item.strings[0].sTitle}}
+   </div>
+   <div ng-form="threadForm" ng-if="!readOnly && (ownThread || newThread)">
       <div ng-if="inTask">
          <h4>Bienvenue sur le forum Algoréa</h4>
          <p>Vous pouvez demander de l'aide en postant un message ci-dessous. Il aparaîtra automatiquement sur le forum (onglet <strong>S'entraîder</strong>).</p>
@@ -38,9 +40,9 @@
          <label for="sBody" ng-hide="inTask">Message :</label>
          <textarea name="sMessage" ng-model="newMessage.sBody" id="sBody" class="form-control"></textarea>
       </div>
-      <button ng-show="!inTask || newThread" class="btn btn-standard" ng-click="submitForm(threadForm)">Enregistrer</button>
+      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-standard" ng-click="submitForm(threadForm)">Enregistrer</button>
    </div>
-   <div ng-if="!newThread">
+   <div ng-if="!newThread && !readOnly">
       <div ng-if="!ownThread">
          <h2>Message</h2>
          <p><strong>Sujet :</strong> {{thread.sTitle}}</p>
@@ -50,6 +52,7 @@
    <div ng-if="taskLoadingError">
       <center><p style="margin-top:10px"><strong>Erreur!</strong> {{taskLoadingError}}</p></center>
    </div>
+   <span ng-show="!events.length && fakeThread">Aucune activité</span>
    <h2 ng-show="events.length">Évènements</h2>
    <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'before':threadData.currentAnswer track by event.ID">
       <div ng-if="event.bTrainersOnly !== undefined" class="bs-callout bs-callout-default"><!-- case of message -->
@@ -74,11 +77,11 @@
       </div>
    </div>
    <div ng-if="hasTask && !taskLoading && answers.length" ng-controller="taskController">
-      <div tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task">
-         <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
+      <div uib-tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task" active="askedView">
+         <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" index="view.name"></li>
       </div>
       <div ng-show="taskLoaded && threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true"></div>
-      <center ng-hide="taskLoaded"><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+      <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
    </div>
    <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID">
       <div ng-if="event.bTrainersOnly !== undefined" class="bs-callout bs-callout-default"><!-- case of message -->
@@ -102,20 +105,20 @@
          <div ng-if="canValidate">Évaluer à <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);">ok</button></div>
       </div>
    </div>
-   <div ng-hide="newThread">
+   <div ng-hide="newThread || readOnly">
       <label for="messageTextarea">Votre réponse :</label>
       <textarea id="messageTextarea" class="form-control" rows="3" name="sBody" ng-model="newMessage.sBody" ng-focus="newMessageFocus()" ng-blur="newMessageBlur()"></textarea>
       <center><button ng-click="newMessageSave()" class="btn btn-default">Répondre</button></center>
    </div>
-   <div  ng-if="!inTask && hasTask && !taskLoading">
+   <div  ng-if="!inTask && hasTask && !taskLoading && !readOnly">
       <h3 ng-show="ownThread">Faire d'autres essais</h3>
       <h3 ng-hide="ownThread">Ma version de l'exercice</h3>
       <div ng-controller="taskController">
-         <div tabset justified="true" ng-show="taskLoaded" class="tabset-task">
-            <li ng-repeat="view in views" tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
+         <div uib-tabset justified="true" ng-show="taskLoaded" class="tabset-task">
+            <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
          </div>
          <div ng-show="taskLoaded && !showForum" include-task task-name="my-task"></div>
-         <center ng-hide="taskLoaded"><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+         <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
       </div>
    </div>
 </div>

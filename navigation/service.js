@@ -19,7 +19,7 @@ angular.module('algorea')
       function setSyncInterval() {
          if (!intervalIsSet) {
             intervalIsSet = true;
-            setInterval(SyncQueue.planToSend, 8000);
+            setInterval(SyncQueue.planToSend, 30000);
          }
       }
       SyncQueue.planToSend(0);
@@ -138,6 +138,14 @@ angular.module('algorea')
       }
       SyncQueue.addSyncEndListeners("ItemsService", syncEndListener);
       SyncQueue.addSyncStartListeners("ItemsService", syncStartListener);
+      // return a relevant name for the name of the listener in sync:
+      function getThreadSyncName(idThread, idItem, idUser) {
+         if (idThread) {
+            return 'thread-'+idThread;
+         } else {
+            return 'usersAnswers-'+idItem+'-'+idUser;
+         }
+      }
       return {
          getItem: function(ID) {
             return ModelsManager.getRecord('items', ID);
@@ -195,24 +203,42 @@ angular.module('algorea')
             if (!item) return null;
             var result_user_item = null;
             if (!idUser) {
-               idUser = $rootScope.myUserID;
+               if (!SyncQueue.requests.loginData) {
+                  return null;
+               }
+               idUser = SyncQueue.requests.loginData.ID;
             }
             angular.forEach(item.user_item, function(user_item) {
-               if (!idUser || user_item.idUser == idUser) {
+               if (user_item.idUser == idUser) {
                   result_user_item = user_item;
                   return;
                }
             });
             return result_user_item;
          },
-         getCurrentAnswer: function(item) {
+         getCurrentAnswer: function(item, idUser) {
             var result_user_answer = null;
+            if (!idUser) {
+               idUser = $rootScope.myUserID;
+            }
             angular.forEach(item.user_answers, function(user_answer) {
-               if (!result_user_answer || result_user_answer.sSubmissionDate < user_answer.sSubmissionDate) {
+               if ((!result_user_answer || result_user_answer.sSubmissionDate < user_answer.sSubmissionDate) && user_answer.idUser == idUser) {
                   result_user_answer = user_answer;
                }
             });
             return result_user_answer;
+         },
+         getAnswers: function(item, idUser) {
+            var result = [];
+            if (!idUser) {
+               idUser = $rootScope.myUserID;
+            }
+            angular.forEach(item.user_answers, function(user_answer) {
+               if (user_answer.idUser == idUser) {
+                  result.push(user_answer);
+               }
+            });
+            return result;
          },
          getBrothersFromParent: function(parentID) {
             return this.getChildren(this.getItem(parentID));
@@ -267,7 +293,12 @@ angular.module('algorea')
          onSeen: function(item) {
             var user_item = this.getUserItem(item);
             if (user_item) {
-               user_item.sLastActivityDate = new Date();
+               if (!user_item.sLastActivityDate || user_item.sLastActivityDate.getYear() < 100) {
+                  user_item.sLastActivityDate = new Date();
+               }
+               if (!user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+                  user_item.sStartDate = user_item.sLastActivityDate;
+               }
                ModelsManager.updated('users_items', user_item.ID, false, true);
                $rootScope.$broadcast('algorea.itemTriggered', item.ID);
             }
@@ -302,17 +333,23 @@ angular.module('algorea')
             }
             return typeStr;
          },
-         syncThread: function(idThread, callback) {
-            var endListenerName = 'thread-'+idThread;
-            SyncQueue.requestSets[endListenerName] = {name: 'getThread', 'idThread': idThread};
+         syncThread: function(idThread, idItem, idUser, callback) {
+            var endListenerName = getThreadSyncName(idThread, idItem, idUser);
+            if (idThread) {
+               SyncQueue.requestSets[endListenerName] = {minVersion: 0, name: 'getThread', idThread: idThread};
+            } else {
+               SyncQueue.requestSets[endListenerName] = {minVersion: 0, name: 'getUserAnswers', idItem: idItem, idUser: idUser};
+            }
             SyncQueue.addSyncEndListeners(endListenerName, function() {
-               callback();
                SyncQueue.removeSyncEndListeners(endListenerName);
-            }, true);
-            SyncQueue.planToSend();
+               delete(SyncQueue.requestSets[endListenerName].minVersion);
+               callback();
+            }, false, true);
+            SyncQueue.planToSend(0);
          },
-         unsyncThread:function() {
-            delete(SyncQueue.requests.requestSets);
+         unsyncThread:function(idThread, idItem, idUser) {
+            var endListenerName = getThreadSyncName(idThread, idItem, idUser);
+            delete(SyncQueue.requestSets[endListenerName]);
          }
       };
    }]);

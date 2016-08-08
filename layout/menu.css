@@ -233,7 +233,7 @@
 .main-right-arrow {
    position:fixed;
    right:260px;
-   bottom:0px;
+   bottom:35px;
    height:48px;
    width:48px;
    background-color:#2aa3ff;
@@ -241,8 +241,9 @@
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
    z-index:2;
    text-align:center;
-   display: -webkit-flex !important;
-   display:flex !important;
+   /*display: -webkit-flex !important;
+   display:flex !important;*/
+   display:none !important;
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;
@@ -258,7 +259,7 @@
 .main-up-arrow {
    position:fixed;
    right:260px;
-   bottom:0px;
+   bottom:35px;
    height:48px;
    width:48px;
    background:#2aa3ff;
@@ -266,8 +267,9 @@
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
    z-index:2;
    text-align:center;
-   display: -webkit-flex !important;
-   display:flex !important;
+   /*display: -webkit-flex !important;
+   display:flex !important;*/
+   display:none !important;
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;
@@ -285,7 +287,7 @@
    transform: rotate(180deg);/* hack to get the arrow in the desired direction */
    -webkit-transform: rotate(180deg);/* hack to get the arrow in the desired direction */
    left:325px;
-   bottom:0px;
+   bottom:35px;
    height:48px;
    width:48px;
    background:#2aa3ff;
@@ -294,8 +296,9 @@
    z-index:2;
    text-align:center;
    cursor:pointer;
-   display: -webkit-flex !important;
-   display:flex!important;
+   /*display: -webkit-flex !important;
+   display:flex !important;*/
+   display:none !important;
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;

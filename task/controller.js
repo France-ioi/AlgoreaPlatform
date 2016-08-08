@@ -11,8 +11,13 @@ angular.module('algorea')
    }
    $scope.resolutionViewName = 'editor';
    $scope.showForum = false;
-   $scope.inTask = true;
    var defaultViewName = 'task';
+   if ($scope.inTask) {
+      // task inside forum inside task!
+      $scope.taskInsideForumInsideTask = true;
+      defaultViewName = 'editor';
+   }
+   $scope.inTask = true;
    // platformView = 1 view that the platform wants
    // taskView = view avaible on the task
    // 1 platformView can be several taskViews, for instance, platform wants
@@ -22,6 +27,9 @@ angular.module('algorea')
       'editor': {tabString: 'Résolution', taskViews: {'editor': true}},
       'hints': {tabString: 'Indices', taskViews: {'hints': true}},
    };
+   if ($scope.taskInsideForumInsideTask) {
+      delete(platformViews.task);
+   }
    $scope.showSolution = function() {
       platformViews.solution = {tabString: 'Solution', taskViews: {'solution': true}};
    };
@@ -33,18 +41,18 @@ angular.module('algorea')
       if ($scope.loadedUserItemID != $scope.user_item.ID) {
          return;
       }
-      $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item) : '';
+      $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
       if ($scope.user_answer) {
          $scope.task.reloadAnswer($scope.user_answer.sAnswer, function() {
             if ($scope.loadedUserItemID != $scope.user_item.ID) return;
-            if ($scope.user_item.sState) {
+            if ($scope.taskName != 'task-answer') {
                $scope.task.reloadState($scope.user_item.sState, $scope.sync);
             } else {
                $scope.sync();
             }
          });
       } else {
-         if ($scope.user_item.sState) {
+         if ($scope.taskName != 'task-answer') {
             $scope.task.reloadState($scope.user_item.sState, $scope.sync);
          } else {
             $scope.sync();
@@ -108,7 +116,9 @@ angular.module('algorea')
       }
    });
    $scope.$on('algorea.taskViewChange', function(event, toParams) {
-      $scope.selectTab($scope.panel == 'right' ? toParams.viewr : toParams.viewl, true);
+      if ($scope.taskName != 'task-editor' && !$scope.inForum) {
+         $scope.selectTab($scope.panel == 'right' ? toParams.viewr : toParams.viewl, true);
+      }
    });
    $scope.$on('task-answers.openAnswer', function(event, answer) {
       $scope.task.reloadAnswer(answer, function() {});
@@ -127,7 +137,7 @@ angular.module('algorea')
          } else {
             this.showForum = false;
             if (!$scope.task.unloaded) {
-               this.task.showViews(platformViews[platformView].taskViews, $scope.load_answer_and_sync, function(){});
+               $scope.task.showViews(platformViews[platformView].taskViews, $scope.load_answer_and_sync, function(){});
             }
          }
          $scope.currentView = platformView;
@@ -161,41 +171,26 @@ angular.module('algorea')
       var scopeViews = [];
       var scopeViewsIndex = [];
       angular.forEach(platformViews, function(platformView, platformViewName) {
+         if ($scope.isActive(platformViewName)) {
+            $scope.askedView = platformViewName;
+         }
          scopeViewsIndex[platformViewName] = scopeViews.push({
-            string:    $scope.getString(platformViewName, platformView.tabString),
+            string:    platformView.tabString,
             name:      platformViewName,
             id:        $scope.taskName+'-'+platformViewName,
-            active:    $scope.isActive(platformViewName),
             disabled:  $scope.isDisabled(platformViewName),
             taskViews: platformView.taskViews,
          });
       });
       $scope.views = scopeViews;
       $scope.viewsIndex = scopeViewsIndex;
-      var askedView;
-      if ($scope.inForum) {
-         askedView = platformViews.editor ? 'editor' : 'task';
-      }
-      if (!askedView) {
-         askedView = ($scope.taskName == 'task-editor') ? 'editor' : defaultViewName;
-      }
-      $scope.showView(askedView);
+      $scope.showView($scope.askedView);
    };
    $scope.isActive = function(view) {
-     if ($scope.inForum) { return view == 'editor';}
-     if (this.panel=='right' && view == this.pathParams.viewr) {
-        return true;
-     } else if (this.panel=='left' && view == this.pathParams.viewl) {
-        return true;
+     if ($scope.inForum || $scope.taskName == 'task-editor') { 
+         return (view == 'editor'); 
      }
-     return false;
-   };
-   // TODO: this should go to a service, along with task building functions in the directive
-   $scope.getString = function(viewName, viewString) {
-//     if (! $scope.inForum && this.panel=='right' && ! this.pathParams.itemsOnBothSides && viewName == $scope.resolutionViewName) {
-//        return viewString+" >>";
-//     }
-     return viewString;
+     return (view == this.pathParams.viewr);
    };
    $scope.isDisabled = function(view) {
      if (!$scope.inForum && this.panel=='left' && this.pathParams.itemsOnBothSides && view == $scope.resolutionViewName) {
@@ -216,7 +211,7 @@ angular.module('algorea')
 //         return;
 //      }
       if (tabname != $scope.currentView) {
-         if (!$scope.inForum && !fromURL) {
+         if (!$scope.inForum && $scope.taskName != 'task-editor' && !fromURL) {
             var params = {
                path:   this.pathParams.pathStr,
                sell:   this.pathParams.sell,

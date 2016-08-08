@@ -9,7 +9,7 @@
 
 .threadInIndex {
    display: table-row;
-   background-color: #D0D0D0;
+   background-color: rgb(232, 232, 232);
    cursor:pointer;
 }
 
@@ -77,8 +77,8 @@
 .globalFilter {
    font-weight: bold;
    color: black;
-   font-size: 16px;
-   line-height: 30px;
+   font-size: 16pt;
+   line-height: 30pt;
 }
 
 .globalFilterSelected {
