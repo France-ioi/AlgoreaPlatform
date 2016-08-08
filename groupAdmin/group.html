@@ -66,9 +66,8 @@
 									</span>
 								</li>
 							</ul>
-							<div ng-if="!showInvitationTable">Aucune invitation en attente</div>
-							<div class="groupAdmin-title" ng-if="showInvitationTable">Utilisateurs invités</div>
-							<ul class="list list-block list-applicants" ng-if="showInvitationTable">
+							<div class="groupAdmin-title">Utilisateurs invités</div>
+							<ul class="list list-block list-applicants">
 									<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
 										<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})<span ng-if="child.sType == 'invitationRefused'"> (invitation refusée)</span></span>
 										<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" title="Annuler"><span class="btn-label">Annuler</span></button></span>
