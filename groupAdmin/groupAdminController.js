@@ -73,7 +73,7 @@ angular.module('algorea').
       return _.sortBy(groups_groups, function(g_g) {
          var group = parent ? g_g.parent : g_g.child;
          var user = owned ? group.userOwned[0] : group.userSelf[0];
-         return user.sFirstName;
+         return user.sLogin;
       });
     };
   });
@@ -192,6 +192,7 @@ angular.module('algorea')
    };
 
    var durationToStr = function(date1, date2) {
+      if (!date2 || !date1) return '-';
       var timeDiffMs = Math.abs(date2.getTime() - date1.getTime());
       var diffHours = Math.floor(timeDiffMs / (1000 * 3600));
       if (diffHours < 24) {
@@ -605,12 +606,14 @@ angular.module('algorea')
       }
       $scope.usersSelected = {};
       $scope.groupsSelected = {};
+      $scope.groupChildren = [];
       angular.forEach($scope.group.children, function(child_group_group) {
          var child_group = child_group_group.child;
          $scope.groupsSelected[child_group.ID] = true;
          var user = child_group.userSelf[0];
          if (!user) return;
          $scope.usersSelected[user.ID] = true;
+         $scope.groupChildren.push(child_group_group);
       });
       $scope.adminOnGroup = false;
       angular.forEach($scope.group.parents, function(parent_group_group) {

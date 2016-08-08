@@ -295,7 +295,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="parent in group.parents">
+								<tr ng-repeat="parent in group.parents | userSort:true:true">
 									<td>{{parent.parent.userOwned[0].sLogin}} ({{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}})</td>
 									<td><span ng-if="parent.sRole == 'owner'" class="glyphicon glyphicon-ok"></span></td>
 									<td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'manager' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
