@@ -435,12 +435,18 @@ orange : #F29200;
 }
 .groupAdmin .table-activity .activity-type {
 	position: relative;
+	background-color: #C6C6C6;
 }
 .groupAdmin .table-activity .activity-type.validation {
 	background-color: #0faa8b;
 }
 .groupAdmin .table-activity .activity-type.answer {
 	background-color: #e42c20;
+}
+.groupAdmin .table-activity .activity-type button {
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
 }
 /*
 .groupAdmin .table-activity .activity-type .btn-modal {

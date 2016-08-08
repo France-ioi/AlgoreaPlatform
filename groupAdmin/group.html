@@ -197,8 +197,8 @@
 								<tr ng-repeat="event in events">
 									<td>{{event.userStr}}</td>
 									<td>{{event.date | date}}</td>
-									<td class="activity-type {{event.eventStr}}">{{event.eventStr}}</td>
-									<td>{{event.itemStr}}  <button ng-click="openPopup(event.user_item);">lien vers activité</button></td>
+									<td class="activity-type {{event.eventStr}}">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" title="lien vers activité"><span class="btn-label">lien vers activité</span></button></td>
+									<td>{{event.itemStr}}</td>
 								</tr>
 							</tbody>
 						</table>
