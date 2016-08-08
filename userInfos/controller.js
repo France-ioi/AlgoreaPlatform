@@ -21,6 +21,9 @@ angular.module('algorea')
          $scope.fullUser = true;
       }
    });
+   $scope.openLoginPopup = function(type) {
+      window.open(loginService.loginUrl+'?mode=popup&changePass=1', "Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
+   };
    $scope.submitForm = function() {
       if ($scope.user.sBirthDate == '') {
          $scope.user.sBirthDate = '0000-00-00';

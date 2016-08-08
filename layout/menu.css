@@ -242,8 +242,8 @@
    z-index:2;
    text-align:center;
    /*display: -webkit-flex !important;
-   display:flex !important;*/
-   display:none !important;
+   display:flex !important;
+   display:none !important;*/
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;
@@ -268,8 +268,8 @@
    z-index:2;
    text-align:center;
    /*display: -webkit-flex !important;
-   display:flex !important;*/
-   display:none !important;
+   display:flex !important;
+   display:none !important;*/
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;
@@ -297,8 +297,8 @@
    text-align:center;
    cursor:pointer;
    /*display: -webkit-flex !important;
-   display:flex !important;*/
-   display:none !important;
+   display:flex !important;
+   display:none !important;*/
    -webkit-flex-direction:column;
    flex-direction:column;
    justify-content:space-around;

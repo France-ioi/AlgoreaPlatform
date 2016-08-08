@@ -31,6 +31,16 @@ angular.module('algorea')
 angular.module('algorea')
 .directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', 'mapService', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, mapService) {
    function loadTask(scope, elem, sameUrl) {
+      if (scope.item.sType == 'Task') {
+         elem.addClass('iframe-task');
+      } else {
+         elem.addClass('iframe-course');
+      }
+      if (!scope.item.bUsesAPI) {
+         elem.addClass('fullscreen-iframe');
+         scope.taskLoaded = true;
+         return;
+      }
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          scope.task = task;
          configureTask(scope, elem, sameUrl);
@@ -242,14 +252,12 @@ angular.module('algorea')
                   scope.itemUrl = null;
                }
             } else {
-               //scope.taskUrl = $sce.trustAsResourceUrl('http://tasks.eroux.fr/task_integration_api/example/2013-SK-09ab/index.html?sSourceId='+scope.taskName+'#'+$location.absUrl());
-               //scope.taskUrl = $sce.trustAsResourceUrl(taskRootUrl+'task.php?sToken='+(scope.user_item ? scope.user_item.sToken : '')+'&sPlatform=http%253A%252F%252Falgorea.pem.dev&sLangProg=Python&bBasicEditorMode=1&sSourceId='+name+'#'+$location.absUrl());
                console.error('item has no url!');
             }
             elem[0].src = scope.taskUrl;
             $timeout(function() { loadTask(scope, elem, sameUrl);});
          }
-         if (scope.item && scope.item.sType == 'Task') {
+         if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Presentation' || scope.item.sType == 'Course')) {
             initTask(false);
          }
          // function comparing two url, returning true if the iframe won't be reloaded
@@ -261,7 +269,7 @@ angular.module('algorea')
             return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
-            if (!scope.item || scope.item.sType !== 'Task') {
+            if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Presentation' && scope.item.sType !== 'Course')) {
                return;
             }
             scope.taskLoaded = false;
@@ -306,109 +314,4 @@ angular.module('algorea')
          });
       },
     };
-}]);
-
-angular.module('algorea')
-  .directive('includeCourse', function () {
-    return {
-      restrict: 'EA',
-      scope: false,
-      template: function(elem, attrs) {
-        return '<iframe class="iframe-course" ng-src="{{courseUrl}}" id="{{taskName}}" build-course allowfullscreen></iframe>';
-      },
-    };
-});
-
-angular.module('algorea')
-.directive('buildCourse', ['$location', '$sce', '$timeout', '$injector', function ($location, $sce, $timeout, $injector) {
-   var itemService, pathService;
-   if ($injector.has('itemService')) {
-      itemService = $injector.get('itemService');
-   }
-   if ($injector.has('pathService')) {
-      pathService = $injector.get('pathService');
-   }
-   return {
-      restrict: 'EA',
-      scope: false,
-      link: function(scope, elem, attrs) {
-         var name = 'course-'+scope.panel;
-         function loadCourse(scope) {
-            if (!scope.item.bUsesAPI) {
-               elem.addClass('fullscreen-iframe');
-               return;
-            }
-            TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
-               scope.task = task;
-               configureCourse(scope);
-            }, true);
-         }
-         function configureCourse(scope) {
-            if (!scope.item.bUsesAPI) {
-               return;
-            }
-            scope.task.unloaded = false;
-            scope.platform = new Platform(scope.task);
-            scope.platform.openUrl = function(sTextId, success, error) {
-               if (itemService && pathService) {
-                  var itemId = itemService.getItemIdByTextId(sTextId);
-                  pathService.openItemFromLink(itemId, scope.pathParams, scope.panel);
-                  if (success) {success();}
-               } else {
-                  if (error) {
-                     error('you cannot follow links in this mode');
-                  } else {
-                     console.error('you cannot follow links in this mode');
-                  }
-               }
-            };
-            TaskProxyManager.setPlatform(scope.task, scope.platform);
-            scope.platform.showView = function(view) {};
-            scope.platform.updateHeight = function(height) {
-               scope.updateHeight(height);
-            };
-            var views = {'task': true,'metadata':true};
-            scope.task.load(views, function() {
-               scope.task.getMetaData(function(metaData) {
-                  scope.metaData = metaData;
-                  if (metaData.minWidth) {
-                     elem.css('min-width',metaData.minWidth+'px');
-                  }
-                  scope.onCourseLoaded();
-               }, function() {
-                  scope.onCourseLoaded();
-               });
-            });
-         }
-         scope.taskName = name;
-         scope.taskIframe = elem;
-         var initCourse = function() {
-            if (scope.item.bUsesAPI) {
-               scope.courseUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(scope.item.sUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
-            } else {
-               scope.courseUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
-            }
-            $timeout(function() {loadCourse(scope);});
-         };
-         if (scope.item && (scope.item.sType == 'Course' || scope.item.sType == 'Presentation')) {
-            initCourse();
-         }
-         scope.$on('admin.itemSelected', function() {
-            if (scope.item.bUsesAPI) {
-               TaskProxyManager.deleteTaskProxy(scope.taskName);
-            }
-            elem[0].src = '';
-            $timeout(initCourse);
-         });
-         scope.$on('algorea.reloadView', function(event, viewName){
-            if (viewName == scope.panel) {
-               if (scope.item.bUsesAPI) {
-                  TaskProxyManager.deleteTaskProxy(scope.taskName);
-               }
-               elem[0].src = '';
-               $timeout(initCourse);
-            }
-         });
-      }
-   };
 }]);
