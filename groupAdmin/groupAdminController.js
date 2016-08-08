@@ -548,7 +548,10 @@ angular.module('algorea')
       }
    };
 
-   $scope.removeUser = function(group_group) {
+   $scope.removeUser = function(group_group, $event) {
+      if ($event) {
+         $event.stopPropagation();
+      }
       group_group.sType = 'removed';
       ModelsManager.updated('groups_groups', group_group.ID);
    };
@@ -644,6 +647,21 @@ angular.module('algorea')
       if (!user) return;
       $scope.usersSelected[user.ID] = !$scope.usersSelected[user.ID];
       $scope.updateEvents();
+   }
+
+   $scope.userClickedInMembers = function(group) {
+      angular.forEach($scope.groupsSelected, function(val, ID) {
+         $scope.groupsSelected[ID] = false;
+      });
+      $scope.groupsSelected[group.ID] = true;
+      var user = group.userSelf[0];
+      if (!user) return;
+      angular.forEach($scope.usersSelected, function(val, ID) {
+         $scope.usersSelected[ID] = false;
+      });
+      $scope.usersSelected[user.ID] = true;
+      $scope.updateEvents();
+      $scope.formValues.activeTab = 2; // selects members tab
    }
 
    function fillItemsListWithSonsRec(itemsList, itemsListRev, item) {

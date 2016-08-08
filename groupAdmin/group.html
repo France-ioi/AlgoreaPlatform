@@ -1,6 +1,6 @@
 <div ng-if="!loading" class="groupAdmin">
-	<uib-tabset active="active">
-		<uib-tab heading="Descriptif">
+	<uib-tabset active="formValues.activeTab">
+		<uib-tab heading="Descriptif" index="0">
 				<div class="groupAdmin-tabContent tab-group-description">
 							<div class="flex-container">
 								<label class="control-label item-label">
@@ -50,7 +50,7 @@
 				</div>
 		</uib-tab>
 
-		<uib-tab heading="Membres">
+		<uib-tab heading="Membres" index="1">
 				<div class="groupAdmin-tabContent tab-members">
 
 					<div class="flex-container">
@@ -58,11 +58,11 @@
 						<div class="members-col">
 							<div class="groupAdmin-title">Composition du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
 							<ul class="list list-block list-users">
-								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort">
+								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
 									<span class="user-status connected"></span>
 									<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
 									<span class="action">
-										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child);" title="supprimer"><span class="btn-label">supprimer</span></button>
+										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" title="supprimer"><span class="btn-label">supprimer</span></button>
 									</span>
 								</li>
 							</ul>
@@ -148,7 +148,7 @@
 				</div>
 		</uib-tab>
 
-		<uib-tab heading="Progression">
+		<uib-tab heading="Progression" index="2">
 			<div class="groupAdmin-tabContent tab-progression">
 				<div class="row">
 					<div class="col-sm-6">
@@ -278,7 +278,7 @@
 			</div>
 		</uib-tab>
 
-		<uib-tab heading="Administration">
+		<uib-tab heading="Administration" index="3">
 			<div class="groupAdmin-tabContent">
 				<div class="row">
 					<div class="col-sm-6 col-lg-4">
