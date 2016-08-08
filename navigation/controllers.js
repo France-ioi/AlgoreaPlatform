@@ -60,6 +60,10 @@ angular.module('algorea')
             type = 'loading';
          }
          this.firstApply = false;
+         // haaaaaaack
+         if (type+suffix == 'task' || type+suffix=='course' ||  type+suffix=='presentation') {
+            return this.viewsBaseUrl+'taskcourse.html';
+         }
          return this.viewsBaseUrl+type+suffix+'.html';
       };
       $scope.getSref = function(view) {
