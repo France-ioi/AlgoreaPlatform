@@ -353,7 +353,7 @@ orange : #F29200;
 .groupAdmin .tab-group-description .group-action {
 	max-width: 752px;
 }
-.groupAdmin .tab-group-description .btn-save {
+.groupAdmin .tab-group-description .group-save {
 	margin-bottom: 10px;
 	clear: both;
 	overflow: auto;
