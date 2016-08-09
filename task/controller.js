@@ -46,7 +46,8 @@ angular.module('algorea')
          $scope.task.reloadAnswer($scope.user_answer.sAnswer, function() {
             if ($scope.loadedUserItemID != $scope.user_item.ID) return;
             if ($scope.taskName != 'task-answer') {
-               $scope.task.reloadState($scope.user_item.sState, $scope.sync);
+               //$scope.task.reloadState($scope.user_item.sState, $scope.sync);
+               $scope.sync();
             } else {
                $scope.sync();
             }
