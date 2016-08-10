@@ -465,13 +465,14 @@ orange : #F29200;
 }
 */
 /* Collective view */
-.groupAdmin .view-switcher {
-	overflow: auto;
+
+.groupAdmin .tab-progression .table-controllers {
+	margin-top: 2em;
 }
-.tab-progression .checkboxSwitch {
-	margin-left: 1em;
+.groupAdmin .tab-progression .checkboxSwitch {
+	margin-right: 1em;
 }
-.tab-progression .checkboxSwitch > span {
+.groupAdmin .tab-progression .checkboxSwitch > span {
 	margin-right: 0.5em;
 }
 .groupAdmin .table-progress {

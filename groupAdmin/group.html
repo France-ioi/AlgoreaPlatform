@@ -206,16 +206,6 @@
 				</div>
 
 				<div ng-if="progressionType == 'collective'">
-					<div class="checkboxSwitch pull-right">
-						<span>Afficher la vue détaillée</span>
-						<input type="checkbox" id="switchView" class="switch" ng-click="formValues.detailedView=!formValues.detailedView">
-						<label for="switchView"><span></span></label>
-					</div>
-					<div class="checkboxSwitch pull-right">
-						<span for="switchDescription">Afficher les descriptions</span>
-						<input type="checkbox" id="switchDescription" class="switch" ng-click="formValues.showDescription=!formValues.showDescription">
-						<label for="switchDescription"><span></span></label>
-					</div>
 					<div>
 						Parcours :
 						<select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">
@@ -228,6 +218,18 @@
 							<option selected="selected" value="">Tous</option>
 							<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
 						</select>
+					</div>
+					<div class="table-controllers clearfix">
+						<div class="checkboxSwitch pull-left">
+							<span>Afficher la vue détaillée</span>
+							<input type="checkbox" id="switchView" class="switch" ng-click="formValues.detailedView=!formValues.detailedView">
+							<label for="switchView"><span></span></label>
+						</div>
+						<div class="checkboxSwitch pull-left">
+							<span for="switchDescription">Afficher les descriptions</span>
+							<input type="checkbox" id="switchDescription" class="switch" ng-click="formValues.showDescription=!formValues.showDescription">
+							<label for="switchDescription"><span></span></label>
+						</div>
 					</div>
 					<div class="table-wrapper">
 						<table class="table-progress" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
