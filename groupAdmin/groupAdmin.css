@@ -410,7 +410,9 @@ orange : #F29200;
 .groupAdmin .unread {
 	background-color: #C6C6C6 !important;
 }
-
+.groupAdmin .tab-progression .parcours-select {
+	margin-bottom: 2em;
+}
 /* Individual view */
 	/* Activities */
 .groupAdmin .list-users .row_selected {
@@ -466,9 +468,6 @@ orange : #F29200;
 */
 /* Collective view */
 
-.groupAdmin .tab-progression .table-controllers {
-	margin-top: 2em;
-}
 .groupAdmin .tab-progression .checkboxSwitch {
 	margin-right: 1em;
 }
@@ -598,9 +597,9 @@ orange : #F29200;
 	text-overflow: ellipsis;
 }
 .groupAdmin .table-progress.view-detail td.status {
-	width: 231px;
-	max-width: 231px;
-	min-width: 231px;
+	width: 260px;
+	max-width: 260px;
+	min-width: 260px;
 
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row {
@@ -621,17 +620,13 @@ orange : #F29200;
 	text-overflow: ellipsis;
 	float: left;
 }
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.date {
-	width: 112px;
-}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.time {width:78px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.date {width: 112px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.time {width:107px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.help {width:40px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.score {width:70px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.submissions {width:70px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.questions {width:45px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.button {
-	width: 45px;
-}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.score {width:78px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.submissions {width:86px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.questions {width:55px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.button {width: 39px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
 	border-left: none;
 }
@@ -687,6 +682,7 @@ orange : #F29200;
 }
 .groupAdmin .legend {
 	list-style: none;
+	margin-bottom: 0;
 }
 @media only screen and (min-width: 1200px) {
 	.groupAdmin .legend {
