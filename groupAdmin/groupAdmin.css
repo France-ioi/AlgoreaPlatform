@@ -703,13 +703,15 @@ orange : #F29200;
 /*
 	Tab: Administration
 */
+.groupAdmin .inline-block {
+	display: inline-block;
+}
 .groupAdmin .table-administrators {
 	max-height: 200px;
 	overflow: auto;
 	border: 1px solid #a88996;
 	margin-bottom: 2em;
 	background-color: #fff;
-	width: 100%;
 }
 .groupAdmin .table-administrators th,
 .groupAdmin .table-administrators td {

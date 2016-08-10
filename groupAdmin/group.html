@@ -279,9 +279,8 @@
 		</uib-tab>
 
 		<uib-tab heading="Administration" index="3">
-			<div class="groupAdmin-tabContent">
-				<div class="row">
-					<div class="col-sm-6 col-lg-4">
+			<div class="groupAdmin-tabContent tab-admin">
+				<div class="inline-block">
 						<div class="groupAdmin-title">Administrateurs du groupe «&nbsp;{{group.sName}}&nbsp;» :</div>
 
 						<table class="table-administrators">
@@ -313,7 +312,6 @@
 						<span ng-show="adminLoading">Chargement...</span>
 					</div>
 				</div>
-			</div>
 		</uib-tab>
 	</uib-tabset>
 </div>
