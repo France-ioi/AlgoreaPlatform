@@ -170,7 +170,7 @@ angular.module('algorea')
             newThread.idItem = item.ID;
             newThread.sTitle = item.strings[0].sTitle;
             newThread.sType = 'Help';
-            if (!scope.user_item) {
+            if (!$scope.user_item) {
                $scope.user_item = itemService.getUserItem($scope.item);
             }
             $scope.answers = itemService.getAnswers($scope.item, $scope.user_item.idUser);
