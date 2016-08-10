@@ -1138,7 +1138,7 @@ function createGroupItem(idGroup, idItem, doNotInsert) {
 
 
 angular.module('algorea')
-   .controller('GenDialogCtrl', ['$scope', '$modalInstance', 'modelName', 'recordName', 'record', 'group_group', 'item_item', 'canRemoveAccess', function($scope, $modalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess) {
+   .controller('GenDialogCtrl', ['$scope', '$uibModalInstance', 'modelName', 'recordName', 'record', 'group_group', 'item_item', 'canRemoveAccess', function($scope, $uibModalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess) {
       $scope.freshlyCreated = false;
       $scope.canRemoveAccess = canRemoveAccess;
       if (!record && modelName === 'groups_items') {
@@ -1151,7 +1151,7 @@ angular.module('algorea')
          if (!$scope.freshlyCreated) {
             ModelsManager.resetRecordChanges(modelName, $scope[recordName].ID);
          }
-         $modalInstance.dismiss('cancel');
+         $uibModalInstance.dismiss('cancel');
       };
 
       $scope.checkGroupItem = function() {
@@ -1175,7 +1175,7 @@ angular.module('algorea')
          } else {
             ModelsManager.updated(modelName, $scope[recordName].ID);
          }
-         $modalInstance.close();
+         $uibModalInstance.close();
          AccessManager.resetAccess();
       };
    }]);
