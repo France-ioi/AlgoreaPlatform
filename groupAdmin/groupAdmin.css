@@ -497,6 +497,7 @@ orange : #F29200;
 }
 .groupAdmin .table-progress .step-descr {
 	width: 400px;
+	min-width: 400px;
 }
 .groupAdmin .table-progress .step-descr>div {
 	font-size: 14px;
@@ -550,6 +551,8 @@ orange : #F29200;
 .groupAdmin .table-progress.view-global td.status {
 	position: relative;
 	width: 60px;
+	min-width: 60px;
+	max-width: 60px;
 	padding: 3px;
 	vertical-align: bottom;
 }
@@ -582,6 +585,25 @@ orange : #F29200;
 	padding-left: 20px;
 }
 
+/* fixed header */
+
+.table-wrapper > div {
+	overflow: auto;
+}
+.groupAdmin .table-progress.table-body {
+	margin-top: 0;
+	width: content-box;
+	width: fit-content;
+	width: min-content;
+	width: fill;
+}
+.groupAdmin .table-progress tbody {
+	display: block;
+	max-height: 250px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
 	/* Collective view: Detailed */
 .groupAdmin .table-progress.view-detail th.name {
 	word-break: break-word;
@@ -596,10 +618,11 @@ orange : #F29200;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+.groupAdmin .table-progress.view-detail th.name,
 .groupAdmin .table-progress.view-detail td.status {
-	width: 260px;
-	max-width: 260px;
-	min-width: 260px;
+	max-width: 261px;
+	min-width: 261px;
+		width: 261px;
 
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row {

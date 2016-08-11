@@ -233,7 +233,7 @@
 						</div>
 					</div>
 					<div class="table-wrapper">
-						<table class="table-progress" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
+						<table class="table-progress table-head" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 							<thead>
 								<tr>
 									<th class="fixed-width step-name">Nom du chapitre / étape</th>
@@ -241,6 +241,8 @@
 									<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf[0].sLogin}}</span> <span class="user-name">({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></span></div></th>
 								</tr>
 							</thead>
+							</table>
+							<table class="table-progress table-body" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 							<tbody>
 								<tr ng-repeat="item in itemsList">
 									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
