@@ -599,11 +599,15 @@ orange : #F29200;
 }
 .groupAdmin .table-progress tbody {
 	display: block;
-	max-height: 250px;
+	max-height: 400px;
+	max-height: calc(100vh - 365px);
 	overflow-y: auto;
 	overflow-x: hidden;
 }
-
+.groupAdmin .table-progress.view-detail tbody {
+	max-height: 400px;
+	max-height: calc(100vh - 235px);
+}
 	/* Collective view: Detailed */
 .groupAdmin .table-progress.view-detail th.name {
 	word-break: break-word;
