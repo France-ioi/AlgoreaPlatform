@@ -52,17 +52,13 @@ function createMissingUserItems($db, &$serverChanges, $type) {
    $diff = array_diff($items_ids, $users_items_ids);
    // one big insert request with multiple values
    if (count($diff)) {
-      $request = "INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`) VALUES";
       $first = true;
       foreach ($diff as $nothing => $idItem) {
          if (!$first) {$request .= ",";}
          $ID = getRandomID();
          $first = false;
-         $request .= " ('".$ID."', '".$userId."', '".$idItem."')";
          $serverChanges['users_items'][$type][$ID] = default_user_item_factory($userId, $serverChanges['items'][$type][$idItem], $ID);
       }
-      $request .= ";";
-      $db->exec($request);
    }
 }
 
@@ -237,15 +233,4 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
          generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
       }
    }
-}
-
-function checkInitialUsersItems($db) {
-   $stmt = $db->prepare('select count(ID) from users_items where idUser = :idUser;');
-   $stmt->execute(array('idUser' => $_SESSION['login']['ID']));
-   $countUserItems = $stmt->fetchColumn();
-   if ($countUserItems) {
-      return;
-   }
-   $stmt = $db->prepare('insert into users_items (idUser, idItem, iVersion) select :idUser, idItem, 0 from groups_items join groups_ancestors on groups_items.idGroup = groups_ancestors.idGroupAncestor where ((`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND groups_ancestors.`idGroupChild` = :idGroupSelf);');
-   $stmt->execute(array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idUser' => $_SESSION['login']['ID']));
 }
