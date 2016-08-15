@@ -70,11 +70,12 @@ angular.module('algorea').
 angular.module('algorea').
   filter('userSort', function() {
     return function(groups_groups, parent, owned) {
-      return _.sortBy(groups_groups, function(g_g) {
+      var res = _.sortBy(groups_groups, function(g_g) {
          var group = parent ? g_g.parent : g_g.child;
-         var user = owned ? group.userOwned[0] : group.userSelf[0];
-         return user.sLogin;
+         var user = owned ? group.userOwned : group.userSelf;
+         return user ? user.sLogin : '';
       });
+      return res;
     };
   });
 
@@ -613,7 +614,7 @@ angular.module('algorea')
       angular.forEach($scope.group.children, function(child_group_group) {
          var child_group = child_group_group.child;
          $scope.groupsSelected[child_group.ID] = true;
-         var user = child_group.userSelf[0];
+         var user = child_group.userSelf;
          if (!user) return;
          $scope.usersSelected[user.ID] = true;
          $scope.groupChildren.push(child_group_group);
@@ -636,14 +637,14 @@ angular.module('algorea')
          console.error('group '+group.ID+' is not an user!');
          return;
       }
-      var userId = group.userSelf[0].ID;
+      var userId = group.userSelf.ID;
       var userItem = itemService.getUserItem(item, userId);
       return userItem;
    }
 
    $scope.toggleUserRowSelection = function(group) {
       $scope.groupsSelected[group.ID] = !$scope.groupsSelected[group.ID];
-      var user = group.userSelf[0];
+      var user = group.userSelf;
       if (!user) return;
       $scope.usersSelected[user.ID] = !$scope.usersSelected[user.ID];
       $scope.updateEvents();
@@ -654,7 +655,7 @@ angular.module('algorea')
          $scope.groupsSelected[ID] = false;
       });
       $scope.groupsSelected[group.ID] = true;
-      var user = group.userSelf[0];
+      var user = group.userSelf;
       if (!user) return;
       angular.forEach($scope.usersSelected, function(val, ID) {
          $scope.usersSelected[ID] = false;

@@ -60,7 +60,7 @@
 							<ul class="list list-block list-users">
 								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
 									<span class="user-status connected"></span>
-									<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
+									<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
 									<span class="action">
 										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" title="supprimer"><span class="btn-label">supprimer</span></button>
 									</span>
@@ -69,7 +69,7 @@
 							<div class="groupAdmin-title">Utilisateurs invités</div>
 							<ul class="list list-block list-applicants">
 									<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
-										<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})<span ng-if="child.sType == 'invitationRefused'"> (invitation refusée)</span></span>
+										<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})<span ng-if="child.sType == 'invitationRefused'"> (invitation refusée)</span></span>
 										<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" title="Annuler"><span class="btn-label">Annuler</span></button></span>
 									</li>
 							</ul>
@@ -136,7 +136,7 @@
 									<div ng-if="showRequestTable">
 										<ul class="list list-block list-applicants">
 												<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
-													<span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
+													<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
 													<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
 												</li>
 										</ul>
@@ -192,7 +192,7 @@
 						<!-- TODO : add class toggle when selected -->
 								<li ng-repeat="child in group.children | confirmed" ng-click="toggleUserRowSelection(child.child);" ng-class="{row_selected: groupsSelected[child.idGroupChild] == true}">
 				                  <span class="user-status connected"></span>
-				                  <span class="user-name">{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span>
+				                  <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
 				               </li>
 						</ul>
 					</div>
@@ -238,7 +238,7 @@
 								<tr>
 									<th class="fixed-width step-name">Nom du chapitre / étape</th>
 									<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
-									<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf[0].sLogin}} ({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf[0].sLogin}}</span> <span class="user-name">({{child.child.userSelf[0].sFirstName}} {{child.child.userSelf[0].sLastName}})</span></span></div></th>
+									<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
 								</tr>
 							</thead>
 							</table>
@@ -300,7 +300,7 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="parent in group.parents | userSort:true:true">
-									<td>{{parent.parent.userOwned[0].sLogin}} ({{parent.parent.userOwned[0].sFirstName}} {{parent.parent.userOwned[0].sLastName}})</td>
+									<td>{{parent.parent.userOwned.sLogin}} ({{parent.parent.userOwned.sFirstName}} {{parent.parent.userOwned.sLastName}})</td>
 									<td><span ng-if="parent.sRole == 'owner'" class="glyphicon glyphicon-ok"></span></td>
 									<td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'manager' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
 									<td><input type="radio" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'observer' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
