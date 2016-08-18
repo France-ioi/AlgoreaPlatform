@@ -208,10 +208,10 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="event in events" ng-class="getClass(event.user_item);">
+								<tr ng-repeat="event in events">
 									<td>{{event.userStr}}</td>
 									<td>{{event.date | date}}</td>
-									<td class="activity-type {{event.eventStr}}">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" title="lien vers activité"><span class="btn-label">lien vers activité</span></button></td>
+									<td class="activity-type" ng-class="getClass(event.user_item);">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" title="lien vers activité"><span class="btn-label">lien vers activité</span></button></td>
 									<td>{{event.itemStr}}</td>
 								</tr>
 							</tbody>
