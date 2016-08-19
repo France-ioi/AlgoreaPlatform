@@ -108,7 +108,7 @@ angular.module('algorea')
                });
             });
          } else {
-            if (!scope.canGetState) return;
+            if (!scope.canGetState) {console.error('canGetState = false'); return};
             scope.task.getAnswer(function (answer) {
                if (scope.loadedUserItemID != scope.user_item.ID) error('scope.loadedUserItemID != scope.user_item.ID');
                $http.post('/task/task.php', {action: 'askValidation', sToken: scope.user_item.sToken, sAnswer: answer}, {responseType: 'json'}).success(function(postRes) {
@@ -134,7 +134,7 @@ angular.module('algorea')
                         if (validated && mode == 'next') {
                            scope.moveToNext();
                         }
-                     });
+                     }, error);
                   }
                })
                .error(function() {
