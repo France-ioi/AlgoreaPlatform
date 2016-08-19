@@ -62,9 +62,9 @@ var models = {
       links: {
          children: {refModel: "groups_groups", key: "idGroupParent", type: "array"}, // array better ?
          parents: {refModel: "groups_groups", key: "idGroupChild", type: "object"},
-         userSelf: {refModel: "users", key: "idGroupSelf", type: "array"},
-         userOwned: {refModel: "users", key: "idGroupOwned", type: "array"},
-         userAccess: {refModel: "users", key: "idGroupAccess", type: "object"}
+         userSelf: {refModel: "users", key: "idGroupSelf", type: "direct"},
+         userOwned: {refModel: "users", key: "idGroupOwned", type: "direct"},
+         userAccess: {refModel: "users", key: "idGroupAccess", type: "direct"}
       }
    },
 
@@ -446,16 +446,16 @@ var models = {
           nbTasksWithHelp: {type: "int", label: "", readOnly: true},
           nbHintsCached: {type: "int", label: "", readOnly: true},
           nbCorrectionsRead: {type: "int", label: "", readOnly: true},
-          iPrecision: {type: "int", label: ""},
-          iAutonomy: {type: "int", label: ""},
+          iPrecision: {type: "int", label: "", readOnly: true},
+          iAutonomy: {type: "int", label: "", readOnly: true},
           sStartDate: {type: "jsdate", label: ""},
           sValidationDate: {type: "jsdate", label: "", readOnly: true},
           sLastAnswerDate: {type: "jsdate", label: "", readOnly: true},
           sThreadStartDate: {type: "jsdate", label: "", readOnly: true},
           sLastHintDate: {type: "jsdate", label: "", readOnly: true},
-          sFinishDate: {type: "jsdate", label: ""},
+          sFinishDate: {type: "jsdate", label: "", readOnly: true},
           sLastActivityDate: {type: "jsdate", label: ""},
-          bRanked: {type: "boolean", label: ""},
+          bRanked: {type: "boolean", label: "", readOnly: true},
           sAllLangProg: {type: "string", label: ""},
           sState: {type: "string", label: ""},
           sToken: {type: "string", label: "", readOnly: true}

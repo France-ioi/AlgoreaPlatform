@@ -185,6 +185,9 @@ angular.module('algorea')
       });
       $scope.views = scopeViews;
       $scope.viewsIndex = scopeViewsIndex;
+      if (!$scope.askedView) {
+         $scope.askedView = 'task';
+      }
       $scope.showView($scope.askedView);
    };
    $scope.isActive = function(view) {

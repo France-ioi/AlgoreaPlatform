@@ -838,7 +838,7 @@ $viewsModels = array(
           "sLastAnswerDate"       => array('readOnly' => true),
           "sThreadStartDate"      => array('readOnly' => true),
           "sLastHintDate"         => array('readOnly' => true),
-          "sFinishDate"           => array(),
+          "sFinishDate"           => array('readOnly' => true),
           "sLastActivityDate"     => array(),
           "bRanked"               => array('readOnly' => true),
           "sAllLangProg"          => array(),
