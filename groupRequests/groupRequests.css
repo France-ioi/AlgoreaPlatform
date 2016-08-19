@@ -1,9 +1,110 @@
 .groupRequest {
 	margin: 10px;
-	color: #480a2a;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
-.groupRequest-tabContent {
 
+.groupRequest .nav-tabs>li>a {
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	transition: all 250ms;
+	outline: 0;
+}
+.groupRequest .nav-tabs>li.active>a,
+.groupRequest .nav-tabs>li.active>a:focus,
+.groupRequest .nav-tabs>li.active>a:hover  {
+	color: #D1D718;
+}
+
+.groupRequest-tabContent {
+	background-color: #ededed;
+	padding: 2em;
+}
+.groupRequest-tabContent .row {
+	margin-bottom: 1em;
+}
+
+/*
+	Text elements
+*/
+.groupRequest .groupRequest-title {
+	font-size: 18px;
+	text-transform: uppercase;
+	font-weight: bold;
+	margin: 0 0 1em;
+}
+.groupRequest .groupRequest-title span {
+	display: block;
+	font-size: 16px;
+	font-weight: normal;
+	font-style: italic;
+	text-transform: none;
+}
+.groupRequest .label-title {
+	font-weight: bold;
+	display: inline-block;
+	margin-bottom: 5px;
+	font-size: 18px;
+}
+.groupRequest .label-title.label-list-item {
+	display: list-item;
+	list-style-position: inside;
+}
+.groupRequest .label-description {
+	font-size: 14px;
+	font-style: italic;
+	color: #353535;
+	display: block;
+	font-weight: normal;
+	line-height: 1.2em;
+	text-shadow: 1px 1px 1px #fff;
+}
+
+.groupRequest .flex-container {
+	display: flex;
+	flex-flow: row wrap-reverse;
+	align-items: stretch;
+	margin-bottom: 1em;
+}
+.groupRequest .flex-container .action-col {
+	flex: 4 0 0;
+	order: 2;
+	min-width: 210px;
+}
+.groupRequest .flex-container .info-col {
+	flex: 5 0 0;
+	margin-right: 2em;
+	order: 1;
+	min-width: 370px;
+}
+.groupRequest .table-wrapper {
+	max-width: 100%;
+	overflow: auto;
+}
+.groupRequest .group-detail-toggle-control {
+	font-family: monospace;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	color: inherit;
+}
+.groupRequest .group-detail-toggle-control:hover {
+	text-decoration: none;
+}
+.groupRequest .group-detail {
+	margin-left: 24px;
+}
+
+.groupRequest .history-list {
+	list-style: none;
+	padding: 0;
+}
+.groupRequest .history-list li {
+	border-bottom: 1px solid #ccc;
+	padding: 3px 10px;
+}
+.groupRequest .history-list li.historyActive {
+	background-color: #fff;
 }
