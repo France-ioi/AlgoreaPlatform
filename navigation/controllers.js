@@ -205,7 +205,7 @@ angular.module('algorea')
             } else {
                that.item_item = {};
             }
-            if (!that.user_item.sLastActivityDate) {
+            if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
                mapService.updateSteps();
             }
             itemService.onSeen(item);
