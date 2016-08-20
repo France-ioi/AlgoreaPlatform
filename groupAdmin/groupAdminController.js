@@ -115,6 +115,8 @@ angular.module('algorea')
    'use strict';
    $scope.error = null;
 
+   $scope.layout.isOnePage(true);
+   $scope.layout.hasMap('never');
    $scope.groupFields = models.groups.fields;
    
    function getThread(user_item) {
