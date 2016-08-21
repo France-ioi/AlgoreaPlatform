@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('algorea').directive('field', function() {
    return {
       restrict: 'E',
@@ -23,7 +21,7 @@ angular.module('algorea').directive('field', function() {
             }
          };
       }],
-      templateUrl: ((typeof compiled !== 'undefined' && compiled)?'':"../")+"commonFramework/angularDirectives/formField.html",
+      templateUrl: "commonFramework/angularDirectives/formField.html",
       replace: true
    };
 });
@@ -144,17 +142,17 @@ angular.module('algorea')
                readOnlyIfNoThread: true,
                item: user_item.item
             };
-         var modalInstance = $uibModal.open({
+         $uibModal.open({
             template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button><div ng-include="\'forum/thread.html\'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>',
             controller: 'groupAdminPopupController',
-            resolve: {popupData: () => popupData},
+            resolve: {popupData: function () { return popupData; }},
             windowClass: 'groupAdmin-modal'
           });
       } else {
-         var modalInstance = $uibModal.open({
+         $uibModal.open({
             template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>Vous n\'avez pas validé cet exercice et vous n\'avez pas les droits suffisants pour voir les soumissions',
             controller: 'groupAdminPopupController',
-            resolve: {popupData: () => {}},
+            resolve: {popupData: function () {}},
           });
       }
    };
