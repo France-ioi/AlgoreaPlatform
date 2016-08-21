@@ -45,7 +45,7 @@ angular.module('algorea')
                this.layout.hasMap('never');
             }
             $scope.setItemOnMap();
-            if (type == 'task' || type == 'course') {
+            if (this.item.sFullScreen != 'forceNo' && (type == 'task' || type == 'course' || this.item.sFullScreen == 'forceYes')) {
                if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }   
             } else {
                if (this.panel == 'right') { this.layout.rightIsFullScreen(false); }
