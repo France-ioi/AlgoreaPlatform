@@ -33,10 +33,10 @@ function DeclickMap() {
         var canvas = document.getElementById(canvasId);
         $canvas = $(canvas);
         $canvas.attr("resize", "1");
-        
+
         // setup paperjs
         paper.setup(canvas);
-        
+
         initCenter = new paper.Point(paper.view.center);
         targetCenter = new paper.Point(initCenter);
         targetZoom = 1;
@@ -47,7 +47,7 @@ function DeclickMap() {
             targetCenter = new paper.Point(initCenter);
             targetZoom = 1;
         };
-        
+
         var dragX, dragY;
 
         // mouse management
@@ -58,7 +58,7 @@ function DeclickMap() {
             dragY = event.pageY;
             clickCaptured = true;
         };
-        
+
         $canvas.click(function(event) {
             if (!clickCaptured) {
                 closeChapter();
@@ -88,16 +88,17 @@ function DeclickMap() {
 
         // Map animation
         paper.view.onFrame = function(event) {
+            var vector, step;
             if (target) {
                 var view = paper.view;
                 var center = view.center;
                 target = false;
                 if (!center.equals(targetCenter)) {
-                    var stepCenter = event.delta*movementSpeed;
+                    step = event.delta*movementSpeed;
                     target = true;
-                    var vector = targetCenter.subtract(center);
-                    if (vector.length > stepCenter) {
-                        var step = vector.normalize(stepCenter);
+                    vector = targetCenter.subtract(center);
+                    if (vector.length > step) {
+                        step = vector.normalize(step);
                         view.center = center.add(step);
                     } else {
                         view.center = new paper.Point(targetCenter);
@@ -113,10 +114,11 @@ function DeclickMap() {
                     }
                 }
                 if (!current.position.equals(targetCurrent)) {
+                    step = event.delta*movementSpeed;
                     target = true;
-                    var vector = targetCurrent.subtract(current.position);
-                    if (vector.length > stepCenter) {
-                        var step = vector.normalize(stepCenter);
+                    vector = targetCurrent.subtract(current.position);
+                    if (vector.length > step) {
+                        step = vector.normalize(step);
                         current.position = current.position.add(step);
                     } else {
                         current.position = targetCurrent;
@@ -160,7 +162,7 @@ function DeclickMap() {
         pStepVisited = new paper.Path.Circle(new paper.Point(0, 0), 6);
         pStepVisited.fillColor = "#E33022";
         sStepVisited = new paper.Symbol(pStepVisited);
-        // load current image in a upper layer 
+        // load current image in a upper layer
         var activeLayer = paper.project.activeLayer;
         var currentLayer = new paper.Layer();
         paper.project.importSVG(currentSVG, function(item) {
@@ -170,9 +172,9 @@ function DeclickMap() {
                 callback();
             }
         });
-        activeLayer.activate();            
+        activeLayer.activate();
     };
-    
+
     this.init = function(canvasId, currentImage, newStepCallback, callback) {
         initView(canvasId);
         initSymbols(currentImage, callback);
@@ -205,7 +207,7 @@ function DeclickMap() {
         everything.addChild(path);
         centerEveryting();
     };
-    
+
     this.loadPathFromJSON = function(file, callback) {
         var self = this;
         $.getJSON(file, function(pathData) {
@@ -215,7 +217,7 @@ function DeclickMap() {
             }
         }).fail(function() {
             console.error("Could not load JSON file: "+file);
-        });   
+        });
     };
 
     // Steps loading
@@ -244,7 +246,7 @@ function DeclickMap() {
             console.error("Could not load JSON file: "+file);
         });
     };
-    
+
     var initSteps = function(data) {
         steps = [];
         function getObject(value, chapter) {
@@ -313,7 +315,7 @@ function DeclickMap() {
             chapterOpen = false;
         }
     };
-    
+
     var setTarget = function(center, zoom) {
         targetCenter = new paper.Point(center);
         targetZoom = zoom;
@@ -329,9 +331,13 @@ function DeclickMap() {
         times=0;
         function cut() {
             for(var i=0;i<txt.length;i++) {
-                (txt[i]==' ')&&(space=i);
+                if (txt[i]==' ') {
+                    space=i;
+                }
                 if(i>=max) {
-                    (space==-1||txt[i]==' ')&&(space=i);
+                    if (space==-1||txt[i]==' ') {
+                        space = i;
+                    }
                     if(space>0) {
                         lines.push(txt.slice((txt[0]===' '?1:0),space));
                     }
@@ -372,7 +378,7 @@ function DeclickMap() {
             }
         }
     };
-    
+
     var removeSteps = function() {
         // remove everything
         paper.project.activeLayer.removeChildren();
@@ -402,7 +408,7 @@ function DeclickMap() {
             centerEveryting();
         }
     };
-    
+
     var resize = function() {
         var savedCurrentIndex = currentIndex;
         var savedChapterOpen = chapterOpen;
@@ -423,19 +429,20 @@ function DeclickMap() {
         var currentLabels;
         var basePath = path.clone();
 
-        var placeSymbol = function(index, curve, length) {
+        var placeSymbol = function(index, curve, length, last) {
             var chapter = steps[index].chapter;
             var symbol = getSymbol(steps[index]);
             var point = curve.getPointAt(length, false);
             var placed = symbol.place(point);
             var hasSubItems = false;
+            var offset, newPath, chapterPath;
             displayedSteps.push(placed);
             everything.addChild(placed);
             if (chapter) {
                 if (previousChapter) {
-                    var offset = basePath.getOffsetOf(placed.position);
-                    var newPath = basePath.split(offset);
-                    var chapterPath = basePath;
+                    offset = basePath.getOffsetOf(placed.position);
+                    newPath = basePath.split(offset);
+                    chapterPath = basePath;
                     chapterPath.visible = false;
                     chapterPaths.push(chapterPath);
                     basePath = newPath;
@@ -453,7 +460,7 @@ function DeclickMap() {
                     placed.onMouseDown = getChapterMouseHandler(chapters.length - 1);
                 } else {
                     // no subitems: open corresponding step
-                    placed.onMouseDown = getStepMouseHandler(index)
+                    placed.onMouseDown = getStepMouseHandler(index);
                 }
                 // display chapter number
                 var textNumber = new paper.PointText({
@@ -477,6 +484,16 @@ function DeclickMap() {
                 everything.addChild(textNumber);
             } else {
                 placed.onMouseDown = getStepMouseHandler(index);
+                if (last) {
+                    offset = basePath.getOffsetOf(placed.position);
+                    newPath = basePath.split(offset);
+                    chapterPath = basePath;
+                    chapterPath.visible = false;
+                    chapterPaths.push(chapterPath);
+                    basePath = newPath;
+                    everything.addChild(currentLabels);
+                    chapterLabels.push(currentLabels);
+                }
             }
             placed.onMouseEnter = mouseEnterHandler;
             placed.onMouseLeave = mouseLeaveHandler;
@@ -544,7 +561,8 @@ function DeclickMap() {
         }
         currentCurve = curves[curves.length - 1];
         // place last step
-        placeSymbol(i, currentCurve, currentCurve.length);
+        placeSymbol(i, currentCurve, currentCurve.length, true);
+
         // resize and place current image
         var startIndex;
         if (currentIndex === -1) {
@@ -564,14 +582,14 @@ function DeclickMap() {
                 stepCallback(steps[currentIndex].id);
             }
             event.preventDefault();
-            clickCaptured = true;            
+            clickCaptured = true;
         };
         current.onMouseEnter = mouseEnterHandler;
         current.onMouseLeave = mouseLeaveHandler;
 
         everything.addChild(current);
     };
-    
+
     // Mouse handlers
     var getStepMouseHandler = function(i) {
         return function(event) {
@@ -600,8 +618,8 @@ function DeclickMap() {
         if (!currentChapterPath) {
             $canvas.css("cursor", "default");
         }
-    };    
-    
+    };
+
     // Update data
     this.updateState = function(udpatedSteps) {
         $.each(udpatedSteps, function(key, value) {
@@ -624,14 +642,14 @@ function DeclickMap() {
                         displayedSteps[i] = placed;
                         placed.onMouseDown = getStepMouseHandler(i);
                         placed.onMouseEnter = mouseEnterHandler;
-                        placed.onMouseLeave = mouseLeaveHandler;                        
+                        placed.onMouseLeave = mouseLeaveHandler;
                         break;
                     }
                 }
             }
         });
     };
-    
+
     var setCurrentStep = function(index, animate, skipChapter) {
         var stepIndex = -1, chapterIndex = -1;
         // look for stepIndex
@@ -654,7 +672,7 @@ function DeclickMap() {
                 targetCurrent = current.position;
             }
             if (!skipChapter) {
-                // look for corresponding chapter 
+                // look for corresponding chapter
                 for (var j=stepIndex; j>=0; j--) {
                     if (steps[j].chapter) {
                         for (var k=0; k<chapters.length;k++) {
@@ -674,14 +692,14 @@ function DeclickMap() {
             console.error("Step with index "+index+" not found");
         }
     };
-    
+
     this.setCurrentStep = function(index, animate) {
         if (typeof animate === 'undefined') {
             animate = false;
         }
         setCurrentStep(index, animate);
     };
-    
+
     this.update = function() {
         // check size
         var cSize = new paper.Size($canvas.width(), $canvas.height());
@@ -690,15 +708,15 @@ function DeclickMap() {
                 window.dispatchEvent(new Event('resize'));
             } catch (e) {
                 // Problem in IE: try the IE way
-                var evt = window.document.createEvent('UIEvents'); 
-                evt.initUIEvent('resize', true, false, window, 0); 
+                var evt = window.document.createEvent('UIEvents');
+                evt.initUIEvent('resize', true, false, window, 0);
                 window.dispatchEvent(evt);
             }
         }
         // remove any precedently bound mousemove handlers
         $canvas.off("mousemove");
     };
-    
+
     this.removeSteps = function() {
         removeSteps();
     };
