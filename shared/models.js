@@ -263,6 +263,7 @@ var models = {
          idLanguage: {type: "key", label: "Langue", refModel: "languages", link: "language"},
          sTranslator: {type: "string", label: "Traducteur", defaultValue: ''},
          sTitle: {type: "string", label: "Titre", defaultValue: ''},
+         sImageUrl: {type: "string", label: "URL de l'image", defaultValue: null},
          sSubtitle: {type: "string", label: "Sous-titre", defaultValue: ''},
          sDescription: {type: "text", label: "Description", defaultValue: ''},
          sEduComment: {type: "text", label: "Commentaire pédagogique", defaultValue: ''},
