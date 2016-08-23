@@ -23,6 +23,9 @@
 	background-color: #edebed;
 	padding: 2em;
 }
+.groupRequest-tabContent > div {
+	margin-bottom: 2em;
+}
 .groupRequest-tabContent .row {
 	margin-bottom: 1em;
 }
@@ -63,39 +66,73 @@
 	text-shadow: 1px 1px 1px #fff;
 }
 
-.groupRequest .flex-container {
-	display: flex;
-	flex-flow: row wrap-reverse;
-	align-items: stretch;
-	margin-bottom: 1em;
+/* Search Groups */
+.groupRequest .search-groups-results {
+	border-collapse: collapse;
 }
-.groupRequest .flex-container .action-col {
-	flex: 4 0 0;
-	order: 2;
-	min-width: 210px;
+.groupRequest .search-groups-results tr.requestSent,
+.groupRequest .search-groups-results tr.requestAccepted,
+.groupRequest .search-groups-results tr.invitationSent,
+.groupRequest .search-groups-results tr.invitationAccepted,
+.groupRequest .search-groups-results tr.direct {
+	color: #707070;
 }
-.groupRequest .flex-container .info-col {
-	flex: 5 0 0;
-	margin-right: 2em;
-	order: 1;
-	min-width: 370px;
+.groupRequest .search-groups-results td {
+	padding: 3px 10px;
+	vertical-align: middle;
+}
+.groupRequest .search-groups-results tbody:hover td {
+	background-color: #f5f5f5;
+}
+.groupRequest .search-groups-results .groupName {
+	font-weight: bold;
+}
+.groupRequest .search-groups-results td p {
+	margin-bottom: 0;
+}
+.groupRequest .search-groups-results i {
+	display: inline-block;
+	vertical-align: bottom;
+}
+.groupRequest .search-groups-results .helper-text {
+	width: 1%;
+}
+.groupRequest .search-groups-results .helper-text p {
+	position: relative;
+}
+.groupRequest .search-groups-results .helper-text i {
+	display: block;
+	cursor: default;
+}
+.groupRequest .search-groups-results .helper-text p span {
+	position: absolute;
+	top: 0;
+	left: 24px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 3px 10px;
+	opacity: 0;
+	z-index: 1;
+	box-shadow: 1px 1px 3px #ccc;
+	width: 11em;
+	display: none;
+	transition: opacity 250ms;
+}
+.groupRequest .search-groups-results .helper-text i:hover + span {
+	display: block;
+	opacity: 1;
+}
+.groupRequest .search-groups-results label {
+	display: none;
+}
+.groupRequest .search-groups-results .no-description {
+	font-style: italic;
+	color: #707070;
 }
 .groupRequest .table-wrapper {
 	max-width: 100%;
 	overflow: auto;
-}
-.groupRequest .group-detail-toggle-control {
-	font-family: monospace;
-	font-size: 14px;
-	font-weight: bold;
-	cursor: pointer;
-	color: inherit;
-}
-.groupRequest .group-detail-toggle-control:hover {
-	text-decoration: none;
-}
-.groupRequest .group-detail {
-	margin-left: 24px;
 }
 
 .groupRequest .history-list {
