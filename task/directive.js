@@ -242,10 +242,6 @@ angular.module('algorea')
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
                   var itemUrl = scope.item.sUrl;
-                  if (itemUrl.indexOf('#') == -1) {
-                     // the idea is not to change the base url even if we change token, so we put token after #
-                     itemUrl = itemUrl + '#';
-                  }
                   scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
                   // we save the value, to compare it with the new one if iframe is reloaded
                   scope.itemUrl = itemUrl;
