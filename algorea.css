@@ -104,3 +104,43 @@ body {
 .bs-callout-info h4 {
     color: #5bc0de;
 }
+
+.level-title {
+  font-weight:bold;
+  font-size: 18pt;
+  color: #2e75b6;
+}
+
+.level-subtitle {
+  color: #2e75b6;
+}
+
+.level-container {
+  border: 2px solid #e7e6e6;
+  margin-top:20px;
+  display:flex;
+  flex-direction:row;
+}
+
+.level-description {
+  color: #a6a6a6;
+  padding-left:25px;
+}
+
+.level-moreInfos {
+  color: #a6a6a6;
+}
+
+.level-educomment {
+  color: #a6a6a6;
+}
+
+.level-image {
+  width:150px;
+  flex: 0 0 auto;
+}
+
+.level-notimage {
+  padding: 15px;
+  flex: 0 1 auto;
+}

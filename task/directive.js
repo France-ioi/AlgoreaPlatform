@@ -107,6 +107,8 @@ angular.module('algorea')
                   }
                });
             });
+         } else if (mode == 'nextImmediate') {
+            scope.moveToNext();
          } else {
             if (!scope.canGetState) {console.error('canGetState = false'); return};
             scope.task.getAnswer(function (answer) {

@@ -16,6 +16,7 @@ angular.module('algorea')
       } else {
          $scope.useForum = true;
       }
+      $scope.formValues = {};
       $scope.item = {ID: 0};
       $scope.errorItem = {ID: -1};
       this.firstApply = true;
@@ -194,6 +195,7 @@ angular.module('algorea')
             that.item = item;
             that.parentItemID = item.ID;
             that.strings = itemService.getStrings(item);
+            that.imageUrl = that.strings.sImageUrl ? that.strings.sImageUrl : 'images/default-level.png'
             that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {

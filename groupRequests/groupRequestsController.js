@@ -3,6 +3,7 @@
 angular.module('algorea')
    .controller('groupRequestsController', ['$scope', '$http', 'loginService', '$rootScope', 'itemService', '$filter', '$timeout', function ($scope, $http, loginService, $rootScope, itemService, $filter, $timeout) {
    $scope.layout.isOnePage(true);
+   $scope.layout.hasMap('never');
    $scope.loading = true;
    $scope.loginLoading = true;
    $scope.results = null;

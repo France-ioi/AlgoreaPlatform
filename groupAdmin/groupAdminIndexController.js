@@ -7,6 +7,8 @@ angular.module('algorea')
    $scope.error = '';
    $scope.loading = true;
    $scope.formValues = {};
+   $scope.layout.isOnePage(true);
+   $scope.layout.hasMap('never');
    $scope.startSync = function(callback) {
    	SyncQueue.requestSets.groupsDescendants = {name: "groupsDescendants", minServerVersion: 0};
       SyncQueue.addSyncEndListeners('groupAdminIndexController', function() {
@@ -24,9 +26,7 @@ angular.module('algorea')
    		return;
    	}
    	$scope.myGroupAdmin = ModelsManager.getRecord('groups', myGroupId);
-      console.error($scope.myGroupAdmin);
    	if (!$scope.myGroupAdmin) {
-   		console.error('big problem2!');
    		return;
    	}
    };
@@ -78,6 +78,10 @@ angular.module('algorea')
    });
    
 	$scope.loading = true;
+   $scope.$on('login.logout', function(event,data) {
+      $scope.loading = true;
+      $scope.error = '';
+   });
    itemService.onNewLoad($scope.init);
 
 }]);
