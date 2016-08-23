@@ -56,7 +56,7 @@
 					<div class="flex-container">
 
 						<div class="members-col">
-							<div class="groupAdmin-title">Composition du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
+							<div class="groupAdmin-title">Membres du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
 							<ul class="list list-block list-users">
 								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
 									<span class="user-status connected"></span>
