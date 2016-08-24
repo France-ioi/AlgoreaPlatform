@@ -47,7 +47,6 @@ function joinGroup($request, $db) {
       echo json_encode(array('result' => false, 'error' => 'missing arguments in request'));
       return;
    }
-   $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.ID = :ID group by groups.ID;';
    if (isset($request['ID'])) {
       $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.ID = :ID group by groups.ID;';
       $values = array('ID' => $request['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
@@ -86,7 +85,7 @@ function joinGroup($request, $db) {
    $stmt = $db->query($query);
    $version = $stmt->fetchColumn();
    $query = "lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0); insert into `groups_groups` (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion) values (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, :groupGroupType, NOW(), :version) on duplicate key update sType=VALUES(sType); unlock tables;";
-   $values = array('ID' => $groupGroupID, 'idGroup' => $request['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'version' => $version, 'groupGroupType' => $groupGroupType);
+   $values = array('ID' => $groupGroupID, 'idGroup' => $result['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'version' => $version, 'groupGroupType' => $groupGroupType);
    $stmt = $db->prepare($query);
    $stmt->execute($values);
    $returnedObject = array('success' => true, 'type' => $groupGroupType, 'ID' => $groupGroupID);
