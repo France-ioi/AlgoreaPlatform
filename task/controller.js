@@ -22,11 +22,15 @@ angular.module('algorea')
    // taskView = view avaible on the task
    // 1 platformView can be several taskViews, for instance, platform wants
    // to show help + forum (2 taskViews) in one tab (1 platformView)
-   var platformViews = {
-      'task': {tabString: 'Énoncé', taskViews: {'task': true}},
-      'editor': {tabString: 'Résolution', taskViews: {'editor': true}},
-      'hints': {tabString: 'Indices', taskViews: {'hints': true}},
+   var platformViews = {};
+   var initPlatformViews = function() {
+      platformViews = {
+         'task': {tabString: 'Énoncé', taskViews: {'task': true}},
+         'editor': {tabString: 'Résolution', taskViews: {'editor': true}},
+         'hints': {tabString: 'Indices', taskViews: {'hints': true}},
+      };
    };
+   initPlatformViews();
    if ($scope.taskInsideForumInsideTask) {
       delete(platformViews.task);
    }
@@ -104,14 +108,20 @@ angular.module('algorea')
       $scope.syncHeight();
    };
    $scope.$on('$destroy', function() {
-      $scope.canGetState = false;
+      $scope.task.getState(function(state) {
+         if ($scope.canGetState && state != $scope.user_item.sState) {
+            $scope.user_item.sState = state;
+            ModelsManager.updated('users_items', $scope.user_item.ID, false, true);
+         }
+         $scope.canGetState = false;
+         var task = $scope.task;
+         $scope.task.unload(function(){
+            task.chan.destroy();
+         }, function(){});
+      });
       angular.forEach($scope.intervals, function(interval) {
          $interval.cancel(interval);
       });
-      var task = $scope.task;
-      $scope.task.unload(function(){
-         task.chan.destroy();
-      }, function(){});
    });
    $scope.$on('algorea.taskViewChange', function(event, toParams) {
       if ($scope.taskName != 'task-editor' && !$scope.inForum) {
@@ -153,6 +163,7 @@ angular.module('algorea')
       }
    };
    $scope.setTabs = function (taskViews) {
+      initPlatformViews();
       if (!this.inForum && this.useForum) {
          platformViews.forum = {tabString: 'Aide'};
       }
@@ -165,6 +176,8 @@ angular.module('algorea')
       if (platformViews.editor) {
          $scope.hasEditor = true;
 //         delete platformViews.editor;
+      } else {
+         $scope.hasEditor = false;
       }
       var scopeViews = [];
       var scopeViewsIndex = [];
