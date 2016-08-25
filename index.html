@@ -53,9 +53,12 @@
       opacity:0 !important;
       z-index:-99 !important;
     }
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+      display: none !important;
+    }
     </style>
 </head>
-<body ng-controller="layoutController" id="body">
+<body ng-controller="layoutController" id="body" ng-cloak>
 <iframe id="animation-debut" src="animation.html" onclick="animationFinished()" style="display:none;"></iframe>
 <div id="fixed-header-room" class="fixed-header-room"></div>
 <header ng-click="layout.menuClicked($event);" ng-include="'menu.html'">
@@ -82,11 +85,12 @@ function animationFinished() {
   document.getElementById('body').style['overflow-y']='scroll';
 }
 function startAnimation() {
+  document.getElementById('animation-debut').src=config.domains.current.animationHtmlFile;
   document.getElementById('animation-debut').style.display='block';
   document.getElementById('body').style['overflow-x']='hidden';
   document.getElementById('body').style['overflow-y']='hidden';
 }
-if (location.pathname=='/') startAnimation();
+if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAnimation();
 </script>
 
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>

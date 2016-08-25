@@ -417,6 +417,7 @@ angular.module('algorea')
 
 angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
+      $scope.tagline = config.domains.current.taglineHtml;
       $scope.gotoMenuItem = function(i, tabPath) {
          $scope.activated = i;
          if (tabPath == 'forum'){

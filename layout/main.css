@@ -196,19 +196,28 @@ body {
    flex: 6 1 auto;
    display:flex;
    flex-direction:column;
-   justify-content:space-between
+   justify-content:space-between;
 }
 
 .children-item {
    -webkit-flex: 1 0 50px;
    display: -webkit-flex;
    -webkit-flex-direction: column;
-   -webkit-justify-content: center;
    flex: 1 0 50px;
    border-bottom:1px solid #cecece;
    display: flex;
    flex-direction: column;
    justify-content: center;
+   -webkit-justify-content: center;
+}
+
+.children-level {
+  -webkit-flex: 1 0 auto;
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .forum-in-task {
