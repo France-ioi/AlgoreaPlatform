@@ -155,8 +155,8 @@
 						<div class="row">
 							<span class="col-md-6">Sélectionnez le type de visualisation&nbsp;: </span>
 							<div class="col-md-6">
-								<label><input type="radio" ng-model="progressionType" value="chronological">Chronologique</label><br>
-								<label><input type="radio" ng-model="progressionType" value="collective">Suivant l'ordre du parcours</label>
+								<label><input type="radio" ng-model="progressionType" value="chronological">Ordre chronologique</label><br>
+								<label><input type="radio" ng-model="progressionType" value="collective">Ordre du parcours</label>
 							</div>
 						</div>
 					</div>
@@ -187,7 +187,7 @@
 
 				<div ng-if="progressionType != 'collective'" class="row">
 					<div class="col-sm-4">
-						<div class="groupAdmin-title">Utilisateur <span>Cliquez sur un utilisateur pour obtenir le détail de son activité récente ou pour le déselectionner et voir l'activité récente du groupe dans son ensemble.</span></div>
+						<div class="groupAdmin-title">Utilisateurs <span>Sélectionnez un ou plusieurs utlisisateurs pour obtenir le détail de son activité récente ou pour le déselectionner et voir l'activité récente du groupe dans son ensemble.</span></div>
 						<ul class="list list-block list-users">
 						<!-- TODO : add class toggle when selected -->
 								<li ng-repeat="child in group.children | confirmed" ng-click="toggleUserRowSelection(child.child);" ng-class="{row_selected: groupsSelected[child.idGroupChild] == true}">
