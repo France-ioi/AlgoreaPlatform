@@ -44,7 +44,7 @@
 									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
 								</div>
 								<div class="block-delete">
-									<a class="group-delete" ng-click="deleteGroup();">Supprimer le groupe</a>
+									<a class="group-delete" rel="Êtes-vous certain de vouloir supprimer le groupe {{$scope.group.sName}} ? Cette opération est irréversible." confirm="deleteGroup();">Supprimer le groupe</a>
 								</div>
 							</div>
 				</div>

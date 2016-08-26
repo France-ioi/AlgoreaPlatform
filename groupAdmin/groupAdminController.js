@@ -529,24 +529,22 @@ angular.module('algorea')
    };
 
    $scope.deleteGroup = function() {
-      if (window.confirm("Êtes-vous certain de vouloir supprimer le groupe "+$scope.group.sName+' ? Cette opération est irréversible.')) { 
-         $http.post('/groupAdmin/api.php', {action: 'deleteGroup', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
-            if (!postRes || !postRes.success) {
-               console.error("got error from admin groupAdmin/api.php: "+postRes.error);
-            } else {
-               // deleting on the js side due to limitations of the requestSet deletion algorithm
-               angular.forEach($scope.group.parents, function(parent) {
-                  ModelsManager.deleted('groups_groups', parent.ID);   
-               });
-               ModelsManager.deleted('groups', $scope.group.ID);
-               SyncQueue.planToSend(0);
-               $state.go('groupAdmin');
-            }
-         })
-         .error(function() {
-            console.error("error calling groupAdmin/api.php");
-         });
-      }
+      $http.post('/groupAdmin/api.php', {action: 'deleteGroup', idGroup: $scope.groupId}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+         } else {
+            // deleting on the js side due to limitations of the requestSet deletion algorithm
+            angular.forEach($scope.group.parents, function(parent) {
+               ModelsManager.deleted('groups_groups', parent.ID);   
+            });
+            ModelsManager.deleted('groups', $scope.group.ID);
+            SyncQueue.planToSend(0);
+            $state.go('groupAdmin');
+         }
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      });
    };
 
    $scope.removeUser = function(group_group, $event) {
