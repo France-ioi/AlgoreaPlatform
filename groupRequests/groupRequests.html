@@ -7,12 +7,40 @@
       </uib-tab>
       <uib-tab heading="Mes groupes">
          <div class="groupRequest-tabContent">
+            <div class="groupAdmin groupAdmin-home" ng-controller="groupAdminIndexController">
+               <div class="groupAdmin-homeContent">
+                  <div ng-if="loading">Chargement...</div>
+                  <div ng-show="error">{{error}}</div>
+                  <div ng-if="!loading && !error">
+
+                     <p>Dans cet espace d'animation, vous pouvez constituer des groupes puis les administrer en leur assignant un parcours à réaliser. Vous avez également accès à un forum pour interagir avec l'équipe Declick.</p>
+
+                     <div ng-hide="myGroupAdmin.children.length">
+                        <p>Vous n'avez aucun groupe</p>
+                     </div>
+                     <div ng-show="myGroupAdmin.children.length">
+                        <p class="groupAdmin-title">Consulter un groupe :</p>
+                        <ul class="list list-block list-groups">
+                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+                        </ul>
+                     </div>
+                     <div>
+                     <p class="groupAdmin-title">Créer un nouveau groupe :</p>
+                     <div class="form-inline">
+                        <input type="text" ng-model="formValues.groupName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
+                        <button ng-click="newGroup();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
+                     </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
             <div class="">
                <h2 class="groupRequest-title" ng-hide="loading">Les groupes dont je fais partie</h2>
 
                <div ng-if="!loading && !showTable()">
                   <p>Vous ne faites actuellement partie d'aucun groupe.</p>
                </div>
+               Invitations et requêtes:
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
@@ -24,7 +52,7 @@
                         </tr>
                      </thead>
                      <tbody>
-                        <tr ng-repeat="mygroupgroup in getMyGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType != 'invitationRefused' && mygroupgroup.sType != 'requestRefused' && mygroupgroup.sType != 'left' && mygroupgroup.sType != 'removed'">
+                        <tr ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType == 'invitationSent' || mygroupgroup.sType == 'requestSent'">
                            <td>{{mygroupgroup.parent.sName}}</td>
                            <td>{{mygroupgroup.sStatusDate | date}}</td>
                            <td>{{printType(mygroupgroup.sType)}}</td>
@@ -36,7 +64,29 @@
                               <div ng-if="mygroupgroup.sType == 'requestSent'">
                                  <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)">Annuler</button>
                               </div>
-                              <div ng-if="mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'direct' ">
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               Groupes dont je fais partie:
+               <div class="table-wrapper">
+                  <table class="table table-bordered table-hover" ng-if="showTable()">
+                     <thead>
+                        <tr>
+                           <th>Groupe</th>
+                           <th>Date</th>
+                           <th>État</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct'">
+                           <td>{{mygroupgroup.parent.sName}}</td>
+                           <td>{{mygroupgroup.sStatusDate | date}}</td>
+                           <td>{{printType(mygroupgroup.sType)}}</td>
+                           <td>
+                              <div>
                                  <button class="btn btn-default" confirm="leaveGroup(mygroupgroup)" rel="Êtes-vous sûr de vouloir quitter le groupe {{group_group.parent.sName}} ?'">Quitter le groupe</button>
                               </div>
                            </td>
@@ -112,7 +162,7 @@
                <h2 class="groupRequest-title" ng-hide="loading">Historique complet</h2>
 
                <ul ng-if="!loading" class="history-list">
-                  <li ng-repeat="mygroupgroup in getMyGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
+                  <li ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
                      {{mygroupgroup.sStatusDate | date}}&nbsp;:
                      <span ng-switch="mygroupgroup.sType">
                         <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
