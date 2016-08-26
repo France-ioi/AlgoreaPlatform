@@ -17,6 +17,7 @@ angular.module('algorea')
       ModelsManager.updated('users', $scope.user.ID);
    };
    $scope.init = function() {
+      $scope.updateGroups();
       loginService.getLoginData(function(res) {
          if (res.tempUser) {
             $scope.error = "Vous n'êtes pas identifié et ne pouvez pas accéder aux groupes. Les groupes permettent à un enseignant ou animateur de gérer un ensemble d'utilisateurs pour leur donner accès à du contenu personnalisé, et suivre leur progression.";
@@ -25,6 +26,7 @@ angular.module('algorea')
          $scope.loginLoading = false;
          SyncQueue.addSyncEndListeners('getGroups', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
+               $scope.updateGroups();
                $scope.loading = false;
                $scope.myGroup = myGroup;
                $scope.user = ModelsManager.getRecord('users', res.ID);
@@ -42,8 +44,32 @@ angular.module('algorea')
       $scope.myGroup = null;
       $scope.user = null;
       $scope.results = null;
+      $scope.myGroupParents = [];
       $scope.init();
    });
+
+   // involved sync design pattern: call updateGroups if a group_group when necessary
+   var needToUpdateAtEndOfSync = false;
+   var callbackfun = function(group_group) {
+      if (!$scope.myGroup || group_group.idGroupParent == $scope.myGroup.ID || group_group.idGroupChild == $scope.myGroup.ID) {
+         needToUpdateAtEndOfSync = true;
+      }
+   };
+   ModelsManager.addListener('groups_groups', 'deleted', 'groupRequestsDeleted', callbackfun);
+   ModelsManager.addListener('groups_groups', 'inserted', 'groupRequestsInserted', callbackfun);
+   ModelsManager.addListener('groups_groups', 'updated', 'groupRequestsUpdated', callbackfun);
+   SyncQueue.addSyncEndListeners('groupRequests', function() {
+      if (needToUpdateAtEndOfSync) {
+         $scope.updateGroups();
+         needToUpdateAtEndOfSync = false;
+      }
+   });
+
+   $scope.updateGroups = function() {
+      $scope.myGroupParents = $scope.getMyGroupParents();
+      $scope.myUnreadGroupParents = $scope.getMyUnreadGroupParents();
+   }
+
    $scope.getMyGroupParents = function() {
       if (!$scope.user || !$scope.myGroup) {
          return [];
@@ -172,4 +198,17 @@ angular.module('algorea')
          console.error("error calling groupRequests.php");
       });
    };
+
+   $scope.stopSync = function() {
+      delete(SyncQueue.requestSets.groupAdmin);
+      SyncQueue.removeSyncEndListeners('groupRequests');
+      ModelsManager.removeListener('groups_groups', 'deleted', 'groupRequestsDeleted');
+      ModelsManager.removeListener('groups_groups', 'inserted', 'groupRequestsInserted');
+      ModelsManager.removeListener('groups_groups', 'updated', 'groupRequestsUpdated');
+   };
+
+   $scope.$on('$destroy', function() {
+      $scope.stopSync();
+   });
+
 }]);
