@@ -90,7 +90,13 @@
    border:0px;
 }
 .userInfosLink {
-   color: rgb(2, 118, 196) !important;
+   color: #fff;
+}
+.userInfosLink:hover {
+   color: inherit;
+}
+.userInfosLink .menu-item-icon {
+   margin-right: 7px;
 }
 
 #userinfocontainer-breadcrumbs {
