@@ -81,19 +81,20 @@ footer {
 }
 
 .footer-left {
+   -webkit-flex: 0 1 auto;
+   flex: 0 1 auto;
    padding: 0 25px;
-   -webkit-flex: 1 0 auto;
-   flex: 1 1 auto;
 }
 
 .footer-center {
-   -webkit-flex: 1 0 auto;
-   flex: 1 1 auto;
+   -webkit-flex: 0 1 auto;
+   flex: 0 1 auto;
    text-align:center;
+   padding: 0 25px;
 }
 
 .footer-right {
-   -webkit-flex:   0 auto;
+   -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
    padding: 0 25px;
 }
