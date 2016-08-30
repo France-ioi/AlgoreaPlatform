@@ -36,9 +36,16 @@
    color: #5d5d5d;
    cursor:pointer;
 }
-
+.menu-item-active {
+   background: #2aa3ff !important;
+   color:white !important;
+}
 .menu-item-content {
    text-align: center;
+}
+.menu-item-icon {
+   position:relative;
+   top:4px;
 }
 
 /*
@@ -57,7 +64,6 @@
 #menu-logo-content:after {
    content: "Algoréa";
 }
-
 
 /*
 *
@@ -79,6 +85,10 @@
    USER NAV
 *
 */
+.menu-item-login {
+   background-color: #878787 !important;
+   color:white !important;
+}
 .userinfo {
    position: relative;
    overflow:visible;
@@ -157,21 +167,6 @@
       width:160px;
       top:32px;
    }
-}
-
-.menu-item-icon {
-   position:relative;
-   top:4px;
-}
-
-.menu-item-active {
-   background: #2aa3ff !important;
-   color:white !important;
-}
-
-.menu-item-login {
-   background-color: #878787 !important;
-   color:white !important;
 }
 
 /*
