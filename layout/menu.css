@@ -21,27 +21,6 @@
 /*   }*/
 /*}*/
 
-#menu-logo {
-   -webkit-flex: 0 0 325px;
-   flex: 0 0 325px;
-   background-color:#82bf2b;
-   color:white;
-   border:0px;
-}
-
-#menu-logo-content:after {
-   content: "Algoréa";
-}
-
-#menu-else {
-   -webkit-flex: 1 1 auto;
-   flex: 1 1 auto;
-   display: -webkit-flex;
-   display:flex;
-   flex-direction:row;
-   flex-wrap:wrap;
-   justify-content:space-between;
-}
 
 .menu-item {
    display: -webkit-flex;
@@ -62,6 +41,44 @@
    text-align: center;
 }
 
+/*
+*
+   LOGO
+*
+*/
+#menu-logo {
+   -webkit-flex: 0 0 325px;
+   flex: 0 0 325px;
+   background-color:#82bf2b;
+   color:white;
+   border:0px;
+}
+
+#menu-logo-content:after {
+   content: "Algoréa";
+}
+
+
+/*
+*
+   MAIN MENU
+*
+*/
+#menu-else {
+   -webkit-flex: 1 1 auto;
+   flex: 1 1 auto;
+   display: -webkit-flex;
+   display:flex;
+   flex-direction:row;
+   flex-wrap:wrap;
+   justify-content:space-between;
+}
+
+/*
+*
+   USER NAV
+*
+*/
 .userinfo {
    position: relative;
    overflow:visible;
@@ -72,18 +89,8 @@
    color:white;
    border:0px;
 }
-.loginFrame {
-   z-index:5;
-   position: absolute;
-   margin-left:auto;
-   margin-right:auto;
-   top:50px;
-   right:0px;
-   background-color:#878787;
-   width:260px;
-   overflow: hidden;
-   border: 0px solid;
-   box-shadow:         0px 0px 0px;
+.userInfosLink {
+   color: rgb(2, 118, 196) !important;
 }
 
 #userinfocontainer-breadcrumbs {
@@ -161,6 +168,36 @@
    color:white !important;
 }
 
+/*
+*
+   LOGIN FRAME
+*
+*/
+.loginFrame {
+   z-index:5;
+   position: absolute;
+   margin-left:auto;
+   margin-right:auto;
+   top:50px;
+   right:0px;
+   background-color:#878787;
+   width:260px;
+   overflow: hidden;
+   border: 0px solid;
+   box-shadow: 0px 0px 0px;
+}
+.loginFrame-login {
+   height:175px;
+}
+.loginFrame-logout {
+   height:105px;
+}
+
+/*
+*
+   BREADCRUMBS
+*
+*/
 #breadcrumbs {
    background-color:#2aa3ff;
    font-size:12pt;
@@ -184,7 +221,6 @@
 }
 
 .breadcrumbs-toggled {
-   
 }
 
 .breadcrumbs-after-selected a {
@@ -216,15 +252,8 @@
   content: '';
 }
 
-.loginFrame-login {
-   height:175px;
-}
-.loginFrame-logout {
-   height:105px;
-}
-.userInfosLink {
-   color: rgb(2, 118, 196) !important;
-}
+
+
 
 .arrow-link-icon {
    font-size:27pt !important;
