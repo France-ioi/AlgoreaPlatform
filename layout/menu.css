@@ -86,8 +86,8 @@
 *
 */
 .menu-item-login {
-   background-color: #878787 !important;
-   color:white !important;
+   background-color: #878787;
+   color: #fff;
 }
 .userinfo {
    position: relative;
@@ -99,7 +99,9 @@
    color:white;
    border:0px;
 }
-.userInfosLink {
+.userInfosLink,
+.userInfosLink:focus,
+.userInfosLink:hover {
    color: #fff;
 }
 .userInfosLink:hover {
@@ -108,7 +110,15 @@
 .userInfosLink .menu-item-icon {
    margin-right: 7px;
 }
-
+.userinfo .logout-btn {
+   color: #fff;
+   transition: all 250ms;
+}
+.userinfo .logout-btn:active,
+.userinfo .logout-btn:hover,
+.userinfo .logout-btn:focus {
+   color: #d9d9d9;
+}
 #userinfocontainer-breadcrumbs {
    display:none;
 }
