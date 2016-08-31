@@ -7,33 +7,6 @@
       </uib-tab>
       <uib-tab heading="Mes groupes">
          <div class="groupRequest-tabContent">
-            <div class="groupAdmin groupAdmin-home" ng-controller="groupAdminIndexController">
-               <div class="groupAdmin-homeContent">
-                  <div ng-if="loading">Chargement...</div>
-                  <div ng-show="error">{{error}}</div>
-                  <div ng-if="!loading && !error">
-
-                     <p>Dans cet espace d'animation, vous pouvez constituer des groupes puis les administrer en leur assignant un parcours à réaliser. Vous avez également accès à un forum pour interagir avec l'équipe Declick.</p>
-
-                     <div ng-hide="myGroupAdmin.children.length">
-                        <p>Vous n'avez aucun groupe</p>
-                     </div>
-                     <div ng-show="myGroupAdmin.children.length">
-                        <p class="groupAdmin-title">Consulter un groupe :</p>
-                        <ul class="list list-block list-groups">
-                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
-                        </ul>
-                     </div>
-                     <div>
-                     <p class="groupAdmin-title">Créer un nouveau groupe :</p>
-                     <div class="form-inline">
-                        <input type="text" ng-model="formValues.groupName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
-                        <button ng-click="newGroup();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
-                     </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
             <div class="">
                <h2 class="groupRequest-title" ng-hide="loading">Les groupes dont je fais partie</h2>
 
@@ -156,6 +129,29 @@
                         </tr>
                      </tbody>
                   </table>
+               </div>
+            </div>
+            <div class="" ng-controller="groupAdminIndexController">
+               <h2 class="groupRequest-title" ng-hide="loading">Les groupes que j'administre</h2>
+               <div ng-if="loading">Chargement...</div>
+               <div ng-show="error" class="alert alert-warning">{{error}}</div>
+               <div ng-if="!loading">
+                  <div ng-hide="myGroupAdmin.children.length">
+                     <p>Vous n'avez aucun groupe</p>
+                  </div>
+                  <div ng-show="myGroupAdmin.children.length">
+                     <p class="">Consulter un groupe :</p>
+                     <ul class="list list-block list-groups">
+                        <li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+                     </ul>
+                  </div>
+                  <div>
+                     <p class="">Créer un nouveau groupe :</p>
+                     <div class="form-inline">
+                        <input type="text" ng-model="formValues.groupName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
+                        <button ng-click="newGroup();" class="btn btn-default"><span class="btn-label">Ajouter un groupe</span></button>
+                     </div>
+                  </div>
                </div>
             </div>
             <div>
