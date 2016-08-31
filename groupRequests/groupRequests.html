@@ -96,8 +96,8 @@
                </div>
             </div>
             <div class="">
-               <h2 class="groupRequest-title" ng-hide="loading || error">Rejoindre un groupe</h2>
-               <div ng-if="!error && !loading">
+               <h2 class="groupRequest-title" ng-hide="loading">Rejoindre un groupe</h2>
+               <div ng-if="!loading">
                   <form class="form">
                      <label for="askedPassword">Rejoindre avec un mot de passe :</label>
                      <div class="form-group form-inline">
@@ -105,6 +105,9 @@
                         <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword">Rejoindre</button>
                      </div>
                   </form>
+                  <div ng-if="passwordError">
+                     {{passwordError}}
+                  </div>
                   <form class="form">
                      <label for="lookupString">Rechercher par nom :</label>
                      <div class="form-group form-inline">

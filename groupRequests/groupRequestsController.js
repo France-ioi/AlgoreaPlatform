@@ -16,37 +16,7 @@ angular.module('algorea')
       $scope.user.sNotificationReadDate = new Date();
       ModelsManager.updated('users', $scope.user.ID);
    };
-   $scope.init = function() {
-      $scope.updateGroups();
-      loginService.getLoginData(function(res) {
-         if (res.tempUser) {
-            $scope.error = "Vous n'êtes pas identifié et ne pouvez pas accéder aux groupes. Les groupes permettent à un enseignant ou animateur de gérer un ensemble d'utilisateurs pour leur donner accès à du contenu personnalisé, et suivre leur progression.";
-            return;
-         }
-         $scope.loginLoading = false;
-         SyncQueue.addSyncEndListeners('getGroups', function() {
-            itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
-               $scope.updateGroups();
-               $scope.loading = false;
-               $scope.myGroup = myGroup;
-               $scope.user = ModelsManager.getRecord('users', res.ID);
-            });
-            SyncQueue.removeSyncEndListeners('getGroups');
-         });
-      });
-   };
    $scope.loading = true;
-   itemService.onNewLoad($scope.init);
-   $scope.$on('login.login', function(event, data) {
-      $scope.loading = true;
-      $scope.loginLoading = true;
-      $scope.error = null;
-      $scope.myGroup = null;
-      $scope.user = null;
-      $scope.results = null;
-      $scope.myGroupParents = [];
-      $scope.init();
-   });
 
    // involved sync design pattern: call updateGroups if a group_group when necessary
    var needToUpdateAtEndOfSync = false;
@@ -178,11 +148,16 @@ angular.module('algorea')
 
    $scope.joinGroup = function(result) {
       result.joinLog = "chargement...";
+      $scope.passwordError = null;
       $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             var error = (postRes && postRes.error) ? postRes.error : 'Une erreur est survenue, merci de contacter un administrateur.';
             console.error("got error from groupRequests handler: "+error);
-            result.joinLog = error;
+            if (result.password && !result.ID) {
+               $scope.passwordError = error;
+            } else {
+               result.joinLog = error;
+            }
          } else {
             result.relationType = postRes.type;
             var record = ModelsManager.getRecord('groups_groups', postRes.ID);
@@ -198,6 +173,38 @@ angular.module('algorea')
          console.error("error calling groupRequests.php");
       });
    };
+
+   $scope.init = function() {
+      $scope.updateGroups();
+      loginService.getLoginData(function(res) {
+         if (res.tempUser) {
+            $scope.error = "Vous n'êtes pas identifié et ne pouvez pas accéder aux groupes. Les groupes permettent à un enseignant ou animateur de gérer un ensemble d'utilisateurs pour leur donner accès à du contenu personnalisé, et suivre leur progression.";
+            return;
+         }
+         $scope.loginLoading = false;
+         SyncQueue.addSyncEndListeners('getGroups', function() {
+            itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
+               $scope.updateGroups();
+               $scope.loading = false;
+               $scope.myGroup = myGroup;
+               $scope.user = ModelsManager.getRecord('users', res.ID);
+            });
+            SyncQueue.removeSyncEndListeners('getGroups');
+         });
+      });
+   };
+
+   itemService.onNewLoad($scope.init);
+   $scope.$on('login.login', function(event, data) {
+      $scope.loading = true;
+      $scope.loginLoading = true;
+      $scope.error = null;
+      $scope.myGroup = null;
+      $scope.user = null;
+      $scope.results = null;
+      $scope.myGroupParents = [];
+      $scope.init();
+   });
 
    $scope.stopSync = function() {
       delete(SyncQueue.requestSets.groupAdmin);

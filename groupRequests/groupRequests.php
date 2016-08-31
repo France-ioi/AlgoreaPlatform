@@ -69,7 +69,7 @@ function joinGroup($request, $db) {
       echo json_encode(array('success' => false, 'error' => 'Le mot de passe indiqué ne correspond pas.'));
       return;
    }
-   if ($result['bOpened'] == 0) {
+   if ($result['bOpened'] == 0 && !isset($request['password'])) {
       echo json_encode(array('success' => false, 'error' => 'Ce groupe est actuellement fermé.'));
       return;
    }
