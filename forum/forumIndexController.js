@@ -17,10 +17,14 @@ angular.module('algorea')
    };
    $scope.currentGlobalFilter = $scope.globalFilters.all;
    $scope.init = function() {
-      $scope.myUserID = $rootScope.myUserID;
-      $scope.threads = ModelsManager.getRecords('threads');
       $scope.loading = false;
-      $timeout($scope.$apply);
+      SyncQueue.requestSets.forumIndex = {minVersion: 0, name: 'forumIndex'};
+      $scope.myUserID = $rootScope.myUserID;
+      itemService.syncForumIndex(function() {
+         $scope.threads = ModelsManager.getRecords('threads');
+         $scope.loading = false;
+         $timeout($scope.$apply);
+      });
    }
    itemService.onNewLoad(function() {
       $scope.init();
@@ -30,6 +34,9 @@ angular.module('algorea')
       itemService.onNewLoad(function() {
          $scope.init();
       });
+   });
+   $scope.$on('$destroy', function() {
+      itemService.unsyncForumIndex();
    });
    $scope.tabs = {
       'helpOthers': {active: true, length: 0},

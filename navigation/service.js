@@ -1,13 +1,13 @@
-'use strict';
-
 angular.module('algorea')
-   .service('itemService', ['$rootScope', '$timeout', 'loginService', function($rootScope, $timeout, loginService) {
+   .service('itemService', ['$rootScope', '$timeout', 'loginService', '$stateParams', function($rootScope, $timeout, loginService, $stateParams) {
+      'use strict';
     /*
      * Simple service providing items.
      */
       ModelsManager.init(models);
       SyncQueue.init(ModelsManager);
-      SyncQueue.requests = {algorea: {type: 'getAllLevels'}, loginData: {}};
+      SyncQueue.requestSets.getLevels = {minVersion: 0, name: 'getLevels'};
+      SyncQueue.planToSend(0);
       var callbacks = {};
       var userCallback = null;
       var syncDone = 0;
@@ -22,7 +22,6 @@ angular.module('algorea')
             setInterval(SyncQueue.planToSend, 30000);
          }
       }
-      SyncQueue.planToSend(0);
       setSyncInterval();
       function syncStartListener(data) {
          if (!lastSyncLogin && data && data.changes && data.changes.loginData && data.changes.loginData.sLogin) {
@@ -40,49 +39,85 @@ angular.module('algorea')
             }
          }
       }
-//      $rootScope.$on('$stateChangeSuccess', function() {
-//         var oldIds = idsToSync;
-//         var newIds = 
-//      });
+
+      function syncDescendants(idItem, callback, simple) {
+         if (!idItem) {
+            console.error('syncDescendants called with empty idItem!');
+            callback();
+            return;
+         }
+         if (!SyncQueue.requestSets.itemsDescendants) {
+            SyncQueue.requestSets.itemsDescendants = {minVersion: 0, name: 'itemsDescendants'};
+         }
+         var set = SyncQueue.requestSets.itemsDescendants;
+         if (idItem == set.idItem) {
+            callback();
+            return;
+         }
+         set.justNames = simple ? 1 : 0;
+         set.idItem = idItem;
+         set.minVersion = 0;
+         var endListenerName = 'itemsDescendants'+idItem;
+         SyncQueue.addSyncEndListeners(endListenerName, function() {
+            SyncQueue.removeSyncEndListeners(endListenerName);
+            delete(SyncQueue.requestSets[endListenerName].minVersion);
+            callback();
+         }, true);
+         SyncQueue.planToSend(0);
+      }
+
       function syncEndListener () {
          if (firstSyncFailed) { return; }
          if (lastSyncLogin == newLogin || !lastSyncLogin) {
             lastSyncLogin = newLogin;
+            delete(SyncQueue.requestSets.getLevels.minVersion);
             if (!firstSyncDone) {
-               // we don't want just new descendants, but all descendants:
-               SyncQueue.sentVersion = 0;
-               SyncQueue.resetSync = true;
-               // refreshing ids to sync (containing version number)
-               SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: getIdsToSync(true)};
-               SyncQueue.planToSend(0);
-               firstSyncDone = 1;
                if (userCallback) {
                   var user = getUser();
                   userCallback(user);
                }
-            } else if (!syncDone) {
-               // calling callbacks after first full sync
-               SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: getIdsToSync(false)};
-               $rootScope.$broadcast('syncFinished');
-               angular.forEach(callbacks, function(callbackIDlist, model) {
-                  angular.forEach(callbackIDlist, function(callbacklist, ID) {
-                     var record = (model == 'general') ? null : ModelsManager.curData[model][ID];
-                     for (var i=0; i< callbacklist.length; i++) {
-                        callbacklist[i](record);
-                     }
+               firstSyncDone = 1;
+               var idToSync = getLevelToSync();
+               if (idToSync) {
+                  syncDescendants(idToSync, function() {
+                     $rootScope.$broadcast('syncFinished');
+                     syncDone = 1;
+                     angular.forEach(callbacks, function(callbackIDlist, model) {
+                        angular.forEach(callbackIDlist, function(callbacklist, ID) {
+                           var record = (model == 'general') ? null : ModelsManager.curData[model][ID];
+                           for (var i=0; i< callbacklist.length; i++) {
+                              callbacklist[i](record);
+                           }
+                        });
+                     });
+                     $rootScope.$apply();
+                     $timeout(function() {$timeout($rootScope.refreshSizes);}, 300); // see layout.js. 300 is a more or less random value...
                   });
-               });
-               syncDone = 1;
+               } else {
+                  syncDone = 1;
+                  $rootScope.$broadcast('syncFinished');
+                  angular.forEach(callbacks, function(callbackIDlist, model) {
+                     angular.forEach(callbackIDlist, function(callbacklist, ID) {
+                        var record = (model == 'general') ? null : ModelsManager.curData[model][ID];
+                        for (var i=0; i< callbacklist.length; i++) {
+                           callbacklist[i](record);
+                        }
+                     });
+                  });
+                  $rootScope.$apply();
+                  $timeout(function() {$timeout($rootScope.refreshSizes);}, 300); // see layout.js. 300 is a more or less random value...
+               }
             }
-            $rootScope.$apply();
-            $timeout(function() {$timeout($rootScope.refreshSizes);}, 300); // see layout.js. 300 is a more or less random value...
          } else {
             lastSyncLogin = newLogin;
             ModelsManager.init(models);
             SyncQueue.init(ModelsManager);
-            SyncQueue.requests.algorea = {type: 'getAllLevels'};
+            //SyncQueue.requestSets.getLevels = {minVersion: 0, name: 'getLevels'};
             SyncQueue.sentVersion = 0;
             SyncQueue.resetSync = true;
+            angular.forEach(SyncQueue.requestSets, function(requestSet) {
+               requestSet.minVersion = 0;
+            });
             syncDone = 0;
             firstSyncDone = 0;
             lastSyncLogin = newLogin;
@@ -97,13 +132,13 @@ angular.module('algorea')
          SyncQueue.requests.loginData = loginData;
          newLogin = login;
          firstSyncFailed = false;
+         $rootScope.$broadcast('syncResetted.begin');
          if (newLogin !== lastSyncLogin) {
             SyncQueue.planToSend(50);
          }
          // TODO: build SyncQueue.cancelCurrentSync() with a StartSyncListener
       }
       function getUserID() {
-         
          return SyncQueue.requests.loginData.ID;
       }
       function getLoginData() {
@@ -119,22 +154,29 @@ angular.module('algorea')
          });
          return res;
       }
-      var idsToSync = {};
-      function getIdsToSync(reset) {
-         var pathItems = [config.domains.current.ProgressRootItemId, config.domains.current.DiscoverRootItemId, config.domains.current.ContestRootItemId];
-         angular.forEach(config.domains.current.tabs, function(tab) {
-            var itemID = tab.path.split('/')[0];
-            if (parseInt(itemID) && pathItems.indexOf(itemID) == -1) {
-               pathItems.push(itemID);
+      var domainData = config.domains.current;
+      var roots = {};
+      roots[domainData.PlatformItemId] = true;
+      roots[domainData.CustomProgressItemId] = true;
+      roots[domainData.OfficialProgressItemId] = true;
+      roots[domainData.DiscoverRootItemId] = true;
+      roots[domainData.ContestRootItemId] = true;
+      roots[domainData.CustomContestRootItemId] = true;
+      roots[domainData.ProgressRootItemId] = true;
+      roots[domainData.OfficialContestRootItemId] = true;
+      function getLevelToSync() {
+         var path = $stateParams.path;
+         if (!path) {
+            return null;
+         }
+         var splitPath = path.split('/');
+         var res = null;
+         angular.forEach(splitPath, function(ID) {
+            if (!roots[ID] && !res) {
+               res = ID;
             }
          });
-         angular.forEach(pathItems, function(itemID) {
-            idsToSync[itemID] = {'itemID': itemID, 'minVersion': (itemID in idsToSync) ? SyncQueue.serverVersion : 0};
-         });
-         if (reset) {
-            idsToSync.resetMinVersion = true;
-         }
-         return idsToSync;
+         return res;
       }
       SyncQueue.addSyncEndListeners("ItemsService", syncEndListener);
       SyncQueue.addSyncStartListeners("ItemsService", syncStartListener);
@@ -333,6 +375,18 @@ angular.module('algorea')
             }
             return typeStr;
          },
+         syncForumIndex: function(callback) {
+            SyncQueue.requestSets['forumIndex'] = {minVersion: 0, name: 'forumIndex'};
+            SyncQueue.addSyncEndListeners('forumIndex', function() {
+               SyncQueue.removeSyncEndListeners('forumIndex');
+               delete(SyncQueue.requestSets['forumIndex'].minVersion);
+               callback();
+            }, true);
+            SyncQueue.planToSend(0);
+         },
+         unsyncForumIndex:function() {
+            delete(SyncQueue.requestSets['forumIndex']);
+         },
          syncThread: function(idThread, idItem, idUser, callback) {
             var endListenerName = getThreadSyncName(idThread, idItem, idUser);
             if (idThread) {
@@ -344,12 +398,16 @@ angular.module('algorea')
                SyncQueue.removeSyncEndListeners(endListenerName);
                delete(SyncQueue.requestSets[endListenerName].minVersion);
                callback();
-            }, false, true);
+            }, true);
             SyncQueue.planToSend(0);
          },
          unsyncThread:function(idThread, idItem, idUser) {
             var endListenerName = getThreadSyncName(idThread, idItem, idUser);
             delete(SyncQueue.requestSets[endListenerName]);
+         },
+         syncDescendants: syncDescendants,
+         unsyncDescendants: function() {
+            delete(SyncQueue.requestSets.itemsDescendants);
          }
       };
    }]);

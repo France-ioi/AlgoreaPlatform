@@ -474,6 +474,14 @@ $viewsModels = array(
             "joins" => array("groups_items", "selfGroupAncestors"),
             "condition"  => '((`[PREFIX]groups_items`.`bOwnerAccess` = 1 OR `[PREFIX]groups_items`.`bCachedManagerAccess` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupSelf))',
          ),
+         "idItemAncestor" => array(
+            "joins" => array("items_ancestors"),
+            "condition" => '`[PREFIX]items_ancestors`.`idItemAncestor` = :[PREFIX_FIELD]idItemAncestor'
+         ),
+         "idItem" => array(
+            "joins" => array(),
+            "condition" => '`[PREFIX]items`.`ID` = :[PREFIX_FIELD]idItem'
+         )
       ),
    ),
 
@@ -502,6 +510,10 @@ $viewsModels = array(
          "accessibleWrite" => array (
             "joins" => array("groups_items", "selfGroupAncestors"),
             "condition"  => '((`[PREFIX]groups_items`.`bOwnerAccess` = 1 OR `[PREFIX]groups_items`.`bCachedManagerAccess` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups_items`.`idGroup` = :[PREFIX_FIELD]idGroupSelf))',
+         ),
+         "idItemAncestor" => array(
+            "joins" => array("items_ancestors"),
+            "condition" => '`[PREFIX]items_ancestors`.`idItemAncestor` = :[PREFIX_FIELD]idItemAncestor'
          )
       ),
    ),
@@ -554,6 +566,10 @@ $viewsModels = array(
             "joins" => array("groups_items", "selfGroupAncestors"),
             "condition"  => '((`[PREFIX]groups_items`.`bOwnerAccess` = 1 OR `[PREFIX]groups_items`.`bCachedManagerAccess` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
+         "idItemAncestor" => array(
+            "joins" => array("items_ancestors"),
+            "condition" => '`[PREFIX]items_ancestors`.`idItemAncestor` = :[PREFIX_FIELD]idItemAncestor'
+         )
       ),
    ),
 
@@ -677,7 +693,6 @@ $viewsModels = array(
           "sType"             => array(),
           "sLastActivityDate" => array(),
           "idUserCreated"     => array(),
-          "sUserCreatedLogin" => array('tableName' => 'users', 'fieldName' => 'sLogin', 'readOnly' => true),
           "idItem"            => array(),
           "sTitle"            => array(),
           "bAdminHelpAsked"   => array(),
@@ -805,6 +820,10 @@ $viewsModels = array(
             "joins" => array(),
             "condition"  => "`[PREFIX]users_answers`.`idItem` = :[PREFIX_FIELD]idItem",
          ),
+         "idItemAncestor" => array(
+            "joins" => array("items_ancestors"),
+            "condition" => '`[PREFIX]items_ancestors`.`idItemAncestor` = :[PREFIX_FIELD]idItemAncestor'
+         )
       ),
    ),
    "users_items" => array(
@@ -817,6 +836,7 @@ $viewsModels = array(
          "users" => array("srcTable" => "users_items", "dstTable" => "users", "dstField" => "ID", "srcField" => "idUser"),
          "selfGroupDescendants" => array("srcTable" => "users", "dstTable" => "groups_ancestors", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
          "itemsDescendants" => array("srcTable" => "users_items", "dstTable" => "items_ancestors", "srcField" => "idItem", "dstField" => "idItemChild"),
+         "items_items" => array("srcTable" => "users_items", "srcField" => "idItem", "dstField" => "idItemChild"),
       ),
       "fields" => array(
           "idUser"                => array('insertOnly' => true),
@@ -855,16 +875,16 @@ $viewsModels = array(
             "joins" => array("selfGroupDescendants", "users"),
             "condition"  => '`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroup',
          ),
-          "itemsDescendants" => array(
-            "joins" => array("itemsDescendants"),
-            "condition"  => '`[PREFIX]itemsDescendants`.`idItemAncestor` = :[PREFIX_FIELD]idItem',
-         ),
          "idUser" => array(
             "condition" => "`[PREFIX]users_items`.`idUser` = :[PREFIX_FIELD]idUser"
          ),
          "idItem" => array(
             "condition" => "`[PREFIX]users_items`.`idItem` = :[PREFIX_FIELD]idItem"
-         ),
+         ), 
+         "idItemAncestor" => array(
+            "joins" => array("items_ancestors"),
+            "condition" => '`[PREFIX]items_ancestors`.`idItemAncestor` = :[PREFIX_FIELD]idItemAncestor'
+         )
       ),
    ),
    "users_threads" => array(

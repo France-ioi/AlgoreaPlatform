@@ -8,10 +8,11 @@ class getThread {
          return [];
       }
 
-      $requests = syncGetTablesRequests(array('messages' => true, 'users_answers' => true, 'users_items' => true), false);
+      $requests = syncGetTablesRequests(array('messages' => true, 'users_answers' => true, 'users_items' => true, 'users_threads' => true, 'items' => true, 'items_strings' => true), false);
       $requests['messages']["requestSet"] = array("name" => "getThread");
       $requests['users_answers']["requestSet"] = array("name" => "getThread");
       $requests['users_items']["requestSet"] = array("name" => "getThread");
+      $requests['users_threads']["requestSet"] = array("name" => "getThread");
       $requests['my_users_items'] = $requests['users_items'];
       $requests['other_users_items'] = $requests['users_items'];
       unset($requests['users_items']);
@@ -23,6 +24,7 @@ class getThread {
       $requests['users_answers']["minVersion"] = $minVersion;
       $requests['my_users_items']["minVersion"] = $minVersion;
       $requests['other_users_items']["minVersion"] = $minVersion;
+      $requests['users_threads']["minVersion"] = $minVersion;
 
       // if thread is not safe, no request will be return
       $requests['messages']['filters']['idThread'] = $requestSet['idThread'];
@@ -58,31 +60,34 @@ class getThread {
             return [];
          }
 
+         // the idea here is to fetch some values from users's user_item and other user's user_item
+         // so that we can build a token once we get the results
          $requests['my_users_items']['filters']['idItem'] = $idItem;
          $requests['other_users_items']['filters']['idItem'] = $idItem;
          $requests['my_users_items']['filters']['idUser'] = $_SESSION['login']['ID'];
          $requests['other_users_items']['filters']['idUser'] = $thread['idUserCreated'];
 
-         // the idea here is to fetch some values from users's user_item and other user's user_item
-         // so that we can build a token once we get the results
-         // $requests['users_answers']['filters']['getMyUserItem'] = array('values' => array('idUser' => $_SESSION['login']['ID']));
-         // $requests['users_answers']['filters']['getOtherUserItem'] = array('values' => array('idUser' => $thread['idUser']));
          $requests['users_answers']['filters']['idItem'] = array('values' => array('idItem' => $idItem));
          $requests['users_answers']['filters']['accessible'] = array('values' => array('idUser' => $thread['idUserCreated']));
+         $requests['items']['filters']['idItem'] = array('values' => array('idItem' => $idItem));
+         $requests['items_strings']['filters']['idItem'] = array('values' => array('idItem' => $idItem));
 
          //$requests["users_items"]['model']["fields"]['bAccessSolutions'] = array('sql' => 'MAX(`groups_items`.`bCachedAccessSolutions`)');
-         return [
+         $res = [
             'threadMessages' => $requests['messages'], 
             'threadAnswers' => $requests['users_answers'],
-            //'threadMyUserItem' => $requests['my_users_items'], not useful for now
-            'threadOtherUserItem' => $requests['other_users_items']
+            'threadMyUserItem' => $requests['my_users_items'],
+            'threadOtherUserItem' => $requests['other_users_items'],
+            'threadUserThread' => $requests['users_threads'],
+            'threadItem' => $requests['items'],
+            'threadItemStrings' => $requests['items_strings'],
          ];
+         if ($thread['idUserCreated'] == $_SESSION['login']['ID']) {
+            unset($res['other_users_items']);
+         }
+         return $res;
       } else {
-         unset($requests['users_answers']);
-         unset($requests['my_users_items']);
-         unset($requests['other_users_items']);
-         //print_r($requests['messages']);
-         return ['threadMessages' => $requests['messages']];
+         return ['threadMessages' => $requests['messages'], 'threadUserThread' => $request['users_threads']];
       }
    }
 }
