@@ -66,8 +66,8 @@ class getLevels {
 	   $requests['getLevels_items_strings']["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
 		$requests['getLevels_users_items']["filters"]["idUser"] = array('values' => array('idUser' => $_SESSION['login']['ID']));
 
-	   $requests['getLevels_items']['model']['fields']['bGrayedAccess'] = array('sql' => 'IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0)', 'join' => 'groups_items');
-	   array_push($requests["items"]['fields'], 'bGrayedAccess');
+	   $requests['getLevels_items']['model']['fields']['bGrayedAccess'] = array('sql' => 'IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0)', 'join' => 'groups_items', 'groupBy' => '`items`.`ID`');
+	   array_push($requests["getLevels_items"]['fields'], 'bGrayedAccess');
 	   $requests['getLevels_users_items']['filters']['idUser'] = array('values' => ['idUser' => $_SESSION['login']['ID']]);
 
 	   return $requests;

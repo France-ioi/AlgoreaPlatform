@@ -6,11 +6,11 @@ class itemsDescendants {
 
       $baseRequests = syncGetTablesRequests(array('items' => true, 'items_items' => true, 'users_items' => true, 'users_answers' => true, 'items_strings' => true, 'threads' => true), false);
 
-      $itemId = intval($requestSet['itemId']);
+      $idItem = $requestSet['idItem'];
 
       $justNames = isset($requestSet['justNames']) && !!$requestSet['justNames'];
 
-      if (!$itemId) {
+      if (!$idItem) {
          return [];
       }
 
@@ -39,23 +39,25 @@ class itemsDescendants {
       $requests["itemsDescendants_items"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
 
       array_push($requests["itemsDescendants_items"]["fields"], 'bGrayedAccess');
-      $requests["itemsDescendants_items"]['model']['fields']['bGrayedAccess'] = array('sql' => 'IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0)');
+      $requests["itemsDescendants_items"]['model']['fields']['bGrayedAccess'] = array('sql' => 'IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0)', 'groupBy' => '`items`.`ID`', 'join' => 'groups_items');
       array_push($requests["itemsDescendants_items"]["fields"], 'bAccessSolutions');
-      $requests["itemsDescendants_items"]['model']["fields"]['bAccessSolutions'] = array('sql' => 'MAX(`groups_items`.`bCachedAccessSolutions`)');
-      $requests["itemsDescendants_items"]["model"]["fields"]["sType"]["groupBy"] = "`items`.`ID`";
+      $requests["itemsDescendants_items"]['model']["fields"]['bAccessSolutions'] = array('sql' => 'MAX(`groups_items`.`bCachedAccessSolutions`)', 'join' => 'groups_items');
 
       $requests["itemsDescendants_items_strings"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
 
       $requests['itemsDescendants_users_items']['filters']['idUser'] = array(
          'values' => ['idUser' => $_SESSION['login']['ID']],
       );
+      $requests["itemsDescendants_users_answers"]["filters"]['idUser'] = array(
+         'values' => ['idUser' => $_SESSION['login']['ID']],
+      );
 
-      $requests["itemsDescendants_items"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $itemId));
-      $requests["itemsDescendants_items_strings"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $itemId));
-      $requests["itemsDescendants_items_items"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $itemId));
-      $requests["itemsDescendants_users_items"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $itemId));
-      $requests["itemsDescendants_users_answers"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $itemId));
-      $requests["itemsDescendants_threads"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $itemId));
+      $requests["itemsDescendants_items"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $idItem));
+      $requests["itemsDescendants_items_strings"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $idItem));
+      $requests["itemsDescendants_items_items"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $idItem));
+      $requests["itemsDescendants_users_items"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $idItem));
+      $requests["itemsDescendants_users_answers"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $idItem));
+      $requests["itemsDescendants_threads"]["filters"]["idItemAncestor"] = array('values' => array('idItemAncestor' => $idItem));
 
       // returns true if a new sync is needed on groups_items, items, items_strings and users_items
       //         false if no sync is needed on any of these
@@ -72,7 +74,7 @@ class itemsDescendants {
          }
 
          $stmt = $db->prepare('select max(groups_items.iVersion) from groups_items join groups_ancestors on groups_ancestors.idGroupAncestor = groups_items.idGroup join items_ancestors on items_ancestors.idItemChild = groups_items.idItem where groups_ancestors.idGroupChild = :idGroupSelf and groups_items.idItem = :idItemAncestor;');
-         $stmt->execute(array('idGroupSelf' => $minServerVersion, 'idItemAncestor' => $itemId));
+         $stmt->execute(array('idGroupSelf' => $minServerVersion, 'idItemAncestor' => $idItem));
          $newGroupItemsVersion = $stmt->fetchColumn();
          if ($newGroupItemsVersion > $minServerVersion) {
             return true;
@@ -98,6 +100,10 @@ class itemsDescendants {
       if ($justNames) {
          //unset($requests['itemsDescendants_users_items']); possible problems with automatic user items creation
          unset($requests['itemsDescendants_users_answers']);
+         unset($requests['itemsDescendants_threads']);
+      }
+
+      if (!$config->shared->domains['current']->usesForum) {
          unset($requests['itemsDescendants_threads']);
       }
 

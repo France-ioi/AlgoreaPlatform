@@ -710,9 +710,9 @@ $viewsModels = array(
             "joins" => array("selfUserDescendants", "selfGroupDescendants"),
             "condition"  => '`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroup',
          ),
-         "itemDescendants" => array(
+         "idItemAncestor" => array(
             "joins" => array("itemDescendants"),
-            "condition"  => '`[PREFIX]itemDescendants`.`idItemAncestor` = :[PREFIX_FIELD]idItem',
+            "condition"  => '`[PREFIX]itemDescendants`.`idItemAncestor` = :[PREFIX_FIELD]idItemAncestor',
          ),
          "accessibleWrite" => array(
             "condition"  => "(`[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",

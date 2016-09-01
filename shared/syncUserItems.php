@@ -114,61 +114,61 @@ function fetchItemsIfMissing($serverChanges, $db) {
    } else {
       $items = array_replace($serverChanges['items']['updated'], $serverChanges['items']['inserted']);
    }
-   if ((count($items) !=
-         ((isset($serverChanges['users_items']['updated'])
-            ? count($serverChanges['users_items']['updated']) : 0)
-         + (isset($serverChanges['users_items']['inserted'])
-            ? count($serverChanges['users_items']['inserted']) : 0)
-         ))
-      || (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && 
-         (isset($serverChanges['requestSets']['getThread']['users_items']['inserted']) || isset($serverChanges['requestSets']['getThread']['users_items']['updated'])))
-      ) {
-      if (!isset($serverChanges['items'])) {
-         $items_ids = array();
-      } else {
-         $items_ids = array_keys((array) $serverChanges['items']['updated']);
-         $items_ids = array_merge($items_ids, array_keys((array) $serverChanges['items']['inserted']));
+   if (!isset($serverChanges['items'])) {
+      $items_ids = array();
+   } else {
+      $items_ids = array_keys((array) $serverChanges['items']['updated']);
+      $items_ids = array_merge($items_ids, array_keys((array) $serverChanges['items']['inserted']));
+   }
+   foreach ($serverChanges['requestSets'] as $requestSetName => &$requestSetChanges) {
+      if (isset($requestSetChanges['items'])) {
+         $items_ids = array_merge($items_ids, array_keys((array) $requestSetChanges['items']['updated']));
+         $items_ids = array_merge($items_ids, array_keys((array) $requestSetChanges['items']['inserted']));
+         $items = array_replace($items, (array) $requestSetChanges['items']['updated']);
+         $items = array_replace($items, (array) $requestSetChanges['items']['inserted']);
       }
-      $users_items_ids = array();
-      if (isset($serverChanges['users_items']) && count($serverChanges['users_items']['updated'])) {
-         foreach($serverChanges['users_items']['updated'] as $id => $values) {
+   }
+   $users_items_ids = array();
+   if (isset($serverChanges['users_items']) && count($serverChanges['users_items']['updated'])) {
+      foreach($serverChanges['users_items']['updated'] as $id => $values) {
+         $users_items_ids[] = $values['data']->idItem;
+      }
+   }
+   if (isset($serverChanges['users_items']) && count($serverChanges['users_items']['inserted'])) {
+      foreach($serverChanges['users_items']['inserted'] as $id => $values) {
+         $users_items_ids[] = $values['data']->idItem;
+      }
+   }
+   foreach ($serverChanges['requestSets'] as $requestSetName => &$requestSetChanges) {
+      if (isset($requestSetChanges['users_items']) && isset($requestSetChanges['users_items']['inserted'])) {
+         foreach ((array) $requestSetChanges['users_items']['inserted'] as $id => $values) {
             $users_items_ids[] = $values['data']->idItem;
          }
       }
-      if (isset($serverChanges['users_items']) && count($serverChanges['users_items']['inserted'])) {
-         foreach($serverChanges['users_items']['inserted'] as $id => $values) {
+      if (isset($requestSetChanges['users_items']) && isset($requestSetChanges['users_items']['updated'])) {
+         foreach ((array) $requestSetChanges['users_items']['updated'] as $id => $values) {
             $users_items_ids[] = $values['data']->idItem;
          }
       }
-      if (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && isset($serverChanges['requestSets']['getThread']['users_items']['inserted'])) {
-         foreach ((array) $serverChanges['requestSets']['getThread']['users_items']['inserted'] as $id => $values) {
-            $users_items_ids[] = $values['data']->idItem;
-         }
-      }
-      if (isset($serverChanges['requestSets']['getThread']) && isset($serverChanges['requestSets']['getThread']['users_items']) && isset($serverChanges['requestSets']['getThread']['users_items']['updated'])) {
-         foreach ((array) $serverChanges['requestSets']['getThread']['users_items']['updated'] as $id => $values) {
-            $users_items_ids[] = $values['data']->idItem;
-         }
-      }
+   }
 
-      $missing_item_ids = array_diff($users_items_ids, $items_ids);
-      if (count($missing_item_ids)) {
-         $query = 'select `items`.`ID`, `items`.`sUrl`, `items`.`bUsesAPI`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, `items`.`sTextId`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0) as `bGrayedAccess`, `items`.`sType` from `items` join `groups_items` on `groups_items`.`idItem` = `items`.`ID` join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` where `groups_ancestors`.`idGroupChild` = '.$_SESSION['login']['idGroupSelf'].' AND (';
-         $first = true;
-         foreach ($missing_item_ids as $id) {
-            if (!$first) {
-               $query .= ' OR ';
-            }
-            $first = false;
-            $query .= '`items`.`ID` = \''.$id.'\'';
+   $missing_item_ids = array_diff($users_items_ids, $items_ids);
+   if (count($missing_item_ids)) {
+      $query = 'select `items`.`ID`, `items`.`sUrl`, `items`.`bUsesAPI`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, `items`.`sTextId`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, IF (MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) = 0, 1, 0) as `bGrayedAccess`, `items`.`sType` from `items` join `groups_items` on `groups_items`.`idItem` = `items`.`ID` join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` where `groups_ancestors`.`idGroupChild` = '.$_SESSION['login']['idGroupSelf'].' AND (';
+      $first = true;
+      foreach ($missing_item_ids as $id) {
+         if (!$first) {
+            $query .= ' OR ';
          }
-         $query .= ') GROUP BY `items`.`ID`;';
-         $sth = $db->prepare($query);
-         $sth->execute();
-         $results = $sth->fetchAll(PDO::FETCH_OBJ);
-         foreach($results as $res) {
-            $items[$res->ID] = array('data' => $res);
-         }
+         $first = false;
+         $query .= '`items`.`ID` = \''.$id.'\'';
+      }
+      $query .= ') GROUP BY `items`.`ID`;';
+      $sth = $db->prepare($query);
+      $sth->execute();
+      $results = $sth->fetchAll(PDO::FETCH_OBJ);
+      foreach($results as $res) {
+         $items[$res->ID] = array('data' => $res);
       }
    }
    return $items;
@@ -206,9 +206,7 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
       createMissingUserItems($db, $serverChanges, 'updated');
    }
    foreach ($serverChanges['requestSets'] as $requestSetName => &$requestSetChanges) {
-      file_put_contents('/tmp/prouuuut.txt', "debug0!\n", FILE_APPEND);
       if (hasMissingUserItems($requestSetChanges, 'inserted')) {
-         file_put_contents('/tmp/prouuuut.txt', "  debug1!\n", FILE_APPEND);
          createMissingUserItems($db, $requestSetChanges, 'inserted');
       }
       if (hasMissingUserItems($requestSetChanges, 'updated')) {
@@ -219,7 +217,7 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
    // then we generate tokens for the user items corresponding to tasks and courses
    require_once(dirname(__FILE__)."/TokenGenerator.php");
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
-   foreach ($serverChanges['requestSets'] as $requestSetName => $requestSetChanges) {
+   foreach ($serverChanges['requestSets'] as $requestSetName => &$requestSetChanges) {
       if (isset($requestSetChanges['users_items']) && isset($requestSetChanges['users_items']['inserted'])) {
          foreach ((array) $requestSetChanges['users_items']['inserted'] as $userItem) {
             generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
