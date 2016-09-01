@@ -32,7 +32,7 @@ class groupAdmin {
       }
 
       $requests['groupAdminThreadsDescendants']["filters"]["groupDescendants"] = ['values' => ['idGroup' => $groupId]];
-      $requests['groupAdminThreadsDescendants']["filters"]["itemDescendants"] = ['values' => ['idItem' => $itemId]];
+      $requests['groupAdminThreadsDescendants']["filters"]["idItemAncestor"] = ['values' => ['idItemAncestor' => $itemId]];
       $requests['groupAdminGroupsParents']["filters"]["parents"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminGroupsDescendants']["filters"]["descendants"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminGroupsInvited']["filters"]["invited"] = ['values' => ['idGroup' => $groupId]];
@@ -43,7 +43,7 @@ class groupAdmin {
       $requests['groupAdminUsersDescendants']["filters"]["descendants"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminUsersInvited']["filters"]["invited"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminUsersItemsDescendants']["filters"]["groupDescendants"] = ['values' => ['idGroup' => $groupId]];
-      $requests['groupAdminUsersItemsDescendants']["filters"]["itemsDescendants"] = ['values' => ['idItem' => $itemId]];
+      $requests['groupAdminUsersItemsDescendants']["filters"]["idItemAncestor"] = ['values' => ['idItemAncestor' => $itemId]];
       return $requests;
    }
 }
