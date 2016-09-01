@@ -6,12 +6,13 @@ class forumIndex {
 
       $baseRequests = syncGetTablesRequests(array('threads' => true, 'users_threads' => true, 'filters' => true, 'users_items' => true), false);
 
-      $filterId = intval($requestSet['filterId']);
+      //$filterId = $requestSet['filterId']; // TODO: use filters
 
       $requests = [];
 
       $baseRequests['users_threads']['filters']['accessible'] = ['values' => ['idUser' => $_SESSION['login']['ID']]];
-      $baseRequests['threads']['fields']['sUserCreatedLogin'] = ['tableName' => 'users', 'fieldName' => 'sLogin', 'readOnly' => true];
+      $baseRequests['threads']['model']['fields']['sUserCreatedLogin'] = ['tableName' => 'users', 'fieldName' => 'sLogin', 'readOnly' => true];
+      $baseRequests['threads']['fields'][] = 'sUserCreatedLogin';
 
       $requests['forumIndex_threads_general_mine'] = $baseRequests['threads'];
       $requests['forumIndex_threads_others'] = $baseRequests['threads'];
@@ -30,7 +31,6 @@ class forumIndex {
       }
 
       $requests['forumIndex_filters']['filters']['accessible'] = ['values' => ['idUser' => $_SESSION['login']['ID']]];
-	   $requests['forumIndex_threads_general_mine']['filters']['accessibleGeneralOrMineRead'] = ['values' => ['idUser' => $_SESSION['login']['ID']]];
 	   $requests['forumIndex_threads_general_mine']['filters']['accessibleGeneralOrMineRead'] = ['values' => ['idUser' => $_SESSION['login']['ID']]];
 
 	   return $requests;

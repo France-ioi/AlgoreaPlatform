@@ -716,7 +716,10 @@ $viewsModels = array(
          ),
          "accessibleWrite" => array(
             "condition"  => "(`[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
-         )
+         ),
+         "idThread" => array(
+            "condition"  => "(`[PREFIX]threads`.`ID` = :[PREFIX_FIELD]idThread)",
+         ),
       ),
    ),
    "users" => array(
