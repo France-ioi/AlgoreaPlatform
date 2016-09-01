@@ -784,3 +784,17 @@ orange : #F29200;
 .groupAdmin .chapter_string {
 	font-weight: bold;
 }
+
+/*
+*
+	PRINT
+*
+*/
+@media print {
+	#menu, .breadcrumbs-item-inactive, #footer,
+	.sidebar-left,
+	.nav-tabs,
+	.checkboxSwitch  {
+		display: none;
+	}
+}
