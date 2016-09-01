@@ -60,7 +60,7 @@ angular.module('algorea')
          var endListenerName = 'itemsDescendants'+idItem;
          SyncQueue.addSyncEndListeners(endListenerName, function() {
             SyncQueue.removeSyncEndListeners(endListenerName);
-            delete(SyncQueue.requestSets[endListenerName].minVersion);
+            delete(SyncQueue.requestSets['itemsDescendants'].minVersion);
             callback();
          }, true);
          SyncQueue.planToSend(0);

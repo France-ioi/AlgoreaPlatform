@@ -593,7 +593,7 @@ angular.module('algorea')
          delete(SyncQueue.requestSets.groupAdmin.minVersion);
          callback();
          $rootScope.$broadcast('algorea.groupSynced');
-      }, false, true);
+      }, true);
       SyncQueue.planToSend(0);
    };
 
