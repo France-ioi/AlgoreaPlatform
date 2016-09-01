@@ -200,6 +200,7 @@ angular.module('algorea')
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
                console.error('cannot find user item for item '+item.ID);
+               if (callback) {callback(null);}
                return;
             }
             if (that.pathParams.parentItemID && that.pathParams.parentItemID != -2) {
@@ -207,13 +208,20 @@ angular.module('algorea')
             } else {
                that.item_item = {};
             }
-            if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
-               mapService.updateSteps();
-            }
             itemService.onSeen(item);
             that.setItemIcon(item);
-            if(callback) {
-               callback(item);
+            if (item.sType == 'Level') {
+               itemService.syncDescendants(item.ID, function() {
+                  if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
+                     mapService.updateSteps();
+                  }
+                  if(callback) { callback(item); }
+               });
+            } else {
+               if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
+                  mapService.updateSteps();
+               }
+               if(callback) { callback(item); }
             }
          });
       };
@@ -277,6 +285,7 @@ angular.module('algorea')
             $scope.rightLink.sref();
          }
       };
+
       $scope.localInit = function() {
          $scope.getPathParams();
          $scope.firstApply = true;
