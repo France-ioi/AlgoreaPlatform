@@ -41,6 +41,10 @@ class getLevels {
       	$domainData->OfficialContestRootItemId
       ];
 
+      if (property_exists($domainData, 'ForumItemId') && $domainData->ForumItemId) {
+         $default_expanded_items[] = $domainData->ForumItemId;
+      }
+
 	   $items_condition = "(";
 	   $first = true;
       foreach ($default_expanded_items as $ID) {
