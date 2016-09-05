@@ -10,7 +10,7 @@ angular.module('algorea')
       scope: false,
       template: function(elem, attrs) {
         var userItemVarStr = attrs.userItemVar ? 'user-item-var="'+attrs.userItemVar+'"' : '';
-        return '<iframe ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen></iframe>';
+        return '<span ng-show="loadingError">{{loadingError}}</span><iframe ng-hide="loadingError" ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen></iframe>';
       },
       link: function(scope, elem, attrs) {
          // user-item-var can be used to take a variable other than
@@ -31,6 +31,7 @@ angular.module('algorea')
 angular.module('algorea')
 .directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', 'mapService', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, mapService) {
    function loadTask(scope, elem, sameUrl) {
+      scope.loadingError = false;
       if (scope.item.sType == 'Task') {
          elem.addClass('iframe-task');
       } else {
@@ -44,7 +45,10 @@ angular.module('algorea')
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          scope.task = task;
          configureTask(scope, elem, sameUrl);
-      }, !sameUrl);
+      }, !sameUrl, function() {
+         scope.taskLoaded = true;
+         scope.loadingError = "Impossible de communiquer avec l'exercice !";
+      });
    }
    function configureTask(scope, elem, sameUrl) {
       scope.loadedUserItemID = scope.user_item.ID;
@@ -222,6 +226,8 @@ angular.module('algorea')
          scope.task.getViews(function(views) {
             scope.setTabs(views);
          });
+      }, function() {
+         scope.loadingError = 'Impossible de charger l\'exercice !';
       });
     }
     return {
