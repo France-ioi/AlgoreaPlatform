@@ -229,10 +229,20 @@ function write_files(&$db, &$user_information, &$item_information) {
                   } else {
                      try {
                         $answer = json_decode($sAnswer, true);
-                        $extension = isset($langProgToExt[$answer['langProg']]) ? $langProgToExt[$answer['langProg']] : 'txt';
+                        if (isset($answer['langProg']) && isset($langProgToExt[$answer['langProg']])) {
+                          $extension = $langProgToExt[$answer['langProg']];
+                        } else {
+                          $extension = 'txt';
+                        }
                         $filename = $directory . ++$counter . "-" . $row["iScore"] . "-"   . $row["ID"] . "." . $extension;
                         // TODO: handle tests better (directory?)
-                        $answerContent = $answer['sourceCode'] ? $answer['sourceCode'] : json_encode($answer['tests']);
+                        if (isset($answer['sourceCode']) && $answer['sourceCode']) {
+                          $answerContent = $answer['sourceCode'];  
+                        } elseif (isset($answer['tests']) && $answer['tests']) {
+                          $answerContent = json_encode($answer['tests']);
+                        } else {
+                          $answerContent = json_encode($answer);
+                        }
                      } catch (Exception $e) {
                         $filename = $directory . ++$counter . "-" . $row["iScore"] . "-"   . $row["ID"] . ".txt";
                         $answerContent = 'Erreur dans la réponse : '.$sAnswer;
