@@ -183,6 +183,10 @@
 						<option selected="selected" value="">Tous</option>
 						<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
 					</select>
+
+			      <a target="_self" ng-href="/admin/zip_export.php?itemId={{dropdownSelections[dropdownSelections.length-1].ID}}&groupId={{group.ID}}">
+			         <button>Exporter un zip avec toutes les soumissions</button>
+			      </a>
 				</div>
 
 				<div ng-if="progressionType != 'collective'" class="row">
