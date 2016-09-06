@@ -148,17 +148,20 @@ angular.module('algorea')
 
    $scope.joinGroup = function(result) {
       result.joinLog = "chargement...";
-      $scope.passwordError = null;
+      $scope.passwordInfo = null;
       $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             var error = (postRes && postRes.error) ? postRes.error : 'Une erreur est survenue, merci de contacter un administrateur.';
             console.error("got error from groupRequests handler: "+error);
             if (result.password && !result.ID) {
-               $scope.passwordError = error;
+               $scope.passwordInfo = error;
             } else {
                result.joinLog = error;
             }
          } else {
+            if (result.password) {
+               $scope.passwordInfo = 'Vous avez bien rejoint le groupe '+postRes.groupName;
+            }
             result.relationType = postRes.type;
             var record = ModelsManager.getRecord('groups_groups', postRes.ID);
             if (record) {

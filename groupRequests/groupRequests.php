@@ -84,11 +84,11 @@ function joinGroup($request, $db) {
    $query = "SELECT iVersion FROM `synchro_version`";
    $stmt = $db->query($query);
    $version = $stmt->fetchColumn();
-   $query = "lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0); insert into `groups_groups` (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion) values (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, :groupGroupType, NOW(), :version) on duplicate key update sType=VALUES(sType); unlock tables;";
+   $query = "lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0); insert into `groups_groups` (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion) values (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, :groupGroupType, NOW(), :version) on duplicate key update sType=VALUES(sType), sStatusDate=VALUES(sStatusDate); unlock tables;";
    $values = array('ID' => $groupGroupID, 'idGroup' => $result['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'version' => $version, 'groupGroupType' => $groupGroupType);
    $stmt = $db->prepare($query);
    $stmt->execute($values);
-   $returnedObject = array('success' => true, 'type' => $groupGroupType, 'ID' => $groupGroupID);
+   $returnedObject = array('success' => true, 'type' => $groupGroupType, 'ID' => $groupGroupID, 'groupName' => $result['sName']);
    echo json_encode($returnedObject);
 }
 

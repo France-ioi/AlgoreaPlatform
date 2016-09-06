@@ -52,7 +52,7 @@
                         </tr>
                      </thead>
                      <tbody>
-                        <tr ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType == 'invitationSent' || mygroupgroup.sType == 'requestSent'">
+                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="mygroupgroup.sType == 'invitationSent' || mygroupgroup.sType == 'requestSent'">
                            <td>{{mygroupgroup.parent.sName}}</td>
                            <td>{{mygroupgroup.sStatusDate | date}}</td>
                            <td>{{printType(mygroupgroup.sType)}}</td>
@@ -81,7 +81,7 @@
                         </tr>
                      </thead>
                      <tbody>
-                        <tr ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct'">
+                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct'">
                            <td>{{mygroupgroup.parent.sName}}</td>
                            <td>{{mygroupgroup.sStatusDate | date}}</td>
                            <td>{{printType(mygroupgroup.sType)}}</td>
@@ -105,8 +105,8 @@
                         <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword">Rejoindre</button>
                      </div>
                   </form>
-                  <div ng-if="passwordError">
-                     {{passwordError}}
+                  <div ng-if="passwordInfo">
+                     {{passwordInfo}}
                   </div>
                   <form class="form">
                      <label for="lookupString">Rechercher par nom :</label>
@@ -165,7 +165,7 @@
                <h2 class="groupRequest-title" ng-hide="loading">Historique complet</h2>
 
                <ul ng-if="!loading" class="history-list">
-                  <li ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
+                  <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
                      {{mygroupgroup.sStatusDate | date}}&nbsp;:
                      <span ng-switch="mygroupgroup.sType">
                         <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
