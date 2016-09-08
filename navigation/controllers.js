@@ -202,7 +202,11 @@ angular.module('algorea')
             that.item = item;
             that.parentItemID = item.ID;
             that.strings = itemService.getStrings(item);
-            that.imageUrl = that.strings.sImageUrl ? that.strings.sImageUrl : 'images/default-level.png'
+            if (that.strings) {
+               that.imageUrl = that.strings.sImageUrl ? that.strings.sImageUrl : 'images/default-level.png'
+            } else {
+               console.error('no strings for item '+item.ID);
+            }
             that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
