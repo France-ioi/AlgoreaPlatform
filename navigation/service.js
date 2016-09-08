@@ -40,6 +40,31 @@ angular.module('algorea')
          }
       }
 
+      function createWindow() {
+         var windowObj = ModelsManager.createRecord('windows');
+         windowObj.idUser = SyncQueue.requests.loginData.ID;
+         windowObj.dateLastActivity = new Date();
+         ModelsManager.insertRecord('windows', windowObj, true);
+         return windowObj;
+      }
+
+      var currentWindowObj = null;
+      function updateWindow(argObj) {
+         if (!currentWindowObj || currentWindowObj.idUser !== SyncQueue.requests.loginData.ID) {
+            currentWindowObj = createWindow();
+         }
+         currentWindowObj.dateLastActivity = new Date();
+         angular.forEach(currentWindowObj, function(val, name) {
+            if (name == 'ID' || name == 'dateLastActivity') {
+               return;
+            }
+            if (argObj[name]) {
+               currentWindowObj[name] = argObj[name];
+            }
+         });
+         ModelsManager.updated('windows', currentWindowObj.ID, false, true);
+      }
+
       function syncDescendants(idItem, callback, simple) {
          if (!idItem) {
             console.error('syncDescendants called with empty idItem!');
@@ -79,6 +104,7 @@ angular.module('algorea')
                firstSyncDone = 1;
                var idToSync = getLevelToSync();
                if (idToSync) {
+                  updateWindow({idMainItem: idToSync});
                   syncDescendants(idToSync, function() {
                      $rootScope.$broadcast('syncFinished');
                      syncDone = 1;
@@ -386,6 +412,10 @@ angular.module('algorea')
          },
          unsyncForumIndex:function() {
             delete(SyncQueue.requestSets['forumIndex']);
+         },
+         updateWindow: updateWindow,
+         resetWindow: function() {
+            itemService.updateWindow({groupAdmin_idGroup: null, groupAdmin_idItem: null, bOnForum: false, idThread: null, bOnProfile: false, bOnForum: false, idFilter: null, idMainItem: null, userActivity_idUser: null, userActivity_idItem: null});
          },
          syncThread: function(idThread, idItem, idUser, callback) {
             var endListenerName = getThreadSyncName(idThread, idItem, idUser);

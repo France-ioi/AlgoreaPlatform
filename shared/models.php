@@ -949,6 +949,7 @@ $viewsModels = array(
       "fields" => array(
           "idUser"         => array('insertOnly' => true),
           "dateLastActivity"       => array(),
+          "idMainItem" => array(),
           "groupAdmin_idGroup"  => array(),
           "groupAdmin_idMainItem" => array(),
           "userActivity_idUser"  => array(),

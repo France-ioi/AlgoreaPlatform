@@ -705,6 +705,7 @@ angular.module('algorea')
 
    $scope.itemSelected = function(item) {
       if ($scope.rootItem == item) return;
+      itemService.updateWindow({groupAdmin_idItem: item.ID});
       $scope.rootItem = item;
       $scope.itemsList = [item];
       $scope.itemsListRev = {};
@@ -794,14 +795,15 @@ angular.module('algorea')
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
       if (SyncQueue.requests.loginData.tempUser == 1) {
-         //$scope.error = 'Vous devez être connecté pour accéder à cette interface.';
-         //$scope.loading = false;
-         //return;
+         $scope.error = 'Vous devez être connecté pour accéder à cette interface.';
+         $scope.loading = false;
+         return;
       }
       if (!$scope.groupId || $scope.groupId == 'new') {
          $scope.newGroup();
          return;
       }
+      itemService.updateWindow({groupAdmin_idGroup: $scope.groupId, groupAdmin_idItem: $scope.itemId, bOnForum: false, idThread: null, bOnProfile: false, bOnForum: false, idFilter: null, idMainItem: null, userActivity_idUser: null, userActivity_idItem: null});
       $scope.startSync($scope.groupId, $scope.itemId, function() {
          $scope.initItems();
          $scope.initGroup();
@@ -820,6 +822,7 @@ angular.module('algorea')
 
    $scope.$on('$destroy', function() {
       $scope.stopSync();
+      itemService.resetWindow();
    });
    
    $scope.loading = true;

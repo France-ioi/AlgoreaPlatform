@@ -18,6 +18,8 @@ angular.module('algorea')
    $scope.currentGlobalFilter = $scope.globalFilters.all;
    $scope.init = function() {
       $scope.loading = false;
+      itemService.resetWindow();
+      itemService.updateWindow({bOnForum: true});
       SyncQueue.requestSets.forumIndex = {minVersion: 0, name: 'forumIndex'};
       $scope.myUserID = $rootScope.myUserID;
       itemService.syncForumIndex(function() {
@@ -36,6 +38,7 @@ angular.module('algorea')
       });
    });
    $scope.$on('$destroy', function() {
+      itemService.resetWindow();
       itemService.unsyncForumIndex();
    });
    $scope.tabs = {

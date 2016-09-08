@@ -175,6 +175,8 @@ angular.module('algorea')
    };
 
    $scope.init = function() {
+      itemService.resetWindow();
+      itemService.updateWindow({bOnProfile: true});
       $scope.updateGroups();
       loginService.getLoginData(function(res) {
          if (res.tempUser) {

@@ -284,7 +284,7 @@ function setupExpandedItemsRequests($params, &$requests) {
 }
 
 function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
-   global $config;
+   global $config, $viewsModels;
    if (!isset($_SESSION)) {
       session_start();
    }
@@ -295,17 +295,18 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
 
    // syncGetTablesRequests doesn't create requests when hasHistory = false (not sure why),
    // creating it by hand:
-   $viewModel = createViewModelFromTable('windows');
+   $viewModel = $viewsModels['windows'];
    $requests['windows'] = array(
       "modelName" => 'windows',
       "model" => $viewModel,
       "fields" => getViewModelFieldsList($viewModel),
-      "filters"  => ["accessible" => array(
+      "filters"  => array()
+   );
+   $requests['windows']['filters']['accessible'] = array(
          'values' => array('idUser' => $_SESSION['login']['ID']),
-      )],
-      "countRows" => false
    );
    $requests['windows']['getChanges'] = false;
+   $requests['windows']['countRows'] = false;
 
    $admin = (isset($params["requests"]) && isset($params["requests"]["algorea"]) && isset($params["requests"]["algorea"]['admin']) && $params["requests"]["algorea"]['admin']);
    filterUsers($requests);

@@ -480,6 +480,7 @@ var models = {
       fields: {
           idUser: {type: "key", label: "User"},
           dateLastActivity: {type: "jsdate", label: "Last activity"},
+          idMainItem: {type: "key", label: "Level the user is seeing"},
           groupAdmin_idGroup: {type: "key", label: "Group seen in groupAdmin"},
           groupAdmin_idMainItem: {type: "key", label: "Item seen in groupAdmin"},
           userActivity_idUser: {type: "key", label: "User checked in userActivity"},

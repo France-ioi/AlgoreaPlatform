@@ -222,6 +222,7 @@ angular.module('algorea')
             itemService.onSeen(item);
             that.setItemIcon(item);
             if (item.sType == 'Level') {
+               itemService.updateWindow({idMainItem: item.ID}); // TODO: probably shouldn't be done in all cases, as in groupAdmin
                itemService.syncDescendants(item.ID, function() {
                   if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
                      mapService.updateSteps();
@@ -236,6 +237,11 @@ angular.module('algorea')
             }
          });
       };
+      $scope.$on('$destroy', function() {
+         if (this.item.sType == 'Level') {
+            itemService.updateWindow({idMainItem: null});
+         }
+      });
       $scope.getTitle = function(item) {
          return item.strings[0].sTitle;
       };

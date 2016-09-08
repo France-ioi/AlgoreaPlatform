@@ -68,6 +68,11 @@ angular.module('algorea')
       ModelsManager.updated('users_threads', $scope.user_thread.ID);
    };
    function fetchThread(idThread, idItem, idUser) {
+      if (idThread) {
+         itemService.updateWindow({idThread: idThread});
+      } else {
+         itemService.updateWindow({userActivity_idUser: idUser, userActivity_idItem: idItem});
+      }
       itemService.syncThread(idThread, idItem, idUser, function() {
          var thread = itemService.getRecord('threads', idThread);
          $scope.thread = thread;
