@@ -472,9 +472,25 @@ var models = {
           idThread: {type: "key", label: "Thread", refModel: "threads", link: "thread", invLink: "user_thread"},
           sLastReadDate: {type: "jsdate", label: "Date de la dernière lecture"},
           sLastWriteDate: {type: "jsdate", label: "Date du dernier message"},
-          bStarred: {type: "int", label: "Favori"},
+          bStarred: {type: "boolean", label: "Favori"},
+      }
+   },
+
+   windows: {
+      fields: {
+          idUser: {type: "key", label: "User"},
+          dateLastActivity: {type: "jsdate", label: "Last activity"},
+          groupAdmin_idGroup: {type: "key", label: "Group seen in groupAdmin"},
+          groupAdmin_idMainItem: {type: "key", label: "Item seen in groupAdmin"},
+          userActivity_idUser: {type: "key", label: "User checked in userActivity"},
+          userActivity_idItem: {type: "key", label: "Item checked in userActivity"},
+          bOnProfile: {type: "boolean", label: "On profile page"},
+          bOnForum: {type: "boolean", label: "On forum index page"},
+          idFilter: {type: "key", label: "Filter used in forum view"},
+          idThread: {type: "key", label: "Thread checked"}
       }
    }
+
 };
 
 models.my_groups_items = models.groups_items;

@@ -2,6 +2,21 @@
 /* Copyright (c) 2013 Association France-ioi, MIT License http://opensource.org/licenses/MIT */
 
 $tablesModels = array (
+   "cached_windows_items_access" => array(
+      "autoincrementID" => false,
+      "fields" => array(
+         "idGroupUser" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "idItem" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bOwnerAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bFullAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bPartialAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bGrayedAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bManagerAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bValidated" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bRootItem" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+      )
+   ),
+
    "filters" => array(
       "autoincrementID" => false,
       "fields" => array(
@@ -294,7 +309,26 @@ $tablesModels = array (
           "sLastWriteDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
           "bStarred"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
       ),
-   )
+   ),
+
+   "windows" => array(
+      "autoincrementID" => false,
+      "hasHistory" => false,
+      "fields" => array(
+          "idUser"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "dateLastActivity"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
+          "idMainItem"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "groupAdmin_idGroup"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "groupAdmin_idMainItem"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "userActivity_idUser"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "userActivity_idItem"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "bOnProfile"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "bOnForum"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "idFilter"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "idThread"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+      ),
+   ),
+
 );
 
 $viewsModels = array(
@@ -909,6 +943,27 @@ $viewsModels = array(
          ),
       ),
    ),
+   "windows" => array(
+      "mainTable" => "windows",
+      "adminOnly" => false,
+      "fields" => array(
+          "idUser"         => array('insertOnly' => true),
+          "dateLastActivity"       => array(),
+          "groupAdmin_idGroup"  => array(),
+          "groupAdmin_idMainItem" => array(),
+          "userActivity_idUser"  => array(),
+          "userActivity_idItem" => array(),
+          "bOnProfile"  => array(),
+          "bOnForum" => array(),
+          "idFilter"  => array(),
+          "idThread" => array()
+      ),
+      "filters" => array(
+         "accessible" => array(
+               "condition"  => "`[PREFIX]windows`.`idUser` = :[PREFIX_FIELD]idUser",
+         )
+      )
+   )
 );
 
 ?>

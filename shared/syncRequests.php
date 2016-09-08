@@ -292,6 +292,21 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       $requests = array();
       return;
    }
+
+   // syncGetTablesRequests doesn't create requests when hasHistory = false (not sure why),
+   // creating it by hand:
+   $viewModel = createViewModelFromTable('windows');
+   $requests['windows'] = array(
+      "modelName" => 'windows',
+      "model" => $viewModel,
+      "fields" => getViewModelFieldsList($viewModel),
+      "filters"  => ["accessible" => array(
+         'values' => array('idUser' => $_SESSION['login']['ID']),
+      )],
+      "countRows" => false
+   );
+   $requests['windows']['getChanges'] = false;
+
    $admin = (isset($params["requests"]) && isset($params["requests"]["algorea"]) && isset($params["requests"]["algorea"]['admin']) && $params["requests"]["algorea"]['admin']);
    filterUsers($requests);
    if ( ! $admin) {
