@@ -33,6 +33,7 @@ $config = (object) array(
       "RootAdminGroupId" => "3",
       "RootTempGroupId" => "4",
       "OrphanedRootItemId" => "5",
+      "loginUrl" => "https://loginaws.algorea.org/login.html",
       "domains" => array( // global root
          "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
             "title" => 'Change title here',
@@ -52,6 +53,7 @@ $config = (object) array(
             "ContestRootItemId" => "4",
             "CustomContestRootItemId" => "41",
             "OfficialContestRootItemId" => "42",
+            "additionalLoginArgs" => "",
          )
       )
    )

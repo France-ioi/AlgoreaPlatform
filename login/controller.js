@@ -1,7 +1,7 @@
 angular.module('algorea')
    .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout) {
       'use strict';
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html');
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl);
       $scope.innerHtml = "Chargement...";
       $scope.loggedIn = false;
       $scope.loginStr = null;
@@ -51,8 +51,11 @@ angular.module('algorea')
       loginService.init();
       $scope.openLoginPopup = function() {
          var additionalArgs = '';
+         if (config.domains.current.additionalLoginArgs) {
+           additionalArgs = '&'+config.domains.current.additionalLoginArgs; 
+         } 
          if ($scope.loggedIn && !$scope.tempUser) {
-            additionalArgs = '&autoLogout=1';
+            additionalArgs += '&autoLogout=1';
          }
          window.open($scope.loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
       };

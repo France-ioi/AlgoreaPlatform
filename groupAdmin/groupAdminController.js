@@ -788,15 +788,15 @@ angular.module('algorea')
 
    $scope.init = function() {
       $scope.loading = true;
-      $scope.progressionType = 'chronological';
+      $scope.formValues.progressionType = 'chronological';
       $scope.groupId = $stateParams.idGroup;
       $scope.error = '';
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
       if (SyncQueue.requests.loginData.tempUser == 1) {
-         //$scope.error = 'Vous devez être connecté pour accéder à cette interface.';
-         //$scope.loading = false;
-         //return;
+         $scope.error = 'Vous devez être connecté pour accéder à cette interface.';
+         $scope.loading = false;
+         return;
       }
       if (!$scope.groupId || $scope.groupId == 'new') {
          $scope.newGroup();
