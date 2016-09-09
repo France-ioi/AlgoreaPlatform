@@ -794,7 +794,7 @@ angular.module('algorea')
       $scope.error = '';
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
-      if (SyncQueue.requests.loginData.tempUser == 1) {
+      if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser == 1) {
          $scope.error = 'Vous devez être connecté pour accéder à cette interface.';
          $scope.loading = false;
          return;
