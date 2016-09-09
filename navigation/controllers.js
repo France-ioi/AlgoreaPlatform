@@ -195,7 +195,7 @@ angular.module('algorea')
             that.item = item;
             that.parentItemID = item.ID;
             that.strings = itemService.getStrings(item);
-            that.imageUrl = that.strings.sImageUrl ? that.strings.sImageUrl : 'images/default-level.png'
+            that.imageUrl = that.strings.sImageUrl ? that.strings.sImageUrl : 'images/default-level.png';
             that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
@@ -369,6 +369,7 @@ angular.module('algorea')
             $scope.linkClass = "unvisited-item-link";
          }
       }
+      $scope.$applyAsync();
    }
    init();
    $scope.$on('algorea.reloadView', function(event, viewName){
