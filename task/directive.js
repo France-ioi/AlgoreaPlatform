@@ -178,6 +178,7 @@ angular.module('algorea')
                   error("grading old task");
                   return;
                }
+               scope.user_item.nbTasksTried = scope.user_item.nbTasksTried+1;
                if (!scope.user_item.bValidated && postRes.bValidated) {
                   scope.user_item.sToken = postRes.sToken;
                   scope.user_item.bValidated = true;
@@ -186,16 +187,16 @@ angular.module('algorea')
                      mapService.updateSteps();
                   }
                   ModelsManager.updated('users_items', scope.user_item.ID, false, true);
-                  $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                   scope.task.updateToken(postRes.sToken, function() {
                      scope.task.getViews(function(views) {
                         scope.showSolution();
                         scope.setTabs(views);
                      });
                   });
-                  $rootScope.$evalAsync($rootScope.$apply);
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
+               $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
+               scope.$applyAsync();
                if (success) { success(postRes.bValidated); } else { return postRes.bValidated; };
             })
             .error(function() {
