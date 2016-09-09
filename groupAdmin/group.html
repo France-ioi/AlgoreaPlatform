@@ -155,12 +155,12 @@
 						<div class="row">
 							<span class="col-md-6">Sélectionnez le type de visualisation&nbsp;: </span>
 							<div class="col-md-6">
-								<label><input type="radio" ng-model="progressionType" value="chronological">Ordre chronologique</label><br>
-								<label><input type="radio" ng-model="progressionType" value="collective">Ordre du parcours</label>
+								<label><input type="radio" ng-model="formValues.progressionType" value="chronological">Ordre chronologique</label><br>
+								<label><input type="radio" ng-model="formValues.progressionType" value="collective">Ordre du parcours</label>
 							</div>
 						</div>
 					</div>
-					<div ng-if="progressionType == 'collective'" class="col-sm-6">
+					<div ng-if="formValues.progressionType == 'collective'" class="col-sm-6">
 						<ul class="legend">
 							<li><span class="legend-color green"></span><span class="legend-label">Exercice validé</span></li>
 							<li><span class="legend-color red"></span><span class="legend-label">Exercice non réussi</span></li>
@@ -189,7 +189,7 @@
 			      </a>
 				</div>
 
-				<div ng-if="progressionType != 'collective'" class="row">
+				<div ng-if="formValues.progressionType != 'collective'" class="row">
 					<div class="col-sm-4">
 						<div class="groupAdmin-title">Utilisateurs <span>Sélectionnez un ou plusieurs utlisisateurs pour obtenir le détail de son activité récente ou pour le déselectionner et voir l'activité récente du groupe dans son ensemble.</span></div>
 						<ul class="list list-block list-users">
@@ -223,16 +223,16 @@
 					</div>
 				</div>
 
-				<div ng-if="progressionType == 'collective'">
+				<div ng-if="formValues.progressionType == 'collective'">
 					<div class="table-controllers clearfix">
 						<div class="checkboxSwitch pull-left">
 							<span>Afficher la vue détaillée</span>
-							<input type="checkbox" id="switchView" class="switch" ng-click="formValues.detailedView=!formValues.detailedView">
+							<input type="checkbox" id="switchView" class="switch" ng-model="formValues.detailedView">
 							<label for="switchView"><span></span></label>
 						</div>
 						<div class="checkboxSwitch pull-left">
 							<span for="switchDescription">Afficher les descriptions</span>
-							<input type="checkbox" id="switchDescription" class="switch" ng-click="formValues.showDescription=!formValues.showDescription">
+							<input type="checkbox" id="switchDescription" class="switch" ng-model="formValues.showDescription">
 							<label for="switchDescription"><span></span></label>
 						</div>
 					</div>

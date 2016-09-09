@@ -788,7 +788,7 @@ angular.module('algorea')
 
    $scope.init = function() {
       $scope.loading = true;
-      $scope.progressionType = 'chronological';
+      $scope.formValues.progressionType = 'chronological';
       $scope.groupId = $stateParams.idGroup;
       $scope.error = '';
       $scope.adminInvitationError = null;
