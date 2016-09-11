@@ -33,7 +33,8 @@
 /*
 	Text elements
 */
-.groupRequest .groupRequest-title {
+.groupRequest .groupRequest-title,
+.groupRequest h2 {
 	font-size: 18px;
 	text-transform: uppercase;
 	font-weight: bold;
@@ -46,24 +47,12 @@
 	font-style: italic;
 	text-transform: none;
 }
-.groupRequest .label-title {
+.groupRequest h3,
+.groupRequest label.label-title {
 	font-weight: bold;
-	display: inline-block;
 	margin-bottom: 5px;
-	font-size: 18px;
-}
-.groupRequest .label-title.label-list-item {
-	display: list-item;
-	list-style-position: inside;
-}
-.groupRequest .label-description {
-	font-size: 14px;
-	font-style: italic;
-	color: #353535;
-	display: block;
-	font-weight: normal;
-	line-height: 1.2em;
-	text-shadow: 1px 1px 1px #fff;
+	font-size: 16px;
+	margin-top: 0;
 }
 
 /* Search Groups */
@@ -134,7 +123,40 @@
 	max-width: 100%;
 	overflow: auto;
 }
-
+/* Administrated groups */
+.groupRequest .list-block.list-groups {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	max-height: 20em;
+	overflow: auto;
+	line-height: 1.5em;
+	list-style: none;
+	margin-bottom: 1em;
+	padding: 1em 0.5em;
+}
+.groupRequest .list-block.list-groups li {
+	padding: 0 0.5em;
+	box-sizing: content-box;
+	clear: both;
+}
+.groupRequest .list-block.list-groups li:hover {
+	background-color: #edebed;
+}
+.groupRequest .list-block.list-groups a {
+	cursor: pointer;
+}
+.groupRequest .list-block.list-groups a,
+.groupRequest .list-block.list-groups a:hover,
+.groupRequest .list-block.list-groups a:focus {
+	color: inherit;
+}
+.groupRequest .adminGroup input {
+	min-width: 22em;
+}
+/* History */
 .groupRequest .history-list {
 	list-style: none;
 	padding: 0;

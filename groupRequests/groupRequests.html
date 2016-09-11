@@ -7,40 +7,13 @@
       </uib-tab>
       <uib-tab heading="Mes groupes">
          <div class="groupRequest-tabContent">
-            <div class="groupAdmin groupAdmin-home" ng-controller="groupAdminIndexController">
-               <div class="groupAdmin-homeContent">
-                  <div ng-if="loading">Chargement...</div>
-                  <div ng-show="error">{{error}}</div>
-                  <div ng-if="!loading && !error">
-
-                     <p>Dans cet espace d'animation, vous pouvez constituer des groupes puis les administrer en leur assignant un parcours à réaliser. Vous avez également accès à un forum pour interagir avec l'équipe Declick.</p>
-
-                     <div ng-hide="myGroupAdmin.children.length">
-                        <p>Vous n'avez aucun groupe</p>
-                     </div>
-                     <div ng-show="myGroupAdmin.children.length">
-                        <p class="groupAdmin-title">Consulter un groupe :</p>
-                        <ul class="list list-block list-groups">
-                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
-                        </ul>
-                     </div>
-                     <div>
-                     <p class="groupAdmin-title">Créer un nouveau groupe :</p>
-                     <div class="form-inline">
-                        <input type="text" ng-model="formValues.groupName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
-                        <button ng-click="newGroup();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
-                     </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
             <div class="">
                <h2 class="groupRequest-title" ng-hide="loading">Les groupes dont je fais partie</h2>
 
                <div ng-if="!loading && !showTable()">
                   <p>Vous ne faites actuellement partie d'aucun groupe.</p>
                </div>
-               Invitations et requêtes:
+               <h3>Invitations et requêtes :</h3>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
@@ -69,7 +42,7 @@
                      </tbody>
                   </table>
                </div>
-               Groupes dont je fais partie:
+               <h3>Groupes dont je fais partie :</h3>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
@@ -99,9 +72,9 @@
                <h2 class="groupRequest-title" ng-hide="loading">Rejoindre un groupe</h2>
                <div ng-if="!loading">
                   <form class="form">
-                     <label for="askedPassword">Rejoindre avec un mot de passe :</label>
+                     <label class="label-title" for="askedPassword">Rejoindre avec un mot de passe :</label>
                      <div class="form-group form-inline">
-                        <input type="text" class="form-control" name="askedPassword" ng-model="pageData.askedPassword">
+                        <input type="text" class="form-control" name="askedPassword" id="askedPassword" ng-model="pageData.askedPassword">
                         <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword">Rejoindre</button>
                      </div>
                   </form>
@@ -109,9 +82,9 @@
                      {{passwordInfo}}
                   </div>
                   <form class="form">
-                     <label for="lookupString">Rechercher par nom :</label>
+                     <label class="label-title" for="lookupString">Rechercher par nom :</label>
                      <div class="form-group form-inline">
-                        <input type="text" class="form-control" name="lookupString" ng-model="pageData.lookupString">
+                        <input type="text" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
                         <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
                      </div>
                   </form>
@@ -159,6 +132,31 @@
                         </tr>
                      </tbody>
                   </table>
+               </div>
+            </div>
+            <div class="adminGroup">
+               <h2 class="groupRequest-title" ng-hide="loading">Les groupes que j'administre</h2>
+               <div ng-controller="groupAdminIndexController">
+                  <div ng-if="loading">Chargement...</div>
+                  <div ng-show="error" class="alert alert-warning">{{error}}</div>
+                  <div ng-if="!loading">
+                     <div ng-hide="myGroupAdmin.children.length">
+                        <p>Vous n'avez aucun groupe</p>
+                     </div>
+                     <div ng-show="myGroupAdmin.children.length">
+                        <h3>Consulter un groupe :</h3>
+                        <ul class="list list-block list-groups">
+                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+                        </ul>
+                     </div>
+                     <div>
+                        <h3>Créer un nouveau groupe :</h3>
+                        <div class="form-inline">
+                           <input type="text" ng-model="formValues.groupName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
+                           <button ng-click="newGroup();" class="btn btn-default"><span class="btn-label">Ajouter un groupe</span></button>
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
             <div>

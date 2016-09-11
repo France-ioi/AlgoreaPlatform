@@ -144,3 +144,10 @@ body {
   padding: 15px;
   flex: 0 1 auto;
 }
+/* Footer */
+footer {
+   background:#2aa3ff;
+}
+footer a {
+  color: #005CA2;
+}
