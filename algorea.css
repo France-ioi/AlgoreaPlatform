@@ -136,6 +136,7 @@ body {
 }
 
 .level-image {
+  padding-left:20px;
   width:150px;
   flex: 0 0 auto;
 }

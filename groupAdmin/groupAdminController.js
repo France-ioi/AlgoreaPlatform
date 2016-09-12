@@ -524,7 +524,6 @@ angular.module('algorea')
    };
 
    $scope.saveGroup = function() {
-      console.error('saveGroup');
       ModelsManager.updated('groups', $scope.groupId);
    };
 
@@ -646,6 +645,30 @@ angular.module('algorea')
       if (!user) return;
       $scope.usersSelected[user.ID] = !$scope.usersSelected[user.ID];
       $scope.updateEvents();
+   }
+
+   $scope.selectAllUsers = function() {
+      angular.forEach($scope.groupsSelected, function(sel, groupID) {
+         $scope.groupsSelected[groupID] = true;
+         var group = ModelsManager.getRecord('groups', groupID);
+         if (!group) return;
+         var user = group.userSelf;
+         if (!user) return;
+         $scope.usersSelected[user.ID] = true;
+         $scope.updateEvents();
+      });
+   };
+
+   $scope.selectNoUser = function() {
+      angular.forEach($scope.groupsSelected, function(sel, groupID) {
+         $scope.groupsSelected[groupID] = false;
+         var group = ModelsManager.getRecord('groups', groupID);
+         if (!group) return;
+         var user = group.userSelf;
+         if (!user) return;
+         $scope.usersSelected[user.ID] = false;
+         $scope.updateEvents();
+      });
    }
 
    $scope.userClickedInMembers = function(group) {

@@ -54,7 +54,7 @@ angular.module('algorea')
                    controller: 'groupRequestsController',
                 },
                 'breadcrumbs': {
-                   template: '',
+                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Profil</span></div>',
                 },
              },
           }).state('userInfos', {
@@ -68,7 +68,7 @@ angular.module('algorea')
                    controller: 'userInfosController',
                 },
                 'breadcrumbs': {
-                   template: '',
+                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Profil</span></div>',
                 },
              },
           }).state("forum", {
@@ -85,20 +85,6 @@ angular.module('algorea')
                    template: '',
                 },
              },
-          }).state("groupAdmin", {
-            url: "/groupAdmin/",
-            views: {
-               'left': {
-                   template: '',
-                },
-                'right': {
-                   templateUrl: 'groupAdmin/index.html',
-                   controller: 'groupAdminIndexController',
-                },
-                'breadcrumbs': {
-                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Groupes</span></div>',
-                },
-             },
           }).state("groupAdminGroup", {
             url: "/groupAdmin/:idGroup",
             views: {
@@ -110,7 +96,7 @@ angular.module('algorea')
                    controller: 'groupAdminController',
                 },
                 'breadcrumbs': {
-                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupAdmin()">Groupes</a></span> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{group.sName}}</span></div>',
+                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupRequests()">Profil</a></div><div class="breadcrumbs-item"></span> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{group.sName}}</span></div>',
                    controller: 'groupAdminBreadCrumbsController',
                 },
              },
