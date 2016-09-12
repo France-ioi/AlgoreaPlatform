@@ -150,17 +150,16 @@
 
 		<uib-tab heading="Progression" index="2">
 			<div class="groupAdmin-tabContent tab-progression">
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="row">
-							<span class="col-md-6">Sélectionnez le type de visualisation&nbsp;: </span>
-							<div class="col-md-6">
-								<label><input type="radio" ng-model="formValues.progressionType" value="chronological">Ordre chronologique</label><br>
-								<label><input type="radio" ng-model="formValues.progressionType" value="collective">Ordre du parcours</label>
-							</div>
+				<div class="flex-container progression-controllers">
+					<div>
+						<span class="pull-left">Sélectionnez le type de visualisation&nbsp;:&nbsp;</span>
+						<div class="inline-block">
+							<label><input type="radio" ng-model="formValues.progressionType" value="chronological">Ordre chronologique</label><br>
+							<label><input type="radio" ng-model="formValues.progressionType" value="collective">Ordre du parcours</label>
 						</div>
 					</div>
-					<div ng-if="formValues.progressionType == 'collective'" class="col-sm-6">
+					<div ng-if="formValues.progressionType == 'collective'">
+						<p class="print">Légende&nbsp;:&nbsp;</p>
 						<ul class="legend">
 							<li><span class="legend-color green"></span><span class="legend-label">Exercice validé</span></li>
 							<li><span class="legend-color red"></span><span class="legend-label">Exercice non réussi</span></li>
@@ -188,8 +187,8 @@
 
 				</div>
 
-				<div ng-if="formValues.progressionType != 'collective'" class="row">
-					<div class="col-sm-4">
+				<div ng-if="formValues.progressionType != 'collective'" class="flex-container view-chrono">
+					<div>
 						<div class="groupAdmin-title">Utilisateurs <span>Sélectionnez un ou plusieurs utlisisateurs pour obtenir le détail de son activité récente ou pour le déselectionner et voir l'activité récente du groupe dans son ensemble.</span></div>
 						<ul class="list list-block list-users">
 						<!-- TODO : add class toggle when selected -->
@@ -200,7 +199,7 @@
 						</ul>
 						<div class="select-toggle">Sélectionner : <a href="#" ng-click="selectAllUsers();">Tous</a> | <a href="#" ng-click="selectNoUser();">Aucun</a></div>
 					</div>
-					<div class="col-sm-8">
+					<div>
 						<div class="groupAdmin-title">Activité récente</div>
 						<table class="table table-activity">
 							<thead>

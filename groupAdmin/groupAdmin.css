@@ -399,6 +399,28 @@ orange : #F29200;
 /*
 	Tab: Progression
 */
+.tab-progression .flex-container {
+	display: flex;
+	flex-flow: row wrap;
+}
+.tab-progression .flex-container.progression-controllers > div:first-child {
+	flex: 1 1 450px;
+}
+.tab-progression .flex-container.progression-controllers > div + div {
+	flex: 1 1 auto;
+}
+.tab-progression .flex-container.view-chrono {
+	margin: 0 -15px;
+}
+.tab-progression .flex-container.view-chrono > div {
+	padding: 0 15px;
+}
+.tab-progression .flex-container.view-chrono > div:first-child {
+	flex: 1 1 310px;
+}
+.tab-progression .flex-container.view-chrono > div + div {
+	flex: 2 1 620px;
+}
 .groupAdmin .validated {
 	background-color: #0faa8b !important;
 }
@@ -417,6 +439,10 @@ orange : #F29200;
 .groupAdmin .tab-progression .parcours-select {
 	margin-bottom: 2em;
 }
+.groupAdmin .tab-progression .parcours-select select {
+	margin-right: 3px;
+	margin-bottom: 5px;
+}
 /* Individual view */
 	/* Activities */
 .groupAdmin .list-users .row_selected {
@@ -426,6 +452,10 @@ orange : #F29200;
 	padding-left: 3px;
 	margin: 5px 0;
 	line-height: normal;
+}
+.groupAdmin .view-chrono .select-toggle {
+	margin-top: -1em;
+	margin-bottom: 2em;
 }
 .groupAdmin .table-activity {
 	background-color: #fff;
@@ -713,9 +743,9 @@ orange : #F29200;
 }
 .groupAdmin .legend {
 	list-style: none;
-	margin-bottom: 0;
+	padding: 0;
 }
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1494px) {
 	.groupAdmin .legend {
 		-webkit-column-count: 2;
 		   -moz-column-count: 2;
