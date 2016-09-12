@@ -27,23 +27,39 @@ require_once(dirname(__FILE__)."/../shared/TokenParser.php");
 require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
 
 function getTokenParams($request) {
-   global $config;
+   global $config, $db;
    $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
    try {
-      $params = $tokenParser->decodeJWS($request['sToken']);
+      if ($request['sToken']) {
+         $params = $tokenParser->decodeJWS($request['sToken']);
+      } else if ($request['scoreToken']) {
+         $params = $tokenParser->decodeJWS($request['scoreToken']);
+      } else {
+         echo json_encode(array('result' => false, 'error' => 'no sToken nor scoreToken argument'));
+         exit;
+      }
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage()));
       exit;
    }
-   return $params;
-}
-
-
-function checkParams($params) {
-   if ($params['idUser'] != $_SESSION['login']['ID']) {
+   if (!$params['idUser'] || (!$params['itemUrl'] && !$params['idItemLocal'])) {
+      echo json_encode(array('result' => false, 'error' => 'missing idUser or itemUrl in token'));
+      exit;
+   }
+   if (!$params['idItemLocal']) {
+      $stmt = $db->prepare('select ID from items where sUrl = :itemUrl;');
+      $stmt->execute(['itemUrl' => $params['itemUrl']]);
+      $params['idItemLocal'] = $stmt->fetchColumn();
+      if (!$params['idItemLocal']) {
+         echo json_encode(array('result' => false, 'error' => 'cannot find item with url '.$params['itemUrl']));
+         exit;     
+      }
+   }
+   if (isset($_SESSION) && isset($_SESSION['login']) && $params['idUser'] != $_SESSION['login']['ID']) {
       echo json_encode(array('result' => false, 'error' => 'token doesn\'t correspond to user session: got '.$params['idUser'].', expected '.$_SESSION['login']['ID'], 'token' => $params, 'session' => $_SESSION));
       exit;
    }
+   return $params;
 }
 
 // this function checks the platformToken if necessary an returns a safe score
@@ -115,7 +131,6 @@ function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
    $ID = getRandomID();
-   checkParams($params);
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
    $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'sAnswer' => $request['sAnswer']));
@@ -140,7 +155,6 @@ function askValidation($request, $db) {
 function askHint($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   checkParams($params);
    $query = "UPDATE `users_items` SET nbHintsCached = nbHintsCached + 1, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
@@ -155,11 +169,11 @@ function askHint($request, $db) {
 function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   checkParams($params);
    $score = getScore($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
    $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);
    // TODO: handle validation in a proper way
    $bValidated = ($score > 50);
+
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
@@ -233,7 +247,7 @@ if ($request['action'] == 'askValidation') {
    askValidation($request, $db);
 } elseif ($request['action'] == 'askHint') {
    askHint($request, $db);
-} elseif ($request['action'] == 'graderResult') {
+} elseif ($request['action'] == 'graderResult' || $request['action'] == 'graderReturn') {
    graderResult($request, $db);
 } elseif ($request['action'] == 'getToken') {
    getToken($request, $db);

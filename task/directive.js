@@ -149,7 +149,7 @@ angular.module('algorea')
             });
          }
       };
-      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser, options: {}};
+      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser, options: {}, returnUrl: config.domains.current.baseUrl+'/task/task.php'};
       scope.platform.getTaskParams = function(key, defaultValue, success, error) {
          var res = scope.taskParams;
          if (key) {
