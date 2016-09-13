@@ -200,6 +200,9 @@ angular.module('algorea')
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
                console.error('cannot find user item for item '+item.ID);
+               if(callback) {
+                  callback(item);
+               }
                return;
             }
             if (that.pathParams.parentItemID && that.pathParams.parentItemID != -2) {
@@ -223,7 +226,7 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', function ($scope, pathService, itemService, $timeout) {
+   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', 'mapService', function ($scope, pathService, itemService, $timeout, mapService) {
       $scope.panel = 'right';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('right');};
       $scope.setArrowLinks = function() {
@@ -284,6 +287,7 @@ angular.module('algorea')
          $scope.getItem(function() {
             $scope.setArrowLinks();
             $scope.setItemOnMap();
+            mapService.updateSteps();
          });
       };
       $scope.localInit();

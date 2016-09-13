@@ -77,7 +77,7 @@ function createTempUser($db) {
       'sLogin'      => $sLogin,
       'bIsAdmin'    => false,
    );
-   echo json_encode(array('result' => true, 'sLogin' => $sLogin, 'ID' => $userId));
+   echo json_encode(array('result' => true, 'sLogin' => $sLogin, 'ID' => $userId, 'loginData' => $_SESSION['login']));
 }
 
 if ($action == 'login') {

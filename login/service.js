@@ -86,6 +86,7 @@ angular.module('franceIOILogin', [])
               $rootScope.myUserID = userID;
               $rootScope.myLogin = user.sLogin;
               $rootScope.$broadcast('login.login', {login: user.sLogin, tempUser: true, loginData: user.loginData});
+              triggerCallback();
            });
         }
         function onNotLogged(data) {
