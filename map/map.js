@@ -427,6 +427,9 @@ function DeclickMap() {
         var previousChapter = false;
         var previousLabel;
         var currentLabels;
+        if (!path) {
+            return;
+        }
         var basePath = path.clone();
 
         var placeSymbol = function(index, curve, length, last) {
