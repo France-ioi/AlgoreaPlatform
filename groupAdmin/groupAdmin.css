@@ -760,17 +760,18 @@ orange : #F29200;
 }
 
 .groupAdmin .legend-color {
-	width: 15px;
-	height: 15px;
+	width: 14px;
+	height: 14px;
 	display: inline-block;
 	vertical-align: middle;
 	margin-right: 5px;
+	border: 7px solid;
 }
-.groupAdmin .legend-color.green { background-color: #0FAA8B;}
-.groupAdmin .legend-color.red { background-color: #e42c20;}
-.groupAdmin .legend-color.orange { background-color: #F29200;}
-.groupAdmin .legend-color.dark-grey { background-color: #707070;}
-.groupAdmin .legend-color.light-grey { background-color: #C6C6C6;}
+.groupAdmin .legend-color.green {border-color: #0FAA8B;}
+.groupAdmin .legend-color.red {border-color: #e42c20;}
+.groupAdmin .legend-color.orange {border-color: #F29200;}
+.groupAdmin .legend-color.dark-grey {border-color: #707070;}
+.groupAdmin .legend-color.light-grey {border-color: #C6C6C6;}
 .groupAdmin .view-switcher .btn-icon {
 	vertical-align: bottom;
 }
@@ -815,6 +816,11 @@ orange : #F29200;
 	font-weight: bold;
 }
 
+@media screen {
+	.print {
+		display: none;
+	}
+}
 /*
 *
 	PRINT
@@ -824,7 +830,52 @@ orange : #F29200;
 	#menu, .breadcrumbs-item-inactive, #footer,
 	.sidebar-left,
 	.nav-tabs,
-	.checkboxSwitch  {
+	.checkboxSwitch,
+	.groupAdmin .table-progress.table-head  {
 		display: none;
+	}
+	.groupAdmin .table-progress.table-body tbody {
+		max-height: initial !important;
+		display: table-row-group;
+		overflow: visible !important;
+	}
+	.groupAdmin .table-progress.view-detail .progress-details .details-row:first-child,
+	.groupAdmin .table-progress.view-detail .progress-details .details-row > div {
+		border-color: #000;
+	}
+	.groupAdmin .table-progress td.fixed-width.step-name,
+	.groupAdmin .table-progress th.fixed-width.step-name {
+		width: auto;
+		min-width: initial;
+		max-width: initial;
+	}
+	.groupAdmin .table-progress.view-global th.name {
+		width: auto;
+	}
+	.groupAdmin .table-progress.view-global td.status {
+		position: relative;
+		width: auto;
+		min-width: initial;
+		max-width: initial;
+		vertical-align: top;
+	}
+	.groupAdmin .table-progress.view-global td.status .progress-details {
+		position: static;
+		display: initial;
+		border: none;
+		background-color: transparent;
+		padding: 0;
+		width: auto;
+	}
+	.groupAdmin .table-progress.table-body {
+		width: auto;
+	}
+	.groupAdmin .table-progress.table-body {
+		page-break-inside:auto;
+	}
+	.groupAdmin .table-progress.table-body tr {
+		page-break-inside: avoid;
+		page-break-after: auto;
+		display: table-row;
 	}
 }

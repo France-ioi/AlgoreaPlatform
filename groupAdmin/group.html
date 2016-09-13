@@ -145,6 +145,9 @@
 
 		<uib-tab heading="Progression" index="2">
 			<div class="groupAdmin-tabContent tab-progression">
+				<div class="print">
+					<span class="progressionType">{{formValues.progressionType !== 'collective' ? 'Ordre chronologique' : 'Ordre du parcours'}}</span>
+				</div>
 				<div class="flex-container progression-controllers">
 					<div>
 						<span class="pull-left">Sélectionnez le type de visualisation&nbsp;:&nbsp;</span>
@@ -241,6 +244,13 @@
 							</thead>
 							</table>
 							<table class="table-progress table-body" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
+							<thead class="print">
+								<tr>
+									<th class="fixed-width step-name">Nom du chapitre / étape</th>
+									<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
+									<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
+								</tr>
+							</thead>
 							<tbody>
 								<tr ng-repeat="item in itemsList">
 									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
