@@ -287,7 +287,9 @@ angular.module('algorea')
          $scope.getItem(function() {
             $scope.setArrowLinks();
             $scope.setItemOnMap();
-            mapService.updateSteps();
+            if (config.domains.current.useMap) {
+               mapService.updateSteps();
+            }
          });
       };
       $scope.localInit();
