@@ -635,16 +635,16 @@ orange : #F29200;
 .groupAdmin .table-progress tbody {
 	display: block;
 	max-height: 400px;
-	max-height: calc(100vh - 365px);
+	max-height: calc(100vh - 175px);
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 .groupAdmin .table-progress.view-global tbody {
-	padding-top: 8em;
+	padding-top: 148px;
 }
 .groupAdmin .table-progress.view-detail tbody {
 	max-height: 400px;
-	max-height: calc(100vh - 235px);
+	max-height: calc(100vh - 100px);
 }
 	/* Collective view: Detailed */
 .groupAdmin .table-progress.view-detail th.name {
