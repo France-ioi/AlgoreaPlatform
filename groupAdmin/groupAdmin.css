@@ -524,9 +524,9 @@ orange : #F29200;
 }
 .groupAdmin .table-progress td.fixed-width.step-name,
 .groupAdmin .table-progress th.fixed-width.step-name {
-	width: 14em;
-	min-width: 14em;
-	max-width: 14em;
+	width: 15em;
+	min-width: 15em;
+	max-width: 15em;
 	position: relative;
 }
 .groupAdmin .table-progress .step-descr {
@@ -637,6 +637,9 @@ orange : #F29200;
 	max-height: calc(100vh - 365px);
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+.groupAdmin .table-progress.view-global tbody {
+	padding-top: 8em;
 }
 .groupAdmin .table-progress.view-detail tbody {
 	max-height: 400px;
