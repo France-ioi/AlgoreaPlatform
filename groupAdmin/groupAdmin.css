@@ -616,6 +616,9 @@ orange : #F29200;
 	position: relative;
 	padding-left: 20px;
 }
+.groupAdmin .table-progress.view-global .progress-details li.login {
+	font-weight: bold;
+}
 
 /* fixed header */
 
