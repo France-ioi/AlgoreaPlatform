@@ -21,7 +21,7 @@ angular.module('algorea')
       $scope.errorItem = {ID: -1};
       this.firstApply = true;
       $scope.setItemOnMap = function() {
-         if (this.item) {
+         if (this.item && config.domains.current.useMap) {
             mapService.setCurrentItem(this.item, this.pathParams);
          }
       }
