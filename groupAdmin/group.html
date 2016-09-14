@@ -169,9 +169,6 @@
 						</ul>
 					</div>
 				</div>
-				<p class="dl-link"><a target="_self" ng-href="/admin/zip_export.php?itemId={{dropdownSelections[dropdownSelections.length-1].ID}}&groupId={{group.ID}}">
-					<button class="btn btn-primary">Exporter un zip avec toutes les soumissions</button>
-				</a></p>
 				<div class="parcours-select">
 					Parcours :
 					<select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">
@@ -185,7 +182,9 @@
 						<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
 					</select>
 				</div>
-
+				<p class="dl-link"><a target="_self" ng-href="/admin/zip_export.php?itemId={{dropdownSelections[dropdownSelections.length-1].ID}}&groupId={{group.ID}}">
+					<button class="btn btn-primary">Exporter un zip avec toutes les soumissions</button>
+				</a></p>
 
 				<div ng-if="formValues.progressionType != 'collective'" class="flex-container view-chrono">
 					<div>

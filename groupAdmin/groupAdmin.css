@@ -437,11 +437,13 @@ orange : #F29200;
 	background-color: #C6C6C6 !important;
 }
 .groupAdmin .tab-progression .parcours-select {
-	margin-bottom: 2em;
 }
 .groupAdmin .tab-progression .parcours-select select {
 	margin-right: 3px;
 	margin-bottom: 5px;
+}
+.groupAdmin .tab-progression .dl-link {
+	margin-bottom: 2em;
 }
 /* Individual view */
 	/* Activities */
