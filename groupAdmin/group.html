@@ -293,7 +293,7 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="item in itemsList">
-									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
+									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><div>{{item.strings[0].sTitle}}</div></td>
 									<td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
 									<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 										<div ng-if="formValues.detailedView" class="progress-details">

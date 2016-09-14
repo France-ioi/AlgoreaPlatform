@@ -862,6 +862,17 @@ orange : #F29200;
 	.groupAdmin .table-progress-print td {
 		border: 1px solid #000;
 	}
+	.groupAdmin .table-progress-print td.fixed-width.step-name {
+		width: 15em;
+		min-width: 15em;
+		max-width: 15em;
+	}
+	.groupAdmin .table-progress-print td.fixed-width.step-name div {
+		height: 32pt;
+		min-height: 32pt;
+		max-height: 32pt;
+		overflow: hidden;
+	}
 		/* Detailed view */
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row:first-child,
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div {
@@ -887,6 +898,10 @@ orange : #F29200;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		float: left;
+	}
+	.groupAdmin .view-detail .status.unread .progress-details .details-row,
+	.groupAdmin .view-detail .status.unread .progress-details .details-row > div {
+		border: none;
 	}
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.date {width: 112px;}
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.time {width:107px;}
