@@ -944,5 +944,11 @@ orange : #F29200;
 			content: counter(page);
 		}
 	}
-
+	.avertissement {
+		position: relative;
+		display: block;
+		color: #C6C6C6 !important;
+		background-color: #C6C6C6 !important;
+		margin-bottom: 0.5em;
+	}
 }
