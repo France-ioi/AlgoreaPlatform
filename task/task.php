@@ -30,9 +30,9 @@ function getTokenParams($request) {
    global $config, $db;
    $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
    try {
-      if ($request['sToken']) {
+      if (isset($request['sToken'])) {
          $params = $tokenParser->decodeJWS($request['sToken']);
-      } else if ($request['scoreToken']) {
+      } elseif (isset($request['scoreToken'])) {
          $params = $tokenParser->decodeJWS($request['scoreToken']);
       } else {
          echo json_encode(array('result' => false, 'error' => 'no sToken nor scoreToken argument'));
@@ -99,8 +99,7 @@ function getScore($request, $params, $otherPlatformToken, $db) {
    return floatval($params['score']); // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
 }
 
-// function returning the idUserAnswer field of $otherPlatformToken, an
-// answerToken as returned by askHint()
+// function returning the idUserAnswer field of answerToken when no scoreToken is provided
 function getIdUserAnswer($params, $answerToken) {
    global $config;
    $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
@@ -141,10 +140,10 @@ function askValidation($request, $db) {
 
    $answerParams = array(
       'sAnswer' => $request['sAnswer'],
-      'idUser' => intval($_SESSION['login']['ID']),
-      'idItem' => intval($params['idItem']),
-      'itemUrl' => intval($params['itemUrl']),
-      'idItemLocal' => intval($params['idItemLocal']),
+      'idUser' => $_SESSION['login']['ID'],
+      'idItem' => $params['idItem'],
+      'itemUrl' => $params['itemUrl'],
+      'idItemLocal' => $params['idItemLocal'],
       'idUserAnswer' => $ID
    );
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
@@ -170,9 +169,13 @@ function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
    $score = getScore($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
-   $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);
+   if (!isset($request['scoreToken']) || !isset($params['idUserAnswer'])) {
+      $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);   
+   } else {
+      $idUserAnswer = $params['idUserAnswer'];
+   }
    // TODO: handle validation in a proper way
-   $bValidated = ($score > 50);
+   $bValidated = ($score > 99);
 
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
@@ -231,7 +234,7 @@ function getToken($request, $db) {
       'bReadAnswers' => true,
       'aAnswers' => $answers,
       'idUser' => intval($_SESSION['login']['ID']),
-      'idItemLocal' => intval($request['idItem']),
+      'idItemLocal' => $request['idItem'],
       'idItem' => $data['sTextId'],
       'itemUrl' => $data['sUrl'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],

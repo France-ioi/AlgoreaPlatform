@@ -169,7 +169,12 @@ angular.module('algorea')
       };
       scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
-            $http.post('/task/task.php', {action: 'graderResult', sToken: scope.user_item.sToken, scoreToken: scoreToken, answerToken: answerToken, score: score, message: message, idItem: scope.item.ID}, {responseType: 'json'}).success(function(postRes) {
+            var postParams = {action: 'graderResult', scoreToken: scoreToken, score: score, message: message};
+            if (!scoreToken) {
+               postParams.answerToken = answerToken;
+               postParams.sToken = scope.user_item.sToken;
+            }
+            $http.post('/task/task.php', postParams, {responseType: 'json'}).success(function(postRes) {
                if ( ! postRes.result) {
                   console.error("got error from task.php: "+postRes.error);
                   return;
