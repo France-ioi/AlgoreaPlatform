@@ -305,7 +305,6 @@
 												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" title="Score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
 												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
 												<div class="questions" title="Demandes d'aide sur le forum" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
-												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="Voir le détail"><span class="btn-label">Voir plus</span></button></div>
 											</div>
 										</div>
 										<!-- Affichage du score :

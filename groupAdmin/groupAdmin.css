@@ -865,12 +865,12 @@ orange : #F29200;
 		page-break-inside: avoid;
 	}
 	.groupAdmin .table-progress-print td {
-		border: 1px solid #000;
+		border: 1pt solid #000;
 	}
 	.groupAdmin .table-progress-print td.fixed-width.step-name {
-		width: 15em;
-		min-width: 15em;
-		max-width: 15em;
+		width: 180pt;
+		min-width: 180pt;
+		max-width: 180pt;
 	}
 	.groupAdmin .table-progress-print td.fixed-width.step-name div {
 		height: 32pt;
@@ -884,20 +884,20 @@ orange : #F29200;
 		border-color: #000;
 	}
 	.groupAdmin .table-progress-print.view-detail td.status {
-		max-width: 261px;
-		min-width: 261px;
-			width: 261px;
+		max-width: 195pt;
+		min-width: 195pt;
+			width: 195pt;
 	}
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row {
 		text-align: center;
 		overflow: hidden;
 	}
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row:first-child {
-		border-bottom: 1px solid #000;
+		border-bottom: 1pt solid #000;
 	}
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div {
 		vertical-align: middle;
-		border-left: 1px solid #000;
+		border-left: 1pt solid #000;
 		padding: 0 4px;
 		text-align: center;
 		white-space: nowrap;
@@ -908,13 +908,12 @@ orange : #F29200;
 	.groupAdmin .view-detail .status.unread .progress-details .details-row > div {
 		border: none;
 	}
-	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.date {width: 112px;}
-	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.time {width:107px;}
-	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.help {width:40px;}
-	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.score {width:78px;}
-	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.submissions {width:86px;}
-	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.questions {width:55px;}
-	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.button {width: 39px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.date {width: 84pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.time {width:80pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.help {width:30pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.score {width:58pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.submissions {width:64pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.questions {width:70pt;}
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div:first-child {
 		border-left: none;
 	}
@@ -922,7 +921,7 @@ orange : #F29200;
 		display: none;
 	}
 	.groupAdmin .table-progress-print.view-detail .progress-details .details-row .btn-icon {
-		height: 15px;
+		height: 12pt;
 	}
 
 
@@ -935,28 +934,31 @@ orange : #F29200;
 		border: none;
 		background-color: transparent;
 		padding: 0;
-		height: 200px;
+		height: 140pt;
+		width: 50pt;
+		max-width: 50pt;
+		min-width: 50pt;
 	}
 	.groupAdmin .table-progress-print.view-global th.name div {
 		transform: rotate(-45deg);
 		transform-origin: left bottom;
 		position: relative;
-		left: calc(100% + 2px);
+		left: calc(100% + 2pt);
 		text-transform: none;
-		bottom: -2px;
+		bottom: -2pt;
 		line-height: 1;
 	}
 	.groupAdmin .table-progress-print.view-global th.name .user-info {
-		border-bottom: 1px solid #000;
-		padding: 5px;
+		border-bottom: 1pt solid #000;
+		padding: 5pt;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		display: inline-block;
 		text-align: left;
-		width: 200px;
+		width: 200pt;
 	}
 	.groupAdmin .table-progress-print.view-global td {
-		border: 1px solid #000;
+		border: 1pt solid #000;
 	}
 	@page{
 		size: A4 landscape;
@@ -969,6 +971,6 @@ orange : #F29200;
 		display: block;
 		color: #C6C6C6 !important;
 		background-color: #C6C6C6 !important;
-		margin-bottom: 0.5em;
+		margin-bottom: 5pt;
 	}
 }
