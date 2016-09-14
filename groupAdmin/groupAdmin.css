@@ -470,7 +470,6 @@ orange : #F29200;
 	text-transform: uppercase;
 }
 .groupAdmin .table-activity .activity-type {
-	position: relative;
 	background-color: #C6C6C6;
 }
 .groupAdmin .table-activity .activity-type.validation {
@@ -480,9 +479,7 @@ orange : #F29200;
 	background-color: #e42c20;
 }
 .groupAdmin .table-activity .activity-type button {
-	position: absolute;
-	bottom: 3px;
-	right: 3px;
+	float: right;
 }
 /*
 .groupAdmin .table-activity .activity-type .btn-modal {
@@ -524,9 +521,9 @@ orange : #F29200;
 }
 .groupAdmin .table-progress td.fixed-width.step-name,
 .groupAdmin .table-progress th.fixed-width.step-name {
-	width: 14em;
-	min-width: 14em;
-	max-width: 14em;
+	width: 15em;
+	min-width: 15em;
+	max-width: 15em;
 	position: relative;
 }
 .groupAdmin .table-progress .step-descr {
@@ -559,6 +556,7 @@ orange : #F29200;
 	padding: 0;
 }
 
+	/* Collective view: Global */
 .groupAdmin .table-progress.view-global th.name {
 	white-space: nowrap;
 	width: 60px;
@@ -566,8 +564,6 @@ orange : #F29200;
 	background-color: transparent;
 	padding: 0;
 }
-
-	/* Collective view: Global */
 .groupAdmin .table-progress.view-global th.name div {
 	transform: rotate(-45deg) translate(32px, 33px);
 	width: 30px;
@@ -637,6 +633,9 @@ orange : #F29200;
 	max-height: calc(100vh - 365px);
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+.groupAdmin .table-progress.view-global tbody {
+	padding-top: 8em;
 }
 .groupAdmin .table-progress.view-detail tbody {
 	max-height: 400px;
@@ -760,17 +759,18 @@ orange : #F29200;
 }
 
 .groupAdmin .legend-color {
-	width: 15px;
-	height: 15px;
+	width: 14px;
+	height: 14px;
 	display: inline-block;
 	vertical-align: middle;
 	margin-right: 5px;
+	border: 7px solid;
 }
-.groupAdmin .legend-color.green { background-color: #0FAA8B;}
-.groupAdmin .legend-color.red { background-color: #e42c20;}
-.groupAdmin .legend-color.orange { background-color: #F29200;}
-.groupAdmin .legend-color.dark-grey { background-color: #707070;}
-.groupAdmin .legend-color.light-grey { background-color: #C6C6C6;}
+.groupAdmin .legend-color.green {border-color: #0FAA8B;}
+.groupAdmin .legend-color.red {border-color: #e42c20;}
+.groupAdmin .legend-color.orange {border-color: #F29200;}
+.groupAdmin .legend-color.dark-grey {border-color: #707070;}
+.groupAdmin .legend-color.light-grey {border-color: #C6C6C6;}
 .groupAdmin .view-switcher .btn-icon {
 	vertical-align: bottom;
 }
@@ -815,6 +815,12 @@ orange : #F29200;
 	font-weight: bold;
 }
 
+@media screen {
+	.print {
+		display: none;
+	}
+}
+
 /*
 *
 	PRINT
@@ -824,7 +830,117 @@ orange : #F29200;
 	#menu, .breadcrumbs-item-inactive, #footer,
 	.sidebar-left,
 	.nav-tabs,
-	.checkboxSwitch  {
+	.checkboxSwitch,
+	.btn, .dl-link,
+	.progression-type-select,
+	.groupAdmin .table-progress  {
+		display: none !important;
+	}
+	/*
+	*
+	GROUP ADMIN
+	*
+	*/
+	/* Progression tables */
+	body,
+	#main,
+	.tab-progression .flex-container {
+		display: block !important;
+	}
+	body {
+		overflow: initial !important;
+	}
+	.groupAdmin .table-progress-print + .table-progress-print {
+		page-break-before: always;
+	}
+	.groupAdmin .table-progress-print tr {
+		-webkit-page-break-inside: avoid;
+		page-break-inside: avoid;
+	}
+	.groupAdmin .table-progress-print td {
+		border: 1px solid #000;
+	}
+		/* Detailed view */
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row:first-child,
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div {
+		border-color: #000;
+	}
+	.groupAdmin .table-progress-print.view-detail td.status {
+		max-width: 261px;
+		min-width: 261px;
+			width: 261px;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row {
+		text-align: center;
+		overflow: hidden;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row:first-child {
+		border-bottom: 1px solid #000;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div {
+		vertical-align: middle;
+		border-left: 1px solid #000;
+		padding: 0 4px;
+		text-align: center;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		float: left;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.date {width: 112px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.time {width:107px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.help {width:40px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.score {width:78px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.submissions {width:86px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.questions {width:55px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.button {width: 39px;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div:first-child {
+		border-left: none;
+	}
+	.groupAdmin .table-progress-print.view-detail .status.unread .progress-details .details-row > div {
 		display: none;
 	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row .btn-icon {
+		height: 15px;
+	}
+
+
+		/* Global view */
+	.groupAdmin .table-progress-print.view-global th {
+		vertical-align: bottom;
+	}
+	.groupAdmin .table-progress-print.view-global th.name {
+		white-space: nowrap;
+		border: none;
+		background-color: transparent;
+		padding: 0;
+		height: 200px;
+	}
+	.groupAdmin .table-progress-print.view-global th.name div {
+		transform: rotate(-45deg);
+		transform-origin: left bottom;
+		position: relative;
+		left: calc(100% + 2px);
+		text-transform: none;
+		bottom: -2px;
+		line-height: 1;
+	}
+	.groupAdmin .table-progress-print.view-global th.name .user-info {
+		border-bottom: 1px solid #000;
+		padding: 5px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: inline-block;
+		text-align: left;
+		width: 200px;
+	}
+	.groupAdmin .table-progress-print.view-global td {
+		border: 1px solid #000;
+	}
+	@page{
+		size: A4 landscape;
+		@bottom-left-corner {
+			content: counter(page);
+		}
+	}
+
 }
