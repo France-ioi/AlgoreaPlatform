@@ -54,7 +54,7 @@
                         </tr>
                      </thead>
                      <tbody>
-                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct'">
+                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="(mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct') && mygroupgroup.parent.sType != 'RootSelf'">
                            <td>{{mygroupgroup.parent.sName}}</td>
                            <td>{{mygroupgroup.sStatusDate | date}}</td>
                            <td>{{printType(mygroupgroup.sType)}}</td>

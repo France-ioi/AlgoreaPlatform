@@ -560,6 +560,8 @@ orange : #F29200;
 .groupAdmin .table-progress.view-global th.name {
 	white-space: nowrap;
 	width: 60px;
+	min-width: 60px;
+	max-width: 60px;
 	border: none;
 	background-color: transparent;
 	padding: 0;
