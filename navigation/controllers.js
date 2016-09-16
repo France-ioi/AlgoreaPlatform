@@ -28,6 +28,13 @@ angular.module('algorea')
       $scope.goToPath = function(path) {
          $state.go('contents', {path: path,sell:null,selr:null});
       }
+      $scope.goToForum = function() {
+         if (config.domains.current.ForumItemId) {
+            $state.go('contents', {path: config.domains.current.ForumItemId,sell:null,selr:null});
+         } else {
+            $state.go('forum');
+         }
+      }
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
