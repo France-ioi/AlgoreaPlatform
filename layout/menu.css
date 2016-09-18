@@ -1,6 +1,7 @@
 .menu {
    display: -webkit-flex;
    display: flex;
+   flex-flow: row wrap;
    min-height:75px;
    font-family: 'Roboto', sans-serif;
    font-size:17.5pt;
@@ -47,10 +48,9 @@
    position:relative;
    top:4px;
 }
-
 /*
 *
-   LOGO
+   MAIN NAVIGATION
 *
 */
 #menu-logo {
@@ -65,14 +65,9 @@
    content: "Algoréa";
 }
 
-/*
-*
-   MAIN MENU
-*
-*/
-#menu-else {
-   -webkit-flex: 1 1 auto;
-   flex: 1 1 auto;
+#menu-main {
+   -webkit-flex: 3 1 auto;
+   flex: 3 1 auto;
    display: -webkit-flex;
    display:flex;
    flex-direction:row;
@@ -80,24 +75,71 @@
    justify-content:space-between;
 }
 
-/*
-*
-   USER NAV
-*
-*/
+#userinfocontainer {
+   -webkit-flex: 1 1 auto;
+   flex: 1 1 auto;
+}
+/*@media all and (max-width: 700px) {
+   .menu {
+      -webkit-flex-direction:column;
+      flex-direction:column;
+   }
+}*/
+@media all and (max-width: 1040px) {
+   #menu-logo {
+      -webkit-flex-basis: 50%;
+      flex-basis: 50%;
+   }
+   #menu-main {
+      -webkit-flex-basis: 60px;
+      flex-basis: 60px;
+      order: 3;
+   }
+   #userinfocontainer {
+      -webkit-flex-basis: 50%;
+      flex-basis: 50%;
+      order: 2;
+   }
+   #loginFrame {
+      width:160px;
+      top:32px;
+   }
+}
+@media all and (max-width: 1100px)  and (min-width: 1041px) {
+   .menu {
+      align-items: stretch;
+   }
+   #menu-logo {
+      -webkit-flex-basis: 150px;
+      flex-basis: 150px;
+   }
+   #userinfocontainer {
+      -webkit-flex-basis: 200px;
+      flex-basis: 200px;
+   }
+   .menu-item {
+      -webkit-flex-basis:200px;
+      flex-basis:200px;
+   }
+}
+@media all and (max-width: 480px) {
+   .menu {
+      -webkit-flex-direction:column;
+      flex-direction:column;
+   }
+   #menu-main {
+      flex-wrap: nowrap;
+      flex-basis: auto;
+      flex-direction: column;
+   }
+   .menu-item {
+      flex-basis: 40px;
+      border-bottom: 1px solid #d9d9d9;
+   }
+}
 .menu-item-login {
    background-color: #878787;
    color: #fff;
-}
-.userinfo {
-   position: relative;
-   overflow:visible;
-   text-align:center;
-   -webkit-flex: 0 0 258px;
-   flex: 0 0 258px;
-   background-color:#878787;
-   color:white;
-   border:0px;
 }
 .userInfosLink,
 .userInfosLink:focus,
@@ -127,55 +169,16 @@
    display:block !important;
 }
 
-@media all and (max-width: 1100px)  and (min-width: 700px) {
-   .menu-item {
-      -webkit-flex-basis:200px;
-      flex-basis:200px;
-   }
-   #menu-logo {
-      -webkit-flex-basis:250px;
-      flex-basis:250px;
-   }
-   .menu {
-      align-items: stretch;
-   }
-   .menu-item-content {
-   }
+@media all and (max-width: 1100px)  and (min-width: 701px) {
    #loginFrame {
       width:160px;
       top:32px;
-   }
-   #userinfocontainer > .userinfo {
-      -webkit-flex-basis:200px;
-      flex-basis:200px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-   }
-   #userinfocontainer {
-      -webkit-flex-basis:200px;
-      flex-basis:200px;
    }
    #userinfocontainer-breadcrumbs {
       display:block;
    }
    .userinfocontainer-breadcrumbs-toggled {
       display:none;
-   }
-}
-
-@media all and (max-width: 700px) {
-   #menu-logo {
-      -webkit-flex-basis:37px;
-      flex-basis:37px;
-      width:100%;
-   }
-   .menu {
-      -webkit-flex-direction:column;
-      flex-direction:column;
-   }
-   #loginFrame {
-      width:160px;
-      top:32px;
    }
 }
 
