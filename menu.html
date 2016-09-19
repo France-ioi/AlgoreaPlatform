@@ -1,7 +1,7 @@
 <div id="headerContainer">
    <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
       <div id="menu-logo" class="menu-item" ng-click="gotoIndex()">
-         <div class="menu-logo-content" id="menu-logo-content"></div><div class="tagline" ng-bind-html="tagline"></div>
+         <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
       </div>
       <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
          <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
