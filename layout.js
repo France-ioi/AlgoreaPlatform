@@ -43,7 +43,7 @@ angular.module('algorea')
          var selr = pathArray.length;
          var sell = selr -1;
       }
-      $state.go('contents', {path: defaultPathStr,sell:0,selr:1});
+      $state.go('contents', {path: defaultPathStr,sell:null,selr:null});
    }
     // $scope.layout will be accesset and set by viewButton directive in a subscope, so
     // it must be an object, or prototypal inheritance will mess everything
