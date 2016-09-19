@@ -29,13 +29,14 @@
    -webkit-flex-direction:column;
    flex-direction:column;
    background: #e8e8e8;
-   -webkit-flex: 1 0 140px;
-   flex: 1 0 140px;
+   -webkit-flex: 1 1 150px;
+   flex: 1 1 150px;
    justify-content:space-around;
    border-left: 1px solid #d9d9d9;
    border-right: 1px solid #d9d9d9;
    color: #5d5d5d;
    cursor:pointer;
+   white-space: nowrap;
 }
 .menu-item-active {
    background: #2aa3ff !important;
@@ -54,8 +55,8 @@
 *
 */
 #menu-logo {
-   -webkit-flex: 0 0 325px;
-   flex: 0 0 325px;
+   -webkit-flex: 0 1 325px;
+   flex: 0 1 325px;
    background-color:#82bf2b;
    color:white;
    border:0px;
@@ -71,13 +72,13 @@
    display: -webkit-flex;
    display:flex;
    flex-direction:row;
-   flex-wrap:wrap;
    justify-content:space-between;
 }
 
 #userinfocontainer {
    -webkit-flex: 1 1 auto;
    flex: 1 1 auto;
+   order: 3;
 }
 /*@media all and (max-width: 700px) {
    .menu {
@@ -93,6 +94,7 @@
    #menu-main {
       -webkit-flex-basis: 60px;
       flex-basis: 60px;
+      flex-wrap: wrap;
       order: 3;
    }
    #userinfocontainer {
@@ -112,14 +114,6 @@
    #menu-logo {
       -webkit-flex-basis: 150px;
       flex-basis: 150px;
-   }
-   #userinfocontainer {
-      -webkit-flex-basis: 200px;
-      flex-basis: 200px;
-   }
-   .menu-item {
-      -webkit-flex-basis:200px;
-      flex-basis:200px;
    }
 }
 @media all and (max-width: 480px) {
