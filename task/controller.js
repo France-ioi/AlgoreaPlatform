@@ -46,19 +46,20 @@ angular.module('algorea')
          return;
       }
       $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
+      var state = $scope.user_item.sState;
+      if (!state) {state = '';} // default state is the empty string
       if ($scope.user_answer) {
          $scope.task.reloadAnswer($scope.user_answer.sAnswer, function() {
             if ($scope.loadedUserItemID != $scope.user_item.ID) return;
             if ($scope.taskName != 'task-answer') {
-               $scope.task.reloadState($scope.user_item.sState, $scope.sync);
-               //$scope.sync();
+               $scope.task.reloadState(state, $scope.sync);
             } else {
                $scope.sync();
             }
          });
       } else {
          if ($scope.taskName != 'task-answer') {
-            $scope.task.reloadState($scope.user_item.sState, $scope.sync);
+            $scope.task.reloadState(state, $scope.sync);
          } else {
             $scope.sync();
          }
