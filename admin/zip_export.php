@@ -28,6 +28,13 @@ if (!$test) {
    return;
 }
 
+$query = "select sName from groups where ID = :mainGroupId;";
+$stmt=$db->prepare($query);
+$stmt->execute(['mainGroupId' => $main_group_id]);
+
+$groupName = $stmt->fetchColumn();
+$groupName = preg_replace("/[^a-zA-Z0-9_\-]/", "_" , $groupName);
+
 function make_and_change_directory($name) {
    $name = preg_replace("/[^a-zA-Z0-9_\-]/", "_" , $name);
    if($name == "") {
@@ -213,8 +220,8 @@ $langProgToExt = [
 ];
 
 function write_files(&$db, &$user_information, &$item_information) {
-   global $langProgToExt;
-   $csv = fopen("grades.csv", "w");
+   global $langProgToExt, $groupName;
+   $csv = fopen($groupName.".csv", "w");
       if ($csv) {
 
       foreach ($item_information as $item_info) {
@@ -332,13 +339,9 @@ write_files($db, $user_information, $item_information);
 
 //print("Creating zip file ".$zip_id.".zip ... ");
 $zip_id = make_zip_file_name($db, $main_group_id, $main_item_id);
-exec("zip -r ". $zip_id . ".zip " . $base_dir . " grades.csv");
-//print("done. \n");
+exec("zip -r ". $zip_id . ".zip " . $base_dir . ' ' . $groupName . ".csv");
 
 header("Content-Type: application/zip");
 header("Content-Disposition: attachment; filename=".$zip_id.".zip");
 header("Content-Length: " . filesize($zip_id.".zip"));
-
 readfile($zip_id.".zip");
-
-?>
