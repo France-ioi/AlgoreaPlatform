@@ -64,7 +64,7 @@ function getTokenParams($request) {
 
 // this function checks the platformToken if necessary an returns a safe score
 // TODO: maybe sAnswer or bValidated should be added to the token?
-function getScore($request, $params, $otherPlatformToken, $db) {
+function getScoreParams($request, $params, $otherPlatformToken, $db) {
    if (!isset($params['idItemLocal']) || !intval($params['idItemLocal'])) {
       echo json_encode(array('result' => false, 'error' => 'no item ID!', 'token' => $params));
       exit;
@@ -78,7 +78,7 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       exit;
    }
    if (!$platform['bUsesTokens']) {
-      return floatval($request['score']);  // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+      return ['score' => $request['score']];
    }
    if (!$otherPlatformToken) {
       echo json_encode(array('result' => false, 'error' => 'platform token was ommited, please transmit it.', 'token' => $params));
@@ -96,7 +96,7 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       error_log('possible hack attempt from user ID '.$_SESSION['login']['ID']);
       exit;
    }
-   return floatval($params['score']); // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+   return $params;
 }
 
 // function returning the idUserAnswer field of answerToken when no scoreToken is provided
@@ -126,9 +126,17 @@ if (file_exists( __DIR__."/../shared/debug.php")) {
 require_once("../shared/listeners.php");
 require_once(dirname(__FILE__)."/../shared/TokenGenerator.php");
 
+function createUserItemIfMissing($userItemId, $params) {
+   global $db;
+   if (!$userItemId) return;
+   $stmt = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`) VALUES (:ID, :idUser, :idItem);");
+   $stmt->execute(['ID' => $userItemId,'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']]);
+}
+
 function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
+   createUserItemIfMissing($request['userItemId'], $params);
    $ID = getRandomID();
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
@@ -154,6 +162,7 @@ function askValidation($request, $db) {
 function askHint($request, $db) {
    global $config;
    $params = getTokenParams($request);
+   createUserItemIfMissing($request['userItemId'], $params);
    $query = "UPDATE `users_items` SET nbHintsCached = nbHintsCached + 1, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
@@ -168,11 +177,12 @@ function askHint($request, $db) {
 function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $score = getScore($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
-   if (!isset($request['scoreToken']) || !isset($params['idUserAnswer'])) {
+   $scoreParams = getScoreParams($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
+   $score = floatval($scoreParams['score']);
+   if (!isset($request['scoreToken'])) {
       $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);   
    } else {
-      $idUserAnswer = $params['idUserAnswer'];
+      $idUserAnswer = isset($params['idUserAnswer']) ? $params['idUserAnswer'] : $scoreParams['idUserAnswer'];
    }
    // TODO: handle validation in a proper way
    $bValidated = ($score > 99);
@@ -190,7 +200,7 @@ function graderResult($request, $db) {
       Listeners::computeAllUserItems($db);
    }
    $token = $request['sToken'];
-   if ($bValidated && !$params['bAccessSolutions']) {
+   if ($bValidated && isset($params['bAccessSolutions']) && !$params['bAccessSolutions']) {
       $params['bAccessSolutions'] = true;
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
       $token = $tokenGenerator->encodeJWS($params);
