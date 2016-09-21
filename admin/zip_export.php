@@ -225,7 +225,7 @@ function write_files(&$db, &$user_information, &$item_information) {
       if ($csv) {
 
       foreach ($item_information as $item_info) {
-         fwrite($csv,";" . $item_info["name"]);
+         fwrite($csv,';"' . $item_info["name"] . '"');
       }
 
       fwrite($csv,"\n");
