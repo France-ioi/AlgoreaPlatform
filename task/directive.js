@@ -123,11 +123,12 @@ angular.module('algorea')
                   } else if (scope.item.sValidationType != 'Manual') {
                      var newAnswer = ModelsManager.createRecord('users_answers');
                      newAnswer.ID = postRes.answer.idUserAnswer;
-                     newAnswer.idItem = postRes.answer.idItem;
-                     newAnswer.idGroup = postRes.answer.idGroup;
+                     newAnswer.idItem = postRes.answer.idItemLocal;
+                     newAnswer.idUser = postRes.answer.idUser;
                      newAnswer.sAnswer = postRes.answer.sAnswer;
                      newAnswer.sSubmissionDate = new Date();
-                     ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
+                     //ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
+                     ModelsManager.insertRecord('users_answers', newAnswer, 'noSync');
                      scope.user_answer = newAnswer;
                      scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
                         if (success) { success(); }
@@ -181,6 +182,7 @@ angular.module('algorea')
                   scope.user_item.sToken = postRes.sToken;
                   scope.user_item.bValidated = true;
                   scope.user_item.sValidationDate = new Date();
+                  scope.user_answer.sGradingDate = new Date();
                   if (config.domains.current.useMap) {
                      mapService.updateSteps();
                   }
