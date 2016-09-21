@@ -65,6 +65,7 @@ function createMissingUserItems($db, &$serverChanges, $type) {
 function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
    static $token_fields = array(
       'bHasAccessCorrection' => null,
+      'bAccessSolutions'     => null,
       'bSubmissionPossible'  => null,
       'bHintsAllowed'        => null, // from item
       'bHasSolvedTask'       => null,
