@@ -207,9 +207,6 @@ angular.module('algorea')
             }
          }
       });
-      $rootScope.$on('$stateChangeSuccess', function (event) {
-        $window.ga('send', 'pageview', $location.path());
-      });
     /* 
      * Simple service for path parsing and analysis and url factoring
      */
