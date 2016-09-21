@@ -115,7 +115,7 @@ function make_item_directory_tree(&$db, &$item_information, $item_id, $item_orde
                      JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
                      JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items_items.idItemChild
                      JOIN users_items ON items_items.idItemChild = items_items.idItemChild AND users_items.idUser = :idUser
-                     WHERE idItemParent = :itemId AND (`groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND (users_items.bValidated = 1 OR `groups_items`.`bCachedAccessSolutions` = 1)
+                     WHERE idItemParent = :itemId AND (`groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1)
                      GROUP BY items_items.idItemChild ORDER BY iChildOrder ASC;");
          if ($stmt_loc->execute(['itemId' => $item_id, 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idUser' => $_SESSION['login']['ID']])) {
             while ($row_loc = $stmt_loc->fetch()) {
@@ -336,8 +336,6 @@ populate_user_information($db, $user_information, $item_information, $main_group
 
 write_files($db, $user_information, $item_information);
 
-
-//print("Creating zip file ".$zip_id.".zip ... ");
 $zip_id = make_zip_file_name($db, $main_group_id, $main_item_id);
 exec("zip -r ". $zip_id . ".zip " . $base_dir . ' ' . $groupName . ".csv");
 
