@@ -34,6 +34,7 @@ $config = (object) array(
       "RootTempGroupId" => "4",
       "OrphanedRootItemId" => "5",
       "loginUrl" => "https://loginaws.algorea.org/login.html",
+      "timezone" => ini_get('date.timezone'),
       "domains" => array( // global root
          "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
             "title" => 'Change title here',
@@ -80,3 +81,5 @@ $config->shared->domains['current']->tabs[2] = array(
 if (is_readable(__DIR__.'/config_local.php')) {
    include_once __DIR__.'/config_local.php';
 }
+
+date_default_timezone_set($config->shared->timezone);
