@@ -9,7 +9,6 @@ class groupAdmin {
       $itemId = $requestSet['itemId'];
 
       if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
-         echo "Vous devez être connecté pour pouvoir accéder à cette fonctionnalité";
          return;
       }
 
