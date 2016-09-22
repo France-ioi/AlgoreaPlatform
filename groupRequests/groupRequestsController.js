@@ -185,14 +185,14 @@ angular.module('algorea')
             return;
          }
          $scope.loginLoading = false;
-         SyncQueue.addSyncEndListeners('getGroups', function() {
+         SyncQueue.addSyncEndListeners('groupRequestsInit', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
-               $scope.updateGroups();
                $scope.loading = false;
                $scope.myGroup = myGroup;
                $scope.user = ModelsManager.getRecord('users', res.ID);
+               $scope.updateGroups();
             });
-            SyncQueue.removeSyncEndListeners('getGroups');
+            SyncQueue.removeSyncEndListeners('groupRequestsInit');
          });
       });
    };
@@ -210,8 +210,8 @@ angular.module('algorea')
    });
 
    $scope.stopSync = function() {
-      delete(SyncQueue.requestSets.groupAdmin);
       SyncQueue.removeSyncEndListeners('groupRequests');
+      SyncQueue.removeSyncEndListeners('groupRequestsInit');
       ModelsManager.removeListener('groups_groups', 'deleted', 'groupRequestsDeleted');
       ModelsManager.removeListener('groups_groups', 'inserted', 'groupRequestsInserted');
       ModelsManager.removeListener('groups_groups', 'updated', 'groupRequestsUpdated');
