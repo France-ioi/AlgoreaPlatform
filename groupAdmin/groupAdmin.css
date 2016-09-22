@@ -507,6 +507,9 @@ orange : #F29200;
 .groupAdmin .tab-progression .checkboxSwitch > span {
 	margin-right: 0.5em;
 }
+.groupAdmin .tab-progression .table-wrapper {
+	overflow-x: auto;
+}
 .groupAdmin .table-progress {
 	border-collapse: collapse;
 	margin-top: 40px;
