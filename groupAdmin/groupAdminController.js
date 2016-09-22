@@ -592,7 +592,7 @@ angular.module('algorea')
          delete(SyncQueue.requestSets.groupAdmin.minVersion);
          callback();
          $rootScope.$broadcast('algorea.groupSynced');
-      }, false, true);
+      }, true);
       SyncQueue.planToSend(0);
    };
 
@@ -775,6 +775,7 @@ angular.module('algorea')
 
    $scope.stopSync = function() {
       delete(SyncQueue.requestSets.groupAdmin);
+      SyncQueue.removeSyncEndListeners('groupAdminController');
       SyncQueue.removeSyncEndListeners('groupAdminUsersItems');
       ModelsManager.removeListener('users_items', 'deleted', 'groupAdminDeleted');
       ModelsManager.removeListener('users_items', 'inserted', 'groupAdminInserted');
