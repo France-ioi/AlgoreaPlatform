@@ -39,6 +39,7 @@
 	text-transform: uppercase;
 	font-weight: bold;
 	margin: 0 0 1em;
+	line-height: inherit;
 }
 .groupRequest .groupRequest-title span {
 	display: block;
@@ -54,7 +55,15 @@
 	font-size: 16px;
 	margin-top: 0;
 }
-
+.groupRequest .label-description {
+	font-size: 14px;
+	font-style: italic;
+	color: #353535;
+	display: block;
+	font-weight: normal;
+	line-height: 1.2em;
+	text-shadow: 1px 1px 1px #fff;
+}
 /* Search Groups */
 .groupRequest .search-groups-results {
 	border-collapse: collapse;

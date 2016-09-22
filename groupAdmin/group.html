@@ -158,7 +158,7 @@
 							<label><input type="radio" ng-model="formValues.progressionType" value="collective">Ordre du parcours</label>
 						</div>
 					</div>
-					<div ng-if="formValues.progressionType == 'collective'">
+					<div>
 						<p class="print">Légende&nbsp;:&nbsp;</p>
 						<ul class="legend">
 							<li><span class="legend-color green"></span><span class="legend-label">Exercice validé</span></li>
@@ -253,7 +253,7 @@
 										<div ng-if="formValues.detailedView" class="progress-details">
 											<div class="details-row">
 												<div class="date" title="Date dernière activité">{{getDate(thisUserItem)}}</div>
-												<div class="time" title="Temps depuis première lecture">{{getDuration(thisUserItem)}}</div>
+												<div class="time" title="Temps écoulé depuis la 1ère lecture">{{getDuration(thisUserItem)}}</div>
 												<div class="help" title="Indices demandés">{{thisUserItem.nbHintsCached}}</div>
 											</div>
 											<div class="details-row">
@@ -269,7 +269,7 @@
 											<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'">Score : {{thisUserItem.iScore}}%</li>
 											<li class="date" ng-if="!user_item.sValidationDate">Date dernière activité : {{thisUserItem.sLastActivityDate | date}}</li>
 											<li class="date" ng-if="user_item.sValidationDate">Date de validation : {{thisUserItem.sLastActivityDate | date}}</li>
-											<li class="time" ng-if="!user_item.sValidationDate">Temps depuis première lecture : {{getDuration(thisUserItem)}}</li>
+											<li class="time" ng-if="!user_item.sValidationDate">Temps écoulé depuis la 1<sup>ère</sup>s lecture : {{getDuration(thisUserItem)}}</li>
 											<li class="time" ng-if="user_item.sValidationDate">Temps jusqu'à validation : {{getDuration(thisUserItem)}}</li>
 											<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
 											<li class="questions">Demandes d'aide sur le forum : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
@@ -298,7 +298,7 @@
 										<div ng-if="formValues.detailedView" class="progress-details">
 											<div class="details-row">
 												<div class="date" title="Date dernière activité">{{getDate(thisUserItem)}}</div>
-												<div class="time" title="Temps depuis première lecture">{{getDuration(thisUserItem)}}</div>
+												<div class="time" title="Temps écoulé depuis la 1ère lecture">{{getDuration(thisUserItem)}}</div>
 												<div class="help" title="Indices demandés">{{thisUserItem.nbHintsCached}}</div>
 											</div>
 											<div class="details-row">
