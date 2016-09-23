@@ -28,7 +28,7 @@ function addCustomTriggers(&$triggers) {
       $queryOld .= "DELETE `bridges` FROM `".$objectName."_ancestors` `child_descendants` ".
          "JOIN `".$objectName."_ancestors` `parent_ancestors` ".
          "JOIN `".$objectName."_ancestors` `bridges` ON (`bridges`.`id".$upObjectName."Ancestor` = `parent_ancestors`.`id".$upObjectName."Ancestor` AND ".
-                                              "`bridges`.`id".$upObjectName."Child` = `child_descendants`.`id".$upObjectName."Child`) ".
+         "`bridges`.`id".$upObjectName."Child` = `child_descendants`.`id".$upObjectName."Child`) ".
          "WHERE `parent_ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Parent` ".
          "AND `child_descendants`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Child`; ";
 
@@ -42,7 +42,7 @@ function addCustomTriggers(&$triggers) {
       $queryOld .= "DELETE `parent_ancestors` FROM `".$objectName."_ancestors` `parent_ancestors` ".
          "JOIN  `".$objectName."_ancestors` `child_ancestors` ON (`parent_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Parent` AND ".
             "`child_ancestors`.`id".$upObjectName."Child` = `parent_ancestors`.`id".$upObjectName."Child`) ".
-         "WHERE `child_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Parent` ";
+         "WHERE `child_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Child` ";
 
       $triggers[$objectName."_".$objectName]["BEFORE DELETE"][] = $queryOld;
 
