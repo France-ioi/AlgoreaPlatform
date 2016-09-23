@@ -131,6 +131,9 @@
    background-color: #878787;
    color: #fff;
 }
+.menu-item-login-logged .userbox-text {
+   display: none;
+}
 .userInfosLink,
 .userInfosLink:focus,
 .userInfosLink:hover {

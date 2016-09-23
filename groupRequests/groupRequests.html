@@ -8,12 +8,10 @@
       <uib-tab heading="Mes groupes">
          <div class="groupRequest-tabContent">
             <div class="">
-               <h2 class="groupRequest-title" ng-hide="loading">Les groupes dont je fais partie</h2>
-
                <div ng-if="!loading && !showTable()">
                   <p>Vous ne faites actuellement partie d'aucun groupe.</p>
                </div>
-               <h3>Invitations et requêtes :</h3>
+               <h2 class="groupRequest-title" ng-hide="loading">Invitations et requêtes en attente</h2>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
@@ -42,7 +40,7 @@
                      </tbody>
                   </table>
                </div>
-               <h3>Groupes dont je fais partie :</h3>
+               <h2 class="groupRequest-title" ng-hide="loading">Groupes dont je fais partie</h2>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
@@ -72,7 +70,7 @@
                <h2 class="groupRequest-title" ng-hide="loading">Rejoindre un groupe</h2>
                <div ng-if="!loading">
                   <form class="form">
-                     <label class="label-title" for="askedPassword">Rejoindre avec un mot de passe :</label>
+                     <label class="label-title" for="askedPassword">Rejoindre avec un code d'inscription :<span class="label-description">Renseigner le code d'inscription communiqué par le responsable du groupe</span></label>
                      <div class="form-group form-inline">
                         <input type="text" class="form-control" name="askedPassword" id="askedPassword" ng-model="pageData.askedPassword">
                         <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword">Rejoindre</button>
@@ -82,7 +80,7 @@
                      {{passwordInfo}}
                   </div>
                   <form class="form">
-                     <label class="label-title" for="lookupString">Rechercher par nom :</label>
+                     <label class="label-title" for="lookupString">Rechercher par nom :<span class="label-description">Saisir une partie du nom du groupe que vous recherchez</span></label>
                      <div class="form-group form-inline">
                         <input type="text" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
                         <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
@@ -150,9 +148,9 @@
                         </ul>
                      </div>
                      <div>
-                        <h3>Créer un nouveau groupe :</h3>
+                        <label for="newGroupName">Créer un nouveau groupe :<span class="label-description">Entrez le nom du nouveau groupe</span></label>
                         <div class="form-inline">
-                           <input type="text" ng-model="formValues.groupName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
+                           <input type="text" ng-model="formValues.groupName" class="form-control" id="newGroupName"/>
                            <button ng-click="newGroup();" class="btn btn-default"><span class="btn-label">Ajouter un groupe</span></button>
                         </div>
                      </div>
@@ -160,7 +158,7 @@
                </div>
             </div>
             <div>
-               <h2 class="groupRequest-title" ng-hide="loading">Historique complet</h2>
+               <h2 class="groupRequest-title" ng-hide="loading">Historique complet<span>Voici une liste chronologique des événements concernant vos entrées ou sorties de groupes, invitations reçues, etc.</span></h2>
 
                <ul ng-if="!loading" class="history-list">
                   <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">

@@ -507,6 +507,9 @@ orange : #F29200;
 .groupAdmin .tab-progression .checkboxSwitch > span {
 	margin-right: 0.5em;
 }
+.groupAdmin .tab-progression .table-wrapper {
+	overflow-x: auto;
+}
 .groupAdmin .table-progress {
 	border-collapse: collapse;
 	margin-top: 40px;
@@ -583,7 +586,6 @@ orange : #F29200;
 	text-align: left;
 }
 .groupAdmin .table-progress.view-global td.status {
-	position: relative;
 	width: 60px;
 	min-width: 60px;
 	max-width: 60px;
@@ -597,18 +599,16 @@ orange : #F29200;
 .groupAdmin .table-progress.view-global td.status:hover button {
 	opacity: 1;
 }
+.groupAdmin .table-progress.view-global td.status .popover {
+	max-width: initial;
+}
 .groupAdmin .table-progress.view-global td.status .progress-details {
-	position: absolute;
-	border: 1px solid #0FAA8B;
 	background-color: #fff;
 	list-style: none;
 	font-size: 14px;
 	line-height: 1.4;
 	margin: 0;
-	padding: 10px;
-	bottom: 40px;
-	right: 0;
-	display: none;
+	padding: 0;
 	width: 300px;
 }
 .groupAdmin .table-progress.view-global td.status button.btn-preview:hover + ul.progress-details {
@@ -640,9 +640,6 @@ orange : #F29200;
 	max-height: calc(100vh - 175px);
 	overflow-y: auto;
 	overflow-x: hidden;
-}
-.groupAdmin .table-progress.view-global tbody {
-	padding-top: 148px;
 }
 .groupAdmin .table-progress.view-detail tbody {
 	max-height: 400px;
