@@ -2,9 +2,6 @@
 
 class Listeners {
    public static function computeAllUserItems($db) {
-      $query = "SELECT iVersion FROM `synchro_version`";
-      $stmt = $db->query($query);
-      $version = $stmt->fetchColumn();
       // We mark as 'todo' all ancestors of objects marked as 'todo'
       $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
       $db->exec($query);
@@ -78,7 +75,7 @@ class Listeners {
             $stmtUpdate->execute(array('ID' => $row['ID'], 'idUser' => $row['idUser'], 'idItem' => $row['idItem'], 'sValidationType' => $row['sValidationType']));
          }
          // Objects marked as 'processing' are now marked as 'done'
-         $query = "UPDATE `users_items` SET `sAncestorsComputationState` = 'done', iVersion = '".$version."' WHERE `sAncestorsComputationState` = 'processing'";
+         $query = "UPDATE `users_items` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
          $hasChanges = ($db->exec($query) > 0);
       }
    }
@@ -91,49 +88,49 @@ class Listeners {
       syncDebug('UserItemsAfter', 'end');
    }
 
-   public static function createNewAncestors($db, $objectName, $upObjectName) {
+   public static function createNewAncestors($db, $objectName, $upObjectName, $tablePrefix='', $baseTablePrefix='') {
       //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', "\n".date(DATE_RFC822)."\n", FILE_APPEND);
       // We mark as 'todo' all descendants of objects marked as 'todo'
-      $query = " INSERT IGNORE INTO  `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) SELECT `descendants`.`ID`, 'todo' FROM `".$objectName."` as `descendants` JOIN `".$objectName."_ancestors` ON (`descendants`.`ID` = `".$objectName."_ancestors`.`id".$upObjectName."Child`) JOIN `".$objectName."_propagate` `ancestors` ON (`ancestors`.`ID` = `".$objectName."_ancestors`.`id".$upObjectName."Ancestor`) WHERE `ancestors`.`sAncestorsComputationState` = 'todo' ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'";
-      //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
+      $query = " INSERT IGNORE INTO  `".$tablePrefix.$objectName."_propagate` (`ID`, `sAncestorsComputationState`) SELECT `descendants`.`ID`, 'todo' FROM `".$objectName."` as `descendants` JOIN `".$tablePrefix.$objectName."_ancestors` ON (`descendants`.`ID` = `".$tablePrefix.$objectName."_ancestors`.`id".$upObjectName."Child`) JOIN `".$tablePrefix.$objectName."_propagate` `ancestors` ON (`ancestors`.`ID` = `".$tablePrefix.$objectName."_ancestors`.`id".$upObjectName."Ancestor`) WHERE `ancestors`.`sAncestorsComputationState` = 'todo' ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'";
+      // file_put_contents(__DIR__.'/../logs/'.$tablePrefix.$objectName.'_ancestors_listeners.log', "\n\n\n".$query."\n", FILE_APPEND);
       $res = $db->exec($query);
       $hasChanges = true;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no parents not marked as 'done'
          // TODO: this query is super slow (> 2.5s sometimes)
-         $query = "UPDATE `".$objectName."_propagate` as `children` SET `sAncestorsComputationState` = 'processing' WHERE `sAncestorsComputationState` = 'todo' AND `children`.`ID` NOT IN ".
+         $query = "UPDATE `".$tablePrefix.$objectName."_propagate` as `children` SET `sAncestorsComputationState` = 'processing' WHERE `sAncestorsComputationState` = 'todo' AND `children`.`ID` NOT IN ".
          "(SELECT `id".$upObjectName."Child` FROM ( ".
-            "SELECT `".$objectName."_".$objectName."`.`id".$upObjectName."Child` ".
-            "FROM `".$objectName."_".$objectName."` ".
-            "JOIN `".$objectName."_propagate` as `parents` ON (`parents`.`ID` = `".$objectName."_".$objectName."`.`id".$upObjectName."Parent`) ".
+            "SELECT `".$baseTablePrefix.$objectName."_".$objectName."`.`id".$upObjectName."Child` ".
+            "FROM `".$baseTablePrefix.$objectName."_".$objectName."` ".
+            "JOIN `".$tablePrefix.$objectName."_propagate` as `parents` ON (`parents`.`ID` = `".$baseTablePrefix.$objectName."_".$objectName."`.`id".$upObjectName."Parent`) ".
             "WHERE `parents`.`sAncestorsComputationState` <> 'done'";
          if ($objectName == 'groups') {
             $query .= " and (`groups_groups`.`sType` = 'invitationAccepted' or  `groups_groups`.`sType` = 'requestAccepted' or `groups_groups`.`sType` = 'direct') ";
          }
          $query .= ") as `notready`)";
          $db->exec($query);
-         //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
+         // file_put_contents(__DIR__.'/../logs/'.$tablePrefix.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
 
          // For every object marked as 'processing', we compute all its ancestors
-         $query = "INSERT IGNORE INTO `".$objectName."_ancestors` (`id".$upObjectName."Ancestor`, `id".$upObjectName."Child`".($objectName == 'groups' ? ', `bIsSelf`)' : ')').
-         "SELECT `".$objectName."_".$objectName."`.`id".$upObjectName."Parent`, `".$objectName."_".$objectName."`.`id".$upObjectName."Child`".($objectName == 'groups' ? ", '0' as  `bIsSelf`" : '')." FROM `".$objectName."_".$objectName."` JOIN `".$objectName."_propagate` ON (`".$objectName."_".$objectName."`.`id".$upObjectName."Child` = `".$objectName."_propagate`.`ID` OR `".$objectName."_".$objectName."`.`id".$upObjectName."Parent` = `".$objectName."_propagate`.`ID`)  ".
-         "WHERE `".$objectName."_propagate`.`sAncestorsComputationState` = 'processing' ";
+         $query = "INSERT IGNORE INTO `".$tablePrefix.$objectName."_ancestors` (`id".$upObjectName."Ancestor`, `id".$upObjectName."Child`".($objectName == 'groups' ? ', `bIsSelf`)' : ')').
+         "SELECT `".$baseTablePrefix.$objectName."_".$objectName."`.`id".$upObjectName."Parent`, `".$baseTablePrefix.$objectName."_".$objectName."`.`id".$upObjectName."Child`".($objectName == 'groups' ? ", '0' as  `bIsSelf`" : '')." FROM `".$baseTablePrefix.$objectName."_".$objectName."` JOIN `".$tablePrefix.$objectName."_propagate` ON (`".$baseTablePrefix.$objectName."_".$objectName."`.`id".$upObjectName."Child` = `".$tablePrefix.$objectName."_propagate`.`ID` OR `".$baseTablePrefix.$objectName."_".$objectName."`.`id".$upObjectName."Parent` = `".$tablePrefix.$objectName."_propagate`.`ID`)  ".
+         "WHERE `".$tablePrefix.$objectName."_propagate`.`sAncestorsComputationState` = 'processing' ";
          if ($objectName == 'groups') {
             $query .= " and (`groups_groups`.`sType` = 'invitationAccepted' or  `groups_groups`.`sType` = 'requestAccepted' or `groups_groups`.`sType` = 'direct') ";
          }
          $query .= "UNION ".
-         "SELECT `".$objectName."_ancestors`.`id".$upObjectName."Ancestor`, `".$objectName."_".$objectName."_join`.`id".$upObjectName."Child`".($objectName == 'groups' ? ", '0' as  `bIsSelf`" : '')." FROM `".$objectName."_ancestors` ".
-         "JOIN `".$objectName."_".$objectName."` as `".$objectName."_".$objectName."_join` ON (`".$objectName."_".$objectName."_join`.`id".$upObjectName."Parent` = `".$objectName."_ancestors`.`id".$upObjectName."Child`) ".
-         "JOIN `".$objectName."_propagate` ON (`".$objectName."_".$objectName."_join`.`id".$upObjectName."Child` = `".$objectName."_propagate`.`ID`) WHERE `".$objectName."_propagate`.`sAncestorsComputationState` = 'processing'";
+         "SELECT `".$tablePrefix.$objectName."_ancestors`.`id".$upObjectName."Ancestor`, `".$baseTablePrefix.$objectName."_".$objectName."_join`.`id".$upObjectName."Child`".($objectName == 'groups' ? ", '0' as  `bIsSelf`" : '')." FROM `".$tablePrefix.$objectName."_ancestors` ".
+         "JOIN `".$baseTablePrefix.$objectName."_".$objectName."` as `".$baseTablePrefix.$objectName."_".$objectName."_join` ON (`".$baseTablePrefix.$objectName."_".$objectName."_join`.`id".$upObjectName."Parent` = `".$tablePrefix.$objectName."_ancestors`.`id".$upObjectName."Child`) ".
+         "JOIN `".$tablePrefix.$objectName."_propagate` ON (`".$baseTablePrefix.$objectName."_".$objectName."_join`.`id".$upObjectName."Child` = `".$tablePrefix.$objectName."_propagate`.`ID`) WHERE `".$tablePrefix.$objectName."_propagate`.`sAncestorsComputationState` = 'processing'";
          if ($objectName == 'groups') {
-            $query .= " and (`groups_groups_join`.`sType` = 'invitationAccepted' or  `groups_groups_join`.`sType` = 'requestAccepted' or `groups_groups_join`.`sType` = 'direct') UNION SELECT  `groups_propagate`.`ID` as `idGroupAncestor`, `groups_propagate`.`ID` as `idGroupChild`, '1' as `bIsSelf` FROM `groups_propagate` WHERE `groups_propagate`.`sAncestorsComputationState` = 'processing';";
+            $query .= " and (`groups_groups_join`.`sType` = 'invitationAccepted' or  `groups_groups_join`.`sType` = 'requestAccepted' or `groups_groups_join`.`sType` = 'direct') UNION SELECT  `".$tablePrefix."groups_propagate`.`ID` as `idGroupAncestor`, `".$tablePrefix."groups_propagate`.`ID` as `idGroupChild`, '1' as `bIsSelf` FROM `".$tablePrefix."groups_propagate` WHERE `".$tablePrefix."groups_propagate`.`sAncestorsComputationState` = 'processing';";
          }
-         //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
+         // file_put_contents(__DIR__.'/../logs/'.$tablePrefix.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
          $db->exec($query);
 
          // Objects marked as 'processing' are now marked as 'done'
-         $query = "UPDATE `".$objectName."_propagate` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
-         //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
+         $query = "UPDATE `".$tablePrefix.$objectName."_propagate` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
+         // file_put_contents(__DIR__.'/../logs/'.$tablePrefix.$objectName.'_ancestors_listeners.log', $query."\n", FILE_APPEND);
          $hasChanges = ($db->exec($query) > 0);
       }
    }
