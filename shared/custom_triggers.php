@@ -13,7 +13,7 @@ function addCustomTriggers(&$triggers) {
          "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
 
       // Mark as 'todo' the objects that are descendants of the child object of the old relation
-      $queryOld .= "INSERT IGNORE INTO `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) (SELECT `".$objectName."_ancestors`.`idItemChild`, 'todo' FROM `".$objectName."_ancestors` ".
+      $queryOld .= "INSERT IGNORE INTO `".$objectName."_propagate` (`ID`, `sAncestorsComputationState`) (SELECT `".$objectName."_ancestors`.`id".$upObjectName."Child`, 'todo' FROM `".$objectName."_ancestors` ".
          "WHERE `".$objectName."_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Child`) ".
          "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
 
@@ -23,7 +23,7 @@ function addCustomTriggers(&$triggers) {
 #         "WHERE `ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child`) ".
 #         "ON DUPLICATE KEY UPDATE `sAncestorsComputationState` = 'todo'; ";
       // Delete the old relationship
-      $queryOld .= "DELETE `".$objectName."_ancestors` from `".$objectName."_ancestors` WHERE `".$objectName."_ancestors`.`idItemChild` = OLD.`id".$upObjectName."Child` and `".$objectName."_ancestors`.`idItemAncestor` = OLD.`id".$upObjectName."Parent`;";
+      $queryOld .= "DELETE `".$objectName."_ancestors` from `".$objectName."_ancestors` WHERE `".$objectName."_ancestors`.`id".$upObjectName."Child` = OLD.`id".$upObjectName."Child` and `".$objectName."_ancestors`.`id".$upObjectName."Ancestor` = OLD.`id".$upObjectName."Parent`;";
 
       // We delete all bridges between ancestors of the parent and descendants of the child in the old relation
       $queryOld .= "DELETE `bridges` FROM `".$objectName."_ancestors` `child_descendants` ".
