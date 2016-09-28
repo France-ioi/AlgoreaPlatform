@@ -9,7 +9,7 @@ function createItem($ID, $title, $type) {
 	$stmt->execute(['ID' => $ID, 'sType' => $type]);
 	$stmt = $db->prepare('insert ignore into items_strings (idItem, sTitle) values (:idItem, :sTitle);');
 	$stmt->execute(['idItem' => $ID, 'sTitle' => $title]);
-	$rootGroup = $config->shared->RootSelfGroupId;
+	$rootGroup = $config->shared->RootGroupId;
 	$stmt = $db->prepare('insert ignore into groups_items (idItem, idGroup, sPartialAccessDate, sCachedPartialAccessDate, bCachedPartialAccess) values (:idItem, :idGroup, NOW(), NOW(), 1);');
 	$stmt->execute(['idItem' => $ID, 'idGroup' => $rootGroup]);
 }
