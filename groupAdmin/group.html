@@ -60,8 +60,9 @@
 							<ul class="list list-block list-users">
 								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
 									<span class="user-status connected"></span>
-									<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
-									<span class="action">
+									<span class="user-name" ng-if="child.child.sType == 'UserSelf'">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
+									<span class="user-name" ng-if="child.child.sType != 'UserSelf'"><a ui-sref="groupAdminGroup({idGroup: child.child.ID})">{{child.child.sName}}</a></span>
+									<span class="action" ng-if="child.child.sType == 'UserSelf'">
 										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" title="supprimer"><span class="btn-label">supprimer</span></button>
 									</span>
 								</li>
