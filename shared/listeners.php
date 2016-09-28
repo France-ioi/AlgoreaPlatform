@@ -42,7 +42,7 @@ class Listeners {
                               from items_items
                               left join users_items as task_children on items_items.idItemChild = task_children.idItem
                               join items on items.ID = items_items.idItemChild
-                              where (task_children.ID = NULL OR task_children.idUser :idUser and items_items.idItemParent = :idItem
+                              where (task_children.ID = NULL OR task_children.idUser = :idUser) and items_items.idItemParent = :idItem
                                  and items.sType != \'Course\' and items.sType != \'Presentation\' and items.bNoScore = 0) as task_children_data
                          set users_items.sLastActivityDate = children_data.sLastActivityDate,
                              users_items.nbTasksTried = children_data.nbTasksTried,
