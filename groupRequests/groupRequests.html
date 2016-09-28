@@ -11,7 +11,7 @@
                <div ng-if="!loading && !showTable()">
                   <p>Vous ne faites actuellement partie d'aucun groupe.</p>
                </div>
-               <h2 class="groupRequest-title" ng-hide="loading">Invitations et requêtes en attente</h2>
+               <h2 class="groupRequest-title" ng-hide="loading">Demandes en attente et invitations reçues</h2>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
@@ -40,7 +40,7 @@
                      </tbody>
                   </table>
                </div>
-               <h2 class="groupRequest-title" ng-hide="loading">Groupes dont je fais partie</h2>
+               <h2 class="groupRequest-title" ng-hide="loading">Groupes que j'ai rejoints</h2>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
@@ -144,7 +144,7 @@
                      <div ng-show="myGroupAdmin.children.length">
                         <h3>Consulter un groupe :</h3>
                         <ul class="list list-block list-groups">
-                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children | groupsgroupsChildrenNameSort"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
                         </ul>
                      </div>
                      <div>
@@ -161,7 +161,7 @@
                <h2 class="groupRequest-title" ng-hide="loading">Historique complet<span>Voici une liste chronologique des événements concernant vos entrées ou sorties de groupes, invitations reçues, etc.</span></h2>
 
                <ul ng-if="!loading" class="history-list">
-                  <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
+                  <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}"  ng-if="mygroupgroup.parent.sType != 'RootSelf'">
                      {{mygroupgroup.sStatusDate | date}}&nbsp;:
                      <span ng-switch="mygroupgroup.sType">
                         <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>

@@ -2,6 +2,16 @@
 
 // index of groups
 
+angular.module('algorea').
+  filter('groupsgroupsChildrenNameSort', function() {
+    return function(groups_groups) {
+      var res = _.sortBy(groups_groups, function(g_g) {
+         return g_g.child.sName;
+      });
+      return res;
+    };
+  });
+
 angular.module('algorea')
    .controller('groupAdminIndexController', ['$scope', '$state', '$http', 'itemService', function ($scope, $state, $http, itemService) {
    $scope.error = '';
