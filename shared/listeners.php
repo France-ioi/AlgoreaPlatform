@@ -38,11 +38,11 @@ class Listeners {
                               join items_items on items_items.idItemChild = children.idItem
                               where children.idUser = :idUser and items_items.idItemParent = :idItem) as children_data
                            join
-                           (select Sum(IF(task_children.bValidated, 1, 0)) as nbChildrenValidated, Sum(IF(task_children.bValidated, 0, 1)) as nbChildrenNonValidated, SUM(if(items_items.sCategory = \'Validation\' and task_children.bValidated = 0, 1, 0)) AS nbChildrenCategory, Max(task_children.sValidationDate) as maxValidationDate, Max(if(items_items.sCategory = \'Validation\', task_children.sValidationDate, NULL)) as maxValidationDateCategories
-                              from users_items as task_children
-                              join items_items on items_items.idItemChild = task_children.idItem
-                              join items on items.ID = task_children.idItem
-                              where task_children.idUser = :idUser and items_items.idItemParent = :idItem
+                           (select Sum(IF(IF(task_children.ID IS NULL,0,task_children.bValidated), 1, 0)) as nbChildrenValidated, Sum(IF(IF(task_children.ID IS NULL,1,task_children.bValidated), 0, 1)) as nbChildrenNonValidated, SUM(if(items_items.sCategory = \'Validation\' and (task_children.ID IS NULL or task_children.bValidated = 0), 1, 0)) AS nbChildrenCategory, Max(task_children.sValidationDate) as maxValidationDate, Max(if(items_items.sCategory = \'Validation\', task_children.sValidationDate, NULL)) as maxValidationDateCategories
+                              from items_items
+                              left join users_items as task_children on items_items.idItemChild = task_children.idItem
+                              join items on items.ID = items_items.idItemChild
+                              where (task_children.ID = NULL OR task_children.idUser :idUser and items_items.idItemParent = :idItem
                                  and items.sType != \'Course\' and items.sType != \'Presentation\' and items.bNoScore = 0) as task_children_data
                          set users_items.sLastActivityDate = children_data.sLastActivityDate,
                              users_items.nbTasksTried = children_data.nbTasksTried,
