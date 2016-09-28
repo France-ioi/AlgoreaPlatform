@@ -151,6 +151,14 @@ angular.module('algorea')
          return true;
       };
 
+      function getGroupAncestors(group, ancestors) {
+         if (!group || !group.parents) return;
+         ancestors[group.ID] = true;
+         angular.forEach(group.parents, function(group_group_parent) {
+            getGroupAncestors(group_group_parent.parent, ancestors);
+         });
+      }
+
       $scope.computeAccessRights = function(to_group, item_item) {
          var child_group_item = getGroupItem($scope.loginData.idGroupSelf, item_item.child.ID);
          if (!to_group || !child_group_item || (!child_group_item.bOwnerAccess && !child_group_item.bManagerAccess)) {
@@ -190,8 +198,10 @@ angular.module('algorea')
             return true;
          }
          this.canGiveAccess = false;
+         var group_ancestors = {};
+         getGroupAncestors(to_group, group_ancestors);
          angular.forEach(parent.group_items, function(group_item) {
-            if (group_item.idGroup == to_group.ID) {
+            if (group_ancestors[group_item.idGroup] && (group_item.bCachedFullAccess || group_item.bCachedPartialAccess)) {
                that.canGiveAccess = true;
                return true;
             }
@@ -888,7 +898,12 @@ angular.module('algorea')
 
       $scope.switchAccessMode = function(idGroup, item_item) {
          var idItem = item_item.child.ID;
-         if (!$scope.computeAccessRights(idGroup, item_item)) {
+         var group = ModelsManager.getRecord('groups', idGroup);
+         if (!group) {
+            console.error('cannot find group '+idGroup);
+            return;
+         }
+         if (!$scope.computeAccessRights(group, item_item)) {
             alert('vous n\'avez pas les droits suffisants pour changer les droits de ce groupe sur cet item: '+$scope.canGiveAccessReason);
             return;
          }
