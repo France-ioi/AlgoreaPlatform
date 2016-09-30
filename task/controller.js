@@ -45,6 +45,7 @@ angular.module('algorea')
       if ($scope.loadedUserItemID != $scope.user_item.ID) {
          return;
       }
+      $scope.firstViewLoaded = true;
       $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
       var state = $scope.user_item.sState;
       if (!state) {state = '';} // default state is the empty string
@@ -151,7 +152,8 @@ angular.module('algorea')
          } else {
             this.showForum = false;
             if (!$scope.task.unloaded) {
-               $scope.task.showViews(platformViews[platformView].taskViews, $scope.load_answer_and_sync, function(){});
+               var callbackFun = $scope.firstViewLoaded ? function() {} : $scope.load_answer_and_sync;
+               $scope.task.showViews(platformViews[platformView].taskViews, callbackFun, function(){});
             }
          }
          $scope.currentView = platformView;
@@ -169,6 +171,7 @@ angular.module('algorea')
       }
    };
    $scope.setTabs = function (taskViews) {
+      $scope.firstViewLoaded = false;
       initPlatformViews();
       if (!this.inForum && this.useForum) {
          platformViews.forum = {tabString: 'Aide'};
