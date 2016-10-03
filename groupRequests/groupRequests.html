@@ -160,7 +160,7 @@
             <div>
                <h2 class="groupRequest-title" ng-hide="loading">Historique complet<span>Voici une liste chronologique des événements concernant vos entrées ou sorties de groupes, invitations reçues, etc.</span></h2>
 
-               <ul ng-if="!loading" class="history-list">
+               <ul ng-if="!loading" class="history-list list list-block">
                   <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}"  ng-if="mygroupgroup.parent.sType != 'RootSelf'">
                      {{mygroupgroup.sStatusDate | date}}&nbsp;:
                      <span ng-switch="mygroupgroup.sType">
