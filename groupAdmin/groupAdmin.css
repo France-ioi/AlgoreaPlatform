@@ -52,6 +52,7 @@ orange : #F29200;
 .groupAdmin-tabContent {
 	background-color: #edebed;
 	padding: 2em;
+	position: relative;
 }
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
