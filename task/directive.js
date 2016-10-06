@@ -1,8 +1,5 @@
 'use strict';
 
-// root url of tasks, everything before task.php
-var taskRootUrl = 'http://tasks.eroux.fr/';
-
 angular.module('algorea')
   .directive('includeTask', function () {
     return {
