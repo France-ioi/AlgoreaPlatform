@@ -39,7 +39,7 @@ angular.module('algorea')
       '</div>'+
    '</div>'+
    '</div>'+
-   '</div><div class="sidebar-left-content" ng-include="\'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
+   '</div><div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {
