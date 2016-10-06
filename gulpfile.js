@@ -62,7 +62,7 @@ gulp.task('admin-js', function() {
 });
 
 gulp.task('templates', function () {
-    return gulp.src(['**/*html','!bower_components/**/*.html','!ext/**/*.html','menu.html','!*.html','!admin/**/*.html','!node_modules/**/*.html','!dist/**/*.html','!commonFramework/angularDirectives/*.html','!commonFramework/sync/*.html'])
+    return gulp.src(['**/*html','!bower_components{/*,/**}','!ext/**/*.html','!index*.html','!animation.html','!admin/**/*.html','!node_modules/**/*.html','!dist/**/*.html','!commonFramework/angularDirectives/*.html','!commonFramework/sync/*.html'])
         .pipe(templateCache({module: 'algorea'}))
         .pipe(gulp.dest(''));
 });
