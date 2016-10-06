@@ -5,17 +5,19 @@ angular.module('algorea')
    .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
       $rootScope.$state = $state;
       $rootScope.$stateParams = $stateParams;
-      $rootScope.templatesPrefix = config.domains.current.compiledMode ? '' : config.domains.current.assetsBaseUrl;
+      $rootScope.templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
    }]);
 
 // Make sure to include the `ui.router` module as a dependency.
 angular.module('algorea')
    .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$sceDelegateProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $sceDelegateProvider) {
-      $sceDelegateProvider.resourceUrlWhitelist([
-         'self',
-         config.domains.current.assetsBaseUrl+'**'
-      ]);
-      var templatesPrefix = config.domains.current.compiledMode ? '' : config.domains.current.assetsBaseUrl;
+      if (config.domains.current.assetsBaseUrl) {
+         $sceDelegateProvider.resourceUrlWhitelist([
+            'self',
+            config.domains.current.assetsBaseUrl+'**'
+         ]);
+      }
+      var templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
       $urlRouterProvider
          .otherwise(config.domains.current.defaultPath);
       $stateProvider
