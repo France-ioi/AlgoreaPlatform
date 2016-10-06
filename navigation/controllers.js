@@ -4,7 +4,7 @@ angular.module('algorea')
    .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','mapService','$timeout', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, mapService, $timeout) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
-      $scope.viewsBaseUrl = 'navigation/views/';
+      $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
       $scope.getChildren = function() {
          return itemService.getChildren(this.item);
       };

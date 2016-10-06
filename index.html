@@ -19,8 +19,8 @@
     <link href="groupRequests/groupRequests.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="algorea.css" type="text/css">
     <link rel="stylesheet" href="forum/forum.css" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
     <script type="text/javascript">
       if (config.domains.current.additionalCssUrl) {
         link = document.createElement( "link" );
@@ -56,7 +56,7 @@
 <body ng-controller="layoutController" id="body" ng-cloak>
 <iframe id="animation-debut" src="animation.html" onclick="animationFinished()" style="display:none;"></iframe>
 <div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.menuClicked($event);" ng-include="'menu.html'">
+<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
 </header>
 <div id='main'>
 
@@ -66,9 +66,9 @@
 
 </div>
 
-<footer id="footer" ng-include="'footer.html'"></footer>
+<footer id="footer" ng-include="templatesPrefix+'footer.html'"></footer>
 
-<div id="map" class="map" style="display:none;" ng-include="'map/map.html'"></div>
+<div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>
 
 <script>
 function animationFinished() {
