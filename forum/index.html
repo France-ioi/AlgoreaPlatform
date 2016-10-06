@@ -1,5 +1,5 @@
 <div ng-if="!loading">
-   <div ng-if="false" ng-controller="forumFilterController" ng-include="'forum/filters.html'">
+   <div ng-if="false" ng-controller="forumFilterController" ng-include="templatesPrefix+'forum/filters.html'">
    </div>
    <div class="container threadsContainer" style="width:100%">
       <div class="row clearfix">
@@ -15,21 +15,21 @@
                   <div uib-tab-heading>
                      <strong>Aider les autres ({{helpOthersThreads.length}})</strong> 
                   </div>
-                  <div ng-repeat="(ID, thread) in threads | threadFilter:'helpOthers':myUserID:currentFilter:currentGlobalFilter.filter as helpOthersThreads" ng-include="'forum/threadInIndex.html'" class="threadsInIndex">
+                  <div ng-repeat="(ID, thread) in threads | threadFilter:'helpOthers':myUserID:currentFilter:currentGlobalFilter.filter as helpOthersThreads" ng-include="templatesPrefix+'forum/threadInIndex.html'" class="threadsInIndex">
                   </div>
                </li>
                <li uib-tab select="selectTab('getHelp')" active="tabs.getHelp.active">
                   <div uib-tab-heading>
                      <strong>Me faire aider ({{getHelpThreads.length}})</strong> 
                   </div>
-                  <div ng-repeat="(ID, thread) in threads | threadFilter:'getHelp':myUserID:currentFilter:currentGlobalFilter.filter as getHelpThreads" ng-include="'forum/threadInIndex.html'" class="threadsInIndex">
+                  <div ng-repeat="(ID, thread) in threads | threadFilter:'getHelp':myUserID:currentFilter:currentGlobalFilter.filter as getHelpThreads" ng-include="templatesPrefix+'forum/threadInIndex.html'" class="threadsInIndex">
                   </div>
                </li>
                <li uib-tab select="selectTab('general')" active="tabs.general.active">
                   <div uib-tab-heading>
                      <strong>Général ({{generalThreads.length}})</strong> 
                   </div>
-                  <div ng-repeat="(ID, thread) in threads | threadFilter:'general':myUserID:currentFilter:currentGlobalFilter.filter as generalThreads" ng-include="'forum/threadInIndex.html'" class="threadsInIndex">
+                  <div ng-repeat="(ID, thread) in threads | threadFilter:'general':myUserID:currentFilter:currentGlobalFilter.filter as generalThreads" ng-include="templatesPrefix+'forum/threadInIndex.html'" class="threadsInIndex">
                   </div>
                </li>
             </ul>

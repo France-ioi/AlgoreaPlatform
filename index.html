@@ -7,9 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
     <base href="/">
     <script type="text/javascript" src="config.js.php"></script>
-<!--    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <link href="bower_components/dynatree/dist/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
     <link href="layout/3columns-flex.css" rel="stylesheet" type="text/css" />
     <link href="layout/menu.css" rel="stylesheet" type="text/css" />
     <link href="layout/main.css" rel="stylesheet" type="text/css" />
@@ -21,6 +20,7 @@
     <link rel="stylesheet" href="forum/forum.css" type="text/css">
     <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script type="text/javascript">
       if (config.domains.current.additionalCssUrl) {
         link = document.createElement( "link" );
@@ -30,7 +30,6 @@
         document.getElementsByTagName( "head" )[0].appendChild( link );
       }
     </script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     #animation-debut {
       position:absolute;
@@ -56,7 +55,7 @@
 <body ng-controller="layoutController" id="body" ng-cloak>
 <iframe id="animation-debut" src="animation.html" onclick="animationFinished()" style="display:none;"></iframe>
 <div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.menuClicked($event);" ng-include="'menu.html'">
+<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
 </header>
 <div id='main'>
 
@@ -66,9 +65,9 @@
 
 </div>
 
-<footer id="footer" ng-include="'footer.html'"></footer>
+<footer id="footer" ng-include="templatesPrefix+'footer.html'"></footer>
 
-<div id="map" class="map" style="display:none;" ng-include="'map/map.html'"></div>
+<div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>
 
 <script>
 function animationFinished() {
@@ -87,21 +86,17 @@ function startAnimation() {
 }
 if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAnimation();
 </script>
-
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="bower_components/angular-i18n/angular-locale_fr-fr.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-<script>
-   var rootUrl = 'commonFramework/';
-</script>
 <script src="commonFramework/modelsManager/modelsManager.js"></script>
 <script src="commonFramework/sync/syncQueue.js"></script>
 <script src="shared/models.js"></script>
 <script src="shared/utils.js"></script>
-<link href="bower_components/dynatree/dist/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
 <script src="bower_components/dynatree/dist/jquery.dynatree.min.js" type="text/javascript"></script>
 <script src="shared/small-ui-confirm.js" type="text/javascript"></script>
 <script src="bower_components/angu-fixed-header-table/angu-fixed-header-table.js" type="text/javascript"></script>

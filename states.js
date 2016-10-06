@@ -3,13 +3,21 @@
 // Make sure to include the `ui.router` module as a dependency
 angular.module('algorea')
    .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
-       $rootScope.$state = $state;
-       $rootScope.$stateParams = $stateParams;
+      $rootScope.$state = $state;
+      $rootScope.$stateParams = $stateParams;
+      $rootScope.templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
    }]);
 
 // Make sure to include the `ui.router` module as a dependency.
 angular.module('algorea')
-   .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
+   .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$sceDelegateProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $sceDelegateProvider) {
+      if (config.domains.current.assetsBaseUrl) {
+         $sceDelegateProvider.resourceUrlWhitelist([
+            'self',
+            config.domains.current.assetsBaseUrl+'**'
+         ]);
+      }
+      var templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
       $urlRouterProvider
          .otherwise(config.domains.current.defaultPath);
       $stateProvider
@@ -31,7 +39,7 @@ angular.module('algorea')
       '</div>'+
    '</div>'+
    '</div>'+
-   '</div><div class="sidebar-left-content" ng-include="\'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
+   '</div><div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {
@@ -39,7 +47,7 @@ angular.module('algorea')
                    controller: 'rightNavigationController',
                 },
                 'breadcrumbs': {
-                   templateUrl: 'navigation/views/super-bread-crumbs.html',
+                   templateUrl: templatesPrefix+'navigation/views/super-bread-crumbs.html',
                    controller: 'superBreadCrumbsController',
                 },
              },
@@ -50,7 +58,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'groupRequests/groupRequests.html',
+                   templateUrl: templatesPrefix+'groupRequests/groupRequests.html',
                    controller: 'groupRequestsController',
                 },
                 'breadcrumbs': {
@@ -64,7 +72,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'userInfos/index.html',
+                   templateUrl: templatesPrefix+'userInfos/index.html',
                    controller: 'userInfosController',
                 },
                 'breadcrumbs': {
@@ -78,7 +86,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'forum/index.html',
+                   templateUrl: templatesPrefix+'forum/index.html',
                    controller: 'forumIndexController',
                 },
                 'breadcrumbs': {
@@ -92,7 +100,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'groupAdmin/group.html',
+                   templateUrl: templatesPrefix+'groupAdmin/group.html',
                    controller: 'groupAdminController',
                 },
                 'breadcrumbs': {
@@ -107,7 +115,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'static/concourir.html',
+                   templateUrl: templatesPrefix+'static/concourir.html',
                 },
                 'breadcrumbs': {
                    template: '',
@@ -120,7 +128,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'forum/thread.html',
+                   templateUrl: templatesPrefix+'forum/thread.html',
                    controller: 'forumThreadController',
                 },
                 'breadcrumbs': {
@@ -134,7 +142,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'forum/thread.html',
+                   templateUrl: templatesPrefix+'forum/thread.html',
                    controller: 'forumThreadController',
                 },
                 'breadcrumbs': {
