@@ -12,6 +12,8 @@
         $assetsBaseUrl = '';
         $urlArgs = '';
         $compiledMode = false;
+        $additionalCssUrl = null;
+        $animationHtmlFile = null;
         $domainConfig = $config->shared->domains['current'];
         if (property_exists($domainConfig, 'compiledMode')) {
           $compiledMode = $domainConfig->compiledMode;
@@ -21,6 +23,12 @@
         }
         if (property_exists($domainConfig, 'urlArgs')) {
           $urlArgs = $domainConfig->urlArgs;
+        }
+        if (property_exists($domainConfig, 'additionalCssUrl')) {
+          $additionalCssUrl = $domainConfig->additionalCssUrl;
+        }
+        if (property_exists($domainConfig, 'animationHtmlFile')) {
+          $animationHtmlFile = $domainConfig->animationHtmlFile;
         }
         function includeFile($url) {
           global $assetsBaseUrl, $urlArgs;
@@ -42,21 +50,15 @@
       <link rel="stylesheet" href="<?= includeFile('algorea.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?= includeFile('forum/forum.css') ?>" type="text/css">
     <?php else: ?>
-      <link rel="stylesheet" href="vendor.min.css">
-      <link rel="stylesheet" href="algorea.min.css">
+      <link rel="stylesheet" href="<?= includeFile('vendor.min.css') ?>">
+      <link rel="stylesheet" href="<?= includeFile('algorea.min.css') ?>">
+    <?php endif; ?>
+    <?php if ($additionalCssUrl): ?>
+      <link rel="stylesheet" href="<?= $additionalCssUrl.$urlArgs ?>" type="text/css">
     <?php endif; ?>
     <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script type="text/javascript">
-      if (config.domains.current.additionalCssUrl) {
-        link = document.createElement( "link" );
-        link.href =  config.domains.current.additionalCssUrl;
-        link.type = "text/css";
-        link.rel = "stylesheet";
-        document.getElementsByTagName( "head" )[0].appendChild( link );
-      }
-    </script>
     <style>
     #animation-debut {
       position:absolute;
@@ -80,7 +82,9 @@
     </style>
 </head>
 <body ng-controller="layoutController" id="body" ng-cloak>
-<iframe id="animation-debut" src="animation.html" onclick="animationFinished()" style="display:none;"></iframe>
+<?php if ($animationHtmlFile): ?>
+  <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
+<?php endif; ?>
 <div id="fixed-header-room" class="fixed-header-room"></div>
 <header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
 </header>
@@ -157,9 +161,9 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('shared/treeviewDirective.js') ?>"></script>
   <script src="<?= includeFile('forum/forumThreadController.js') ?>"></script>
 <?php else: ?>
-  <script src="vendor.min.js"></script>
-  <script src="algorea.min.js"></script>
-  <script src="templates.js"></script>
+  <script src="<?= includeFile('vendor.min.js') ?>"></script>
+  <script src="<?= includeFile('algorea.min.js') ?>"></script>
+  <script src="<?= includeFile('templates.js') ?>"></script>
 <?php endif; ?>
 </body>
 </html>
