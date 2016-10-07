@@ -32,8 +32,6 @@
    -webkit-flex: 1 1 150px;
    flex: 1 1 150px;
    justify-content:space-around;
-   border-left: 1px solid #d9d9d9;
-   border-right: 1px solid #d9d9d9;
    color: #5d5d5d;
    cursor:pointer;
    white-space: nowrap;
@@ -87,16 +85,16 @@
       -webkit-flex-basis: 50%;
       flex-basis: 50%;
    }
-   #menu-main {
-      -webkit-flex-basis: 60px;
-      flex-basis: 60px;
-      flex-wrap: wrap;
-      order: 3;
-   }
    #userinfocontainer {
       -webkit-flex-basis: 50%;
       flex-basis: 50%;
       order: 2;
+   }
+   #menu-main {
+      -webkit-flex-basis: 100%;
+      flex-basis: 100%;
+      flex-wrap: wrap;
+      order: 3;
    }
    #loginFrame {
       width:160px;
@@ -116,6 +114,15 @@
    .menu {
       -webkit-flex-direction:column;
       flex-direction:column;
+   }
+   #menu-logo {
+      -webkit-flex-basis: auto;
+      flex-basis: auto;
+   }
+   #userinfocontainer {
+      -webkit-flex-basis: auto;
+      flex-basis: auto;
+      order: 2;
    }
    #menu-main {
       flex-wrap: nowrap;
