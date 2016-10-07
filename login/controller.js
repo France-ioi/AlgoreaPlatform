@@ -57,6 +57,12 @@ angular.module('algorea')
          if ($scope.loggedIn && !$scope.tempUser) {
             additionalArgs += '&autoLogout=1';
          }
-         window.open($scope.loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
+         additionalArgs += '&fallbackReturnUrl='+encodeURIComponent(config.domains.current.baseUrl+'login/loginModule-fallback.php');
+         var popup = window.open($scope.loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
+         if (!$scope.loggedIn || $scope.tempUser) {
+            loginService.connectToPopup(popup);
+         } else {
+            loginService.onLogout();
+         }
       };
 }]);
