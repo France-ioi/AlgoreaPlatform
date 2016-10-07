@@ -241,45 +241,46 @@
 								<tr>
 									<th class="fixed-width step-name">Nom du chapitre / étape</th>
 									<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
-									<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
+									<th ng-repeat="child in group.children | confirmed" ng-if="!formValues.detailedView" class="text-center name" uib-tooltip="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})" tooltip-placement="top-right"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
+									<th ng-repeat="child in group.children | confirmed" ng-if="formValues.detailedView" class="text-center name"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
 								</tr>
 							</thead>
 							</table>
 							<table class="table-progress table-body" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 							<tbody>
 								<tr ng-repeat="item in itemsList">
-									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}">{{item.strings[0].sTitle}}</td>
+									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><p uib-tooltip="{{item.strings[0].sTitle}}" tooltip-placement="top-left">{{item.strings[0].sTitle}}</p></td>
 									<td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
 									<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 										<div ng-if="formValues.detailedView" class="progress-details">
 											<div class="details-row">
-												<div class="date" title="Date dernière activité">{{getDate(thisUserItem)}}</div>
-												<div class="time" title="Temps écoulé depuis la 1ère lecture">{{getDuration(thisUserItem)}}</div>
-												<div class="help" title="Indices demandés">{{thisUserItem.nbHintsCached}}</div>
+												<div class="date" uib-tooltip="Date dernière activité" tooltip-placement="top">{{getDate(thisUserItem)}}</div>
+												<div class="time" uib-tooltip="Temps écoulé depuis la 1ère lecture" tooltip-placement="top">{{getDuration(thisUserItem)}}</div>
+												<div class="help" uib-tooltip="Indices demandés" tooltip-placement="top">{{thisUserItem.nbHintsCached}}</div>
 											</div>
 											<div class="details-row">
-												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" title="Score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
+												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" uib-tooltip="Score" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
 												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
-												<div class="questions" title="Demandes d'aide sur le forum" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
-												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" title="Voir le détail"><span class="btn-label">Voir plus</span></button></div>
+												<div class="questions" uib-tooltip="Demandes d'aide sur le forum" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'progress-details.html'" popover-trigger="mouseenter" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" uib-tooltip="Voir le détail" tooltip-placement="top"><span class="btn-label">Voir plus</span></button></div>
 											</div>
 										</div>
-
-										<button ng-if="!formValues.detailedView" uib-popover-template="'progress-details.html'" popover-trigger="mouseenter" popover-placement="left"class="btn-icon btn-small btn-preview pull-left" title="aperçu"></button>
+										<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" title="Score" ng-if="item.sType == 'Task' && !formValues.detailedView">{{thisUserItem.iScore}}%</div>
+										<button ng-if="!formValues.detailedView" uib-popover-template="'progress-details.html'" popover-trigger="mouseenter" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
 										<script type="text/ng-template" id="progress-details.html">
-										<ul ng-if="!formValues.detailedView" class="progress-details">
-											<li class="login">{{child.child.userSelf.sLogin}}</li>
-											<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'">Score : {{thisUserItem.iScore}}%</li>
-											<li class="date" ng-if="!user_item.sValidationDate">Date dernière activité : {{thisUserItem.sLastActivityDate | date}}</li>
-											<li class="date" ng-if="user_item.sValidationDate">Date de validation : {{thisUserItem.sLastActivityDate | date}}</li>
-											<li class="time" ng-if="!user_item.sValidationDate">Temps écoulé depuis la 1<sup>ère</sup> lecture : {{getDuration(thisUserItem)}}</li>
-											<li class="time" ng-if="user_item.sValidationDate">Temps jusqu'à validation : {{getDuration(thisUserItem)}}</li>
-											<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
-											<li class="questions">Demandes d'aide sur le forum : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
-											<li class="help">Indices demandés : {{thisUserItem.nbHintsCached}}</li>
-										</ul>
+											<ul class="progress-details">
+												<li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
+												<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'">Score : {{thisUserItem.iScore}}%</li>
+												<li class="date" ng-if="!user_item.sValidationDate">Date dernière activité : {{thisUserItem.sLastActivityDate | date}}</li>
+												<li class="date" ng-if="user_item.sValidationDate">Date de validation : {{thisUserItem.sLastActivityDate | date}}</li>
+												<li class="time" ng-if="!user_item.sValidationDate">Temps écoulé depuis la 1<sup>ère</sup> lecture : {{getDuration(thisUserItem)}}</li>
+												<li class="time" ng-if="user_item.sValidationDate">Temps jusqu'à validation : {{getDuration(thisUserItem)}}</li>
+												<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
+												<li class="questions">Demandes d'aide sur le forum : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+												<li class="help">Indices demandés : {{thisUserItem.nbHintsCached}}</li>
+											</ul>
 										</script>
-										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" title="voir le code"><span class="btn-label">Voir plus</span></button>
+										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" uib-tooltip="Voir le code" tooltip-placement="top"><span class="btn-label">Voir plus</span></button>
 									</td>
 								</tr>
 							</tbody>

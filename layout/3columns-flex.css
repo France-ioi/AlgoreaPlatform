@@ -96,12 +96,14 @@ footer {
    padding: 0 25px;
 }
 
-/*
+
 #headerContainer {
    display: -webkit-flex;
    display: flex;
+   -webkit-flex-flow: column;
+   flex-direction: column;
 }
-*/
+
 
 /* Too narrow to support three columns */
 @media all and (max-width: 700px) {

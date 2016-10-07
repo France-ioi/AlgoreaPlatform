@@ -105,7 +105,7 @@
 
 .sidebar-left-item-contents-text {
    -webkit-flex: 1 1 auto;
-   flex: 1 1 auto;
+   flex: 1 1 100%;
    display:-webkit-flex;
    display:flex;
    -webkit-flex-direction:column;

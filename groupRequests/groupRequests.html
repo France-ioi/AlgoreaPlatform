@@ -82,7 +82,7 @@
                   <form class="form">
                      <label class="label-title" for="lookupString">Rechercher par nom :<span class="label-description">Saisir une partie du nom du groupe que vous recherchez</span></label>
                      <div class="form-group form-inline">
-                        <input type="text" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
+                        <input type="search" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
                         <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
                      </div>
                   </form>
@@ -160,7 +160,7 @@
             <div>
                <h2 class="groupRequest-title" ng-hide="loading">Historique complet<span>Voici une liste chronologique des événements concernant vos entrées ou sorties de groupes, invitations reçues, etc.</span></h2>
 
-               <ul ng-if="!loading" class="history-list">
+               <ul ng-if="!loading" class="history-list list list-block">
                   <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}"  ng-if="mygroupgroup.parent.sType != 'RootSelf'">
                      {{mygroupgroup.sStatusDate | date}}&nbsp;:
                      <span ng-switch="mygroupgroup.sType">

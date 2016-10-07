@@ -133,7 +133,7 @@
 	overflow: auto;
 }
 /* Administrated groups */
-.groupRequest .list-block.list-groups {
+.groupRequest .list-block {
 	background-color: #fff;
 	border: 1px solid #ddd;
 	list-style: none;
@@ -167,13 +167,11 @@
 }
 /* History */
 .groupRequest .history-list {
-	list-style: none;
-	padding: 0;
 }
 .groupRequest .history-list li {
 	border-bottom: 1px solid #ccc;
 	padding: 3px 10px;
 }
 .groupRequest .history-list li.historyActive {
-	background-color: #fff;
+	background-color: #edebed;
 }

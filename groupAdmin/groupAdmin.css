@@ -444,6 +444,7 @@ orange : #F29200;
 	margin-bottom: 5px;
 }
 .groupAdmin .tab-progression .dl-link {
+	margin-top: 10px;
 	margin-bottom: 2em;
 }
 /* Individual view */
@@ -530,7 +531,20 @@ orange : #F29200;
 	width: 15em;
 	min-width: 15em;
 	max-width: 15em;
-	position: relative;
+}
+.groupAdmin .table-progress td.fixed-width.step-name p {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 0;
+}
+.groupAdmin .table-progress td.fixed-width.step-name .tooltip {
+	white-space: nowrap;
+	width: auto;
+	font-family: inherit;
+}
+.groupAdmin .table-progress td.fixed-width.step-name .tooltip .tooltip-inner {
+	max-width: initial;
 }
 .groupAdmin .table-progress .step-descr {
 	width: 400px;
@@ -572,7 +586,7 @@ orange : #F29200;
 	background-color: transparent;
 	padding: 0;
 }
-.groupAdmin .table-progress.view-global th.name div {
+.groupAdmin .table-progress.view-global th.name .user-info-wrapper {
 	transform: rotate(-45deg) translate(32px, 33px);
 	width: 30px;
 	text-transform: none;
@@ -585,6 +599,7 @@ orange : #F29200;
 	display: inline-block;
 	width: 200px;
 	text-align: left;
+	cursor: default;
 }
 .groupAdmin .table-progress.view-global td.status {
 	width: 60px;
@@ -593,34 +608,49 @@ orange : #F29200;
 	padding: 3px;
 	vertical-align: bottom;
 }
+.groupAdmin .table-progress.view-global td.status.unread div.score {
+	display: none;
+}
+.groupAdmin .table-progress.view-global td.status div.score {
+	text-align: center;
+	opacity: 1;
+	transition: all 250ms;
+	line-height: 0;
+	position: relative;
+	top: 10px;
+}
+.groupAdmin .table-progress.view-global td.status:hover div.score {
+	opacity: 0;
+}
 .groupAdmin .table-progress.view-global td.status button {
 	opacity: 0;
 	transition: all 250ms;
+	position: relative;
 }
 .groupAdmin .table-progress.view-global td.status:hover button {
 	opacity: 1;
 }
-.groupAdmin .table-progress.view-global td.status .popover {
+.groupAdmin .table-progress td.status .popover {
 	max-width: initial;
 }
-.groupAdmin .table-progress.view-global td.status .progress-details {
+.groupAdmin .table-progress td.status .popover .progress-details {
 	background-color: #fff;
 	list-style: none;
 	font-size: 14px;
 	line-height: 1.4;
 	margin: 0;
 	padding: 0;
-	width: 300px;
+	width: 330px;
 }
-.groupAdmin .table-progress.view-global td.status button.btn-preview:hover + ul.progress-details {
-	display: block;
-}
-.groupAdmin .table-progress.view-global .progress-details li {
+.groupAdmin .table-progress .popover .progress-details li {
 	position: relative;
 	padding-left: 20px;
 }
-.groupAdmin .table-progress.view-global .progress-details li.login {
+.groupAdmin .table-progress .popover .progress-details li.login {
 	font-weight: bold;
+}
+.groupAdmin .table-progress .popover .progress-details li.time {
+	white-space: nowrap;
 }
 
 /* fixed header */
@@ -662,9 +692,9 @@ orange : #F29200;
 }
 .groupAdmin .table-progress.view-detail th.name,
 .groupAdmin .table-progress.view-detail td.status {
-	max-width: 261px;
-	min-width: 261px;
-		width: 261px;
+	max-width: 265px;
+	min-width: 265px;
+		width: 265px;
 
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row {
@@ -684,14 +714,21 @@ orange : #F29200;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	float: left;
+	cursor: default;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.date {width: 112px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.time {width:107px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.help {width:40px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.score {width:78px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.submissions {width:86px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.score {width:68px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.submissions {width:85px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.questions {width:55px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.button {width: 39px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.tooltip {
+	padding: 5px 0;
+}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.tooltip .tooltip-inner {
+	max-width: initial;
+}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
 	border-left: none;
 }
