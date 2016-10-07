@@ -82,7 +82,7 @@
                   <form class="form">
                      <label class="label-title" for="lookupString">Rechercher par nom :<span class="label-description">Saisir une partie du nom du groupe que vous recherchez</span></label>
                      <div class="form-group form-inline">
-                        <input type="text" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
+                        <input type="search" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
                         <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
                      </div>
                   </form>
