@@ -69,6 +69,34 @@ function affixMeDirective ($window, $timeout) {
 angular.module('algorea').directive('affixMe', affixMeDirective);
 
 
+// More global menu
+angular.module('algorea')
+   .factory('layoutService', ['$rootScope', function ($rootScope) {
+      function reset () {
+        $rootScope.affix = 'toolbar';
+        $rootScope.navOverlay = false;
+      }
+      $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
+        reset();
+      });
+      reset();
+      return {
+         openNavOverlay: function () {
+            $rootScope.navOverlay = true;
+         },
+         closeNavOverlay: function () {
+            $rootScope.navOverlay = false;
+         },
+         affixToolbar: function () {
+            $rootScope.affix = 'toolbar';
+         },
+         affixHeader: function () {
+            $rootScope.affix = 'header';
+         }
+      };
+   }]);
+
+
 angular.module('algorea')
   .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', 'mapService', 'itemService', 'pathService', '$state', 'layoutService', function ($scope, $window, $timeout, $rootScope, $interval, mapService, itemService, pathService, $state, layoutService) {
     var pane_west = $('.ui-layout-west');
@@ -115,6 +143,7 @@ angular.module('algorea')
       },
       buttonClass: "fullscreen",
       state: "normal",
+      menuOpen: true,
       goFullscreen: function() {
 
       },
@@ -187,6 +216,11 @@ angular.module('algorea')
          layoutService.affixHeader();
          layoutService.openNavOverlay();
          $scope.layout.openMenu();
+      },
+      closeNavOverlay: function() {
+        layoutService.closeNavOverlay();
+        layoutService.affixToolbar();
+        $scope.layout.closeMenu();
       },
       syncBreadcrumbs: function() {
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
