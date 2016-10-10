@@ -31,9 +31,9 @@ angular.module('algorea')
       $scope.userLogged = false;
       $scope.loginReady = false;
       $scope.loginClass = 'loginCentered';
-      loginService.init($rootScope);
+      loginService.initEventListener();
       $scope.loginInnerHtml = '';
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html#' + $location.absUrl());
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl);
       $scope.$on('login.login', function(event, data) {
          if (data.tempUser) {
             $scope.userLogged = false;

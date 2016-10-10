@@ -27,7 +27,7 @@ if (!$request || !is_array($request) || !$request['action']) {
 
 $action = $request['action'];
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 if (!isset($_SESSION['login'])) { $_SESSION['login'] = array(); };
 
 function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
@@ -122,10 +122,10 @@ if ($action == 'login') {
   if (isset($_SESSION['login']['tempUser']) && $_SESSION['login']['tempUser'] == 1) {
      echo json_encode(array('result'    => true, 'sLogin' => $_SESSION['login']['sLogin'], 'ID' => $_SESSION['login']['ID'], 'loginData' => $_SESSION['login']));
   } else {
-     $_SESSION = array();
+     $_SESSION['login'] = array();
      createTempUser($db);
   }
 } else if ($action == 'logout') {
-   $_SESSION = array();
+   $_SESSION['login'] = array();
    createTempUser($db);
 }

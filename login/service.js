@@ -10,6 +10,7 @@ angular.module('franceIOILogin', [])
         var userLogin = null;
         var callbacks = [];
         var loginDone = false;
+        var loggedOut = false;
         function getLoginData(callback) {
            if (loginDone) {
              callback({
@@ -59,7 +60,9 @@ angular.module('franceIOILogin', [])
         }
         function allowSourceOrigin() { return true; }
         function onLogin(data) {
+           if (data.login == userLogin) return;
            createSession(data, function (user) {
+              loggedOut = false;
               state = 'login';
               tempUser = false;
               data.tempUser = false;
@@ -75,8 +78,11 @@ angular.module('franceIOILogin', [])
            });
         }
         function onLogout(data) {
+           if (loggedOut || tempUser) return;
+           loggedOut = true;
            $rootScope.$broadcast('login.logout');
            createTempUser('logout', function(user) {
+              loggedOut = false;
               tempUser = true;
               userLogin = user.sLogin;
               userID = user.ID;
@@ -90,7 +96,9 @@ angular.module('franceIOILogin', [])
            });
         }
         function onNotLogged(data) {
+           if (tempUser) return;
            createTempUser('notLogged', function(user) {
+              loggedOut = false;
               tempUser = true;
               userLogin = user.sLogin;
               userID = user.ID;
@@ -144,12 +152,14 @@ angular.module('franceIOILogin', [])
               console.error("error calling platform_user.php");
            });
         }
+        var channel = null;
         return {
-           loginUrl: $sce.trustAsResourceUrl('https://oldloginfranceioi.eroux.fr/login.html'),
+           loginUrl: $sce.trustAsResourceUrl(config.loginUrl),
            getState: function() {
               return state;
            },
            getLoginData: getLoginData,
+           onLogout: onLogout,
            setLocalLoginData: setLocalLoginData,
            getUser: function() {
               if (state == 'not-ready') {
@@ -162,8 +172,53 @@ angular.module('franceIOILogin', [])
            },
            bindScope: function(newScope) {
            },
-           init: function(newScope) {
+           init: function() {
+           },
+           initEventListener: function(newScope) { // used by admin interface, works under IE because it's an iframe
               window.addEventListener("message", messageCallback, false);
+           },
+           connectToPopup: function(popup) {
+               var nbIntervalCalled = 0;
+               // IE basically cannot talk to its popups
+               var interval = window.setInterval(function() {
+                  $http.post('/login/loginModule-fallback.php', {get: true}).then(function(res) {
+                     var message = res.data;
+                     if (message) {
+                        if (message.request == 'login') {
+                           onLogin(message.content);
+                           clearInterval(interval);
+                        } else if (message.request == 'logout') {
+                           onLogout(message.content);
+                           clearInterval(interval);
+                        } else if (message.request == 'notlogged') {
+                           onNotLogged(message.content);
+                        }
+                     }
+                  });
+                  // givin up after 2mn
+                  nbIntervalCalled += 1;
+                  if (nbIntervalCalled > 120) {
+                     clearInterval(interval);
+                  }
+               }, 1000);
+               channel = Channel.build({
+                   window: popup,
+                   origin: "*",
+                   scope: "loginModule",
+                   onReady: function() {
+                     clearInterval(interval);
+                   }
+               });
+               channel.bind("loginMessage", function(trans, message) {
+                  if (message.request == 'login') {
+                     onLogin(message.content);
+                  } else if (message.request == 'logout') {
+                     onLogout(message.content);
+                  } else if (message.request == 'notlogged') {
+                     onNotLogged(message.content);
+                  }
+                  return;
+               });
            },
            getCallbacks: function() {
               return {'login': onLogin, 'logout': onLogout, 'notlogged': onNotLogged};
