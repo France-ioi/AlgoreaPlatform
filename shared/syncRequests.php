@@ -66,9 +66,7 @@ function handleClientUserItems($db, $minServerVersion, &$clientChanges) {
 
 
 function syncAddCustomClientChanges($db, $minServerVersion, &$clientChanges) {
-   if (!isset($_SESSION)) {
-      session_start();
-   }
+   if (session_status() === PHP_SESSION_NONE){session_start();}
    if (empty($_SESSION) || empty($_SESSION['login']) || !$_SESSION['login']['ID'] || empty($clientChanges)) {
       return;
    }
@@ -470,9 +468,7 @@ function setupGroupsItemsRequests(&$requests) {
 
 function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
    global $config;
-   if (!isset($_SESSION)) {
-      session_start();
-   }
+   if (session_status() === PHP_SESSION_NONE){session_start();}
    if (!count($_SESSION) || !isset($_SESSION['login']) || !isset($_SESSION['login']['ID'])) {
       $requests = array();
       return;
