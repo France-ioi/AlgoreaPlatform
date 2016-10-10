@@ -10,6 +10,49 @@ angular.module('algorea')
   };
 });
 
+
+
+// loosely based on http://stackoverflow.com/questions/32513974/affix-element-with-pure-angularjs
+// Compute the absolute top of the element.
+function getAbsoluteTop (element) {
+  var top = 0;
+  while (element) {
+    top += element.offsetTop - element.scrollTop + element.clientTop;
+    element = element.offsetParent;
+  }
+  return top;
+}
+// This directive sets the affix class on its single child element
+// when the child's absolute top position is negative.
+// The height of the container is also adjusted when the child is
+// affixed to avoid changes to the page layout.
+affixMeDirective.$inject = ['$window', '$timeout'];
+function affixMeDirective ($window, $timeout) {
+  return {
+    restrict: 'A',
+    link: function (scope, element) {
+      function onScroll () {
+        var child = element.children();
+        var top = getAbsoluteTop(element[0]);
+        scope.top = top;
+        if (top >= 0) {
+          child.removeClass('affix');
+        } else {
+          child.addClass('affix');
+          element.css('height', child[0].offsetHeight);
+        }
+      }
+      $timeout(onScroll, 0);
+      $window.addEventListener("scroll", onScroll);
+      scope.$on('$destroy', function cleanUp () {
+        $window.removeEventListener("scroll", onScroll);
+      });
+    }
+  };
+}
+angular.module('algorea').directive('affixMe', affixMeDirective);
+
+
 angular.module('algorea')
   .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', 'mapService', 'itemService', 'pathService', '$state', function ($scope, $window, $timeout, $rootScope, $interval, mapService, itemService, pathService, $state) {
     var pane_west = $('.ui-layout-west');

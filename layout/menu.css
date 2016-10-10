@@ -10,9 +10,14 @@
 }
 
 .menu-toggled > #menu {
-   display:none !important;
+   display: none;
 }
 
+.affix {
+   position: fixed;
+   top: 0;
+   width: 100%;
+}
 /*@media all and (max-width: 1100px) {*/
 /*   .menu {*/
 /*      display: none;*/
@@ -221,6 +226,9 @@
    display: flex;
    justify-content: -webkit-space-between;
    justify-content: space-between;
+}
+#toolbar.affix {
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
 #breadcrumbs {
    display: -webkit-flex;
