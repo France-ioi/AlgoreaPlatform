@@ -1,3 +1,4 @@
+<div affix-me="affix==='header'">
 <div id="headerContainer">
    <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
       <div id="menu-logo" class="menu-item" ng-click="gotoIndex()">
@@ -12,10 +13,12 @@
          </div>
       </div>
    </div>
-   <div affix-me>
+   <div affix-me="affix==='toolbar'">
       <div id="toolbar">
          <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
+         <span ng-if="!layout.menuOpen" class="material-icons menu-more" ng-click="layout.openTaskMenu()">menu</span>
          <!--<div class="notifications"><span class="badge">2</span></div>-->
       </div>
    </div>
+</div>
 </div>

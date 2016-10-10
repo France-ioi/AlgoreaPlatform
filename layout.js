@@ -30,7 +30,8 @@ affixMeDirective.$inject = ['$window', '$timeout'];
 function affixMeDirective ($window, $timeout) {
   return {
     restrict: 'A',
-    link: function (scope, element) {
+    link: function (scope, element, attrs) {
+      var isEnabled = false;
       function onScroll () {
         var child = element.children();
         var top = getAbsoluteTop(element[0]);
@@ -42,11 +43,26 @@ function affixMeDirective ($window, $timeout) {
           element.css('height', child[0].offsetHeight);
         }
       }
-      $timeout(onScroll, 0);
-      $window.addEventListener("scroll", onScroll);
-      scope.$on('$destroy', function cleanUp () {
-        $window.removeEventListener("scroll", onScroll);
+      function enable () {
+        if (!isEnabled) {
+          $timeout(onScroll, 0);
+          $window.addEventListener("scroll", onScroll);
+          isEnabled = true;
+        }
+      }
+      function disable () {
+        if (isEnabled) {
+          $window.removeEventListener("scroll", onScroll);
+          var child = element.children();
+          child.removeClass('affix');
+          element.css('height', '');
+          isEnabled = false;
+        }
+      }
+      scope.$watch(attrs.affixMe, function (val) {
+        if (val) enable(); else disable();
       });
+      scope.$on('$destroy', disable);
     }
   };
 }
@@ -54,7 +70,7 @@ angular.module('algorea').directive('affixMe', affixMeDirective);
 
 
 angular.module('algorea')
-  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', 'mapService', 'itemService', 'pathService', '$state', function ($scope, $window, $timeout, $rootScope, $interval, mapService, itemService, pathService, $state) {
+  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', 'mapService', 'itemService', 'pathService', '$state', 'layoutService', function ($scope, $window, $timeout, $rootScope, $interval, mapService, itemService, pathService, $state, layoutService) {
     var pane_west = $('.ui-layout-west');
     var pane_center = $('.ui-layout-center');
     var container = $('#layoutContainer');
@@ -165,6 +181,12 @@ angular.module('algorea')
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
          $('#footer').toggleClass('footer-toggled');
          $scope.layout.syncBreadcrumbs();
+      },
+      openTaskMenu: function() {
+         $scope.layout.toggleMenu();
+         layoutService.affixHeader();
+         layoutService.openNavOverlay();
+         $scope.layout.openMenu();
       },
       syncBreadcrumbs: function() {
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
