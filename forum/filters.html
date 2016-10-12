@@ -2,9 +2,7 @@
    <center><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
 </div>
 <div ng-if="!loading">
-   <button ng-click="showFilters=false;" ng-show="showFilters" class="btn">Cacher les filtres avancés <span class="caret"></span></button>
-   <button ng-click="showFilters=true;" ng-show="!showFilters" class="btn">Afficher les filtres avancés  <span class="caret caret-up"></span></button>
-   <div ng-form="filterForm" class="container-fluid form highlight filterContainer" ng-show="showFilters">
+   <div ng-form="filterForm" class="container-fluid form highlight filterContainer">
       <div tabset>
       <li tab ng-repeat="filter in filters track by filter.ID" select="selectFilter(filter.ID)" active="filter.bSelected">
          <div tab-heading>
@@ -88,6 +86,7 @@
             </div>
          <button ng-click="submitForm(filterForm);" class="btn">Sauvegarder</button>
          <button ng-click="resetFiler();" class="btn">Valeurs par défaut</button>
+         <button ng-click="forumFilterController.showFilters=false;" class="btn">Annuler</button>
       </li>
       <li tab disabled="false" active="plusActiveVar" select="newFilter()">
          <a tab-heading>

@@ -7,7 +7,7 @@
 <div ng-if="!loading && (thread || fakeThread)">
    <div ng-if="inPopup">Activités de {{user_item.user.sLogin}} sur l'exercice {{item.strings[0].sTitle}}
    </div>
-   <div ng-form="threadForm" ng-if="!readOnly && (ownThread || newThread)">
+   <div ng-form="threadForm" ng-if="!readOnly && (ownThread || newThread)" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
       <div ng-if="inTask">
          <h4>Bienvenue sur le forum Algoréa</h4>
          <p>Vous pouvez demander de l'aide en postant un message ci-dessous. Il aparaîtra automatiquement sur le forum (onglet <strong>S'entraîder</strong>).</p>
@@ -20,7 +20,7 @@
             <option value="Bug">Rapporter une anomalie</option>
          </select>
       </div>
-      <div class="form-group col-md-12" ng-show="thread.sType == 'Help' && !inTask">
+      <div class="form-group" ng-show="thread.sType == 'Help' && !inTask">
          <label for="idItem">Item associée :</label>
          <p class="input-group">
             <input type="text" name="idItem" ng-model="thread.idItem" id="idItem" class="form-control" item-text readonly/>
@@ -40,7 +40,7 @@
          <label for="sBody" ng-hide="inTask">Message :</label>
          <textarea name="sMessage" ng-model="newMessage.sBody" id="sBody" class="form-control"></textarea>
       </div>
-      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-standard" ng-click="submitForm(threadForm)">Enregistrer</button>
+      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-default" ng-click="submitForm(threadForm)">Enregistrer</button>
    </div>
    <div ng-if="!newThread && !readOnly">
       <div ng-if="!ownThread">

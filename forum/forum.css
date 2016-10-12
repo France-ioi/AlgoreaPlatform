@@ -1,5 +1,18 @@
 .threadsContainer {
    margin: 20px 10px 10px;
+   display:-webkit-flex;
+   display:flex;
+   -webkit-flex-direction:row;
+   flex-direction:row;
+   -webkit-flex-wrap:wrap;
+   flex-wrap:wrap;
+}
+.threadsContainer .tabsContainer {
+   flex: 1 1 auto;
+}
+.threadsContainer .globalFilters {
+   margin-right: 10px;
+   margin-top: 42px;
 }
 .threadsContainer .nav-tabs>li>a {
   font-size: 14px;
@@ -117,3 +130,13 @@
    border-radius: 4px;
    background-color: #F7F7F9;
 }
+
+.forumThreadForm {
+   margin: 20px 10px 10px;
+   padding: 2em;
+   background-color: #edebed;
+}
+.form-group {
+   position: relative;
+}
+.inTaskThreadForm {}

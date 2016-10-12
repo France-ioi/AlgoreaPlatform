@@ -1,11 +1,18 @@
 <div ng-if="!loading">
-   <div ng-if="false" ng-controller="forumFilterController" ng-include="templatesPrefix+'forum/filters.html'">
+   <div ng-controller="forumFilterController" ng-include="templatesPrefix+'forum/filters.html'" ng-if="forumFilterController.showFilters">
    </div>
    <div class="threadsContainer">
-      <div ng-if="false" class="btn-group globalFilters">
+      <div class="btn-group-vertical globalFilters">
          <button type="button" ng-repeat="globalFilter in globalFilters" ng-click="selectGlobalFilter(globalFilter);" class="btn btn-default globalFilter" ng-class="{globalFilterSelected: globalFilter == currentGlobalFilter}">{{globalFilter.description}}</button>
+         <div class="btn-group" uib-dropdown ng-controller="forumFilterController">
+            <button type="button" class="btn btn-default globalFilter dropdown-toggle" uib-dropdown-toggle>Filtres enregistrés <span class="caret"></span></button>
+            <ul class="dropdown-menu" uib-dropdown-menu>
+               <li ng-repeat="filter in filters track by filter.ID"><a href=""ng-click="">{{filter.sName}}</a></li>
+            </ul>
+         </div>
+         <button type="button" class="btn btn-default globalFilter" ng-click="forumFilterController.showFilters=true;">Afficher les filtres avancés</button>
       </div>
-      <uib-tabset>
+      <uib-tabset class="tabsContainer">
          <uib-tab select="selectTab('helpOthers')" active="tabs.helpOthers.active" heading="Aider les autres ({{helpOthersThreads.length}})">
             <div class="threadsInIndex">
                <div ng-if="helpOthersThreads.length === 0" class="threadInIndex">Pas de résultat</div>
