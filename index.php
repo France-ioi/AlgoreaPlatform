@@ -118,7 +118,7 @@ function startAnimation() {
 if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAnimation();
 </script>
 <?php if (!$compiledMode): ?>
-  <script type="text/javascript" src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_fr-fr.js') ?>"></script>
@@ -137,6 +137,8 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <script src="<?= includeFile('login/service.js') ?>"></script>
   <script src="<?= includeFile('algorea.js') ?>"></script>
+  <script src="<?= includeFile('contest/contestTimerService.js') ?>"></script>
+  <script src="<?= includeFile('contest/contestTimerDirective.js') ?>"></script>
   <script src="<?= includeFile('layout.js') ?>"></script>
   <script src="<?= includeFile('navigation/service.js') ?>"></script>
   <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
