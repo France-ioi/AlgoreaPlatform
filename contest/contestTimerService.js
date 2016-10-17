@@ -1,5 +1,5 @@
 angular.module('algorea')
-   .service('contestTimerService', function($http) {
+   .service('contestTimerService', ['$http', function($http) {
    	'use strict';
    	// copying code from bebras platform, to be shared in a cleaner way
 	var TimeManager = {
@@ -152,4 +152,4 @@ angular.module('algorea')
 		}
 	};
 
-});
+}]);
