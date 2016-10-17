@@ -50,10 +50,6 @@ function openContest($idItem) {
 		echo json_encode(['success' => false, 'error' => "vous devez être connecté pour accéder au concours"]);
 		return;
 	}
-	if (isset($_SESSION['contestItemId']) && $_SESSION['contestItemId'] != $idItem) {
-		echo json_encode(['success' => false, 'error' => "vous avez déjà commencé un autre concours"]);
-		return;
-	}
 	$stmt = $db->prepare('select NOW() as now, items.*, users_items.*, TIME_TO_SEC(items.sDuration) as duration, max(groups_items.bCachedFullAccess) as fullAccess from items
 		left join users_items on users_items.idItem = items.ID and users_items.idUser = :idUser
 		JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
@@ -101,13 +97,12 @@ function openContest($idItem) {
 function closeContest($idItem) {
 	global $db;
 	$stmt = $db->prepare('update users_items set sFinishDate = NOW() where idItem = :idItem and idUser = :idUser;');
-	$stmt->execute(['idItem' => $_SESSION['contest']['idItem'], 'idUser' => $_SESSION['login']['ID']]);
+	$stmt->execute(['idItem' => $idItem, 'idUser' => $_SESSION['login']['ID']]);
 	// TODO: remove partial access if other access were present
 	$stmt = $db->prepare('update groups_items set sPartialAccessDate = null, sCachedPartialAccessDate = null, bCachedPartialAccess = 0 where idItem = :idItem and idGroup = :idGroupSelf and bManagerAccess = 0;');
-	$stmt->execute(['idItem' => $_SESSION['contest']['idItem'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+	$stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
 	$stmt = $db->prepare('delete groups_items from groups_items join items_ancestors on groups_items.idItem = items_ancestors.idItemChild where items_ancestors.idItemAncestor = :idItem and groups_items.idGroup = :idGroupSelf and bCachedFullAccess = 0 and bOwnerAccess = 0 and bManagerAccess = 0;');
-	$stmt->execute(['idItem' => $_SESSION['contest']['idItem'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
-	unset($_SESSION['contest']);
+	$stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
 	require_once __DIR__.'/../shared/listeners.php';
 	Listeners::groupsItemsAfter($db);
 }
