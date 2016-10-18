@@ -29,7 +29,7 @@
 }
 .threadsContainer .tab-content {
    padding: 2em;
-   background-color: #edebed;
+   background-color: #F7F7F9;
 }
 .threadsInIndex {
    border: 1px solid #ccc;
@@ -37,21 +37,23 @@
 }
 
 .threadInIndex {
-   background-color: rgb(250, 250, 250);
+   background-color: #e8e8e8;
    cursor: pointer;
-   padding: 3px 10px;
+   border-bottom: 1px solid #ccc;
 }
-.threadInIndex:nth-child(even) {
-   background-color: rgb(240, 240, 240);
+.threadInIndex:last-child {
+   border-bottom: none;
 }
 .threadInIndex:hover {
    background-color: #B0B0B0;
 }
 
+.threadInIndex .thread {
+   padding: 3px 10px;
+}
 .threadInIndexSelected {
    background-color: #B8B8B8;
 }
-
 .threadInIndexReadOnly {
    cursor:not-allowed;
    color: #808080;
