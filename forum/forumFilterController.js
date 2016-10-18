@@ -19,7 +19,10 @@ angular.module('algorea')
       'bImportant': null
    };
    $scope.loading = true;
+   $scope.saveFilter= false;
    $scope.showFilters = false;
+   $scope.showSavedFilter = false;
+   $scope.editFilter = false;
    $scope.plusActiveVar = false;
    $scope.filters = [];
    // using object here due to prototypal inheritance / scope mess, see
