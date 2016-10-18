@@ -1,4 +1,4 @@
-<div ng-class="{threadInIndexSelected: thread.bIsInSelection, threadInIndexReadOnly: !accessible}" ng-controller="forumIndexThreadController"  ng-click="goToThread(thread.ID)" uib-tooltip="{{accessibiltyMessage}}" tooltip-placement="top-left">
+<div class="thread" ng-class="{threadInIndexSelected: thread.bIsInSelection, threadInIndexReadOnly: !accessible}" ng-controller="forumIndexThreadController"  ng-click="goToThread(thread.ID)" uib-tooltip="{{accessibiltyMessage}}" tooltip-placement="top-left">
    <div class="threadInIndexCheckBox threadInIndexCell"><input type="checkbox" ng-model="thread.bIsInSelection" ng-click="$event.stopPropagation()"></div>
    <div class="threadInIndexFavorite threadInIndexCell">
       <button type="button" class="transparentButton" ng-model="user_thread.bStarred" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0" ng-click="saveUserThread($event);">
