@@ -11,9 +11,12 @@
       <span>{{thread.sUserCreatedLogin}}</span>
    </div>
    <div class="threadInIndexMessage threadInIndexCell">
-      <div class="threadInIndexDoNotOverflow clamped clamped-2">
+      <div class="threadInIndexDoNotOverflow">
          <strong>{{thread.sTitle}}</strong>
          <span ng-bind="thread.sMessage"></span>
       </div>
+   </div>
+   <div class="threadInIndexLastActivityDate threadInIndexCell">
+      <span>dernière activité le {{thread.sLastActivityDate | date:'dd-MM-yyyy à HH:mm'}}</span>
    </div>
 </div>

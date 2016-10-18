@@ -8,7 +8,7 @@
    flex-wrap:wrap;
 }
 .threadsContainer .tabsContainer {
-   flex: 1 1 auto;
+   flex: 2 1 0;
 }
 .threadsContainer .globalFilters {
    margin-right: 10px;
@@ -50,6 +50,8 @@
 
 .threadInIndex .thread {
    padding: 3px 10px;
+   display: flex;
+   flex-wrap: wrap;
 }
 .threadInIndexSelected {
    background-color: #B8B8B8;
@@ -69,7 +71,7 @@
 }
 
 .threadInIndexFavorite {
-   width: 40px;
+   flex: 0 0 40px;
    text-align: center;
 }
    .threadInIndexFavorite button {
@@ -80,7 +82,7 @@
 }
 
 .threadInIndexUser {
-   width: 150px;
+   flex: 0 1 150px;
 }
 
 .threadInIndexUser span {
@@ -88,6 +90,7 @@
 }
 
 .threadInIndexMessage {
+   flex: 2 0 200px;
 }
 
 .threadInIndexMessage:hover {
@@ -103,6 +106,12 @@
    white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
+}
+.threadInIndexLastActivityDate {
+   font-size: 12px;
+   flex: 1 1 auto;
+   line-height: 18px;
+   text-align: right;
 }
 .globalFilters {
    margin-bottom: 1em;
@@ -133,7 +142,15 @@
    border-radius: 4px;
    background-color: #F7F7F9;
 }
-
+.filterFormDatePickers {
+   display: flex;
+   flex-wrap: wrap;
+}
+@media screen and (min-width: 768px) {
+   .filterFormDatePickers > div:not(:last-child) {
+      margin-right: 2em;
+   }
+}
 .forumThreadForm {
    margin: 20px 10px 10px;
    padding: 2em;
