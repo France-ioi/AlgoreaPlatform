@@ -277,6 +277,7 @@ $tablesModels = array (
           "sLastHintDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "sFinishDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
           "sLastActivityDate"  => array("type" => "date", 'skipHistory' => true, "access" => array("write" => array("user"), "read" => array("user"))),
+          "sContestStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "bRanked"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
           "sAllLangProg"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
           "sState"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
@@ -840,6 +841,7 @@ $viewsModels = array(
           "sLastAnswerDate"       => array('readOnly' => true),
           "sThreadStartDate"      => array('readOnly' => true),
           "sLastHintDate"         => array('readOnly' => true),
+          "sContestStartDate"     => array('readOnly' => true),
           "sFinishDate"           => array('readOnly' => true),
           "sLastActivityDate"     => array(),
           "bRanked"               => array('readOnly' => true),

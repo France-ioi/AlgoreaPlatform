@@ -19,6 +19,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
+var debug = require('gulp-debug');
 var mainBowerFiles = require('main-bower-files');
 
 gulp.task('css', function() {
@@ -40,7 +41,7 @@ gulp.task('admin-css', function() {
 });
 
 gulp.task('js', function() {
-  return gulp.src(['ext/inheritance.js','algorea.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','shared/*.js','commonFramework/treeview/*.js','login/*.js','layout.js','navigation/*.js','groupRequests/*.js','map/*.js','community/*.js','states.js','task/*.js','userInfos/*.js','forum/*.js','groupAdmin/*.js'])
+  return gulp.src(['ext/inheritance.js','algorea.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','shared/*.js','commonFramework/treeview/*.js','login/*.js','layout.js','navigation/*.js','groupRequests/*.js','map/*.js','community/*.js','states.js','task/*.js','userInfos/*.js','forum/*.js','groupAdmin/*.js','contest/*.js'])
     //.pipe(jshint())
     //.pipe(jshint.reporter('jshint-stylish'))
     //.pipe(sourcemaps.init())
@@ -109,6 +110,6 @@ gulp.task('platform', ['templates', 'js', 'css']);
 
 gulp.task('admin', ['admin-templates', 'admin-js', 'admin-css']);
 
-gulp.task('compile', ['platform', 'admin', 'vendor']);
+gulp.task('compile', ['platform', 'vendor']);
 
-gulp.task('default', ['platform', 'admin', 'vendor']);
+gulp.task('default', ['platform', 'vendor']);
