@@ -159,6 +159,8 @@ angular.module('algorea')
          return thread.sType === 'Help' && thread.idUserCreated != userID;
       if (tab == 'general')
          return thread.sType === 'General';
+      if (tab == 'technicalSupport')
+         return thread.sType === 'Technical';
    }
    return function(threads, tab, userID, currentFilter, currentGlobalFilter) {
       if (!currentFilter && !tab)

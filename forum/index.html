@@ -28,10 +28,19 @@
                </div>
             </div>
          </uib-tab>
-         <uib-tab select="selectTab('general')" active="tabs.general.active" heading="Général ({{generalThreads.length}})">
+         <uib-tab select="selectTab('general')" active="tabs.general.active" heading="Discussion générale ({{generalThreads.length}})">
+            <button class="btn btn-default" ng-click="newThread();" style="margin-bottom: 20px;">Commencer une nouvelle dicsussion</button>
             <div class="threadsInIndex" ng-class="{noResult: generalThreads.length === 0}">
                <div ng-if="generalThreads.length === 0" class="threadInIndex">Pas de résultat</div>
                <div ng-repeat="(ID, thread) in threads | threadFilter:'general':myUserID:currentFilter:currentGlobalFilter.filter as generalThreads" ng-include="templatesPrefix+'forum/threadInIndex.html'" class="threadInIndex">
+               </div>
+            </div>
+         </uib-tab>
+         <uib-tab select="selectTab('technicalSupport')" active="tabs.technicalSupport.active" heading="Signaler une anomalie ({{technicalSupportThreads.length}})">
+            <button class="btn btn-default" ng-click="newThread();" style="margin-bottom: 20px;">Ouvrir un nouveau ticket</button>
+            <div class="threadsInIndex">
+               <div ng-if="technicalSupportThreads.length === 0" class="threadInIndex">Pas de résultat</div>
+               <div ng-repeat="(ID, thread) in threads | threadFilter:'technicalSupport':myUserID:currentFilter:currentGlobalFilter.filter as technicalSupportThreads" ng-include="templatesPrefix+'forum/threadInIndex.html'" class="threadInIndex">
                </div>
             </div>
          </uib-tab>
