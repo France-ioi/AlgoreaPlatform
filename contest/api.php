@@ -31,7 +31,20 @@ if ($request['action'] == 'openContest') {
 		echo json_encode(['success' => false, 'error' => "missing idItem"]);
 		return;
 	}
-	openContest($request['idItem']);
+	if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
+		echo json_encode(['success' => false, 'error' => "vous devez être connecté pour accéder au concours"]);
+		return;
+	}
+	$res = openContest($request['idItem'], $_SESSION['login']['ID'], $_SESSION['login']['idGroupSelf']);
+	if ($res['success']) {
+		$_SESSION['contest'] = [
+			'endTime' => $res['endTime'],
+			'startTime' => $res['startTime'],
+			'idItem' => $request['idItem'],
+			'duration' => $contestData['duration']
+		];
+	}
+	echo json_encode($res);
 }
 if ($request['action'] == 'getContestData') {
 	$answer = adjustContestAndGetData();
