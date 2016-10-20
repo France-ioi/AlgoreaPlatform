@@ -15,6 +15,7 @@
         $additionalCssUrl = null;
         $animationHtmlFile = null;
         $useMap = false;
+        $usesForum = false;
         $domainConfig = $config->shared->domains['current'];
         if (property_exists($domainConfig, 'compiledMode')) {
           $compiledMode = $domainConfig->compiledMode;
@@ -34,6 +35,9 @@
         if (property_exists($domainConfig, 'useMap')) {
           $useMap = $domainConfig->useMap;
         }
+        if (property_exists($domainConfig, 'usesForum')) {
+          $usesForum = $domainConfig->usesForum;
+        }
         function includeFile($url) {
           global $assetsBaseUrl, $urlArgs;
           return $assetsBaseUrl.$url.$urlArgs;
@@ -43,7 +47,6 @@
     </script>
     <?php if (!$compiledMode): ?>
       <link rel="stylesheet" href="<?= includeFile('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>">
-      <link href="<?= includeFile('bower_components/dynatree/dist/skin/ui.dynatree.css') ?>" rel="stylesheet" type="text/css">
       <link href="<?= includeFile('layout/3columns-flex.css') ?>" rel="stylesheet" type="text/css" />
       <link href="<?= includeFile('layout/menu.css') ?>" rel="stylesheet" type="text/css" />
       <link href="<?= includeFile('layout/main.css') ?>" rel="stylesheet" type="text/css" />
@@ -52,7 +55,10 @@
       <link href="<?= includeFile('groupAdmin/groupAdmin.css') ?>" rel="stylesheet" type="text/css" />
       <link href="<?= includeFile('groupRequests/groupRequests.css') ?>" rel="stylesheet" type="text/css" />
       <link rel="stylesheet" href="<?= includeFile('algorea.css') ?>" type="text/css">
-      <link rel="stylesheet" href="<?= includeFile('forum/forum.css') ?>" type="text/css">
+      <?php if ($usesForum): ?>
+        <link href="<?= includeFile('bower_components/dynatree/dist/skin/ui.dynatree.css') ?>" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="<?= includeFile('forum/forum.css') ?>" type="text/css">
+      <?php endif; ?>
     <?php else: ?>
       <link rel="stylesheet" href="<?= includeFile('vendor.min.css') ?>">
       <link rel="stylesheet" href="<?= includeFile('algorea.min.css') ?>">
@@ -125,7 +131,13 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
 </script>
 <?php if (!$compiledMode): ?>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
+  <?php if ($usesForum): ?>
+    <script src="<?= includeFile('bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
+    <script src="<?= includeFile('bower_components/dynatree/dist/jquery.dynatree.min.js') ?>" type="text/javascript"></script>
+    <script src="<?= includeFile('shared/utils.js') ?>"></script>
+    <script src="<?= includeFile('ext/inheritance.js') ?>" type="text/javascript"></script>
+    <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
+  <?php endif; ?>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_fr-fr.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-sanitize/angular-sanitize.min.js') ?>"></script>
@@ -134,13 +146,9 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('commonFramework/modelsManager/modelsManager.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/sync/syncQueue.js') ?>"></script>
   <script src="<?= includeFile('shared/models.js') ?>"></script>
-  <script src="<?= includeFile('shared/utils.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/dynatree/dist/jquery.dynatree.min.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('shared/small-ui-confirm.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('bower_components/angu-fixed-header-table/angu-fixed-header-table.js') ?>" type="text/javascript"></script>
-  <script src="<?= includeFile('ext/inheritance.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('bower_components/lodash/dist/lodash.min.js') ?>" type="text/javascript"></script>
-  <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <script src="<?= includeFile('login/service.js') ?>"></script>
   <script src="<?= includeFile('algorea.js') ?>"></script>
   <script src="<?= includeFile('contest/contestTimerService.js') ?>"></script>
@@ -166,9 +174,11 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('groupAdmin/groupAdminController.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAdminIndexController.js') ?>"></script>
   <script src="<?= includeFile('userInfos/controller.js') ?>"></script>
-  <script src="<?= includeFile('forum/forumIndexController.js') ?>"></script>
-  <script src="<?= includeFile('forum/forumFilterController.js') ?>"></script>
-  <script src="<?= includeFile('shared/treeviewDirective.js') ?>"></script>
+  <?php if ($usesForum): ?>
+    <script src="<?= includeFile('forum/forumIndexController.js') ?>"></script>
+    <script src="<?= includeFile('forum/forumFilterController.js') ?>"></script>
+    <script src="<?= includeFile('shared/treeviewDirective.js') ?>"></script>
+  <?php endif; ?>
   <script src="<?= includeFile('forum/forumThreadController.js') ?>"></script>
 <?php else: ?>
   <script src="<?= includeFile('vendor.min.js') ?>"></script>
