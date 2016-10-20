@@ -1,10 +1,14 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','mapService','$timeout', 'contestTimerService', '$http', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, mapService, $timeout, contestTimerService, $http) {
+   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
       $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
+      var mapService = null;
+      if (config.domains.current.useMap) {
+         mapService = $injector.get('mapService');
+      }
       $scope.getChildren = function() {
          return itemService.getChildren(this.item);
       };
@@ -249,7 +253,11 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', 'mapService', function ($scope, pathService, itemService, $timeout, mapService) {
+   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', '$injector', function ($scope, pathService, itemService, $timeout, $injector) {
+      var mapService = null;
+      if (config.domains.current.useMap) {
+         mapService = $injector.get('mapService');
+      }
       $scope.panel = 'right';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('right');};
       $scope.setArrowLinks = function() {

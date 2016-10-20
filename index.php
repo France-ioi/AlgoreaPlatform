@@ -14,6 +14,7 @@
         $compiledMode = false;
         $additionalCssUrl = null;
         $animationHtmlFile = null;
+        $useMap = false;
         $domainConfig = $config->shared->domains['current'];
         if (property_exists($domainConfig, 'compiledMode')) {
           $compiledMode = $domainConfig->compiledMode;
@@ -29,6 +30,9 @@
         }
         if (property_exists($domainConfig, 'animationHtmlFile')) {
           $animationHtmlFile = $domainConfig->animationHtmlFile;
+        }
+        if (property_exists($domainConfig, 'useMap')) {
+          $useMap = $domainConfig->useMap;
         }
         function includeFile($url) {
           global $assetsBaseUrl, $urlArgs;
@@ -98,7 +102,9 @@
 
 <footer id="footer" ng-include="templatesPrefix+'footer.html'"></footer>
 
-<div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>
+<?php if ($useMap): ?>
+  <div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>
+<?php endif; ?>
 
 <script>
 function animationFinished() {
@@ -144,10 +150,12 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
   <script src="<?= includeFile('navigation/directives.js') ?>"></script>
   <script src="<?= includeFile('community/controller.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/paper/dist/paper-full.min.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/jquery-mousewheel/jquery.mousewheel.min.js') ?>"></script>
-  <script src="<?= includeFile('map/mapService.js') ?>"></script>
-  <script src="<?= includeFile('map/map.js') ?>"></script>
+  <?php if ($useMap): ?>
+    <script src="<?= includeFile('bower_components/paper/dist/paper-full.min.js') ?>"></script>
+    <script src="<?= includeFile('bower_components/jquery-mousewheel/jquery.mousewheel.min.js') ?>"></script>
+    <script src="<?= includeFile('map/mapService.js') ?>"></script>
+    <script src="<?= includeFile('map/map.js') ?>"></script>
+  <?php endif; ?>
   <script src="<?= includeFile('bower_components/jschannel/src/jschannel.js') ?>"></script>
   <script src="<?= includeFile('bower_components/pem-platform/task-xd-pr.js') ?>"></script>
   <script src="<?= includeFile('login/controller.js') ?>"></script>

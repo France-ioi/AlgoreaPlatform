@@ -98,25 +98,29 @@ angular.module('algorea')
 
 
 angular.module('algorea')
-  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', 'mapService', 'itemService', 'pathService', '$state', 'layoutService', function ($scope, $window, $timeout, $rootScope, $interval, mapService, itemService, pathService, $state, layoutService) {
+  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', '$injector', 'itemService', 'pathService', '$state', 'layoutService', function ($scope, $window, $timeout, $rootScope, $interval, injector, itemService, pathService, $state, layoutService) {
     var pane_west = $('.ui-layout-west');
     var pane_center = $('.ui-layout-center');
     var container = $('#layoutContainer');
     var taskMinWidth = 820;
     var nonTaskMinWidth = 400;
-    mapService.setClickedCallback(function(path, lastItem) {
-      if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
-         var pathArray = path.split('/');
-         var selr = pathArray.length;
-         var sell = selr -1;
-         var pathParams = pathService.getPathParams();
-         if (pathParams.basePathStr == path) {
-            $scope.layout.closeMap();
-         } else {
-            $state.go('contents', {path: path,sell:sell,selr:selr});
-         }
-      }
-    });
+    var mapService = null;
+    if (config.domains.current.useMap) {
+      mapService = $injector.get('mapService');
+      mapService.setClickedCallback(function(path, lastItem) {
+        if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
+           var pathArray = path.split('/');
+           var selr = pathArray.length;
+           var sell = selr -1;
+           var pathParams = pathService.getPathParams();
+           if (pathParams.basePathStr == path) {
+              $scope.layout.closeMap();
+           } else {
+              $state.go('contents', {path: path,sell:sell,selr:selr});
+           }
+        }
+      });
+    }
     $scope.mapInfos = {
        'mapPossible' : true,
        'hasMap':false,
@@ -162,7 +166,7 @@ angular.module('algorea')
          }
       },
       openMap: function() {
-         if (!$scope.mapInfos.mapMode) {
+         if (!$scope.mapInfos.mapMode && config.domains.current.useMap) {
             if ($scope.mapInfos.hasMap == 'button') {
                $scope.layout.openMenu();
             }
