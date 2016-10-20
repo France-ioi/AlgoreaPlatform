@@ -98,7 +98,7 @@ angular.module('algorea')
 
 
 angular.module('algorea')
-  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', '$injector', 'itemService', 'pathService', '$state', 'layoutService', function ($scope, $window, $timeout, $rootScope, $interval, injector, itemService, pathService, $state, layoutService) {
+  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', '$injector', 'itemService', 'pathService', '$state', 'layoutService', function ($scope, $window, $timeout, $rootScope, $interval, $injector, itemService, pathService, $state, layoutService) {
     var pane_west = $('.ui-layout-west');
     var pane_center = $('.ui-layout-center');
     var container = $('#layoutContainer');
