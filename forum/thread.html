@@ -6,7 +6,7 @@
 <div ng-if="!loading && (thread || fakeThread)">
    <div ng-if="inPopup"><span data-i18n="forum_activities_of"></span> {{user_item.user.sLogin}} <span data-i18n="forum_on_exercise"></span> {{item.strings[0].sTitle}}
    </div>
-   <div ng-form="threadForm" ng-if="!readOnly && (ownThread || newThread)">
+   <div ng-form="threadForm" ng-if="!readOnly && (ownThread || newThread)" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
       <div ng-if="inTask">
          <h4 data-i18n="forum_title_welcome"></h4>
          <p data-i18n="[html]forum_title_desc"></p>
@@ -19,7 +19,7 @@
             <option value="Bug" data-i18n="forum_type_bug"></option>
          </select>
       </div>
-      <div class="form-group col-md-12" ng-show="thread.sType == 'Help' && !inTask">
+      <div class="form-group" ng-show="thread.sType == 'Help' && !inTask">
          <label for="idItem" data-i18n="forum_item_associated"></label>
          <p class="input-group">
             <input type="text" name="idItem" ng-model="thread.idItem" id="idItem" class="form-control" item-text readonly/>
@@ -39,7 +39,7 @@
          <label for="sBody" ng-hide="inTask" data-i18n="forum_message"></label>
          <textarea name="sMessage" ng-model="newMessage.sBody" id="sBody" class="form-control"></textarea>
       </div>
-      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-standard" ng-click="submitForm(threadForm)" data-i18n="save"></button>
+      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-default" ng-click="submitForm(threadForm)" data-i18n="save"></button>
    </div>
    <div ng-if="!newThread && !readOnly">
       <div ng-if="!ownThread">

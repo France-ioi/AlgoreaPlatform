@@ -10,26 +10,117 @@ angular.module('algorea')
   };
 });
 
+
+
+// loosely based on http://stackoverflow.com/questions/32513974/affix-element-with-pure-angularjs
+// Compute the absolute top of the element.
+function getAbsoluteTop (element) {
+  var top = 0;
+  while (element) {
+    top += element.offsetTop - element.scrollTop + element.clientTop;
+    element = element.offsetParent;
+  }
+  return top;
+}
+// This directive sets the affix class on its single child element
+// when the child's absolute top position is negative.
+// The height of the container is also adjusted when the child is
+// affixed to avoid changes to the page layout.
+affixMeDirective.$inject = ['$window', '$timeout'];
+function affixMeDirective ($window, $timeout) {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attrs) {
+      var isEnabled = false;
+      function onScroll () {
+        var child = element.children();
+        var top = getAbsoluteTop(element[0]);
+        scope.top = top;
+        if (top >= 0) {
+          child.removeClass('affix');
+        } else {
+          child.addClass('affix');
+          element.css('height', child[0].offsetHeight);
+        }
+      }
+      function enable () {
+        if (!isEnabled) {
+          $timeout(onScroll, 0);
+          $window.addEventListener("scroll", onScroll);
+          isEnabled = true;
+        }
+      }
+      function disable () {
+        if (isEnabled) {
+          $window.removeEventListener("scroll", onScroll);
+          var child = element.children();
+          child.removeClass('affix');
+          element.css('height', '');
+          isEnabled = false;
+        }
+      }
+      scope.$watch(attrs.affixMe, function (val) {
+        if (val) enable(); else disable();
+      });
+      scope.$on('$destroy', disable);
+    }
+  };
+}
+angular.module('algorea').directive('affixMe', affixMeDirective);
+
+
+// More global menu
 angular.module('algorea')
-  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', 'mapService', 'itemService', 'pathService', '$state', function ($scope, $window, $timeout, $rootScope, $interval, mapService, itemService, pathService, $state) {
+   .factory('layoutService', ['$rootScope', function ($rootScope) {
+      function reset () {
+        $rootScope.affix = 'toolbar';
+        $rootScope.navOverlay = false;
+      }
+      $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
+        reset();
+      });
+      reset();
+      return {
+         openNavOverlay: function () {
+            $rootScope.navOverlay = true;
+         },
+         closeNavOverlay: function () {
+            $rootScope.navOverlay = false;
+         },
+         affixToolbar: function () {
+            $rootScope.affix = 'toolbar';
+         },
+         affixHeader: function () {
+            $rootScope.affix = 'header';
+         }
+      };
+   }]);
+
+
+angular.module('algorea')
+  .controller('layoutController', ['$scope', '$window', '$timeout', '$rootScope', '$interval', '$injector', 'itemService', 'pathService', '$state', 'layoutService', function ($scope, $window, $timeout, $rootScope, $interval, $injector, itemService, pathService, $state, layoutService) {
     var pane_west = $('.ui-layout-west');
     var pane_center = $('.ui-layout-center');
     var container = $('#layoutContainer');
     var taskMinWidth = 820;
     var nonTaskMinWidth = 400;
-    mapService.setClickedCallback(function(path, lastItem) {
-      if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
-         var pathArray = path.split('/');
-         var selr = pathArray.length;
-         var sell = selr -1;
-         var pathParams = pathService.getPathParams();
-         if (pathParams.basePathStr == path) {
-            $scope.layout.closeMap();
-         } else {
-            $state.go('contents', {path: path,sell:sell,selr:selr});
-         }
-      }
-    });
+    var mapService = null;
+    if (config.domains.current.useMap) {
+      mapService = $injector.get('mapService');
+      mapService.setClickedCallback(function(path, lastItem) {
+        if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
+           var pathArray = path.split('/');
+           var selr = pathArray.length;
+           var sell = selr -1;
+           var pathParams = pathService.getPathParams();
+           if (pathParams.basePathStr == path) {
+              $scope.layout.closeMap();
+           } else {
+              $state.go('contents', {path: path,sell:sell,selr:selr});
+           }
+        }
+      });
+    }
     $scope.mapInfos = {
        'mapPossible' : true,
        'hasMap':false,
@@ -56,6 +147,7 @@ angular.module('algorea')
       },
       buttonClass: "fullscreen",
       state: "normal",
+      menuOpen: true,
       goFullscreen: function() {
 
       },
@@ -74,7 +166,7 @@ angular.module('algorea')
          }
       },
       openMap: function() {
-         if (!$scope.mapInfos.mapMode) {
+         if (!$scope.mapInfos.mapMode && config.domains.current.useMap) {
             if ($scope.mapInfos.hasMap == 'button') {
                $scope.layout.openMenu();
             }
@@ -122,6 +214,17 @@ angular.module('algorea')
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
          $('#footer').toggleClass('footer-toggled');
          $scope.layout.syncBreadcrumbs();
+      },
+      openTaskMenu: function() {
+         $scope.layout.toggleMenu();
+         layoutService.affixHeader();
+         layoutService.openNavOverlay();
+         $scope.layout.openMenu();
+      },
+      closeNavOverlay: function() {
+        layoutService.closeNavOverlay();
+        layoutService.affixToolbar();
+        $scope.layout.closeMenu();
       },
       syncBreadcrumbs: function() {
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so

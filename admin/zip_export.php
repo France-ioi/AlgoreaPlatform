@@ -8,7 +8,7 @@ ini_set('display_errors', 1);
 $main_group_id = $_GET['groupId'];
 $main_item_id = $_GET['itemId'];
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 
 if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
    echo "Vous devez être connecté pour pouvoir accéder à cette fonctionnalité";

@@ -109,6 +109,13 @@ body {
    font-size:25pt;
 }
 
+.contest-timer {
+   font-weight:bold;
+   font-size:40pt; 
+   float:right;
+   margin-right:20px;
+}
+
 .main-titlebar-icon1 {
    -webkit-flex: 0 0 50px;
    flex: 0 0 50px;

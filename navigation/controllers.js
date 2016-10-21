@@ -1,10 +1,14 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','mapService','$timeout', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, mapService, $timeout) {
+   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
       $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
+      var mapService = null;
+      if (config.domains.current.useMap) {
+         mapService = $injector.get('mapService');
+      }
       $scope.getChildren = function() {
          return itemService.getChildren(this.item);
       };
@@ -85,13 +89,10 @@ angular.module('algorea')
       // possible status: 'not visited', 'visited', 'validated', 'validated-ol' (in another language), 'failed', 'hintasked'
       $scope.item_status = function() {
          var user_item = itemService.getUserItem(this.item);
-         if (!user_item) {
-            return 'not visited';
-         }
-         if (this.item.bGrayedAccess) {
+         if (this.item.bGrayedAccess && !this.item.sDuration) {
             return 'grayed';
          }
-         if (!user_item.sLastActivityDate || user_item.sLastActivityDate.getTime() == 0) {
+         if (!user_item || !user_item.sLastActivityDate || user_item.sLastActivityDate.getTime() == 0) {
             return 'not visited';
          }
          if (user_item.bValidated == true) {
@@ -104,6 +105,25 @@ angular.module('algorea')
             return 'hint asked';
          }
          return 'visited';
+      };
+      $scope.openContest = function() {
+         var idItem = this.item.ID;
+         var self = this;
+         $http.post('contest/api.php', {action: 'openContest', idItem: idItem}, {responseType: 'json'}).success(function(res) {
+            if (!res.success) {
+               alert(res.error);
+               return;
+            }
+            config.contestData = {endTime: res.endTime, startTime: res.startTime, duration: res.duration, idItem: idItem};
+            contestTimerService.startContest(idItem, res.duration);
+            var user_item = itemService.getUserItem(self.item);
+            if (user_item) {user_item.sContestStartDate = new Date();}
+            // for some reason, sync doesn't work in this case
+            SyncQueue.sentVersion = 0;
+            SyncQueue.serverVersion = 0;
+            SyncQueue.resetSync = true;
+            SyncQueue.planToSend(0);
+         });
       };
       // TODO: cleanup
       var type_iconName = {
@@ -202,7 +222,7 @@ angular.module('algorea')
             that.item = item;
             that.parentItemID = item.ID;
             that.strings = itemService.getStrings(item);
-            that.imageUrl = that.strings.sImageUrl ? that.strings.sImageUrl : 'images/default-level.png';
+            that.imageUrl = (that.strings && that.strings.sImageUrl) ? that.strings.sImageUrl : 'images/default-level.png';
             that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
@@ -233,7 +253,11 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', 'mapService', function ($scope, pathService, itemService, $timeout, mapService) {
+   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', '$injector', function ($scope, pathService, itemService, $timeout, $injector) {
+      var mapService = null;
+      if (config.domains.current.useMap) {
+         mapService = $injector.get('mapService');
+      }
       $scope.panel = 'right';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('right');};
       $scope.setArrowLinks = function() {

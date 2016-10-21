@@ -7,7 +7,7 @@ ini_set('display_errors', '1');
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 
 if (!isset($request['action'])) {

@@ -20,8 +20,11 @@
          <div class="sidebar-left-item-final-icon2" ng-if="!item.bGrayedAccess && item_item.sCategory == 'Challenge'">
             <span class="material-icons">star</span>
          </div>
-         <div class="sidebar-left-item-final-icon2" ng-if="item.bGrayedAccess">
+         <div class="sidebar-left-item-final-icon2" ng-if="item.bGrayedAccess && !item.sDuration">
             <span class="material-icons">lock</span>
+         </div>
+         <div class="sidebar-left-item-final-icon2" ng-if="item.sDuration">
+            <span class="material-icons">alarm</span>
          </div>
       </div>
    </div>

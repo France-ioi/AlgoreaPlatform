@@ -456,6 +456,7 @@ var models = {
           sLastHintDate: {type: "jsdate", label: "", readOnly: true},
           sFinishDate: {type: "jsdate", label: "", readOnly: true},
           sLastActivityDate: {type: "jsdate", label: ""},
+          sContestStartDate: {type: "jsdate", label: "", readOnly: true},
           bRanked: {type: "boolean", label: "", readOnly: true},
           sAllLangProg: {type: "string", label: ""},
           sState: {type: "string", label: ""},

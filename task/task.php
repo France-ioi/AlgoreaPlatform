@@ -11,7 +11,7 @@ $request = (array) json_decode($postdata);
 
 require_once __DIR__.'/../config.php';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 
 if (!isset($request['action'])) {
@@ -25,6 +25,7 @@ if (!isset($_SESSION['login'])) {
 
 require_once(dirname(__FILE__)."/../shared/TokenParser.php");
 require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
+require_once(__DIR__.'/../contest/common.php');
 
 function getTokenParams($request) {
    global $config, $db;
@@ -136,6 +137,11 @@ function createUserItemIfMissing($userItemId, $params) {
 function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
+   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['submissionPossible']) {
+      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+      return;
+   }
    createUserItemIfMissing($request['userItemId'], $params);
    $ID = getRandomID();
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
@@ -162,6 +168,11 @@ function askValidation($request, $db) {
 function askHint($request, $db) {
    global $config;
    $params = getTokenParams($request);
+   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['submissionPossible']) {
+      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+      return;
+   }
    createUserItemIfMissing($request['userItemId'], $params);
    $query = "UPDATE `users_items` SET nbHintsCached = nbHintsCached + 1, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
@@ -177,6 +188,11 @@ function askHint($request, $db) {
 function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
+   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['submissionPossible']) {
+      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+      return;
+   }
    $scoreParams = getScoreParams($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
    $score = floatval($scoreParams['score']);
    if (!isset($request['scoreToken'])) {

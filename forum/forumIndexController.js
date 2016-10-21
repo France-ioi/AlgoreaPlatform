@@ -34,7 +34,8 @@ angular.module('algorea')
    $scope.tabs = {
       'helpOthers': {active: true, length: 0},
       'getHelp': {active: false, length: 0},
-      'general': {active: false, length: 0}
+      'general': {active: false, length: 0},
+      'technicalSupport': {active: false, length: 0}
    };
    $scope.setGlobalFilter = function(filterField) {
       $scope.globalFilter = {};

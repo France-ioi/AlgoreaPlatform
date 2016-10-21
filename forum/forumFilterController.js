@@ -19,7 +19,10 @@ angular.module('algorea')
       'bImportant': null
    };
    $scope.loading = true;
+   $scope.saveFilter= false;
    $scope.showFilters = false;
+   $scope.showSavedFilter = false;
+   $scope.editFilter = false;
    $scope.plusActiveVar = false;
    $scope.filters = [];
    // using object here due to prototypal inheritance / scope mess, see
@@ -156,6 +159,8 @@ angular.module('algorea')
          return thread.sType === 'Help' && thread.idUserCreated != userID;
       if (tab == 'general')
          return thread.sType === 'General';
+      if (tab == 'technicalSupport')
+         return thread.sType === 'Technical';
    }
    return function(threads, tab, userID, currentFilter, currentGlobalFilter) {
       if (!currentFilter && !tab)

@@ -5,7 +5,7 @@
 
 require_once(__DIR__.'/../config.php');
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 
 $request = json_decode(file_get_contents('php://input'), true);
 
