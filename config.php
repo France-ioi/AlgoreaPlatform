@@ -13,6 +13,10 @@ $config = (object) array(
       "private_key" => "",
       "public_key" => ""
    ),
+   "i18n" => (object) array(
+      "defaultLanguage" => 'fr',
+      "customStringsName" => ''
+   ),
    "debug" => (object) array(
       "timers" => false,
       "types" => array(),

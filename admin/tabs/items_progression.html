@@ -1,10 +1,9 @@
 <div>
    <p ng-show="(item_item == undefined) || (group_group == undefined)">
-      <b>Sélectionnez d'abord l'item et le groupe pour lesquels vous souhaitez voir la progression.</b>
+      <b data-i18n="admin_select_item_group_progression"></b>
    </p>
    <span ng-if="item_item != undefined">
-      <span class="accessTitleCell accessItemCell">
-         Accès
+      <span class="accessTitleCell accessItemCell" data-i18n="access">
       </span>
       <span class="accessTitleCell" ng-show="group_group != undefined">
          <span title="{{ group_group.child.sName }}" class="accessGroupName">{{ group_group.child.sName }}</span>

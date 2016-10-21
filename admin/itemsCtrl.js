@@ -140,7 +140,7 @@ angular.module('algorea')
          hasChanged |= $scope.hasObjectChanged("items", $scope.item);
          hasChanged |= $scope.hasObjectChanged("items_strings", $scope.item_strings);
          if (hasChanged) {
-            if (confirm("Des données de l'item en cours ont été modifiées, vous allez perdre les changements")) {
+            if (confirm(i18nt('groupAdmin_confirm_unsaved'))) {
                $scope.resetObjectChanges("items_items", $scope.item_item);
                $scope.resetObjectChanges("items", $scope.item);
                $scope.resetObjectChanges("items_strings", $scope.item_strings);
@@ -164,7 +164,7 @@ angular.module('algorea')
          if (!to_group || !child_group_item || (!child_group_item.bOwnerAccess && !child_group_item.bManagerAccess)) {
             this.canGiveAccess = false;
             this.canRemoveAccess = false;
-            this.canGiveAccessReason = "Vous devez avoir les droits manager pour pouvoir donner directement accès à cet item.";
+            this.canGiveAccessReason = i18nt('groupAdmin_manager_required');
             return false;
          }
          var that = this;
@@ -206,13 +206,13 @@ angular.module('algorea')
                return true;
             }
          });
-         this.canGiveAccessReason = "Vous ne pouvez pas donner l'accès à un item à un groupe si celui-ci n'a pas accès à l'item parent";
+         this.canGiveAccessReason = i18nt('groupAdmin_parent_access_required');
          return this.canGiveAccess;
       };
 
       $scope.newItem = function(itemItemID) {
          if (!$scope.checkUserRight(itemItemID, 'items_items', 'insert')) {
-            alert("Vous n'avez pas le droit d'ajouter un objet à cet endroit");
+            alert(i18nt('groupAdmin_add_here_unauthorized'));
             return;
          }
          if (!$scope.checkSaveItem()) {
@@ -235,7 +235,7 @@ angular.module('algorea')
          var itemStrings = ModelsManager.createRecord("items_strings");
          itemStrings.idItem = item.ID;
          itemStrings.idLanguage = 1; // TODO: handle this
-         itemStrings.sTitle = "Nouvel item";
+         itemStrings.sTitle = i18nt('groupAdmin_new_item');
          ModelsManager.insertRecord("items_strings", itemStrings);
          var itemItemParent = ModelsManager.getRecord("items_items", itemItemID);
          var itemItem = ModelsManager.createRecord("items_items");
@@ -256,7 +256,7 @@ angular.module('algorea')
 
       $scope.newGroup = function(groupGroupID) {
          var group = ModelsManager.createRecord("groups");
-         group.sName = "Nouveau groupe";
+         group.sName = i18nt('groupAdmin_new_group');
          group.sType = "Class";
          group.sDateCreated = new Date();
          ModelsManager.insertRecord("groups", group);
@@ -479,7 +479,7 @@ angular.module('algorea')
          var getItemTitle = function(item, item_item) {
             var title = "";
             if (item.strings.length === 0) {
-               title = "loading...";
+               title = i18nt('groupAdmin_loading');
             } else {
                title = item.strings[0].sTitle;
             }
@@ -613,16 +613,16 @@ angular.module('algorea')
             var prefix = models.groups.fields.sType.values[group.sType ? group.sType : 'Other'].label + " : ";
             if (group.sType == 'UserSelf') {
                if ($scope.loginData.idGroupSelf == group.ID) {
-                  prefix = 'Mon compte : ';
+                  prefix = i18nt('groupAdmin_account_mine');
                } else {
-                  prefix = 'Utilisateur : ';
+                  prefix = i18nt('groupAdmin_account_other');
                }
             }
             if (group.sType == 'UserAdmin') {
                if ($scope.loginData.idGroupOwned == group.ID) {
-                  return 'Mes groupes ('+group.sName+')';
+                  return i18nt('groupAdmin_groups_mine') +' ('+group.sName+')';
                } else {
-                  prefix = 'Les groupes de : ';
+                  prefix = i18nt('groupAdmin_groups_other')+' : ';
                }
             }
             return preprefix+prefix + group.sName + suffix;
@@ -789,7 +789,7 @@ angular.module('algorea')
       };
 
       $scope.close = function() {
-         $scope.closeMsg = 'I was closed at: ' + new Date();
+         $scope.closeMsg = i18nt('groupAdmin_closed_at') + new Date();
          $scope.shouldBeOpen = false;
       };
 
@@ -816,7 +816,7 @@ angular.module('algorea')
       };
 
       $scope.close = function() {
-         $scope.closeMsg = 'I was closed at: ' + new Date();
+         $scope.closeMsg = i18nt('groupAdmin_closed_at') + new Date();
          $scope.shouldBeOpen = false;
       };
 
@@ -904,7 +904,7 @@ angular.module('algorea')
             return;
          }
          if (!$scope.computeAccessRights(group, item_item)) {
-            alert('vous n\'avez pas les droits suffisants pour changer les droits de ce groupe sur cet item: '+$scope.canGiveAccessReason);
+            alert(i18nt('groupAdmin_insufficient_rights')+$scope.canGiveAccessReason);
             return;
          }
          var access = AccessManager.dynComputeGroupItemAccess(idGroup, idItem);
@@ -1022,17 +1022,17 @@ var AccessManager = {
             access.sAccessType = "full";
             if ((group_item) && (group_item.sFullAccessDate) && (curDate >= group_item.sFullAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += "Accès complet donné directement. ";
+               access.sAccessTitle += i18nt('groupAdmin_access_complete_direct');
             } else {
-               access.sAccessTitle += "Accès complet hérité. ";
+               access.sAccessTitle += i18nt('groupAdmin_access_complete_inherited');
             }
             access.sAccessLabel += "C";
          } else {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += "Accès complet futur donné directement. ";
+               sFutureAccessTitle += i18nt('groupAdmin_access_complete_direct_future');
             } else {
-               sFutureAccessTitle += "Accès complet futur hérité. ";
+               sFutureAccessTitle += i18nt('groupAdmin_access_complete_inherited_future');
             }
             sFutureAccessLabel += "C";
             access.bHasFutureAccess = true;
@@ -1043,62 +1043,61 @@ var AccessManager = {
             access.sAccessType = "partial";
             if ((group_item) && (group_item.sPartialAccessDate) && (curDate >= group_item.sPartialAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += "Accès partiel donné directement. ";
+               access.sAccessTitle += i18nt('groupAdmin_access_partial_direct');
             } else {
-               access.sAccessTitle += "Accès partiel hérité. ";
+               access.sAccessTitle += i18nt('groupAdmin_access_partial_inherited');
             }
             access.sAccessLabel += "P";
          } else if (sFutureAccessLabel == "") {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += "Accès partiel futur donné directement. ";
+               sFutureAccessTitle += i18nt('groupAdmin_access_partial_direct_future');
             } else {
-               sFutureAccessTitle += "Accès partiel futur hérité. ";
+               sFutureAccessTitle += i18nt('groupAdmin_access_partial_inherited_future');
             }
             sFutureAccessLabel += "P";
             access.bHasFutureAccess = true;
          }
       }
       if (access.bOwnerAccess) {
-         access.sAccessTitle += "Accès Propriétaire donné directement. ";
+         access.sAccessTitle += i18nt('groupAdmin_access_owner_direct');
          access.sAccessLabel += "+O";
       }
       if (access.bCachedManagerAccess || access.bManagerAccess) {
-         access.sAccessTitle += "Accès Manager ";
          if (access.bManagerAccess) {
-            access.sAccessTitle += 'donné directement. ';
+            access.sAccessTitle += i18nt('groupAdmin_access_manager_direct');
             access.sAccessLabel += "+";
          } else {
-            access.sAccessTitle += 'hérité. ';
+            access.sAccessTitle += i18nt('groupAdmin_access_manager_inherited');
          }
          access.sAccessLabel += "M";
       }
       if (access.sCachedGrayedAccessDate && access.sAccessType != "full" && access.sAccessType != "partial" && curDate >= access.sCachedGrayedAccessDate) {
          access.sAccessType = "grayed";
-         access.sAccessTitle += "Accès grisé.";
+         access.sAccessTitle += i18nt('groupAdmin_access_grayed');
          access.sAccessLabel += "G";
       }
       if (access.sAccessType == "none") {
          access.sAccessLabel = "X";
-         access.sAccessTitle += "Aucun accès actuellement. ";
+         access.sAccessTitle += i18nt('groupAdmin_access_none');
       }
       access.sAccessSolutionType = "none";
       if ((access.sCachedAccessSolutionsDate) && (curDate >= access.sCachedAccessSolutionsDate)) {
          access.sAccessSolutionType = "full";
          if ((group_item) && (group_item.sAccessSolutionsDate != null)) {
             access.sAccessLabel += "+";
-            access.sAccessTitle += "Accès aux solutions donné directement. ";
+            access.sAccessTitle += i18nt('groupAdmin_access_solutions_direct');
          } else {
-            access.sAccessTitle += "Accès aux solutions hérité. ";
+            access.sAccessTitle += i18nt('groupAdmin_access_solutions_inherited');
          }
          access.sAccessLabel += "S";
       } else if (access.sCachedAccessSolutionsDate) {
          access.sAccessSolutionType = "future";
          if ((group_item) && (group_item.sAccessSolutionsDate)) {
             sFutureAccessLabel += "+";
-            sFutureAccessTitle += "Accès futur aux solutions donné directement. ";
+            sFutureAccessTitle += i18nt('groupAdmin_access_solutions_direct_future');
          } else {
-            sFutureAccessTitle += "Accès futur aux solutions hérité. ";
+            sFutureAccessTitle += i18nt('groupAdmin_access_solutions_inherited_future');
          }
          sFutureAccessLabel += "S";
          access.bHasFutureAccess = true;
@@ -1110,7 +1109,7 @@ var AccessManager = {
       if (SyncQueue.status != SyncQueue.statusIdle) {
          access.sAccessLabel += "?";
          AccessManager.wasDuringSync = true;
-         access.sAccessTitle = "[En attente de synchro] " + access.sAccessTitle;
+         access.sAccessTitle = '['+i18nt('groupAdmin_access_waiting_sync')+'] '+access.sAccessTitle;
       }
       return access;
    }
@@ -1177,11 +1176,11 @@ angular.module('algorea')
       $scope.checkGroupItem = function() {
          if (!$scope.group_item.sFullAccessDate && !$scope.group_item.sPartialAccessDate) {
             if ($scope.group_item.bManagerAccess || $scope.group_item.bOwnerAccess) {
-               alert("Vous devez donner l'accès en lecture pour pouvoir donner l'accès en écriture");
+               alert(i18nt('groupAdmin_needs_read_for_write'));
                return false;
             }
             if (canRemoveAccess === false) {
-               alert("Vous ne pouvez pas retirer l'accès à cet item à ce groupe, car il a un accès direct à un item enfant");
+               alert(i18nt('groupAdmin_still_has_access_child'));
                return false;
             }
          }

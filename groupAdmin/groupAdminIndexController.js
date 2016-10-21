@@ -51,7 +51,7 @@ angular.module('algorea')
       $scope.error = '';
       var sName = $scope.formValues.groupName;
       if (!sName) {
-         $scope.error = 'vous devez indiquer un nom pour le groupe que vous allez créer.';
+         $scope.error = i18nt('groupAdmin_name_required');
          return;
       }
       $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: $scope.groupId, sName: sName}, {responseType: 'json'}).success(function(postRes) {
@@ -73,7 +73,7 @@ angular.module('algorea')
    	$scope.loading = true;
    	$scope.error = '';
    	if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser == 1) {
-   		$scope.error = 'Vous devez être connecté(e) pour accéder à l\'interface de gestion des groupes.';
+   		$scope.error = i18nt('groupAdmin_login_required');
    		$scope.loading = false;
    		return;
    	}

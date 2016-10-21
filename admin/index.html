@@ -10,6 +10,13 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js" type="text/javascript"></script>
       <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
       <!--<script src="../ext/dynatree/jquery/jquery.cookie.js" type="text/javascript"></script>-->
+      <script src="../bower_components/i18next/i18next.min.js"></script>
+      <script src="../i18n/i18n-algorea.js.php"></script>
+      <script type="text/javascript">
+         $(function () {
+            $('body').i18n();
+         });
+      </script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
@@ -48,13 +55,13 @@
          <iframe id="loginFrame" class="loginFrame" ng-src="{{loginModuleUrl}}"></iframe>
       </div>
       <div ng-hide="loginReady" class="loginCentered">
-         <img src="../images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Retrieving login information...</strong></p>
+         <img src="../images/spinner.gif" height="50px"><p style="margin-top:10px"><strong data-i18n="admin_retrieving_login"></strong></p>
       </div>
       <div ng-controller="ItemsCtrl" ng-show="userLogged && loginReady">
-         <a href="#" class="btn btn-default" ng-click="selectModelName('items')" ng-class="{'items': 'btn-success'}[selectedModelName]">Item : <b>{{ item.strings[0].sTitle }}</b></a>
+         <a href="#" class="btn btn-default" ng-click="selectModelName('items')" ng-class="{'items': 'btn-success'}[selectedModelName]"><span data-i18n="item"></span> : <b>{{ item.strings[0].sTitle }}</b></a>
          <a href="#" class="btn btn-default" ng-click="showItems = !showItems"><i class="glyphicon glyphicon-chevron-up" ng-show="showItems"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showItems"></i></a>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <a href="#" class="btn btn-default" ng-click="selectModelName('groups')" ng-class="{'groups': 'btn-success'}[selectedModelName]">Groupe : <b>{{ group.sName }}</b></a>
+         <a href="#" class="btn btn-default" ng-click="selectModelName('groups')" ng-class="{'groups': 'btn-success'}[selectedModelName]"><span data-i18n="group"></span> : <b>{{ group.sName }}</b></a>
          <a href="#" class="btn btn-default" ng-click="showGroups = !showGroups"><i class="glyphicon glyphicon-chevron-up" ng-show="showGroups"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showGroups"></i></a>
          <br/>
          <table><tr>
@@ -62,7 +69,7 @@
                <table>
                   <tr>
                      <td>
-                        <b>Items :</b>
+                        <b data-i18n="admin_items"></b>
                         <span style="float:right">
 <!--
                            <span ng-controller="ItemsSearchCtrl" style="display:inline-block">
@@ -78,8 +85,7 @@
                            </a>
                         </span>
                      </td>
-                     <td ng-show="twoColumnsItems">
-                        Glissez les items d'un arbre à l'autre
+                     <td ng-show="twoColumnsItems" data-i18n="admin_items_move">
                      </td>
                   </tr>
                   <tr>
@@ -96,7 +102,7 @@
                <table>
                   <tr>
                      <td>
-                        <b>Groupes :</b>
+                        <b data-i18n="admin_groups"></b>
                         <span style="float:right">
 <!--
                            <span ng-controller="GroupsSearchCtrl" style="display:inline-block">
@@ -112,8 +118,7 @@
                            </a>
                         </span>
                      </td>
-                     <td ng-show="twoColumnsGroups">
-                        Glissez les groupes d'un arbre à l'autre
+                     <td ng-show="twoColumnsGroups" data-i18n="admin_groups_move">
                      </td>
                   </tr>
                   <tr>
@@ -129,21 +134,21 @@
             <td style="vertical-align:top">
                <span  ng-show="selectedModelName == 'items'">
                   <uib-tabset>
-                     <uib-tab heading="Paramètres de l'item"><div ng-include='"tabs/items_params.html"'></div></uib-tab>
-                     <uib-tab heading="Textes" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include='"tabs/items_texts.html"'></div></uib-tab>
-                     <uib-tab heading="Édition" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO : édition de l'item sur l'interface tasks (si c'est un sujet ou un cours)</uib-tab>
-                     <uib-tab heading="Preview" ng-show="group_item.bCachedFullAccess || group_item.bOwnerAccess || group_item.bCachedAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_preview.html'"></div></uib-tab>
-                     <uib-tab heading="Accès et validation" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_access.html'"></div></uib-tab>
-                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
-                     <uib-tab heading="Statistiques" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO</uib-tab>
+                     <uib-tab data-i18n="[heading]admin_item_settings"><div ng-include='"tabs/items_params.html"'></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_texts" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include='"tabs/items_texts.html"'></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_edit" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO : édition de l'item sur l'interface tasks (si c'est un sujet ou un cours)</uib-tab>
+                     <uib-tab data-i18n="[heading]admin_preview" ng-show="group_item.bCachedFullAccess || group_item.bOwnerAccess || group_item.bCachedAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_preview.html'"></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_access" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_access.html'"></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_summary" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_stats" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO</uib-tab>
                   </uib-tabset>
                </span>
                <span ng-show="selectedModelName == 'groups'">
                   <uib-tabset>
-                     <uib-tab heading="Paramètres du groupe"><div ng-include='"tabs/groups_params.html"'></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_group_settings"><div ng-include='"tabs/groups_params.html"'></div></uib-tab>
                      <!--<tab ng-show="user" heading="Utilisateur associé"><div ng-include='"tabs/users_params.html"'></div></tab>-->
-                     <uib-tab heading="Accès et Validations"><div ng-include='"tabs/items_access.html"'></div></uib-tab>
-                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_access"><div ng-include='"tabs/items_access.html"'></div></uib-tab>
+                     <uib-tab data-i18n="[heading]admin_summary" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
                   </uib-tabset>
                </span>
             </td>

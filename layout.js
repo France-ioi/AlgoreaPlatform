@@ -361,5 +361,6 @@ angular.module('algorea')
        $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
     $interval($scope.layout.refreshSizes, 1000);
+    $interval(function() { $('body').i18n(); }, 1000);
     $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
 }]);

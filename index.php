@@ -125,6 +125,8 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('bower_components/angular-sanitize/angular-sanitize.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-ui-router/release/angular-ui-router.min.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/i18next/i18next.min.js') ?>"></script>
+  <script src="<?= includeFile('i18n/i18n-algorea.js.php') ?>"></script>
   <script src="<?= includeFile('commonFramework/modelsManager/modelsManager.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/sync/syncQueue.js') ?>"></script>
   <script src="<?= includeFile('shared/models.js') ?>"></script>

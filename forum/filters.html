@@ -2,8 +2,8 @@
    <center><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
 </div>
 <div ng-if="!loading">
-   <button ng-click="showFilters=false;" ng-show="showFilters" class="btn">Cacher les filtres avancés <span class="caret"></span></button>
-   <button ng-click="showFilters=true;" ng-show="!showFilters" class="btn">Afficher les filtres avancés  <span class="caret caret-up"></span></button>
+   <button ng-click="showFilters=false;" ng-show="showFilters" class="btn"><span data-i18n="forum_filters_hide"></span> <span class="caret"></span></button>
+   <button ng-click="showFilters=true;" ng-show="!showFilters" class="btn"><span data-i18n="forum_filters_show"></span> <span class="caret caret-up"></span></button>
    <div ng-form="filterForm" class="container-fluid form highlight filterContainer" ng-show="showFilters">
       <div tabset>
       <li tab ng-repeat="filter in filters track by filter.ID" select="selectFilter(filter.ID)" active="filter.bSelected">
@@ -12,11 +12,11 @@
          </div>
             <div class="row">
                <div class="form-group col-md-4">
-                  <label for="sName">Nom du filtre</label>
+                  <label for="sName" data-i18n="forum_filter_name"></label>
                   <input type="text" name="sName" ng-model="filter.sName" class="form-control">
                </div>
                <div class="form-group col-md-2">
-                  <label for="sStartDate">Discussions à partir du :</label>
+                  <label for="sStartDate" data-i18n="forum_date_from"></label>
                   <p class="input-group">
                      <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="filter.sStartDate" is-open="data.sStartDateOpened" min-date="'2011-01-01'" max-date="'2017-01-01'" datepicker-options="dateOptions" date-disabled="false" ng-required="false" close-text="Fermer" current-text="Aujourd'hui" clear-text="Annuler" starting-day="1" />
                      <span class="input-group-btn">
@@ -25,7 +25,7 @@
                   </p>
                </div>
                <div class="form-group col-md-2">
-                  <label for="sEndDate">jusqu'au :</label>
+                  <label for="sEndDate" data-i18n="forum_date_to"></label>
                   <p class="input-group">
                      <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="filter.sEndDate" is-open="data.sEndDateOpened" min-date="'2011-01-01'" max-date="'2017-01-01'" datepicker-options="dateOptions" date-disabled="false" ng-required="false" close-text="Fermer" current-text="Aujourd'hui" clear-text="Annuler" starting-day="1" />
                      <span class="input-group-btn">
@@ -34,17 +34,17 @@
                   </p>
                </div>
                <div class="form-group col-md-2">
-                  <label for="olderThan">Plus de (jours) :</label>
+                  <label for="olderThan" data-i18n="forum_date_older"></label>
                   <input type="text" name="olderThan" ng-model="filter.olderThan" class="form-control">
                </div>
                <div class="form-group col-md-2">
-                  <label for="newerThan">Moins de (jours) :</label>
+                  <label for="newerThan" data-i18n="forum_date_newer"></label>
                   <input type="text" name="newerThan" ng-model="filter.newerThan" class="form-control">
                </div>
             </div>
             <div class="row">
                <div class="col-md-6">
-                  <label for="idItem">Concernant l'item :</label>
+                  <label for="idItem" data-i18n="forum_item_id"></label>
                   <p class="input-group">
                      <input type="text" class="form-control" ng-model="filter.idItem" item-text readonly />
                      <span class="input-group-btn">
@@ -58,40 +58,40 @@
             </div>
             <div class="row">
                <div class="form-group col-md-2">
-                  <label for="bStarred">Favoris :</label>
+                  <label for="bStarred" data-i18n="forum_favorites"></label>
                      <button type="button" class="transparentButton btn-lg" ng-model="filter.bUnread" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
                         <span class="glyphicon glyphicon-eye-close" ng-show="filter.bUnread"></span>
                         <span class="glyphicon " ng-class="{'glyphicon-eye-close': bUnreadHover, 'glyphicon-eye-open': !bUnreadHover}" ng-mouseenter="bUnreadHover=true" ng-mouseleave="bUnreadHover=false" ng-hide="filter.bUnread"></span>
                      </button>
                </div>
                <div class="form-group col-md-2">
-                  <label for="bStarred">Archivés :</label>
+                  <label for="bStarred" data-i18n="forum_archived"></label>
                      <button type="button" class="transparentButton btn-lg" ng-model="filter.bArchived" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
                         <span class="glyphicon glyphicon-cloud-download" ng-show="filter.bArchived"></span>
                         <span class="glyphicon " ng-class="{'glyphicon-cloud-download': bArchivedHover, 'glyphicon-cloud': !bArchivedHover}" ng-mouseenter="bArchivedHover=true" ng-mouseleave="bArchivedHover=false" ng-hide="filter.bArchived"></span>
                      </button>
                </div>
                <div class="form-group col-md-2">
-                  <label for="bParticipated">Participés :</label>
+                  <label for="bParticipated" data-i18n="forum_participated"></label>
                      <button type="button" class="transparentButton btn-lg" ng-model="filter.bParticipated" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
                         <span class="glyphicon glyphicon-pen" ng-show="filter.bParticipated"></span>
                         <span class="glyphicon " ng-class="{'glyphicon-pencil': bParticipatedHover, 'glyphicon-file': !bParticipatedHover}" ng-mouseenter="bParticipatedHover=true" ng-mouseleave="bParticipatedHover=false" ng-hide="filter.bParticipated"></span>
                      </button>
                </div>
               <div class="form-group col-md-2">
-                  <label for="bImportant">Importants :</label>
+                  <label for="bImportant" data-i18n="forum_important"></label>
                      <button type="button" class="transparentButton btn-lg" ng-model="filter.bImportant" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
                         <span class="glyphicon glyphicon-exclamation-sign" ng-show="filter.bImportant"></span>
                         <span class="glyphicon " ng-class="{'glyphicon-exclamation-sign': bImportantHover, 'glyphicon-unchecked': !bImportantHover}" ng-mouseenter="bImportantHover=true" ng-mouseleave="bImportantHover=false" ng-hide="filter.bImportant"></span>
                      </button>
                </div>
             </div>
-         <button ng-click="submitForm(filterForm);" class="btn">Sauvegarder</button>
-         <button ng-click="resetFiler();" class="btn">Valeurs par défaut</button>
+         <button ng-click="submitForm(filterForm);" class="btn" data-i18n="save"></button>
+         <button ng-click="resetFiler();" class="btn" data-i18n="forum_default_values"></button>
       </li>
       <li tab disabled="false" active="plusActiveVar" select="newFilter()">
          <a tab-heading>
-            Ajouter un filtre <i class="glyphicon glyphicon-plus"></i>
+            <span data-i18n="forum_add_filter"></span> <i class="glyphicon glyphicon-plus"></i>
          </a>
       </li>
       </div>

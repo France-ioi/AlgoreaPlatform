@@ -319,17 +319,17 @@ angular.module('algorea')
             if (type == 'Root') return '';
             var typeStr;
             if (type == 'Level') {
-               typeStr = 'Niveau' + (item.iLevel ? ' '+item.iLevel : '');
+               typeStr = i18nt('navigation_level') + (item.iLevel ? ' '+item.iLevel : '');
             } else if(type == 'Chapter') {
-               typeStr = 'Chapitre';
+               typeStr = i18nt('navigation_chapter');
             } else if (type == 'Category') {
-               typeStr = 'Catégorie';
+               typeStr = i18nt('navigation_category');
             } else if (type == 'Section') {
-               typeStr = 'Section';
+               typeStr = i18nt('navigation_section');
             } else if (type == 'Task') {
-               typeStr = 'Exercice';
+               typeStr = i18nt('navigation_task');
             } else if (type == 'Course') {
-               typeStr = 'Cours';
+               typeStr = i18nt('navigation_course');
             }
             return typeStr;
          },

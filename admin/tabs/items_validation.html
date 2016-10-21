@@ -8,7 +8,7 @@
       </form>
    </div>
    <div class="modal-header">
-      Mode de validation au sein de <b>{{ item_item.parent.strings[0].sTitle }}</b>
+      <span data-i18n="admin_validation_mode"></span> <b>{{ item_item.parent.strings[0].sTitle }}</b>
    </div>
    <div class="modal-body">
       <form>
@@ -16,7 +16,7 @@
       </form>
    </div>
    <p>
-      <a class="btn btn-warning" ng-click="resetObjectChanges('items_items', item_item);resetObjectChanges('items', item);">Reset</a>
-      <a class="btn btn-primary" ng-click="saveObject('items', item);saveObject('items_items', item_item);">Enregistrer</a>
+      <a class="btn btn-warning" ng-click="resetObjectChanges('items_items', item_item);resetObjectChanges('items', item);" data-i18n="reset"></a>
+      <a class="btn btn-primary" ng-click="saveObject('items', item);saveObject('items_items', item_item);" data-i18n="save"></a>
    </p>
 </div>

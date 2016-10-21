@@ -1,19 +1,18 @@
 <div ng-if="!isLogged">
-<center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Loading...</strong></p></center>
+<center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong data-i18n="login_loading"></strong></p></center>
 </div>
-<div ng-if="tempUser">
-Désolé, vous ne pouvez pas modifier vos données utilisateur. Merci de vous connecter (bouton en haut à droite de l'écran) pour pouvoir le faire.
+<div ng-if="tempUser" data-i18n="userInfos_not_logged">
 </div>
 <div ng-if="fullUser" ng-form="userInfosForm">
-<p>Voici les informations vous concernant auxquelles nous avons accès :</p>
+<p data-i18n="userInfos_title_infos"></p>
 
 <table>
 <tbody>
-<tr><td>Prénom: </td><td>{{user.sFirstName}}</td></tr>
-<tr><td>Nom: </td><td>{{user.sLastName}}</td></tr>
-<tr><td>Date de Naissance: </td><td>{{sBirthDate}}</td></tr>
-<tr><td>Adresse E-mail: </td><td>{{user.sEmail}}</td></tr>
+<tr><td data-i18n="userInfos_info_first"></td><td>{{user.sFirstName}}</td></tr>
+<tr><td data-i18n="userInfos_info_last"></td><td>{{user.sLastName}}</td></tr>
+<tr><td data-i18n="userInfos_info_birthdate"></td><td>{{sBirthDate}}</td></tr>
+<tr><td data-i18n="userInfos_info_email"></td><td>{{user.sEmail}}</td></tr>
 </tbody>
 </table>
-<button class="btn btn-info" ng-click="openLoginPopup('password')">Changer mon mot de passe</button>
+<button class="btn btn-info" ng-click="openLoginPopup('password')" data-i18n="userInfos_change_password"></button>
 </div>

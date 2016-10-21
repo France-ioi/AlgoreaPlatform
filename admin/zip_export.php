@@ -24,7 +24,7 @@ $stmt->execute([
 $test = $stmt->fetchColumn();
 if (!$test) {
    error_log('warning: user '.$_SESSION['login']['ID'].' tried to export zip for group '.$main_group_id.' without permission.');
-   echo "Vous n'avez pas accès à ce groupe !";
+   echo "You don't have access to this group!";
    return;
 }
 

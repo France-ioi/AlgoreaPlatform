@@ -25,9 +25,9 @@ angular.module('algorea')
    var platformViews = {};
    var initPlatformViews = function() {
       platformViews = {
-         'task': {tabString: 'Énoncé', taskViews: {'task': true}},
-         'editor': {tabString: 'Résolution', taskViews: {'editor': true}},
-         'hints': {tabString: 'Indices', taskViews: {'hints': true}},
+         'task': {tabString: i18nt('task_statement'), taskViews: {'task': true}},
+         'editor': {tabString: i18nt('task_solve'), taskViews: {'editor': true}},
+         'hints': {tabString: i18nt('task_hints'), taskViews: {'hints': true}},
       };
    };
    initPlatformViews();
@@ -35,7 +35,7 @@ angular.module('algorea')
       delete(platformViews.task);
    }
    $scope.showSolution = function() {
-      platformViews.solution = {tabString: 'Solution', taskViews: {'solution': true}};
+      platformViews.solution = {tabString: i18nt('task_solution'), taskViews: {'solution': true}};
    };
    $scope.hideSolution = function() {
       delete platformViews.solution;

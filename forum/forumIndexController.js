@@ -8,9 +8,9 @@ angular.module('algorea')
    $scope.currentFilter = null;
    $scope.globalFilters = {
       all: {filter: null, description: 'Tous'},
-      favorites: {filter: {bStarred: true}, description: 'Favoris'},
-      unread: {filter: {bUnread: true}, description: 'Non-lus'},
-      participated: {filter: {bParticipated: true}, description: 'Où j\'ai participé'}
+      favorites: {filter: {bStarred: true}, description: i18nt('forum_favorites')},
+      unread: {filter: {bUnread: true}, description: i18nt('forum_favorites')},
+      participated: {filter: {bParticipated: true}, description: i18nt('forum_participated')}
    };
    $scope.selectGlobalFilter = function(filter) {
       $scope.currentGlobalFilter = filter;
@@ -81,7 +81,7 @@ angular.module('algorea')
       }
    };
    if (!$scope.accessible) {
-      $scope.accessibiltyMessage = "Vous devez résoudre l'exercice avant de pouvoir consulter les demandes d'aide des autres utilisateurs";
+      $scope.accessibiltyMessage = i18nt('forum_needs_solved');
    }
    $scope.isUserThreadTmp = false;
    if (! $scope.user_thread) {

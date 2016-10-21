@@ -44,7 +44,7 @@ angular.module('algorea')
          configureTask(scope, elem, sameUrl);
       }, !sameUrl, function() {
          scope.taskLoaded = true;
-         scope.loadingError = "Impossible de communiquer avec l'exercice !";
+         scope.loadingError = i18nt('task_communicate_error');
       });
    }
    function configureTask(scope, elem, sameUrl) {
@@ -225,7 +225,7 @@ angular.module('algorea')
             scope.setTabs(views);
          });
       }, function() {
-         scope.loadingError = 'Impossible de charger l\'exercice !';
+         scope.loadingError = i18nt('task_load_error');
       });
     }
     return {
