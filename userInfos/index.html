@@ -1,18 +1,18 @@
 <div ng-if="!isLogged">
-<center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong data-i18n="login_loading"></strong></p></center>
+<center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="login_loading"></strong></p></center>
 </div>
-<div ng-if="tempUser" data-i18n="userInfos_not_logged">
+<div ng-if="tempUser" ng-i18next="userInfos_not_logged">
 </div>
 <div ng-if="fullUser" ng-form="userInfosForm">
-<p data-i18n="userInfos_title_infos"></p>
+<p ng-i18next="userInfos_title_infos"></p>
 
 <table>
 <tbody>
-<tr><td data-i18n="userInfos_info_first"></td><td>{{user.sFirstName}}</td></tr>
-<tr><td data-i18n="userInfos_info_last"></td><td>{{user.sLastName}}</td></tr>
-<tr><td data-i18n="userInfos_info_birthdate"></td><td>{{sBirthDate}}</td></tr>
-<tr><td data-i18n="userInfos_info_email"></td><td>{{user.sEmail}}</td></tr>
+<tr><td ng-i18next="userInfos_info_first"></td><td>{{user.sFirstName}}</td></tr>
+<tr><td ng-i18next="userInfos_info_last"></td><td>{{user.sLastName}}</td></tr>
+<tr><td ng-i18next="userInfos_info_birthdate"></td><td>{{sBirthDate}}</td></tr>
+<tr><td ng-i18next="userInfos_info_email"></td><td>{{user.sEmail}}</td></tr>
 </tbody>
 </table>
-<button class="btn btn-info" ng-click="openLoginPopup('password')" data-i18n="userInfos_change_password"></button>
+<button class="btn btn-info" ng-click="openLoginPopup('password')" ng-i18next="userInfos_change_password"></button>
 </div>

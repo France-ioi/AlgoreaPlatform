@@ -250,6 +250,7 @@
     "groupRequests_leave_group": "Leave the group",
     "groupRequests_leave_confirm": "Are you sure you want to leave the group {{group_group.parent.sName}}?",
     "groupRequests_title_join": "Join a group",
+    "groupRequests_my_groups": "Groups I've joined",
     "groupRequests_no_group_found": "No group corresponding to your search has been found.",
     "groupRequests_error_please_contact": "An error was detected. Please contact an administrator.",
     "groupRequests_join_success": "You have successfully joined the group ",

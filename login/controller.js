@@ -1,8 +1,8 @@
 angular.module('algorea')
-   .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout) {
+   .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', '$i18next', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout, $i18next) {
       'use strict';
       $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl);
-      $scope.innerHtml = i18nt('login_loading');
+      $scope.innerHtml = $i18next.t('login_loading');
       $scope.loggedIn = false;
       $scope.loginStr = null;
       $scope.frameHidden = true;
@@ -11,7 +11,7 @@ angular.module('algorea')
       $scope.infoWord = '';
       loginService.bindScope($rootScope);
       $scope.$on('login.login', function(event, data) {
-         $scope.innerHtml = i18nt('login_disconnect');
+         $scope.innerHtml = $i18next.t('login_disconnect');
          if (data.tempUser) {
             $scope.loginStr = null;   
          } else {
@@ -21,7 +21,7 @@ angular.module('algorea')
          $scope.tempUser = data.tempUser;
          if (data.tempUser) {
             $scope.loginFrameClass = 'loginFrame-login';
-            $scope.innerHtml = i18nt('login_connect');
+            $scope.innerHtml = $i18next.t('login_connect');
          } else {
             $scope.infoWord = '';
             $scope.loginFrameClass = 'loginFrame-logout';

@@ -13,7 +13,7 @@ angular.module('algorea').
   });
 
 angular.module('algorea')
-   .controller('groupAdminIndexController', ['$scope', '$state', '$http', 'itemService', function ($scope, $state, $http, itemService) {
+   .controller('groupAdminIndexController', ['$scope', '$state', '$http', 'itemService', '$i18next', function ($scope, $state, $http, itemService, $i18next) {
    $scope.error = '';
    $scope.loading = true;
    $scope.formValues = {};
@@ -51,7 +51,7 @@ angular.module('algorea')
       $scope.error = '';
       var sName = $scope.formValues.groupName;
       if (!sName) {
-         $scope.error = i18nt('groupAdmin_name_required');
+         $scope.error = $i18next.t('groupAdmin_name_required');
          return;
       }
       $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: $scope.groupId, sName: sName}, {responseType: 'json'}).success(function(postRes) {
@@ -73,7 +73,7 @@ angular.module('algorea')
    	$scope.loading = true;
    	$scope.error = '';
    	if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser == 1) {
-   		$scope.error = i18nt('groupAdmin_login_required');
+   		$scope.error = $i18next.t('groupAdmin_login_required');
    		$scope.loading = false;
    		return;
    	}

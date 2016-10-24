@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize', 'ngAnimate']);
+var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize', 'ngAnimate', 'jm.i18next']);
 
 app.directive('field', function() {
    return {
@@ -65,7 +65,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('ItemsCtrl', ['$scope', '$uibModal', 'loginService', function($scope, $uibModal, loginService) {
+   .controller('ItemsCtrl', ['$scope', '$uibModal', 'loginService', '$i18next', function($scope, $uibModal, loginService, $i18next) {
       $scope.models = models;
       $scope.inForum = true;// TODO: used by tasks, should be better
       $scope.accessManager = AccessManager;
@@ -140,7 +140,7 @@ angular.module('algorea')
          hasChanged |= $scope.hasObjectChanged("items", $scope.item);
          hasChanged |= $scope.hasObjectChanged("items_strings", $scope.item_strings);
          if (hasChanged) {
-            if (confirm(i18nt('groupAdmin_confirm_unsaved'))) {
+            if (confirm($i18next.t('groupAdmin_confirm_unsaved'))) {
                $scope.resetObjectChanges("items_items", $scope.item_item);
                $scope.resetObjectChanges("items", $scope.item);
                $scope.resetObjectChanges("items_strings", $scope.item_strings);
@@ -164,7 +164,7 @@ angular.module('algorea')
          if (!to_group || !child_group_item || (!child_group_item.bOwnerAccess && !child_group_item.bManagerAccess)) {
             this.canGiveAccess = false;
             this.canRemoveAccess = false;
-            this.canGiveAccessReason = i18nt('groupAdmin_manager_required');
+            this.canGiveAccessReason = $i18next.t('groupAdmin_manager_required');
             return false;
          }
          var that = this;
@@ -206,13 +206,13 @@ angular.module('algorea')
                return true;
             }
          });
-         this.canGiveAccessReason = i18nt('groupAdmin_parent_access_required');
+         this.canGiveAccessReason = $i18next.t('groupAdmin_parent_access_required');
          return this.canGiveAccess;
       };
 
       $scope.newItem = function(itemItemID) {
          if (!$scope.checkUserRight(itemItemID, 'items_items', 'insert')) {
-            alert(i18nt('groupAdmin_add_here_unauthorized'));
+            alert($i18next.t('groupAdmin_add_here_unauthorized'));
             return;
          }
          if (!$scope.checkSaveItem()) {
@@ -235,7 +235,7 @@ angular.module('algorea')
          var itemStrings = ModelsManager.createRecord("items_strings");
          itemStrings.idItem = item.ID;
          itemStrings.idLanguage = 1; // TODO: handle this
-         itemStrings.sTitle = i18nt('groupAdmin_new_item');
+         itemStrings.sTitle = $i18next.t('groupAdmin_new_item');
          ModelsManager.insertRecord("items_strings", itemStrings);
          var itemItemParent = ModelsManager.getRecord("items_items", itemItemID);
          var itemItem = ModelsManager.createRecord("items_items");
@@ -256,7 +256,7 @@ angular.module('algorea')
 
       $scope.newGroup = function(groupGroupID) {
          var group = ModelsManager.createRecord("groups");
-         group.sName = i18nt('groupAdmin_new_group');
+         group.sName = $i18next.t('groupAdmin_new_group');
          group.sType = "Class";
          group.sDateCreated = new Date();
          ModelsManager.insertRecord("groups", group);
@@ -479,7 +479,7 @@ angular.module('algorea')
          var getItemTitle = function(item, item_item) {
             var title = "";
             if (item.strings.length === 0) {
-               title = i18nt('groupAdmin_loading');
+               title = $i18next.t('groupAdmin_loading');
             } else {
                title = item.strings[0].sTitle;
             }
@@ -613,16 +613,16 @@ angular.module('algorea')
             var prefix = models.groups.fields.sType.values[group.sType ? group.sType : 'Other'].label + " : ";
             if (group.sType == 'UserSelf') {
                if ($scope.loginData.idGroupSelf == group.ID) {
-                  prefix = i18nt('groupAdmin_account_mine');
+                  prefix = $i18next.t('groupAdmin_account_mine');
                } else {
-                  prefix = i18nt('groupAdmin_account_other');
+                  prefix = $i18next.t('groupAdmin_account_other');
                }
             }
             if (group.sType == 'UserAdmin') {
                if ($scope.loginData.idGroupOwned == group.ID) {
-                  return i18nt('groupAdmin_groups_mine') +' ('+group.sName+')';
+                  return $i18next.t('groupAdmin_groups_mine') +' ('+group.sName+')';
                } else {
-                  prefix = i18nt('groupAdmin_groups_other')+' : ';
+                  prefix = $i18next.t('groupAdmin_groups_other')+' : ';
                }
             }
             return preprefix+prefix + group.sName + suffix;
@@ -776,7 +776,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('ItemsSearchCtrl', ['$scope', function($scope) {
+   .controller('ItemsSearchCtrl', ['$scope', '$i18next', function($scope, $i18next) {
       $scope.searchItems = {
          sTextId: "",
          sTitle: "",
@@ -789,7 +789,7 @@ angular.module('algorea')
       };
 
       $scope.close = function() {
-         $scope.closeMsg = i18nt('groupAdmin_closed_at') + new Date();
+         $scope.closeMsg = $i18next.t('groupAdmin_closed_at') + new Date();
          $scope.shouldBeOpen = false;
       };
 
@@ -805,7 +805,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('GroupsSearchCtrl', ['$scope', function($scope) {
+   .controller('GroupsSearchCtrl', ['$scope', '$i18next', function($scope, $i18next) {
       $scope.searchGroups = {
          sName: "",
          sType: "",
@@ -816,7 +816,7 @@ angular.module('algorea')
       };
 
       $scope.close = function() {
-         $scope.closeMsg = i18nt('groupAdmin_closed_at') + new Date();
+         $scope.closeMsg = $i18next.t('groupAdmin_closed_at') + new Date();
          $scope.shouldBeOpen = false;
       };
 
@@ -883,7 +883,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('AccessDialogCtrl', ['$scope', '$controller', function($scope, $controller) {
+   .controller('AccessDialogCtrl', ['$scope', '$controller', '$i18next', function($scope, $controller, $i18next) {
       $controller('GenericDialogCtrl', {
          $scope: $scope
       });
@@ -904,7 +904,7 @@ angular.module('algorea')
             return;
          }
          if (!$scope.computeAccessRights(group, item_item)) {
-            alert(i18nt('groupAdmin_insufficient_rights')+$scope.canGiveAccessReason);
+            alert($i18next.t('groupAdmin_insufficient_rights')+$scope.canGiveAccessReason);
             return;
          }
          var access = AccessManager.dynComputeGroupItemAccess(idGroup, idItem);
@@ -1022,17 +1022,17 @@ var AccessManager = {
             access.sAccessType = "full";
             if ((group_item) && (group_item.sFullAccessDate) && (curDate >= group_item.sFullAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += i18nt('groupAdmin_access_complete_direct');
+               access.sAccessTitle += $i18next.t('groupAdmin_access_complete_direct');
             } else {
-               access.sAccessTitle += i18nt('groupAdmin_access_complete_inherited');
+               access.sAccessTitle += $i18next.t('groupAdmin_access_complete_inherited');
             }
             access.sAccessLabel += "C";
          } else {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += i18nt('groupAdmin_access_complete_direct_future');
+               sFutureAccessTitle += $i18next.t('groupAdmin_access_complete_direct_future');
             } else {
-               sFutureAccessTitle += i18nt('groupAdmin_access_complete_inherited_future');
+               sFutureAccessTitle += $i18next.t('groupAdmin_access_complete_inherited_future');
             }
             sFutureAccessLabel += "C";
             access.bHasFutureAccess = true;
@@ -1043,61 +1043,61 @@ var AccessManager = {
             access.sAccessType = "partial";
             if ((group_item) && (group_item.sPartialAccessDate) && (curDate >= group_item.sPartialAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += i18nt('groupAdmin_access_partial_direct');
+               access.sAccessTitle += $i18next.t('groupAdmin_access_partial_direct');
             } else {
-               access.sAccessTitle += i18nt('groupAdmin_access_partial_inherited');
+               access.sAccessTitle += $i18next.t('groupAdmin_access_partial_inherited');
             }
             access.sAccessLabel += "P";
          } else if (sFutureAccessLabel == "") {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += i18nt('groupAdmin_access_partial_direct_future');
+               sFutureAccessTitle += $i18next.t('groupAdmin_access_partial_direct_future');
             } else {
-               sFutureAccessTitle += i18nt('groupAdmin_access_partial_inherited_future');
+               sFutureAccessTitle += $i18next.t('groupAdmin_access_partial_inherited_future');
             }
             sFutureAccessLabel += "P";
             access.bHasFutureAccess = true;
          }
       }
       if (access.bOwnerAccess) {
-         access.sAccessTitle += i18nt('groupAdmin_access_owner_direct');
+         access.sAccessTitle += $i18next.t('groupAdmin_access_owner_direct');
          access.sAccessLabel += "+O";
       }
       if (access.bCachedManagerAccess || access.bManagerAccess) {
          if (access.bManagerAccess) {
-            access.sAccessTitle += i18nt('groupAdmin_access_manager_direct');
+            access.sAccessTitle += $i18next.t('groupAdmin_access_manager_direct');
             access.sAccessLabel += "+";
          } else {
-            access.sAccessTitle += i18nt('groupAdmin_access_manager_inherited');
+            access.sAccessTitle += $i18next.t('groupAdmin_access_manager_inherited');
          }
          access.sAccessLabel += "M";
       }
       if (access.sCachedGrayedAccessDate && access.sAccessType != "full" && access.sAccessType != "partial" && curDate >= access.sCachedGrayedAccessDate) {
          access.sAccessType = "grayed";
-         access.sAccessTitle += i18nt('groupAdmin_access_grayed');
+         access.sAccessTitle += $i18next.t('groupAdmin_access_grayed');
          access.sAccessLabel += "G";
       }
       if (access.sAccessType == "none") {
          access.sAccessLabel = "X";
-         access.sAccessTitle += i18nt('groupAdmin_access_none');
+         access.sAccessTitle += $i18next.t('groupAdmin_access_none');
       }
       access.sAccessSolutionType = "none";
       if ((access.sCachedAccessSolutionsDate) && (curDate >= access.sCachedAccessSolutionsDate)) {
          access.sAccessSolutionType = "full";
          if ((group_item) && (group_item.sAccessSolutionsDate != null)) {
             access.sAccessLabel += "+";
-            access.sAccessTitle += i18nt('groupAdmin_access_solutions_direct');
+            access.sAccessTitle += $i18next.t('groupAdmin_access_solutions_direct');
          } else {
-            access.sAccessTitle += i18nt('groupAdmin_access_solutions_inherited');
+            access.sAccessTitle += $i18next.t('groupAdmin_access_solutions_inherited');
          }
          access.sAccessLabel += "S";
       } else if (access.sCachedAccessSolutionsDate) {
          access.sAccessSolutionType = "future";
          if ((group_item) && (group_item.sAccessSolutionsDate)) {
             sFutureAccessLabel += "+";
-            sFutureAccessTitle += i18nt('groupAdmin_access_solutions_direct_future');
+            sFutureAccessTitle += $i18next.t('groupAdmin_access_solutions_direct_future');
          } else {
-            sFutureAccessTitle += i18nt('groupAdmin_access_solutions_inherited_future');
+            sFutureAccessTitle += $i18next.t('groupAdmin_access_solutions_inherited_future');
          }
          sFutureAccessLabel += "S";
          access.bHasFutureAccess = true;
@@ -1109,7 +1109,7 @@ var AccessManager = {
       if (SyncQueue.status != SyncQueue.statusIdle) {
          access.sAccessLabel += "?";
          AccessManager.wasDuringSync = true;
-         access.sAccessTitle = '['+i18nt('groupAdmin_access_waiting_sync')+'] '+access.sAccessTitle;
+         access.sAccessTitle = '['+$i18next.t('groupAdmin_access_waiting_sync')+'] '+access.sAccessTitle;
       }
       return access;
    }
@@ -1157,7 +1157,7 @@ function createGroupItem(idGroup, idItem, doNotInsert) {
 
 
 angular.module('algorea')
-   .controller('GenDialogCtrl', ['$scope', '$uibModalInstance', 'modelName', 'recordName', 'record', 'group_group', 'item_item', 'canRemoveAccess', function($scope, $uibModalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess) {
+   .controller('GenDialogCtrl', ['$scope', '$uibModalInstance', 'modelName', 'recordName', 'record', 'group_group', 'item_item', 'canRemoveAccess', '$i18next', function($scope, $uibModalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess, $i18next) {
       $scope.freshlyCreated = false;
       $scope.canRemoveAccess = canRemoveAccess;
       if (!record && modelName === 'groups_items') {
@@ -1176,11 +1176,11 @@ angular.module('algorea')
       $scope.checkGroupItem = function() {
          if (!$scope.group_item.sFullAccessDate && !$scope.group_item.sPartialAccessDate) {
             if ($scope.group_item.bManagerAccess || $scope.group_item.bOwnerAccess) {
-               alert(i18nt('groupAdmin_needs_read_for_write'));
+               alert($i18next.t('groupAdmin_needs_read_for_write'));
                return false;
             }
             if (canRemoveAccess === false) {
-               alert(i18nt('groupAdmin_still_has_access_child'));
+               alert($i18next.t('groupAdmin_still_has_access_child'));
                return false;
             }
          }

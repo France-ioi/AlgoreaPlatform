@@ -13,10 +13,6 @@ $config = (object) array(
       "private_key" => "",
       "public_key" => ""
    ),
-   "i18n" => (object) array(
-      "defaultLanguage" => 'fr',
-      "customStringsName" => ''
-   ),
    "debug" => (object) array(
       "timers" => false,
       "types" => array(),
@@ -31,6 +27,11 @@ $config = (object) array(
       "maxChanges" => 20000,
    ),
    "shared" => (object) array(
+      "i18n" => (object) array(
+         "defaultLanguage" => 'fr',
+         "defaultAungularLocale" => 'fr-fr',
+         "customStringsName" => ''
+      ),
       "RootItemId" => "1",
       "RootGroupId" => "1",
       "RootSelfGroupId" => "2",

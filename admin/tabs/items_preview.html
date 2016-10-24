@@ -7,5 +7,5 @@
 <div ng-if="item && item.sType == 'Course'"  ng-controller="courseController">
    <div include-course read-only="true"></div>
 </div>
-<div ng-if="!item || (item.sType != 'Course' && item.sType != 'Task')" data-i18n="admin_select_exercise">
+<div ng-if="!item || (item.sType != 'Course' && item.sType != 'Task')" ng-i18next="admin_select_exercise">
 </div>

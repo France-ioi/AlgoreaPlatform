@@ -3,15 +3,15 @@
       <span ng-controller="AccessDialogCtrl">
          <span ng-repeat="access in [accessManager.dynComputeGroupItemAccess(group_group.child.ID, item_item.child.ID)]">
             <button ng-show="access != null" class="btn btn-xs" ng-class="{full: 'btn-success', partial: 'btn-warning', grayed: 'btn-info', none: 'btn-error'}[access.sAccessType]" ng-click="switchAccessMode(group_group.child.ID, item_item)" title="{{ access.sAccessTitle }}">{{ access.sAccessLabel }}</button>
-            <button ng-show="access == null" class="btn btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" data-i18n="[title]admin_access_non_computed">?</button>
+            <button ng-show="access == null" class="btn btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" ng-i18next="[title]admin_access_non_computed">?</button>
          </span>
-         <a href="#" class="btn btn-default btn-xs" ng-click="showGenDialog('tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" data-i18n="[title]admin_access_edit">
+         <a href="#" class="btn btn-default btn-xs" ng-click="showGenDialog('tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" ng-i18next="[title]admin_access_edit">
             ...
          </a>
          <a href="#" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-info" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" title="{{ group_item.sAccessReason }}">
             <i class="glyphicon glyphicon-comment"></i>
          </a>
-         <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" data-i18n="[title]admin_no_access_removal">
+         <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" ng-i18next="[title]admin_no_access_removal">
       </span>
    </span>
 </div>

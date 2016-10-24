@@ -139,12 +139,15 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <?php endif; ?>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_fr-fr.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_'.$config->shared->i18n->defaultAungularLocale.'.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-sanitize/angular-sanitize.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-ui-router/release/angular-ui-router.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/i18next/i18next.min.js') ?>"></script>
-  <script src="<?= includeFile('i18n/i18n-algorea.js.php') ?>"></script>
+  <script src="<?= includeFile('bower_components/i18next-xhr-backend/i18nextXHRBackend.min.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/ng-i18next/dist/ng-i18next.min.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/jschannel/src/jschannel.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/pem-platform/task-xd-pr.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/modelsManager/modelsManager.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/sync/syncQueue.js') ?>"></script>
   <script src="<?= includeFile('shared/models.js') ?>"></script>
@@ -166,8 +169,6 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     <script src="<?= includeFile('map/mapService.js') ?>"></script>
     <script src="<?= includeFile('map/map.js') ?>"></script>
   <?php endif; ?>
-  <script src="<?= includeFile('bower_components/jschannel/src/jschannel.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/pem-platform/task-xd-pr.js') ?>"></script>
   <script src="<?= includeFile('login/controller.js') ?>"></script>
   <script src="<?= includeFile('states.js') ?>"></script>
   <script src="<?= includeFile('task/controller.js') ?>"></script>
@@ -187,5 +188,22 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('algorea.min.js') ?>"></script>
   <script src="<?= includeFile('templates.js') ?>"></script>
 <?php endif; ?>
+<script>
+  window.i18next.use(window.i18nextXHRBackend);
+  window.i18next.init(<?= json_encode([
+    'lng' => $config->shared->i18n->defaultLanguage,
+    'fallbackLng' => [$config->shared->i18n->defaultLanguage],
+    'fallbackNS' => 'algorea',
+    'debug' => true,
+    'ns' =>  $config->shared->i18n->customStringsName ? [$config->shared->i18n->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
+    'backend' => [
+      'allowMultiLoading' => false,
+      'loadPath' => '/i18n/{{lng}}/{{ns}}.json'
+    ]
+  ]); ?>);
+  window.i18next.on('initialized', function (options) {
+    window.i18nextOptions = options;
+  });
+</script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 angular.module('algorea')
-   .controller('adminUserItemController', ['$scope', '$filter', function($scope, $filter) {
+   .controller('adminUserItemController', ['$scope', '$filter', '$i18next', function($scope, $filter, $i18next) {
    $scope.user_item = null;
    $scope.getItemStatusForGroup = function(group, item) {
       console.error('get item status for item '+item.ID);
@@ -9,19 +9,19 @@ angular.module('algorea')
       if (!user_item) {
          this.globalStatus = 'not visited';
          this.statusGlyphicon = 'glyphicon-eye-close';
-         this.statusTitle = i18nt('admin_status_not_visited');
+         this.statusTitle = $i18next.t('admin_status_not_visited');
       } else if (item.bGrayedAccess) {
          this.globalStatus = 'grayed';
          this.statusGlyphicon = 'glyphicon-lock';
-         this.statusTitle = i18nt('admin_status_grayed');
+         this.statusTitle = $i18next.t('admin_status_grayed');
       } else if (!user_item.sLastActivityDate || user_item.sLastActivityDate.getTime() == 0) {
          this.globalStatus = 'not visited';
          this.statusGlyphicon = 'glyphicon-eye-close';
-         this.statusTitle = i18nt('admin_status_not_visited');
+         this.statusTitle = $i18next.t('admin_status_not_visited');
       } else if (user_item.bValidated == true) {
          this.globalStatus = 'validated';
          this.statusGlyphicon = 'glyphicon-ok';
-         this.statusTitle = i18nt('admin_status_validated')+' '+$filter('date')(new Date(user_item.sLastActivityDate), 'dd/MM/yyyy')+', '+i18nt('admin_score')+' : '+user_item.iScore+'/100';
+         this.statusTitle = $i18next.t('admin_status_validated')+' '+$filter('date')(new Date(user_item.sLastActivityDate), 'dd/MM/yyyy')+', '+$i18next.t('admin_score')+' : '+user_item.iScore+'/100';
       } else if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
          this.globalStatus = 'failed';
          this.statusGlyphicon = 'glyphicon-remove';
@@ -33,7 +33,7 @@ angular.module('algorea')
       } else {
          this.globalStatus = 'visited';
          this.statusGlyphicon = 'glyphicon-eye-open';
-         this.statusTitle = i18nt('admin_status_visited')+' '+$filter('date')(user_item.sLastActivityDate);
+         this.statusTitle = $i18next.t('admin_status_visited')+' '+$filter('date')(user_item.sLastActivityDate);
       }
    };
    $scope.getItemStatusForGroup($scope.group_group.child, $scope.item_item.child);

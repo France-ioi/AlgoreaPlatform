@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .service('itemService', ['$rootScope', '$timeout', 'loginService', function($rootScope, $timeout, loginService) {
+   .service('itemService', ['$rootScope', '$timeout', 'loginService', '$i18next', function($rootScope, $timeout, loginService, $i18next) {
     /*
      * Simple service providing items.
      */

@@ -248,6 +248,7 @@
     "groupRequests_member_no_group": "Vous ne faites actuellement partie d'aucun groupe.",
     "groupRequests_title_invites": "Demandes en attente et invitations reçues",
     "groupRequests_leave_group": "Quitter le groupe",
+    "groupRequests_my_groups": "Groupes que j'ai rejoints",
     "groupRequests_leave_confirm": "Êtes-vous sûr de vouloir quitter le groupe {{group_group.parent.sName}} ?",
     "groupRequests_title_join": "Rejoindre un groupe",
     "groupRequests_no_group_found": "Aucun groupe correspondant à votre recherche n'a été trouvé.",

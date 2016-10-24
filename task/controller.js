@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('taskController', ['$scope', '$rootScope', '$location', '$interval', '$injector', function ($scope, $rootScope, $location, $interval, $injector) {
+   .controller('taskController', ['$scope', '$rootScope', '$location', '$interval', '$injector', '$i18next', function ($scope, $rootScope, $location, $interval, $injector, $i18next) {
    var itemService, $state;
    if ($injector.has('itemService')) {
       itemService = $injector.get('itemService');
@@ -25,9 +25,9 @@ angular.module('algorea')
    var platformViews = {};
    var initPlatformViews = function() {
       platformViews = {
-         'task': {tabString: i18nt('task_statement'), taskViews: {'task': true}},
-         'editor': {tabString: i18nt('task_solve'), taskViews: {'editor': true}},
-         'hints': {tabString: i18nt('task_hints'), taskViews: {'hints': true}},
+         'task': {tabString: $i18next.t('task_statement'), taskViews: {'task': true}},
+         'editor': {tabString: $i18next.t('task_solve'), taskViews: {'editor': true}},
+         'hints': {tabString: $i18next.t('task_hints'), taskViews: {'hints': true}},
       };
    };
    initPlatformViews();
@@ -35,7 +35,7 @@ angular.module('algorea')
       delete(platformViews.task);
    }
    $scope.showSolution = function() {
-      platformViews.solution = {tabString: i18nt('task_solution'), taskViews: {'solution': true}};
+      platformViews.solution = {tabString: $i18next.t('task_solution'), taskViews: {'solution': true}};
    };
    $scope.hideSolution = function() {
       delete platformViews.solution;

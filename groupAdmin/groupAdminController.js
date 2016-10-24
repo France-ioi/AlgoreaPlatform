@@ -78,11 +78,11 @@ angular.module('algorea').
   });
 
 angular.module('algorea')
-   .controller('groupAdminBreadCrumbsController', ['$scope', '$stateParams', function ($scope, $stateParams) {
+   .controller('groupAdminBreadCrumbsController', ['$scope', '$stateParams', '$i18next', function ($scope, $stateParams, $i18next) {
    'use strict';
-   $scope.groupName = i18nt('groupAdmin_loading');
+   $scope.groupName = $i18next.t('groupAdmin_loading');
    if ($stateParams.idGroup == 'new') {
-      $scope.groupName = i18nt('groupAdmin_new_group');
+      $scope.groupName = $i18next.t('groupAdmin_new_group');
    }
    $scope.$on('algorea.groupSynced', function() {
       var groupId = $stateParams.idGroup;
@@ -109,7 +109,7 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter) {
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', '$i18next', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter, $i18next) {
    'use strict';
    $scope.error = null;
 
@@ -150,7 +150,7 @@ angular.module('algorea')
           });
       } else {
          $uibModal.open({
-            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>'+i18nt('groupAdmin_solve_required'),
+            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>'+$i18next.t('groupAdmin_solve_required'),
             controller: 'groupAdminPopupController',
             resolve: {popupData: function () {}},
           });
@@ -179,16 +179,16 @@ angular.module('algorea')
 
    var getTypeString = function(type, userItem) {
       if (type == 'hint') {
-         return userItem.nbHintsCached+i18nt('groupAdmin_type_hint');
+         return userItem.nbHintsCached+$i18next.t('groupAdmin_type_hint');
       }
       if (type == 'answer') {
-         return userItem.nbSubmissionsAttempts+i18nt('groupAdmin_type_answer');
+         return userItem.nbSubmissionsAttempts+$i18next.t('groupAdmin_type_answer');
       }
       if (type == 'validation') {
-         return i18nt('groupAdmin_type_validation');
+         return $i18next.t('groupAdmin_type_validation');
       }
       if (type == 'newThread') {
-         return i18nt('groupAdmin_type_newThread');
+         return $i18next.t('groupAdmin_type_newThread');
       }
    };
 
@@ -206,14 +206,14 @@ angular.module('algorea')
       }
       var diffDays = Math.floor(timeDiffMs / (1000 * 3600 * 24));
       if (diffDays < 90) {
-         return '> '+diffDays+' '+i18nt('days');
+         return '> '+diffDays+' '+$i18next.t('days');
       }
       var diffMonth = Math.floor(timeDiffMs / (1000 * 3600 * 24 * 30));
       if (diffMonth < 24) {
-         return '> '+diffMonth+' '+i18nt('months');
+         return '> '+diffMonth+' '+$i18next.t('months');
       }
       var diffYear = Math.floor(timeDiffMs / (1000 * 3600 * 24 * 365));
-      return '> '+diffYear+' '+i18nt('years');
+      return '> '+diffYear+' '+$i18next.t('years');
    }
 
    $scope.getDuration = function(user_item) {
@@ -242,7 +242,7 @@ angular.module('algorea')
 
    function getUserStr(user) {
       if (!user) {
-         return i18nt('groupAdmin_unkonwn_user');
+         return $i18next.t('groupAdmin_unkonwn_user');
       }
       var res = user.sLogin;
       if (user.sFirstName || user.sLastName) {
@@ -382,7 +382,7 @@ angular.module('algorea')
             console.error("got error from invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.invitationError = i18nt('groupAdmin_logins_not_found')+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.invitationError = $i18next.t('groupAdmin_logins_not_found')+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -404,7 +404,7 @@ angular.module('algorea')
                }
             });
             if (alreadyInvitedLogins.length) {
-               $scope.invitationError += i18nt('groupAdmin_logins_already_invited')+alreadyInvitedLogins.join(' ')+'. ';
+               $scope.invitationError += $i18next.t('groupAdmin_logins_already_invited')+alreadyInvitedLogins.join(' ')+'. ';
             }
             $scope.formValues.currentLogins = '';
          }
@@ -425,7 +425,7 @@ angular.module('algorea')
             console.error("got error from admin invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.adminInvitationError = i18nt('groupAdmin_logins_not_found')+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.adminInvitationError = $i18next.t('groupAdmin_logins_not_found')+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -441,7 +441,7 @@ angular.module('algorea')
                }
             });
             if (alreadyInvitedLogins.length) {
-               $scope.adminInvitationError += i18nt('groupAdmin_logins_have_roles')+alreadyInvitedLogins.join(' ')+'. ';
+               $scope.adminInvitationError += $i18next.t('groupAdmin_logins_have_roles')+alreadyInvitedLogins.join(' ')+'. ';
             }
             if (groupsToInvite.length) {
                $scope.addAdminGroups(groupsToInvite);
@@ -790,7 +790,7 @@ angular.module('algorea')
    // not used, maybe later
    $scope.newGroup = function (callback) {
       if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser) {
-         $scope.error = i18nt('groupAdmin_login_required_create');
+         $scope.error = $i18next.t('groupAdmin_login_required_create');
          return;
       }
       $scope.group = ModelsManager.createRecord('groups');
@@ -813,13 +813,13 @@ angular.module('algorea')
    $scope.init = function() {
       $scope.loading = true;
       $scope.formValues.progressionType = 'chronological';
-      $scope.formValues.progressionTypeStr = i18nt('groupAdmin_chronological');
+      $scope.formValues.progressionTypeStr = $i18next.t('groupAdmin_chronological');
       $scope.groupId = $stateParams.idGroup;
       $scope.error = '';
       $scope.adminInvitationError = null;
       $scope.invitationError = null;
       if (SyncQueue.requests.loginData.tempUser == 1) {
-         $scope.error = i18nt('groupAdmin_login_required');
+         $scope.error = $i18next.t('groupAdmin_login_required');
          $scope.loading = false;
          return;
       }
