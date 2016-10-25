@@ -26,7 +26,7 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', '$injector', 'itemService', 'pathService', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, $injector, itemService, pathService) {
+.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', '$injector', 'itemService', 'pathService', '$i18next', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, $injector, itemService, pathService, $i18next) {
    var mapService = null;
    if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
@@ -48,7 +48,7 @@ angular.module('algorea')
          configureTask(scope, elem, sameUrl);
       }, !sameUrl, function() {
          scope.taskLoaded = true;
-         scope.loadingError = i18nt('task_communicate_error');
+         scope.loadingError = $i18next.t('task_communicate_error');
       });
    }
    function configureTask(scope, elem, sameUrl) {
@@ -229,7 +229,7 @@ angular.module('algorea')
             scope.setTabs(views);
          });
       }, function() {
-         scope.loadingError = i18nt('task_load_error');
+         scope.loadingError = $i18next.t('task_load_error');
       });
     }
     return {
