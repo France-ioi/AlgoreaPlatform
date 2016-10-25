@@ -38,6 +38,11 @@
     "user": "User",
     "years": "years",
 
+    "menu_forum": "Forum",
+    "menu_progress": "Training",
+    "menu_contest": "Contests",
+    "menu_discover": "Discover",
+
     "login_loading": "Loading...",
     "login_disconnect": "Logout",
     "login_connect": "Login",

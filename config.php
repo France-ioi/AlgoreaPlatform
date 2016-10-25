@@ -70,17 +70,17 @@ $config = (object) array(
 
 // Tabs
 $config->shared->domains['current']->tabs[0] = array(
-      'title' => 'Découvrir',
+      'title' => 'menu_discover',
       'path' => '4022/4023',
       'icon' => 'explore'
       );
 $config->shared->domains['current']->tabs[1] = array(
-      'title' => 'Progresser',
+      'title' => 'menu_progress',
       'path' => '4026/4021',
       'icon' => 'trending_up'
       );
 $config->shared->domains['current']->tabs[2] = array(
-      'title' => 'S\'entraider',
+      'title' => 'menu_forum',
       'path' => 'forum',
       'icon' => 'group'
       );

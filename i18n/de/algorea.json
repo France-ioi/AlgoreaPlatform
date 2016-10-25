@@ -38,6 +38,11 @@
     "user": "Nutzer",
     "years": "Jahre",
 
+    "menu_forum": "Einander",
+    "menu_progress": "Weiterentwicklung",
+    "menu_contest": "Contests",
+    "menu_discover": "Entdecken",
+
     "login_loading": "Laden …",
     "login_disconnect": "Ausloggen",
     "login_connect": "Einloggen",

@@ -38,6 +38,11 @@
     "user": "Utilisateur",
     "years": "ans",
 
+    "menu_forum": "S'entraider",
+    "menu_progress": "Progresser",
+    "menu_contest": "Concourir",
+    "menu_discover": "Découvrir",
+
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",
     "login_connect": "Se connecter",
