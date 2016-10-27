@@ -139,7 +139,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <?php endif; ?>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_'.$config->shared->i18n->defaultAungularLocale.'.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_'.$config->shared->domains['current']->defaultAungularLocale.'.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-sanitize/angular-sanitize.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-ui-router/release/angular-ui-router.min.js') ?>"></script>
@@ -191,11 +191,11 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
 <script>
   window.i18next.use(window.i18nextXHRBackend);
   window.i18next.init(<?= json_encode([
-    'lng' => $config->shared->i18n->defaultLanguage,
-    'fallbackLng' => [$config->shared->i18n->defaultLanguage],
+    'lng' => $config->shared->domains['current']->defaultLanguage,
+    'fallbackLng' => [$config->shared->domains['current']->defaultLanguage],
     'fallbackNS' => 'algorea',
     'debug' => true,
-    'ns' =>  $config->shared->i18n->customStringsName ? [$config->shared->i18n->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
+    'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
     'backend' => [
       'allowMultiLoading' => false,
       'loadPath' => '/i18n/{{lng}}/{{ns}}.json'

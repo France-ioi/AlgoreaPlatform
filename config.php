@@ -27,11 +27,6 @@ $config = (object) array(
       "maxChanges" => 20000,
    ),
    "shared" => (object) array(
-      "i18n" => (object) array(
-         "defaultLanguage" => 'fr',
-         "defaultAungularLocale" => 'fr-fr',
-         "customStringsName" => ''
-      ),
       "RootItemId" => "1",
       "RootGroupId" => "1",
       "RootSelfGroupId" => "2",
@@ -42,6 +37,9 @@ $config = (object) array(
       "timezone" => ini_get('date.timezone'),
       "domains" => array( // global root
          "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
+            "defaultLanguage" => 'fr',
+            "defaultAungularLocale" => 'fr-fr',
+            "customStringsName" => '',
             "title" => 'Change title here',
             "taglineHtml" => "Pour convertir ses idées<br>en applications numériques",
             "animationHtmlFile" => null,
