@@ -150,8 +150,8 @@
          <script>
   window.i18next.use(window.i18nextXHRBackend);
   window.i18next.init({
-    'lng': config.i18n.defaultLanguage,
-    'fallbackLng': [config.i18n.defaultLanguage],
+    'lng': config.domains.current.defaultLanguage,
+    'fallbackLng': [config.domains.current.defaultLanguage],
     'fallbackNS': 'algorea',
     'debug': true,
     'ns': config.i18n.customStringsName ? [config.i18n.customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
