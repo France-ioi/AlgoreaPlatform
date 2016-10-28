@@ -192,7 +192,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   window.i18next.use(window.i18nextXHRBackend);
   window.i18next.init(<?= json_encode([
     'lng' => $config->shared->domains['current']->defaultLanguage,
-    'fallbackLng' => [$config->shared->domains['current']->defaultLanguage],
+    'fallbackLng' => ['en'],
     'fallbackNS' => 'algorea',
     'debug' => true,
     'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],

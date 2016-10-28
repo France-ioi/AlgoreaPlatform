@@ -151,7 +151,7 @@
   window.i18next.use(window.i18nextXHRBackend);
   window.i18next.init({
     'lng': config.domains.current.defaultLanguage,
-    'fallbackLng': [config.domains.current.defaultLanguage],
+    'fallbackLng': ['en'],
     'fallbackNS': 'algorea',
     'debug': true,
     'ns': config.domains.current.customStringsName ? [config.domains.current.customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
