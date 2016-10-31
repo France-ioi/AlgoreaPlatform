@@ -282,12 +282,13 @@ angular.module('algorea')
             scope.canGetState = false;
             //scope.selectTab('task');
             scope.currentView = null;
+            angular.forEach(scope.intervals, function(interval, name) {
+               $interval.cancel(interval);
+            });
+            scope.intervals = {};
             var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (scope.task && !scope.task.unloaded) {
                scope.task.unloaded = true;
-               angular.forEach(scope.intervals, function(interval) {
-                  $interval.cancel(interval);
-               });
                scope.task.unload(function() {
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);
