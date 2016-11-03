@@ -9,9 +9,8 @@
             ...
          </a>
          <a href="#" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-info" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" uib-tooltip="{{ group_item.sAccessReason }}">
-            <i class="glyphicon glyphicon-comment"></i>
+            <i class="material-icons">chat_bubble</i>
          </a>
-         <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" uib-tooltip="Vous ne pouvez pas retirer l'accès à cet item à ce groupe car il a un accès direct à un item enfant">
-      </span>
+         <span ng-if="canGiveAccess && !canRemoveAccess" style="color:red;" aria-hidden="true" uib-tooltip="Vous ne pouvez pas retirer l'accès à cet item à ce groupe car il a un accès direct à un item enfant"><i class="material-icons">warning</i></span>
    </span>
 </div>

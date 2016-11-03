@@ -4,11 +4,11 @@
    </div>
    <div ng-if="group_group.child && group_group.child.sType == 'UserSelf' && group_group.child.idUser" ng-controller="adminUserItemController">
       <span ng-switch="globalStatus">
-         <span ng-switch-when="not visited" class="glyphicon glyphicon-eye-close" uib-tooltip="non visité"></span>
-         <span ng-switch-when="grayed" class="glyphicon glyphicon-lock" uib-tooltip="non accessible"></span>
-         <span ng-switch-when="visited" class="glyphicon glyphicon-eye-open" uib-tooltip="visité le {{user_item.sLastActivityDate|date}}"></span>
-         <span ng-switch-when="validated" class="glyphicon glyphicon-ok" style="color:#3c763d;" uib-tooltip="validé le {{user_item.sValidationDate|date}}, score : {{user_item.iScore}}/100"></span>
-         <span ng-switch-when="failed" class="glyphicon glyphicon-remove" style="color:#ff0000;"></span>
+         <span ng-switch-when="not visited" uib-tooltip="non visité"><i class="material-icons">visibility_off</i></span>
+         <span ng-switch-when="grayed" uib-tooltip="non accessible"><i class="material-icons">lock</i></span>
+         <span ng-switch-when="visited" uib-tooltip="visité le {{user_item.sLastActivityDate|date}}"><i class="material-icons">visibility</i></span>
+         <span ng-switch-when="validated" style="color:#3c763d;" uib-tooltip="validé le {{user_item.sValidationDate|date}}, score : {{user_item.iScore}}/100"><i class="material-icons">check</i></span>
+         <span ng-switch-when="failed" style="color:#ff0000;"><i class="material-icons">close</i></span>
       </span>
    </div>
 </div>

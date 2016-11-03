@@ -9,18 +9,18 @@
       <span ng-controller="AccessModeCtrl">
          <span ng-switch="item_item.bAccessRestricted">
             <span ng-switch-when=0>
-               <a href="#" class="btn btn-xs btn-success" ng-click="open()" uib-tooltip="Accessible"><i class="glyphicon glyphicon-ok"></i></a>
+               <a href="#" class="btn btn-xs btn-success" ng-click="open()" uib-tooltip="Accessible"><i class="material-icons">lock_open</i></a>
             </span>
             <span ng-switch-when=1>
-               <a href="#" class="btn btn-xs btn-danger" ng-click="open()" uib-tooltip="Restreint"><i class="glyphicon glyphicon-lock"></i></a>
+               <a href="#" class="btn btn-xs btn-danger" ng-click="open()" uib-tooltip="Restreint"><i class="material-icons">lock</i></a>
             </span>
          </span>
          <span ng-switch="item_item.bAlwaysVisible">
             <span ng-switch-when=1>
-               <a href="#" class="btn btn-xs btn-success" ng-click="open()" uib-tooltip="Toujours visible"><i class="glyphicon glyphicon-eye-open"></i></a>
+               <a href="#" class="btn btn-xs btn-success" ng-click="open()" uib-tooltip="Toujours visible"><i class="material-icons">visibility</i></a>
             </span>
             <span ng-switch-when=0>
-               <a href="#" class="btn btn-xs btn-danger" ng-click="open()" uib-tooltip="Caché si inaccessible"><i class="glyphicon glyphicon-eye-close"></i></a>
+               <a href="#" class="btn btn-xs btn-danger" ng-click="open()" uib-tooltip="Caché si inaccessible"><i class="material-icons">visibility_off</i></a>
             </span>
          </span>
       </span>
