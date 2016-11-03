@@ -2,6 +2,16 @@
 
 var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize', 'ngAnimate']);
 
+angular.module('algorea')
+   .config(['$sceDelegateProvider', function ($sceDelegateProvider) {
+      if (config.domains.current.assetsBaseUrl) {
+         $sceDelegateProvider.resourceUrlWhitelist([
+            'self',
+            config.domains.current.assetsBaseUrl+'**'
+         ]);
+      }
+      }]);
+
 app.directive('field', function() {
    return {
       restrict: 'E',
@@ -21,7 +31,7 @@ app.directive('field', function() {
             }
          };
       }],
-      templateUrl: ((typeof compiled !== 'undefined' && compiled)?'':"../")+"commonFramework/angularDirectives/formField.html",
+      templateUrl: ((typeof compiled !== 'undefined' && compiled)?'':config.domains.current.assetsBaseUrl)+"commonFramework/angularDirectives/formField.html",
       replace: true
    };
 });
