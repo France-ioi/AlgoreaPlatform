@@ -5,7 +5,7 @@
             <button ng-show="access != null" class="btn btn-xs" ng-class="{full: 'btn-success', partial: 'btn-warning', grayed: 'btn-info', none: 'btn-error'}[access.sAccessType]" ng-click="switchAccessMode(group_group.child.ID, item_item)" title="{{ access.sAccessTitle }}">{{ access.sAccessLabel }}</button>
             <button ng-show="access == null" class="btn btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" title="Accès non calculé">?</button>
          </span>
-         <a href="#" class="btn btn-default btn-xs" ng-click="showGenDialog('tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" title="Edit access">
+         <a href="#" class="btn btn-default btn-xs" ng-click="showGenDialog(templatesPrefix+'/admin/tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" title="Edit access">
             ...
          </a>
          <a href="#" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-info" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" title="{{ group_item.sAccessReason }}">

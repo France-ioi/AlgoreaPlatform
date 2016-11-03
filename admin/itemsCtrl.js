@@ -12,6 +12,11 @@ angular.module('algorea')
       }
       }]);
 
+angular.module('algorea')
+   .run(['$rootScope', function ($rootScope) {
+      $rootScope.templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
+   }]);
+
 app.directive('field', function() {
    return {
       restrict: 'E',
