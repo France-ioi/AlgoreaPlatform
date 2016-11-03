@@ -64,7 +64,7 @@
       <div ng-if="forumFilterController.saveFilter" class="saveFilter">
          <div class="form-group">
             <label for="sName">Nom du filtre</label>
-            <input type="text" name="sName" ng-model="filter.sName" class="form-control">
+            <input type="text" name="sName" ng-model="filter.sName" class="form-control" autofocus>
          </div>
          <button ng-click="submitForm(filterForm);" class="btn btn-default">Valider</button>
          <button ng-click="forumFilterController.saveFilter=false" class="btn btn-default">Annuler</button>

@@ -134,6 +134,8 @@
    outline:none;
 }
 
+/* FILTERS */
+
 .filterContainer {
    margin: 10px;
    padding: 10px;
@@ -150,6 +152,12 @@
    .filterFormDatePickers > div:not(:last-child) {
       margin-right: 2em;
    }
+}
+.filterContainer .saveFilter {
+   border: 1px solid #ccc;
+   padding: 10px;
+   box-shadow: 0 0 6px #ccc;
+   background-color: #fff;
 }
 .forumThreadForm {
    margin: 20px 10px 10px;

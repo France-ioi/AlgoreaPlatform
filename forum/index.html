@@ -10,7 +10,7 @@
                <li ng-repeat="filter in filters track by filter.ID" ng-click="console.log('clic')"><a href="">{{filter.sName}}</a></li>
             </ul>
          </div>
-         <button type="button" class="btn btn-default globalFilter" ng-click="forumFilterController.showFilters ? forumFilterController.showFilters=false : forumFilterController.showFilters=true"><span ng-if="!forumFilterController.showFilters">Afficher les filtres avancés</span><span ng-if="forumFilterController.showFilters">Masquer les filtres avancés</span></button>
+         <button type="button" class="btn btn-default globalFilter" ng-click="forumFilterController.showFilters = !forumFilterController.showFilters"><span ng-if="!forumFilterController.showFilters">Afficher les filtres avancés</span><span ng-if="forumFilterController.showFilters">Masquer les filtres avancés</span></button>
       </div>
       <uib-tabset class="tabsContainer">
          <uib-tab select="selectTab('helpOthers')" active="tabs.helpOthers.active" heading="Aider les autres ({{helpOthersThreads.length}})">
