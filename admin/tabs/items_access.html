@@ -12,10 +12,10 @@
          Accès
       </span>
       <span class="accessTitleCell" ng-show="group_group != undefined">
-         <span title="{{ group_group.child.sName }}" class="accessGroupName">{{ group_group.child.sName }}</span>
+         <span uib-tooltip="{{ group_group.child.sName }}" class="accessGroupName">{{ group_group.child.sName }}</span>
       </span>
       <span class="accessTitleCell accessGroupNameChild" ng-repeat="group_group in group_group.child.children | manageableGroups">
-         {{ group_group.parent.sName }}<br/><span style="font-weight:bold;" title="{{group_group.child.sName}}">&nbsp;&nbsp;>&nbsp;{{ group_group.child.sName }}&nbsp;</span>
+         {{ group_group.parent.sName }}<br/><span style="font-weight:bold;" uib-tooltip="{{group_group.child.sName}}">&nbsp;&nbsp;>&nbsp;{{ group_group.child.sName }}&nbsp;</span>
       </span>
       <span ng-include='"tabs/items_access_rows.html"'></span>
       <!-- <span ng-repeat="item_item in item_item.child.children" class="itemLevel">

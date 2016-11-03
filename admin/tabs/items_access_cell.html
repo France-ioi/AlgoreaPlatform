@@ -2,16 +2,16 @@
    <span ng-repeat="group_item in [getGroupItem(group_group.child.ID, item_item.child.ID)]">
       <span ng-controller="AccessDialogCtrl">
          <span ng-repeat="access in [accessManager.dynComputeGroupItemAccess(group_group.child.ID, item_item.child.ID)]">
-            <button ng-show="access != null" class="btn btn-xs" ng-class="{full: 'btn-success', partial: 'btn-warning', grayed: 'btn-info', none: 'btn-error'}[access.sAccessType]" ng-click="switchAccessMode(group_group.child.ID, item_item)" title="{{ access.sAccessTitle }}">{{ access.sAccessLabel }}</button>
-            <button ng-show="access == null" class="btn btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" title="Accès non calculé">?</button>
+            <button ng-show="access != null" class="btn btn-xs" ng-class="{full: 'btn-success', partial: 'btn-warning', grayed: 'btn-info', none: 'btn-error'}[access.sAccessType]" ng-click="switchAccessMode(group_group.child.ID, item_item)" uib-tooltip="{{ access.sAccessTitle }}">{{ access.sAccessLabel }}</button>
+            <button ng-show="access == null" class="btn btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" uib-tooltip="Accès non calculé">?</button>
          </span>
-         <a href="#" class="btn btn-default btn-xs" ng-click="showGenDialog('tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" title="Edit access">
+         <a href="#" class="btn btn-default btn-xs" ng-click="showGenDialog('tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" uib-tooltip="Edit access">
             ...
          </a>
-         <a href="#" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-info" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" title="{{ group_item.sAccessReason }}">
+         <a href="#" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-info" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" uib-tooltip="{{ group_item.sAccessReason }}">
             <i class="glyphicon glyphicon-comment"></i>
          </a>
-         <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" title="Vous ne pouvez pas retirer l'accès à cet item à ce groupe car il a un accès direct à un item enfant">
+         <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" uib-tooltip="Vous ne pouvez pas retirer l'accès à cet item à ce groupe car il a un accès direct à un item enfant">
       </span>
    </span>
 </div>

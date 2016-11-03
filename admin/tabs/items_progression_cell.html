@@ -4,10 +4,10 @@
    </div>
    <div ng-if="group_group.child && group_group.child.sType == 'UserSelf' && group_group.child.idUser" ng-controller="adminUserItemController">
       <span ng-switch="globalStatus">
-         <span ng-switch-when="not visited" class="glyphicon glyphicon-eye-close" title="non visité"></span>
-         <span ng-switch-when="grayed" class="glyphicon glyphicon-lock" title="non accessible"></span>
-         <span ng-switch-when="visited" class="glyphicon glyphicon-eye-open" title="visité le {{user_item.sLastActivityDate|date}}"></span>
-         <span ng-switch-when="validated" class="glyphicon glyphicon-ok" style="color:#3c763d;" title="validé le {{user_item.sValidationDate|date}}, score : {{user_item.iScore}}/100"></span>
+         <span ng-switch-when="not visited" class="glyphicon glyphicon-eye-close" uib-tooltip="non visité"></span>
+         <span ng-switch-when="grayed" class="glyphicon glyphicon-lock" uib-tooltip="non accessible"></span>
+         <span ng-switch-when="visited" class="glyphicon glyphicon-eye-open" uib-tooltip="visité le {{user_item.sLastActivityDate|date}}"></span>
+         <span ng-switch-when="validated" class="glyphicon glyphicon-ok" style="color:#3c763d;" uib-tooltip="validé le {{user_item.sValidationDate|date}}, score : {{user_item.iScore}}/100"></span>
          <span ng-switch-when="failed" class="glyphicon glyphicon-remove" style="color:#ff0000;"></span>
       </span>
    </div>
