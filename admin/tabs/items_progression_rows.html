@@ -1,12 +1,12 @@
 <div>
    <span class="accessItemCell">
    </span>
-   <span ng-show="group_group != undefined" ng-include='"tabs/items_progression_cell.html"' class="accessCell">
+   <span ng-show="group_group != undefined" ng-include="templatesPrefix+'/admin/tabs/items_progression_cell.html'" class="accessCell">
    </span>
    <span ng-repeat="group_group in group_group.child.children | manageableGroups" class="accessCell">
-      <span ng-include='"tabs/items_progression_cell.html"'></span>
+      <span ng-include="templatesPrefix+'/admin/tabs/items_progression_cell.html'"></span>
    </span>
 </div>
 <span ng-if="itemIsExpanded" ng-repeat="item_item in item_item.child.children" class="itemLevel">
-   <span ng-init="itemIsExpanded = false;" ng-include='"tabs/items_progression_rows.html"'/>
+   <span ng-init="itemIsExpanded = false;" ng-include="templatesPrefix+'/admin/tabs/items_progression_rows.html'"/>
 </span>

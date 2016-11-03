@@ -12,7 +12,12 @@ angular.module('algorea')
       }
       }]);
 
-app.directive('field', function() {
+angular.module('algorea')
+   .run(['$rootScope', function ($rootScope) {
+      $rootScope.templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
+   }]);
+
+app.directive('field', ['$rootScope', function($rootScope) {
    return {
       restrict: 'E',
       scope: {
@@ -31,10 +36,10 @@ app.directive('field', function() {
             }
          };
       }],
-      templateUrl: ((typeof compiled !== 'undefined' && compiled)?'':config.domains.current.assetsBaseUrl)+"commonFramework/angularDirectives/formField.html",
+      templateUrl: $rootScope.templatesPrefix+"/commonFramework/angularDirectives/formField.html",
       replace: true
    };
-});
+}]);
 
 angular.module('algorea')
    .controller('adminCtrl', ['$scope', '$rootScope', 'loginService', '$sce', '$location', '$timeout', function($scope, $rootScope, loginService, $sce, $location, $timeout) {

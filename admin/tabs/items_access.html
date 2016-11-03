@@ -17,7 +17,7 @@
       <span class="accessTitleCell accessGroupNameChild" ng-repeat="group_group in group_group.child.children | manageableGroups">
          {{ group_group.parent.sName }}<br/><span style="font-weight:bold;" uib-tooltip="{{group_group.child.sName}}">&nbsp;&nbsp;>&nbsp;{{ group_group.child.sName }}&nbsp;</span>
       </span>
-      <span ng-include='"tabs/items_access_rows.html"'></span>
+      <span ng-include="templatesPrefix+'/admin/tabs/items_access_rows.html'"></span>
       <!-- <span ng-repeat="item_item in item_item.child.children" class="itemLevel">
          <span ng-include='"tabs/items_access_rows.html"'></span>
       </span> -->

@@ -129,21 +129,21 @@
             <td style="vertical-align:top">
                <span  ng-show="selectedModelName == 'items'">
                   <uib-tabset>
-                     <uib-tab heading="Paramètres de l'item"><div ng-include='"tabs/items_params.html"'></div></uib-tab>
-                     <uib-tab heading="Textes" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include='"tabs/items_texts.html"'></div></uib-tab>
+                     <uib-tab heading="Paramètres de l'item"><div ng-include="templatesPrefix+'/admin/tabs/items_params.html'"></div></uib-tab>
+                     <uib-tab heading="Textes" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_texts.html'"></div></uib-tab>
                      <uib-tab heading="Édition" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO : édition de l'item sur l'interface tasks (si c'est un sujet ou un cours)</uib-tab>
-                     <uib-tab heading="Preview" ng-show="group_item.bCachedFullAccess || group_item.bOwnerAccess || group_item.bCachedAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_preview.html'"></div></uib-tab>
+                     <uib-tab heading="Preview" ng-show="group_item.bCachedFullAccess || group_item.bOwnerAccess || group_item.bCachedAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_preview.html'"></div></uib-tab>
                      <uib-tab heading="Accès et validation" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_access.html'"></div></uib-tab>
-                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
+                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_progression.html'"></div></uib-tab>
                      <uib-tab heading="Statistiques" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO</uib-tab>
                   </uib-tabset>
                </span>
                <span ng-show="selectedModelName == 'groups'">
                   <uib-tabset>
-                     <uib-tab heading="Paramètres du groupe"><div ng-include='"tabs/groups_params.html"'></div></uib-tab>
+                     <uib-tab heading="Paramètres du groupe"><div ng-include="templatesPrefix+'/admin/tabs/groups_params.html'"></div></uib-tab>
                      <!--<tab ng-show="user" heading="Utilisateur associé"><div ng-include='"tabs/users_params.html"'></div></tab>-->
-                     <uib-tab heading="Accès et Validations"><div ng-include='"tabs/items_access.html"'></div></uib-tab>
-                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
+                     <uib-tab heading="Accès et Validations"><div ng-include="templatesPrefix+'/admin/tabs/items_access.html'"></div></uib-tab>
+                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_progression.html'"></div></uib-tab>
                   </uib-tabset>
                </span>
             </td>
