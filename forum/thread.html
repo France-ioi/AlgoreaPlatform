@@ -79,8 +79,8 @@
       <div uib-tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task" active="askedView">
          <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" index="view.name"></li>
       </div>
-      <div ng-show="taskLoaded && threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true"></div>
-      <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center>
+      <div ng-show="threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true" style="position: relative;"></div>
+      <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
    </div>
    <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID">
       <div ng-if="event.bTrainersOnly !== undefined" class="bs-callout bs-callout-default"><!-- case of message -->
@@ -116,8 +116,8 @@
          <div uib-tabset justified="true" ng-show="taskLoaded" class="tabset-task">
             <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
          </div>
-         <div ng-show="taskLoaded && !showForum" include-task task-name="my-task"></div>
-         <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center>
+         <div ng-show="!showForum" include-task task-name="my-task"></div>
+         <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
       </div>
    </div>
 </div>
