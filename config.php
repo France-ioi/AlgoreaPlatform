@@ -37,6 +37,9 @@ $config = (object) array(
       "timezone" => ini_get('date.timezone'),
       "domains" => array( // global root
          "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
+            "defaultLanguage" => 'fr',
+            "defaultAungularLocale" => 'fr-fr',
+            "customStringsName" => '',
             "title" => 'Change title here',
             "taglineHtml" => "Pour convertir ses idées<br>en applications numériques",
             "animationHtmlFile" => null,
@@ -65,17 +68,17 @@ $config = (object) array(
 
 // Tabs
 $config->shared->domains['current']->tabs[0] = array(
-      'title' => 'Découvrir',
+      'title' => 'menu_discover',
       'path' => '4022/4023',
       'icon' => 'explore'
       );
 $config->shared->domains['current']->tabs[1] = array(
-      'title' => 'Progresser',
+      'title' => 'menu_progress',
       'path' => '4026/4021',
       'icon' => 'trending_up'
       );
 $config->shared->domains['current']->tabs[2] = array(
-      'title' => 'S\'entraider',
+      'title' => 'menu_forum',
       'path' => 'forum',
       'icon' => 'group'
       );

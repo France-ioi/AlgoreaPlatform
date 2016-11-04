@@ -18,7 +18,10 @@
     "paper": "latest",
     "lodash": "^4.13.1",
     "angu-fixed-header-table": "^1.2.0",
-    "jquery/jquery-mousewheel": "latest"
+    "jquery/jquery-mousewheel": "latest",
+    "i18next": "latest",
+    "ng-i18next": "^1.0.2",
+    "i18next-xhr-backend": "^1.2.0"
   },
   "resolutions": {
     "jschannel": "01f53a1"

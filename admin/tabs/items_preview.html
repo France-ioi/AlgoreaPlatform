@@ -7,6 +7,5 @@
 <div ng-if="item && item.sType == 'Course'"  ng-controller="courseController">
    <div include-course read-only="true"></div>
 </div>
-<div ng-if="!item || (item.sType != 'Course' && item.sType != 'Task')">
-   Vous devez sélectionner un exercice ou un cours pour pouvoir l'afficher.
+<div ng-if="!item || (item.sType != 'Course' && item.sType != 'Task')" ng-i18next="admin_select_exercise">
 </div>

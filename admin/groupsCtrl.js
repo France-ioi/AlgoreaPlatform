@@ -49,7 +49,7 @@ angular.module('algorea')
             console.error("got error from invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.invitationError = + "Les logins suivants n'ont pas pu être trouvés : "+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.invitationError += i18nt('groupAdmin_logins_not_found')+' '+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -71,7 +71,7 @@ angular.module('algorea')
                }
             });
             if (alreadyInvitedLogins.length) {
-               $scope.invitationError += 'Les logins suivants ont déjà reçu une invitation ou font déjà partie du groupe : '+alreadyInvitedLogins.join(' ')+'. ';
+               $scope.invitationError += i18nt('groupAdmin_logins_already_members')+' '+alreadyInvitedLogins.join(' ')+'. ';
             }
          }
       })

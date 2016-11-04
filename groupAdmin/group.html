@@ -1,36 +1,36 @@
 <div ng-if="!loading && !error" class="groupAdmin">
 	<uib-tabset active="formValues.activeTab">
-		<uib-tab heading="Descriptif" index="0">
+		<uib-tab heading="{{'groupAdmin_description' | i18next}}" index="0">
 				<div class="groupAdmin-tabContent tab-group-description">
 							<div class="flex-container">
 								<label class="control-label item-label">
-									<span class="label-title">Nom du groupe</span>
-									<span class="label-description">Indiquez le nom que vous souhaitez donner à votre groupe</span>
+									<span class="label-title" ng-i18next="groupAdmin_group_name"></span>
+									<span class="label-description" ng-i18next="groupAdmin_group_name_desc"></span>
 								</label>
 								<input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
 							</div>
 							<div class="flex-container">
 								<label class="control-label item-label">
-									<span class="label-title">Type</span>
-									<span class="label-description">Sélectionnez le type de groupe</span>
+									<span class="label-title" ng-i18next="type"></span>
+									<span class="label-description" ng-i18next="groupAdmin_type_desc"></span>
 								</label>
 								<select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
-									<option value="Class" ng-selected="group.sType == 'Class'">Classe</option>
-									<option value="Friends" ng-selected="group.sType == 'Friends'">Équipe</option>
-									<option value="Other" ng-selected="group.sType == 'Other'">Autre</option>
+									<option value="Class" ng-selected="group.sType == 'Class'" ng-i18next="class"></option>
+									<option value="Friends" ng-selected="group.sType == 'Friends'" ng-i18next="team"></option>
+									<option value="Other" ng-selected="group.sType == 'Other'" ng-i18next="other"></option>
 								</select>
 							</div>
 							<div class="flex-container">
 									<label class="control-label item-label">
-										<span class="label-title">Description</span>
-										<span class="label-description">Ce champ est disponible si vous souhaitez ajouter une description à ce groupe</span>
+										<span class="label-title" ng-i18next="description"></span>
+										<span class="label-description" ng-i18next="groupAdmin_description_desc"></span>
 									</label>
 									<textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
 							</div>
 							<div ng-if="group.sType == 'Class'" class="flex-container">
 									<label class="control-label item-label" ng-if="group.sType == 'Class'">
-										<span class="label-title">Niveau</span>
-										<span class="label-description">Indiquez le niveau du groupe</span>
+										<span class="label-title" ng-i18next="level"></span>
+										<span class="label-description" ng-i18next="groupAdmin_level_desc"></span>
 									</label>
 									<div class="item-control">
 										<select ng-model="group.iGrade" class="form-control">
@@ -41,63 +41,63 @@
 							</div>
 							<div class="group-action" ng-if="adminOnGroup">
 								<div class="group-save">
-									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)" ng-i18next="save"></a>
 								</div>
 								<div class="block-delete">
-									<a class="group-delete" rel="Êtes-vous certain de vouloir supprimer le groupe {{$scope.group.sName}} ? Cette opération est irréversible." confirm="deleteGroup();">Supprimer le groupe</a>
+									<a class="group-delete" confirm="deleteGroup();" ng-i18next="groupAdmin_delete_group;[rel]groupAdmin_delete_group_msg"></a>
 								</div>
 							</div>
 				</div>
 		</uib-tab>
 
-		<uib-tab heading="Membres" index="1">
+		<uib-tab heading="{{'members' | i18next}}" index="1">
 				<div class="groupAdmin-tabContent tab-members">
 
 					<div class="flex-container">
 
 						<div class="members-col">
-							<div class="groupAdmin-title">Membres du groupe «&nbsp;{{group.sName}}&nbsp;»</div>
+							<div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span> «&nbsp;{{group.sName}}&nbsp;»</div>
 							<ul class="list list-block list-users">
 								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
 									<span class="user-status connected"></span>
 									<span class="user-name" ng-if="child.child.sType == 'UserSelf'">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
 									<span class="user-name" ng-if="child.child.sType != 'UserSelf'"><a ui-sref="groupAdminGroup({idGroup: child.child.ID})">{{child.child.sName}}</a></span>
 									<span class="action" ng-if="child.child.sType == 'UserSelf'">
-										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" title="supprimer"><span class="btn-label">supprimer</span></button>
+										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" title="supprimer"><span class="btn-label" ng-i18next="delete"></span></button>
 									</span>
 								</li>
 							</ul>
-							<div class="groupAdmin-title">Utilisateurs invités</div>
+							<div class="groupAdmin-title" ng-i18next="groupAdmin_invited_users"></div>
 							<ul class="list list-block list-applicants">
 									<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
-										<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})<span ng-if="child.sType == 'invitationRefused'"> (invitation refusée)</span></span>
-										<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" title="Annuler"><span class="btn-label">Annuler</span></button></span>
+										<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})<span ng-if="child.sType == 'invitationRefused'" ng-i18next="groupAdmin_invite_rejected"></span></span>
+										<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" title="Annuler"><span class="btn-label" ng-i18next="cancel"></span></button></span>
 									</li>
 							</ul>
 						</div>
 
 						<div class="action-col">
 							<div class="bloc-inscription">
-								<div class="groupAdmin-title">Gestion des inscriptions
-								<span>Utilisez l'une ou plusieurs des méthodes suivantes :</span></div>
-								<div class="label-title label-list-item">Invitation d'utilisateurs</div>
+								<div class="groupAdmin-title"><span ng-i18next="groupAdmin_registration_management"></span>
+								<span ng-i18next="gropuAdmin_registration_management_desc"></span></div>
+								<div class="label-title label-list-item" ng-i18next="groupAdmin_title_invite"></div>
 								<div class="flex-container">
 									<div class="left-col">
-										<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" placeholder="Insérez les logins séparés par des espaces">
+										<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" ng-i18next="[placeholder]groupAdmin_insert_logins">
 									</div>
 									<div class="right-col">
-										<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label">ajouter logins</span></button>
+										<button class="btn-icon btn-add" ng-click="inviteLogins()"><span class="btn-label" ng-i18next="add"></span></button>
 									</div>
 								</div>
-								<span ng-if="invitationError" style="font-weight:bold;">Erreur&nbsp;:</span> <span ng-bind="invitationError"></span>
+								<span ng-if="invitationError" style="font-weight:bold;" ng-i18next="groupAdmin_error"></span> <span ng-bind="invitationError"></span>
 							</div>
 
 							<!--<field model="group" field="groups.bFreeAccess" />-->
 							<div class="bloc-inscription">
 								<div class="flex-container">
 									<div class="left-col">
-										<div class="label-title label-list-item">Code d'inscription :</div>
-										<p>Ouvrir l'accès au groupe moyennant un code d'inscription</p>
+										<div class="label-title label-list-item" ng-i18next="groupAdmin_title_code"></div>
+										<p ng-i18next="groupAdmin_code_desc"></p>
 									</div>
 									<div class="right-col">
 										<div class="checkboxSwitch">
@@ -108,19 +108,19 @@
 								</div>
 								<div class="flex-container" ng-if="formValues.hasPassword">
 									<div class="left-col">
-										<p>Code d'inscription à transmettre aux élèves</p>
+										<p ng-i18next="groupAdmin_code_label"></p>
 									</div>
 									<div class="right-col form-inline">
 										<input type="text" class="form-control access-code" ng-model="group.sPassword" readonly/>
-										<button confirm="refreshPassword()" rel="Voulez-vous vraiment changer le code ?" class="btn btn-primary">Renouveler le code</button>
+										<button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
 									</div>
 								</div>
 							</div>
 							<div class="bloc-inscription">
 								<div class="flex-container">
 									<div class="left-col">
-										<div class="label-title label-list-item">Demandes d'adhésion spontanées</div>
-										<p>Autoriser les demandes spontanées</p>
+										<div class="label-title label-list-item" ng-i18next="groupAdmin_title_spontaneous"></div>
+										<p ng-i18next="groupAdmin_allow_spontaneous"></p>
 									</div>
 									<div class="right-col">
 										<div class="checkboxSwitch">
@@ -134,7 +134,7 @@
 									<ul class="list list-block list-applicants">
 										<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
 											<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
-											<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" title="Accepter"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" title="Refuser"></i></button></span>
+											<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" ng-i18next="[title]accept"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" ng-i18next="[title]reject"></i></button></span>
 										</li>
 									</ul>
 								</div>
@@ -144,52 +144,52 @@
 				</div>
 		</uib-tab>
 
-		<uib-tab heading="Progression" index="2">
+		<uib-tab heading="{{'progress' | i18next}}" index="2">
 			<div class="groupAdmin-tabContent tab-progression">
 				<div class="print">
-					<span class="avertissement">Pour imprimer les fond de couleur, sélectionnez l'option dans l'interface d'impression de votre navigateur</span>
-					<span class="progressionType">Type de visualisation&nbsp;: {{formValues.progressionType !== 'collective' ? 'Ordre chronologique' : 'Ordre du parcours'}}</span>
+					<span class="avertissement" ng-i18next="groupAdmin_print_warning"></span>
+					<span class="progressionType"><span ng-i18next="groupAdmin_visualization_type"> {{formValues.progressionTypeStr}}</span>
 				</div>
 
 				<div class="flex-container progression-controllers">
 					<div class="progression-type-select">
-						<span class="pull-left">Sélectionnez le type de visualisation&nbsp;:&nbsp;</span>
+						<span class="pull-left" ng-i18next="groupAdmin_visualization_select"></span>
 						<div class="inline-block">
-							<label><input type="radio" ng-model="formValues.progressionType" value="chronological">Ordre chronologique</label><br>
-							<label><input type="radio" ng-model="formValues.progressionType" value="collective">Ordre du parcours</label>
+							<label><input type="radio" ng-model="formValues.progressionType" value="chronological" ng-i18next="groupAdmin_chronological"></label><br>
+							<label><input type="radio" ng-model="formValues.progressionType" value="collective" ng-i18next="groupAdmin_collective"></label>
 						</div>
 					</div>
 					<div>
-						<p class="print">Légende&nbsp;:&nbsp;</p>
+						<p class="print" ng-i18next="groupAdmin_legend"></p>
 						<ul class="legend">
-							<li><span class="legend-color green"></span><span class="legend-label">Exercice validé</span></li>
-							<li><span class="legend-color red"></span><span class="legend-label">Exercice non réussi</span></li>
-							<li><span class="legend-color orange"></span><span class="legend-label">Exercice validé malgré un scrore partiel</span></li>
-							<li><span class="legend-color dark-grey"></span><span class="legend-label">Exercice lu, sans essai</span></li>
-							<li><span class="legend-color light-grey"></span><span class="legend-label">Exercice jamais lu</span></li>
+							<li><span class="legend-color green"></span><span class="legend-label" ng-i18next="groupAdmin_legend_validated"></span></li>
+							<li><span class="legend-color red"></span><span class="legend-label" ng-i18next="groupAdmin_legend_not_validated"></span></li>
+							<li><span class="legend-color orange"></span><span class="legend-label" ng-i18next="groupAdmin_legend_partial"></span></li>
+							<li><span class="legend-color dark-grey"></span><span class="legend-label" ng-i18next="groupAdmin_legend_opened"></span></li>
+							<li><span class="legend-color light-grey"></span><span class="legend-label" ng-i18next="groupAdmin_legend_not_opened"></span></li>
 						</ul>
 					</div>
 				</div>
 				<div class="parcours-select">
-					Parcours :
+					<span ng-i18next="groupAdmin_course"></span>
 					<select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">
 					</select>
 					<select ng-repeat="(depth, selectedItem) in dropdownSelections" ng-if="depth != 0" ng-change="dropdownSelected(depth)" ng-model="dropdownSelectionsIDs[depth]">
-						<option value="">Tous</option>
+						<option value="" ng-i18next="all"></option>
 						<option ng-repeat="child in dropdownSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == dropdownSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
 					</select>
 					<select ng-if="dropdownSelections[dropdownSelections.length-1].children.length" ng-change="dropdownSelected(0)" ng-model="dropdownSelectionsIDs[dropdownSelections.length]">
-						<option selected="selected" value="">Tous</option>
+						<option selected="selected" value="" ng-i18next="all"></option>
 						<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
 					</select>
 				</div>
 				<p class="dl-link"><a target="_self" ng-href="/admin/zip_export.php?itemId={{dropdownSelections[dropdownSelections.length-1].ID}}&groupId={{group.ID}}">
-					<button class="btn btn-primary">Exporter un zip avec toutes les soumissions</button>
+					<button class="btn btn-primary" ng-i18next="admin_zip_export"></button>
 				</a></p>
 
 				<div ng-if="formValues.progressionType != 'collective'" class="flex-container view-chrono">
 					<div>
-						<div class="groupAdmin-title">Utilisateurs <span>Sélectionnez un ou plusieurs utlisisateurs pour obtenir le détail de son activité récente ou pour le déselectionner et voir l'activité récente du groupe dans son ensemble.</span></div>
+						<div class="groupAdmin-title"><span ng-i18next="users"></span> <span ng-i18next="groupAdmin_users_desc"></span></div>
 						<ul class="list list-block list-users">
 						<!-- TODO : add class toggle when selected -->
 								<li ng-repeat="child in group.children | confirmed" ng-click="toggleUserRowSelection(child.child);" ng-class="{row_selected: groupsSelected[child.idGroupChild] == true}">
@@ -197,24 +197,24 @@
 				                  <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
 				               </li>
 						</ul>
-						<div class="select-toggle">Sélectionner : <a href="#" ng-click="selectAllUsers();">Tous</a> | <a href="#" ng-click="selectNoUser();">Aucun</a></div>
+						<div class="select-toggle"><span ng-i18next="groupAdmin_select"></span> <a href="#" ng-click="selectAllUsers();" ng-i18next="all"></a> | <a href="#" ng-click="selectNoUser();" ng-i18next="none"></a></div>
 					</div>
 					<div>
-						<div class="groupAdmin-title">Activité récente</div>
+						<div class="groupAdmin-title" ng-i18next="groupAdmin_recent_activity"></div>
 						<table class="table table-activity">
 							<thead>
 								<tr>
-									<th>Utilisateur</th>
-									<th>Date</th>
-									<th>Type</th>
-									<th>Exercice</th>
+									<th ng-i18next="user"></th>
+									<th ng-i18next="date"></th>
+									<th ng-i18next="type"></th>
+									<th ng-i18next="exercise"></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr ng-repeat="event in events">
 									<td>{{event.userStr}}</td>
 									<td>{{event.date | date}}</td>
-									<td class="activity-type" ng-class="getClass(event.user_item);">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" title="lien vers activité"><span class="btn-label">lien vers activité</span></button></td>
+									<td class="activity-type" ng-class="getClass(event.user_item);">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" ng-i18next="[title]groupAdmin_activity_link"><span class="btn-label" ng-i18next="groupAdmin_activity_link"></span></button></td>
 									<td>{{event.itemStr}}</td>
 								</tr>
 							</tbody>
@@ -225,12 +225,12 @@
 				<div ng-if="formValues.progressionType == 'collective'">
 					<div class="table-controllers clearfix">
 						<div class="checkboxSwitch pull-left">
-							<span>Afficher la vue détaillée</span>
+							<span ng-i18next="groupAdmin_show_details"></span>
 							<input type="checkbox" id="switchView" class="switch" ng-model="formValues.detailedView">
 							<label for="switchView"><span></span></label>
 						</div>
 						<div class="checkboxSwitch pull-left">
-							<span for="switchDescription">Afficher les descriptions</span>
+							<span for="switchDescription" ng-i18next="groupAdmin_show_descriptions"></span>
 							<input type="checkbox" id="switchDescription" class="switch" ng-model="formValues.showDescription">
 							<label for="switchDescription"><span></span></label>
 						</div>
@@ -239,8 +239,8 @@
 						<table class="table-progress table-head" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 							<thead>
 								<tr>
-									<th class="fixed-width step-name">Nom du chapitre / étape</th>
-									<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
+									<th class="fixed-width step-name" ng-i18next="groupAdmin_step_name"></th>
+									<th class="fixed-width step-descr" ng-if="formValues.showDescription" ng-i18next="description"></th>
 									<th ng-repeat="child in group.children | confirmed" ng-if="!formValues.detailedView" class="text-center name" uib-tooltip="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})" tooltip-placement="top-right"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
 									<th ng-repeat="child in group.children | confirmed" ng-if="formValues.detailedView" class="text-center name"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
 								</tr>
@@ -254,15 +254,15 @@
 									<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 										<div ng-if="formValues.detailedView" class="progress-details">
 											<div class="details-row">
-												<div class="date" uib-tooltip="Date dernière activité" tooltip-placement="top">{{getDate(thisUserItem)}}</div>
-												<div class="time" uib-tooltip="Temps écoulé depuis la 1ère lecture" tooltip-placement="top">{{getDuration(thisUserItem)}}</div>
-												<div class="help" uib-tooltip="Indices demandés" tooltip-placement="top">{{thisUserItem.nbHintsCached}}</div>
+												<div class="date" ng-i18next="[uib-tooltip]groupAdmin_last_activity" tooltip-placement="top">{{getDate(thisUserItem)}}</div>
+												<div class="time" ng-i18next="[uib-tooltip]groupAdmin_time_spent" tooltip-placement="top">{{getDuration(thisUserItem)}}</div>
+												<div class="help" ng-i18next="[uib-tooltip]groupAdmin_hints_requested" tooltip-placement="top">{{thisUserItem.nbHintsCached}}</div>
 											</div>
 											<div class="details-row">
 												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" uib-tooltip="Score" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
 												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
-												<div class="questions" uib-tooltip="Demandes d'aide sur le forum" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
-												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'progress-details.html'" popover-trigger="mouseenter" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" uib-tooltip="Voir le détail" tooltip-placement="top"><span class="btn-label">Voir plus</span></button></div>
+												<div class="questions" ng-i18next="[uib-tooltip]groupAdmin_forum_requests" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'progress-details.html'" popover-trigger="mouseenter" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_detail" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button></div>
 											</div>
 										</div>
 										<div ng-if="!formValues.detailedView && item.sType == 'Task'" class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}">
@@ -273,17 +273,17 @@
 										<script type="text/ng-template" id="progress-details.html">
 											<ul class="progress-details">
 												<li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
-												<li class="score" ng-if="item.sType == 'Task'" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}">Score : <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
-												<li class="date" ng-if="!user_item.sValidationDate">Date dernière activité : {{thisUserItem.sLastActivityDate | date}}</li>
-												<li class="date" ng-if="user_item.sValidationDate">Date de validation : {{thisUserItem.sLastActivityDate | date}}</li>
-												<li class="time" ng-if="!user_item.sValidationDate">Temps écoulé depuis la 1<sup>ère</sup> lecture : {{getDuration(thisUserItem)}}</li>
-												<li class="time" ng-if="user_item.sValidationDate">Temps jusqu'à validation : {{getDuration(thisUserItem)}}</li>
-												<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
-												<li class="questions">Demandes d'aide sur le forum : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
-												<li class="help">Indices demandés : {{thisUserItem.nbHintsCached}}</li>
+												<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
+												<li class="date" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_last_activity"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+												<li class="date" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_validation_date"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+												<li class="time" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_time_spent"></span> : {{getDuration(thisUserItem)}}</li>
+												<li class="time" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_time_validation"></span> : {{getDuration(thisUserItem)}}</li>
+												<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} <span ng-i18next="groupAdmin_attempt"</span>{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
+												<li class="questions"><span ng-i18next="groupAdmin_forum_requests"></span> : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+												<li class="help"><span ng-i18next="groupAdmin_hints_requested"></span> : {{thisUserItem.nbHintsCached}}</li>
 											</ul>
 										</script>
-										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" uib-tooltip="Voir le code" tooltip-placement="top"><span class="btn-label">Voir plus</span></button>
+										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_code" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button>
 									</td>
 								</tr>
 							</tbody>
@@ -293,8 +293,8 @@
 						<table class="table-progress-print" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 							<thead>
 								<tr>
-									<th class="fixed-width step-name">Nom du chapitre / étape</th>
-									<th class="fixed-width step-descr" ng-if="formValues.showDescription">Description</th>
+									<th class="fixed-width step-name" ng-i18next="groupAdmin_chapter_name"></th>
+									<th class="fixed-width step-descr" ng-if="formValues.showDescription" ng-i18next="description"></th>
 									<th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
 								</tr>
 							</thead>
@@ -305,14 +305,14 @@
 									<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
 										<div ng-if="formValues.detailedView" class="progress-details">
 											<div class="details-row">
-												<div class="date" title="Date dernière activité">{{getDate(thisUserItem)}}</div>
-												<div class="time" title="Temps écoulé depuis la 1ère lecture">{{getDuration(thisUserItem)}}</div>
-												<div class="help" title="Indices demandés">{{thisUserItem.nbHintsCached}}</div>
+												<div class="date" ng-i18next="[title]groupAdmin_last_activity">{{getDate(thisUserItem)}}</div>
+												<div class="time" ng-i18next="[title]groupAdmin_time_spent">{{getDuration(thisUserItem)}}</div>
+												<div class="help" ng-i18next="[title]groupAdmin_hints_requested">{{thisUserItem.nbHintsCached}}</div>
 											</div>
 											<div class="details-row">
-												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" title="Score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
-												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
-												<div class="questions" title="Demandes d'aide sur le forum" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" ng-i18next="[title]score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
+												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} <span ng-i18next="groupAdmin_attempt"></span>{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
+												<div class="questions" ng-i18next="[title]groupAdmin_forum_requests" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
 											</div>
 										</div>
 										<!-- Affichage du score :
@@ -331,18 +331,18 @@
 			</div>
 		</uib-tab>
 
-		<uib-tab heading="Administration" index="3">
+		<uib-tab heading="{{'administration' | i18next}}" index="3">
 			<div class="groupAdmin-tabContent tab-admin">
 				<div class="inline-block">
-						<div class="groupAdmin-title">Administrateurs du groupe «&nbsp;{{group.sName}}&nbsp;» :</div>
+						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span> «&nbsp;{{group.sName}}&nbsp;» :</div>
 
 						<table class="table-administrators">
 							<thead>
 								<tr>
 									<th></th>
-									<th>Propriétaire</th>
-									<th>Administrateur</th>
-									<th>Observateur</th>
+									<th ng-i18next="owner"></th>
+									<th ng-i18next="administrator"></th>
+									<th ng-i18next="observer"></th>
 									<th></th>
 								</tr>
 							</thead>
@@ -352,23 +352,22 @@
 									<td><span ng-if="parent.sRole == 'owner'" class="glyphicon glyphicon-ok"></span></td>
 									<td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'manager' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
 									<td><input type="radio" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'observer' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
-									<td><button class="btn-icon btn-delete btn-small" title="supprimer" ng-if="adminOnGroup && parent.sRole != 'owner'" ng-click="removeAdmin(parent);"><span class="btn-label">supprimer</span></button></td>
+									<td><button class="btn-icon btn-delete btn-small" title="supprimer" ng-if="adminOnGroup && parent.sRole != 'owner'" ng-click="removeAdmin(parent);"><span class="btn-label" ng-i18next="delete"></span></button></td>
 								</tr>
 							</tbody>
 						</table>
 
 						<div class="form-inline admin-form" ng-if="adminOnGroup">
-							<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" placeholder="Logins à ajouter (séparer par des espaces) :">
-							<button  ng-click="inviteAdminLogins();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
+							<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" ng-i18next="[placeholder]groupAdmin_logins_to_add">
+							<button  ng-click="inviteAdminLogins();" class="btn-icon btn-add"><span class="btn-label" ng-i18next="groupAdmin_add_group"></span></button>
 						</div>
 						<span ng-bind="adminInvitationError"></span>
-						<span ng-show="adminLoading">Chargement...</span>
+						<span ng-show="adminLoading" ng-i18next="loading"></span>
 					</div>
 				</div>
 		</uib-tab>
 	</uib-tabset>
 </div>
-<div ng-if="loading">
-	Chargement...
+<div ng-if="loading" ng-i18next="loading">
 </div>
 <div ng-show="error">{{error}}</div>

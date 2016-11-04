@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .service('itemService', ['$rootScope', '$timeout', 'loginService', function($rootScope, $timeout, loginService) {
+   .service('itemService', ['$rootScope', '$timeout', 'loginService', '$i18next', function($rootScope, $timeout, loginService, $i18next) {
     /*
      * Simple service providing items.
      */
@@ -319,17 +319,17 @@ angular.module('algorea')
             if (type == 'Root') return '';
             var typeStr;
             if (type == 'Level') {
-               typeStr = 'Niveau' + (item.iLevel ? ' '+item.iLevel : '');
+               typeStr = $i18next.t('navigation_level') + (item.iLevel ? ' '+item.iLevel : '');
             } else if(type == 'Chapter') {
-               typeStr = 'Chapitre';
+               typeStr = $i18next.t('navigation_chapter');
             } else if (type == 'Category') {
-               typeStr = 'Catégorie';
+               typeStr = $i18next.t('navigation_category');
             } else if (type == 'Section') {
-               typeStr = 'Section';
+               typeStr = $i18next.t('navigation_section');
             } else if (type == 'Task') {
-               typeStr = 'Exercice';
+               typeStr = $i18next.t('navigation_task');
             } else if (type == 'Course') {
-               typeStr = 'Cours';
+               typeStr = $i18next.t('navigation_course');
             }
             return typeStr;
          },

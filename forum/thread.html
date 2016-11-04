@@ -1,27 +1,26 @@
 <div ng-if="loading">
-   <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+   <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center>
 </div>
-<div ng-if="!loading && !thread && !fakeThread">
-   Désolé, la discussion demandée n'existe pas.
+<div ng-if="!loading && !thread && !fakeThread" ng-i18next="forum_not_found">
 </div>
 <div ng-if="!loading && (thread || fakeThread)">
-   <div ng-if="inPopup">Activités de {{user_item.user.sLogin}} sur l'exercice {{item.strings[0].sTitle}}
+   <div ng-if="inPopup"><span ng-i18next="forum_activities_of"></span> {{user_item.user.sLogin}} <span ng-i18next="forum_on_exercise"></span> {{item.strings[0].sTitle}}
    </div>
    <div ng-form="threadForm" ng-if="!readOnly && (ownThread || newThread)" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
       <div ng-if="inTask">
-         <h4>Bienvenue sur le forum Algoréa</h4>
-         <p>Vous pouvez demander de l'aide en postant un message ci-dessous. Il aparaîtra automatiquement sur le forum (onglet <strong>S'entraîder</strong>).</p>
+         <h4 ng-i18next="forum_title_welcome"></h4>
+         <p ng-i18next="[html]forum_title_desc"></p>
       </div>
       <div class="form-group" ng-show="!inTask">
-         <label for="sType">Type :</label>
+         <label for="sType" ng-i18next="forum_type"></label>
          <select name="sType" ng-model="thread.sType" id="sType" class="form-control" style="width:300px;">
-            <option value="Help">Demande d'aide sur un exercice</option>
-            <option value="General">Discussion générale</option>
-            <option value="Bug">Rapporter une anomalie</option>
+            <option value="Help" ng-i18next="forum_type_help"></option>
+            <option value="General" ng-i18next="forum_type_general"></option>
+            <option value="Bug" ng-i18next="forum_type_bug"></option>
          </select>
       </div>
       <div class="form-group" ng-show="thread.sType == 'Help' && !inTask">
-         <label for="idItem">Item associée :</label>
+         <label for="idItem" ng-i18next="forum_item_associated"></label>
          <p class="input-group">
             <input type="text" name="idItem" ng-model="thread.idItem" id="idItem" class="form-control" item-text readonly/>
             <span class="input-group-btn">
@@ -33,47 +32,47 @@
          </p>
       </div>
       <div class="form-group" ng-show="thread.sType != 'Help'">
-         <label for="sTitle">Titre :</label>
+         <label for="sTitle" ng-i18next="forum_title"></label>
          <input type="text" name="sTitle" ng-model="thread.sTitle" id="sTitle" class="form-control">
       </div>
       <div class="form-group" ng-if="newThread">
-         <label for="sBody" ng-hide="inTask">Message :</label>
+         <label for="sBody" ng-hide="inTask" ng-i18next="forum_message"></label>
          <textarea name="sMessage" ng-model="newMessage.sBody" id="sBody" class="form-control"></textarea>
       </div>
-      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-default" ng-click="submitForm(threadForm)">Enregistrer</button>
+      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-default" ng-click="submitForm(threadForm)" ng-i18next="save"></button>
    </div>
    <div ng-if="!newThread && !readOnly">
       <div ng-if="!ownThread">
-         <h2>Message</h2>
-         <p><strong>Sujet :</strong> {{thread.sTitle}}</p>
-         <p ng-show="itemStr"><strong>Item :</strong> {{itemStr}}</p>
+         <h2 ng-i18next="message"></h2>
+         <p><strong ng-i18next="forum_subject"></strong> {{thread.sTitle}}</p>
+         <p ng-show="itemStr"><strong ng-i18next="forum_item"></strong> {{itemStr}}</p>
       </div>
    </div>
    <div ng-if="taskLoadingError">
-      <center><p style="margin-top:10px"><strong>Erreur!</strong> {{taskLoadingError}}</p></center>
+      <center><p style="margin-top:10px"><strong ng-i18next="forum_error"></strong> {{taskLoadingError}}</p></center>
    </div>
-   <span ng-show="!events.length && fakeThread">Aucune activité</span>
-   <h2 ng-show="events.length">Évènements</h2>
+   <span ng-show="!events.length && fakeThread" ng-i18next="forum_no_activity"></span>
+   <h2 ng-show="events.length" ng-i18next="events"></h2>
    <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'before':threadData.currentAnswer track by event.ID">
       <div ng-if="event.bTrainersOnly !== undefined" class="bs-callout bs-callout-default"><!-- case of message -->
          <div ng-switch="getMessageState(event)">
             <div ng-switch-when="typing">
-               <strong>{{event.sLogin}}</strong> est en train de répondre...
+               <strong>{{event.sLogin}}</strong> <span ng-i18next="forum_is_answering"></span>
             </div>
             <div ng-switch-when="noDisplay"></div>
             <div ng-switch-default>
-               <h4>Message de {{event.sLogin}} le {{event.sSubmissionDate|date}} à {{event.sSubmissionDate|date:'shortTime'}} :</h4>
+               <h4><span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}} :</h4>
                <p>{{event.sBody}}</p>
             </div>
          </div>
       </div>
       <div ng-if="event.bTrainersOnly === undefined" ng-class="{'bs-callout-success': event.bValidated=='1', 'bs-callout-danger': event.bValidated=='0'}" ng-click="openAnswer(event);" class="bs-callout">
-         <h4>Soumission du {{event.sSubmissionDate|date}} à {{event.sSubmissionDate|date:'shortTime'}}</h4>
-         <span ng-show="event.iScore === null">non-évaluée</span>
-         <span ng-hide="event.sGradingDate === null">évaluée le {{event.sGradingDate|date}} à {{event.sSubmissionDate|date:'shortTime'}}</span>
-         <span ng-if="event.idUserGrader !== null"> par {{event.graderLogin}}</span>
-         <span ng-hide="event.iScore === null">, score : {{event.iScore}}</span>
-         <span ng-if="canValidate">, évaluer à <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);">ok</button></span>
+         <h4><span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}</h4>
+         <span ng-show="event.iScore === null" ng-i18next="forum_not_evaluated"></span>
+         <span ng-hide="event.sGradingDate === null"><span ng-i18next="forum_evaluated"></span> <span ng-i18next="forum_date_on"></span> {{event.sGradingDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}</span>
+         <span ng-if="event.idUserGrader !== null"> <span ng-i18next="forum_evaluated_by"></span> {{event.graderLogin}}</span>
+         <span ng-hide="event.iScore === null">, <span ng-i18next="forum_score"></span> : {{event.iScore}}</span>
+         <span ng-if="canValidate">, <span ng-i18next="forum_evaluate_manual"></span> <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);" ng-i18next="ok"></button></span>
       </div>
    </div>
    <div ng-if="hasTask && !taskLoading && answers.length" ng-controller="taskController">
@@ -81,44 +80,44 @@
          <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" index="view.name"></li>
       </div>
       <div ng-show="taskLoaded && threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true"></div>
-      <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+      <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center>
    </div>
    <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID">
       <div ng-if="event.bTrainersOnly !== undefined" class="bs-callout bs-callout-default"><!-- case of message -->
          <div ng-switch="getMessageState(event)">
             <div ng-switch-when="typing">
-               <strong>{{event.sLogin}}</strong> est en train de répondre...
+               <strong>{{event.sLogin}}</strong> <span ng-i18next="forum_is_answering"></span>
             </div>
             <div ng-switch-when="noDisplay"></div>
             <div ng-switch-default>
-               <h4>Message de {{event.sLogin}} le {{event.sSubmissionDate}} à {{event.sSubmissionDate|date:'shortTime'}} :</h4>
+               <h4><span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}} :</h4>
                <p>{{event.sBody}}</p>
             </div>
          </div>
       </div>
       <div ng-if="event.bTrainersOnly === undefined" ng-class="{'bs-callout-success': event.bValidated=='1', 'bs-callout-danger': event.bValidated=='0'}" ng-click="openAnswer(event);" class="bs-callout">
-         <h4>Soumission du {{event.sSubmissionDate|date}} à {{event.sSubmissionDate|date:'shortTime'}}</h4>
-         <span ng-show="event.iScore === null">non-évaluée</span>
-         <span ng-hide="event.sGradingDate === null">évaluée le {{event.sGradingDate|date}} à {{event.sSubmissionDate|date:'shortTime'}}</span>
-         <span ng-if="event.idUserGrader !== null"> par {{event.graderLogin}}</span>
-         <span ng-hide="event.iScore === null">, score : {{event.iScore}}</span>
-         <div ng-if="canValidate">Évaluer à <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);">ok</button></div>
+         <h4><span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}</h4>
+         <span ng-show="event.iScore === null" ng-i18next="forum_not_evaluated"></span>
+         <span ng-hide="event.sGradingDate === null"><span ng-i18next="forum_evaluated"></span> <span ng-i18next="forum_date_on"></span> {{event.sGradingDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}</span>
+         <span ng-if="event.idUserGrader !== null"> <span ng-i18next="forum_evaluated_by"></span> {{event.graderLogin}}</span>
+         <span ng-hide="event.iScore === null">, <span ng-i18next="forum_score"></span> : {{event.iScore}}</span>
+         <span ng-if="canValidate">, <span ng-i18next="forum_evaluate_manual"></span> <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);" ng-i18next="ok"></button></span>
       </div>
    </div>
    <div ng-hide="newThread || readOnly">
-      <label for="messageTextarea">Votre réponse :</label>
+      <label for="messageTextarea" ng-i18next="forum_your_answer"></label>
       <textarea id="messageTextarea" class="form-control" rows="3" name="sBody" ng-model="newMessage.sBody" ng-focus="newMessageFocus()" ng-blur="newMessageBlur()"></textarea>
-      <center><button ng-click="newMessageSave()" class="btn btn-default">Répondre</button></center>
+      <center><button ng-click="newMessageSave()" class="btn btn-default" ng-i18next="forum_answer"></button></center>
    </div>
    <div  ng-if="!inTask && hasTask && !taskLoading && !readOnly">
-      <h3 ng-show="ownThread">Faire d'autres essais</h3>
-      <h3 ng-hide="ownThread">Ma version de l'exercice</h3>
+      <h3 ng-show="ownThread" ng-i18next="forum_try_again"></h3>
+      <h3 ng-hide="ownThread" ng-i18next="forum_my_version"></h3>
       <div ng-controller="taskController">
          <div uib-tabset justified="true" ng-show="taskLoaded" class="tabset-task">
             <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
          </div>
          <div ng-show="taskLoaded && !showForum" include-task task-name="my-task"></div>
-         <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+         <center ng-hide="taskLoaded"><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center>
       </div>
    </div>
 </div>
