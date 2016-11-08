@@ -976,15 +976,33 @@ var AccessManager = {
          "sAccessSolutionsDate": 'sCachedAccessSolutionsDate',
          "sCachedGrayedAccessDate": 'sCachedGrayedAccessDate'
       };
+      var fieldTextNames = {
+         "sFullAccessDate": 'fullInheritedFrom',
+         "sPartialAccessDate": 'partialInheritedFrom',
+         "sAccessSolutionsDate": 'solutionsInheritedFrom'
+      };
       angular.forEach(fieldNames, function(cachedFieldName, fieldName) {
          var otherFieldName = cached ? cachedFieldName : fieldName;
          if ((access[cachedFieldName] == null) || ((otherAccess[otherFieldName] != null) && (otherAccess[otherFieldName] < access[cachedFieldName]))) {
             access[cachedFieldName] = otherAccess[otherFieldName];
+            if (fieldTextNames[fieldName]) {
+               if (otherAccess.idItem) {
+                  access[fieldTextNames[fieldName]].push(otherAccess.idGroup);      
+               } else {
+                  access[fieldTextNames[fieldName]] = access[fieldTextNames[fieldName]].concat(otherAccess[fieldTextNames[fieldName]]);
+               }
+            }
          }
       });
       if (cached && otherAccess.bCachedManagerAccess) {
+         if (otherAccess.idItem) {
+            access.managerInheritedFrom.push(otherAccess.idGroup);
+         }
          access.bCachedManagerAccess = true;
       } else if (!cached && otherAccess.bManagerAccess) {
+         if (otherAccess.idItem) {
+            access.managerInheritedFrom.push(otherAccess.idGroup);
+         }
          access.bCachedManagerAccess = true;
       }
    },
@@ -1009,7 +1027,12 @@ var AccessManager = {
          sCachedGrayedAccessDate: null,
          bCachedManagerAccess: false,
          bOwnerAccess: false,
-         bManagerAccess: false
+         bManagerAccess: false,
+         partialInheritedFrom: [],
+         fullInheritedFrom: [],
+         partialInheritedFrom: [],
+         solutionsInheritedFrom: [],
+         managerInheritedFrom: [],
       };
       var group_item = getGroupItem(group.ID, item.ID);
       if (group_item) {
