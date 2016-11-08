@@ -1,7 +1,7 @@
 <div>
    <div class="modal-header">
       <h3>{{ item_item.child.strings[0].sTitle }}</h3>
-      Mode de validation au sein de <b>{{ item_item.parent.strings[0].sTitle }}</b>
+      <span ng-i18next="admin_validation_mode"></span> <b>{{ item_item.parent.strings[0].sTitle }}</b>
    </div>
    <div class="modal-body">
       <form>
@@ -9,7 +9,7 @@
       </form>
    </div>
    <div class="modal-footer">
-      <button class="btn btn-primary" ng-click="ok()">Valider</button>
-      <button class="btn btn-warning cancel" ng-click="cancel()">Annuler</button>
+      <button class="btn btn-primary" ng-click="ok()" ng-i18next="confirm"></button>
+      <button class="btn btn-warning cancel" ng-click="cancel()" ng-i18next="cancel"></button>
    </div>
 </div>

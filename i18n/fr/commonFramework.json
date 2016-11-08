@@ -1,0 +1,5 @@
+{
+    "connection_error_message": "Attention : l'application ne parvient pas à se connecter. Vos dernières modifications risquent de ne pas être enregistrées. Surveillez l'indicateur de connexion.",
+    "failure": "Echec",
+    "sync_error": "Erreur de synchro"
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('franceIOILogin', [])
+angular.module('franceIOILogin', ['jm.i18next'])
      .service('loginService', ['$http', '$rootScope', '$sce', function ($http, $rootScope, $sce) {
         var state = 'not-ready';
         var tempUser = false;

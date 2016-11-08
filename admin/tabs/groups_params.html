@@ -1,6 +1,6 @@
 <form ng-if="group && group.sType != 'UserSelf'">
 <!--   {{group.ID}} -->
-   <label class="control-label col-xs-4">Type :</label>
+   <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
    <div class="col-xs-8">
      <span ng-if="group && (group.sType == 'UserSelf' || group.sType == 'UserAdmin')">{{models.groups.fields.sType.values[group.sType].label}}</span>
      <select ng-if="group && group.sType != 'UserSelf' && group.sType != 'UserAdmin'" ng-model="group.sType" class="form-control">
@@ -14,35 +14,35 @@
    <field model="group" field="groups.sPassword" />
    <field model="group" field="groups.bSendEmails" />
    <p>
-      <a class="btn btn-warning" ng-click="resetObjectChanges('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Reset</a>
-      <a class="btn btn-primary" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)">Enregistrer</a>
+      <a class="btn btn-warning" ng-click="resetObjectChanges('groups', group)" ng-disabled="!hasObjectChanged('groups', group)" ng-i18next="reset"></a>
+      <a class="btn btn-primary" ng-click="saveObject('groups', group)" ng-disabled="!hasObjectChanged('groups', group)" ng-i18next="save"></a>
    </p>
 </form>
 <div ng-if="group && group.sType == 'UserSelf'">
-   <p>Vous ne pouvez pas inviter des membres dans le groupe associé à un utilisateur.</p>
+   <p ng-i18next="admin_no_add_userself"></p>
 </div>
 <div ng-controller="groupInvitationCtrl" ng-if="group && group.sType != 'UserSelf'">
    <span ng-if="error"><strong>{{Error}}</strong></span>
    <div ng-if="!error">
       <div>
          <div class="form-group">
-            <label for="sLogin">Logins à ajouter (séparer par des espaces) :</label>
+            <label for="sLogin" ng-i18next="admin_add_logins"></label>
             <input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins">
          </div>
-         <button class="btn btn-primary" ng-click="inviteLogins()">Inviter ces utilisateurs</button>
+         <button class="btn btn-primary" ng-click="inviteLogins()" ng-i18next="admin_invite_logins"></button>
          <span ng-bind="invitationError"></span>
       </div>
       <div ng-if="!showTable()">
-         <p>Pas d'invitations envoyées.</p>
+         <p ng-i18next="admin_invites_none_sent"></p>
       </div>
       <div ng-if="showTable()">
          <table class="table table-bordered table-hover">
             <thead>
                <tr>
-                  <th>Utilisateur</th>
-                  <th>Date d'invitation</th>
-                  <th>État</th>
-                  <th>Action</th>
+                  <th ng-i18next="user"></th>
+                  <th ng-i18next="admin_invitation_date"></th>
+                  <th ng-i18next="status"></th>
+                  <th ng-i18next="action"></th>
                </tr>
             </thead>
             <tbody>
@@ -52,11 +52,11 @@
                   <td>{{printType(child.sType)}}</td>
                   <td>
                      <div ng-if="child.sType == 'invitationSent'">
-                        <button class="btn btn-default" ng-click="cancelInvitation(child)">Annuler</button>
+                        <button class="btn btn-default" ng-click="cancelInvitation(child)" ng-i18next="cancel"></button>
                      </div>
                      <div ng-if="child.sType == 'requestSent'">
-                        <button class="btn btn-default" ng-click="acceptRequest(child)">Accepter</button>
-                        <button class="btn btn-default" ng-click="refuseRequest(child)">Refuser</button>
+                        <button class="btn btn-default" ng-click="acceptRequest(child)" ng-i18next="accept"></button>
+                        <button class="btn btn-default" ng-click="refuseRequest(child)" ng-i18next="reject"></button>
                      </div>
                   </td>
                </tr>

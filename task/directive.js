@@ -26,7 +26,7 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', '$injector', 'itemService', 'pathService', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, $injector, itemService, pathService) {
+.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', '$injector', 'itemService', 'pathService', '$i18next', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, $injector, itemService, pathService, $i18next) {
    var mapService = null;
    if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
@@ -48,7 +48,7 @@ angular.module('algorea')
          configureTask(scope, elem, sameUrl);
       }, !sameUrl, function() {
          scope.taskLoaded = true;
-         scope.loadingError = "Impossible de communiquer avec l'exercice !";
+         scope.loadingError = $i18next.t('task_communicate_error');
       });
    }
    function configureTask(scope, elem, sameUrl) {
@@ -229,7 +229,7 @@ angular.module('algorea')
             scope.setTabs(views);
          });
       }, function() {
-         scope.loadingError = 'Impossible de charger l\'exercice !';
+         scope.loadingError = $i18next.t('task_load_error');
       });
     }
     return {
@@ -282,12 +282,13 @@ angular.module('algorea')
             scope.canGetState = false;
             //scope.selectTab('task');
             scope.currentView = null;
+            angular.forEach(scope.intervals, function(interval, name) {
+               $interval.cancel(interval);
+            });
+            scope.intervals = {};
             var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (scope.task && !scope.task.unloaded) {
                scope.task.unloaded = true;
-               angular.forEach(scope.intervals, function(interval) {
-                  $interval.cancel(interval);
-               });
                scope.task.unload(function() {
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);

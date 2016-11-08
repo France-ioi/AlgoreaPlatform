@@ -9,7 +9,7 @@
       </div>
       <div id="menu-main" >
          <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated == i}" ng-click="gotoMenuItem(i, tab.path)">
-            <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title}}</div>
+            <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
          </div>
       </div>
    </div>
