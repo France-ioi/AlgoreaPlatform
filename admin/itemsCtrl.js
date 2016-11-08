@@ -1021,6 +1021,9 @@ var AccessManager = {
       }
       for (var idParentGroupGroup in group.parents) {
          var parentGroupGroup = group.parents[idParentGroupGroup];
+         if (parentGroupGroup.sType != 'direct' && parentGroupGroup.sType != 'invitationAccepted' && parentGroupGroup.sType != 'requestAccepted') {
+            continue;
+         }
          var parentGroup = parentGroupGroup.parent;
          var parentAccess = AccessManager.dynComputeGroupItemAccess(parentGroup.ID, item.ID);
          AccessManager.updateAccess(access, parentAccess, true);
