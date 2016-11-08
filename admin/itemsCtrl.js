@@ -1040,17 +1040,17 @@ var AccessManager = {
             access.sAccessType = "full";
             if ((group_item) && (group_item.sFullAccessDate) && (curDate >= group_item.sFullAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += $i18next.t('groupAdmin_access_complete_direct');
+               access.sAccessTitle += i18next.t('groupAdmin_access_complete_direct');
             } else {
-               access.sAccessTitle += $i18next.t('groupAdmin_access_complete_inherited');
+               access.sAccessTitle += i18next.t('groupAdmin_access_complete_inherited');
             }
             access.sAccessLabel += "C";
          } else {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += $i18next.t('groupAdmin_access_complete_direct_future');
+               sFutureAccessTitle += i18next.t('groupAdmin_access_complete_direct_future');
             } else {
-               sFutureAccessTitle += $i18next.t('groupAdmin_access_complete_inherited_future');
+               sFutureAccessTitle += i18next.t('groupAdmin_access_complete_inherited_future');
             }
             sFutureAccessLabel += "C";
             access.bHasFutureAccess = true;
@@ -1061,17 +1061,17 @@ var AccessManager = {
             access.sAccessType = "partial";
             if ((group_item) && (group_item.sPartialAccessDate) && (curDate >= group_item.sPartialAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += $i18next.t('groupAdmin_access_partial_direct');
+               access.sAccessTitle += i18next.t('groupAdmin_access_partial_direct');
             } else {
-               access.sAccessTitle += $i18next.t('groupAdmin_access_partial_inherited');
+               access.sAccessTitle += i18next.t('groupAdmin_access_partial_inherited');
             }
             access.sAccessLabel += "P";
          } else if (sFutureAccessLabel == "") {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += $i18next.t('groupAdmin_access_partial_direct_future');
+               sFutureAccessTitle += i18next.t('groupAdmin_access_partial_direct_future');
             } else {
-               sFutureAccessTitle += $i18next.t('groupAdmin_access_partial_inherited_future');
+               sFutureAccessTitle += i18next.t('groupAdmin_access_partial_inherited_future');
             }
             sFutureAccessLabel += "P";
             access.bHasFutureAccess = true;
@@ -1083,39 +1083,39 @@ var AccessManager = {
       }
       if (access.bCachedManagerAccess || access.bManagerAccess) {
          if (access.bManagerAccess) {
-            access.sAccessTitle += $i18next.t('groupAdmin_access_manager_direct');
+            access.sAccessTitle += i18next.t('groupAdmin_access_manager_direct');
             access.sAccessLabel += "+";
          } else {
-            access.sAccessTitle += $i18next.t('groupAdmin_access_manager_inherited');
+            access.sAccessTitle += i18next.t('groupAdmin_access_manager_inherited');
          }
          access.sAccessLabel += "M";
       }
       if (access.sCachedGrayedAccessDate && access.sAccessType != "full" && access.sAccessType != "partial" && curDate >= access.sCachedGrayedAccessDate) {
          access.sAccessType = "grayed";
-         access.sAccessTitle += $i18next.t('groupAdmin_access_grayed');
+         access.sAccessTitle += i18next.t('groupAdmin_access_grayed');
          access.sAccessLabel += "G";
       }
       if (access.sAccessType == "none") {
          access.sAccessLabel = "X";
-         access.sAccessTitle += $i18next.t('groupAdmin_access_none');
+         access.sAccessTitle += i18next.t('groupAdmin_access_none');
       }
       access.sAccessSolutionType = "none";
       if ((access.sCachedAccessSolutionsDate) && (curDate >= access.sCachedAccessSolutionsDate)) {
          access.sAccessSolutionType = "full";
          if ((group_item) && (group_item.sAccessSolutionsDate != null)) {
             access.sAccessLabel += "+";
-            access.sAccessTitle += $i18next.t('groupAdmin_access_solutions_direct');
+            access.sAccessTitle += i18next.t('groupAdmin_access_solutions_direct');
          } else {
-            access.sAccessTitle += $i18next.t('groupAdmin_access_solutions_inherited');
+            access.sAccessTitle += i18next.t('groupAdmin_access_solutions_inherited');
          }
          access.sAccessLabel += "S";
       } else if (access.sCachedAccessSolutionsDate) {
          access.sAccessSolutionType = "future";
          if ((group_item) && (group_item.sAccessSolutionsDate)) {
             sFutureAccessLabel += "+";
-            sFutureAccessTitle += $i18next.t('groupAdmin_access_solutions_direct_future');
+            sFutureAccessTitle += i18next.t('groupAdmin_access_solutions_direct_future');
          } else {
-            sFutureAccessTitle += $i18next.t('groupAdmin_access_solutions_inherited_future');
+            sFutureAccessTitle += i18next.t('groupAdmin_access_solutions_inherited_future');
          }
          sFutureAccessLabel += "S";
          access.bHasFutureAccess = true;
@@ -1127,7 +1127,7 @@ var AccessManager = {
       if (SyncQueue.status != SyncQueue.statusIdle) {
          access.sAccessLabel += "?";
          AccessManager.wasDuringSync = true;
-         access.sAccessTitle = '['+$i18next.t('groupAdmin_access_waiting_sync')+'] '+access.sAccessTitle;
+         access.sAccessTitle = '['+i18next.t('groupAdmin_access_waiting_sync')+'] '+access.sAccessTitle;
       }
       return access;
    }
