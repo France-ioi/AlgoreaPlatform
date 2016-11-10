@@ -1,3 +1,56 @@
+* {
+  line-height: normal;
+}
+
+/* STRUCTURE GENERALE */
+.adminTreesControllers {
+  padding: 10px 10px 15px;
+}
+.adminAccessControllers {
+  display: flex;
+  flex-flow: row nowrap;
+  overflow: auto;
+  max-height: calc(100vh - 59px);
+  align-items: flex-start;
+  padding-bottom: 2em;
+}
+.adminTreesWrapper {
+  flex: 0 0 auto;
+  padding-left: 10px;
+}
+.adminTabs {
+  flex: 0 0 600px;
+  padding-right: 10px;
+}
+.adminTrees {
+  float: left;
+  margin-right: 10px;
+}
+.adminMainTree,
+.adminSecondaryTree {
+  float: left;
+}
+/* ARBRES DE SELECTION */
+.adminTreeTitle {
+  font-weight: bold;
+  padding-left: 5px;
+  line-height: 2;
+}
+.adminToggleTree {
+  background-color: transparent;
+  color: #2aa3ff;
+  float: right;
+  margin-right: 5px;
+  line-height: 2;
+}
+.adminToggleTree:active,
+.adminToggleTree:hover {
+  color: #2aa3ff;
+}
+.adminTree {
+  width: 300px;
+  overflow: auto;
+}
 .accessTitleCell, .accessCell, .accessItemCell {
    width:120px;
    height: 50px;
@@ -110,12 +163,14 @@
    text-align:center;
 }
 .loginCorner {
-   height: 75px;
-   width: 250px;
    position: absolute;
-   top: 20px;
-   right: 20px;
-   text-align:center;
+   top: 0;
+   right: 0;
+}
+.loginCorner .loginUserInfo {
+  display: inline-block;
+  margin-top: 20px;
+  vertical-align: top;
 }
 .loginFrame {
    width: 250px;
