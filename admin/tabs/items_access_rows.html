@@ -1,4 +1,4 @@
-<div>
+<div class="accessItemRow">
    <span class="accessItemCell">
       <b class="Preparation{{ item_item.child.sPreparationState }} accessTitle" uib-tooltip="{{item_item.child.strings[0].sTitle}}"><b ng-click="toggleItemExpanded();" style="cursor:pointer;" ng-show="hasChildren(item_item.child)">[<span ng-if="itemIsExpanded">-</span><span ng-if="!itemIsExpanded">+</span>]</b> {{item_item.child.strings[0].sTitle}}</b>
       <!--<span ng-controller="GenericDialogCtrl">
@@ -31,12 +31,12 @@
          </a>
    </span>
    </span>
-   <span ng-show="group_group != undefined" ng-include="templatesPrefix+'/admin/tabs/items_access_cell.html'" class="accessCell">
-   </span>
-   <span ng-repeat="group_group in group_group.child.children | manageableGroups" class="accessCell">
-      <span ng-include="templatesPrefix+'/admin/tabs/items_access_cell.html'"></span>
-   </span>
+   <div ng-show="group_group != undefined" ng-include="templatesPrefix+'/admin/tabs/items_access_cell.html'" class="accessCell">
+   </div>
+   <div ng-repeat="group_group in group_group.child.children | manageableGroups" class="accessCell">
+      <div ng-include="templatesPrefix+'/admin/tabs/items_access_cell.html'"></div>
+   </div>
 </div>
-<span ng-if="itemIsExpanded" ng-repeat="item_item in item_item.child.children" class="itemLevel">
-   <span ng-init="itemIsExpanded = false;" ng-include="templatesPrefix+'/admin/tabs/items_access_rows.html'"/>
-</span>
+<div ng-if="itemIsExpanded" ng-repeat="item_item in item_item.child.children" class="itemLevel">
+   <div ng-init="itemIsExpanded = false;" ng-include="templatesPrefix+'/admin/tabs/items_access_rows.html'"></div>
+</div>

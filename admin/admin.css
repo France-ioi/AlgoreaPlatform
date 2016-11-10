@@ -51,14 +51,30 @@
   width: 300px;
   overflow: auto;
 }
+/* ACCES */
+.access-wrapper {
+  white-space: nowrap;
+  max-width: calc(100vw - 40px);
+  overflow-x: auto;
+}
+.accessTitleRow {
+
+}
+.accessItemsRows {
+  max-height: calc(100vh - 258px);
+  overflow-y: auto;
+  min-width: fit-content;
+}
+.accessItemRow,
+.accessTitleRow {
+}
 .accessTitleCell, .accessCell, .accessItemCell {
    width:120px;
    height: 50px;
+   padding-right: 40px;
    border: solid black 1px;
    display: inline-block;
    vertical-align: top;
-   padding-right: 40px;
-   margin: auto;
 }
 
 .accessTitle{
