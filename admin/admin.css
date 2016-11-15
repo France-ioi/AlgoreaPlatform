@@ -69,12 +69,13 @@
 /* ACCESS TABLE */
 .access-wrapper {
   white-space: nowrap;
-  margin-top: 120px;
+  margin-top: 104px;
 }
 .accessItemsRows {
-  max-height: calc(100vh - 233px);
+  max-height: calc(100vh - 365px);
   overflow-y: auto;
-  min-width: fit-content;
+  width: fit-content;
+  border-bottom: 1px dotted #ccc;
 }
 .accessItemRow:hover {
   background-color: #eee;
@@ -129,7 +130,6 @@
 .accessCellChild .childNameWrapper {
   transform: rotate(-45deg) translate(52px, 44px);
   width: 90px;
-  text-transform: none;
   display: block;
 }
 .accessCellChild .childName {
@@ -147,31 +147,25 @@
 
 .itemLevel .accessItemCell, .itemLevel .accessCell {
   padding-left: 10px;
-  padding-right: 25px;
 }
 
 .itemLevel .itemLevel .accessItemCell, .itemLevel .itemLevel .accessCell {
   padding-left: 20px;
-  padding-right: 10px;
 }
 .itemLevel .itemLevel .itemLevel .accessItemCell,
 .itemLevel .itemLevel .itemLevel .accessCell {
   padding-left: 30px;
-  padding-right: 10px;
 }
 .itemLevel .itemLevel .itemLevel .itemLevel .accessItemCell,
 .itemLevel .itemLevel .itemLevel .itemLevel .accessCell {
   padding-left: 40px;
-  padding-right: 10px;
 }
 .itemLevel .itemLevel .itemLevel .itemLevel .itemLevel .accessItemCell,
 .itemLevel .itemLevel .itemLevel .itemLevel .itemLevel .accessCell {
   padding-left: 50px;
-  padding-right: 10px;
 }
 .itemLevel .accessItemCell, .itemLevel .accessCell {
   padding-left: 10px;
-  padding-right: 25px;
 }
 
 
@@ -233,7 +227,9 @@
   color: black;
 }
 
-
+.btn-sumary {
+  float: right;
+}
 
 /* LOGIN */
 .loginCentered {
