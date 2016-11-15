@@ -229,6 +229,9 @@
   color: black;
 }
 
+
+
+/* LOGIN */
 .loginCentered {
    height: 300px;
    width: 250px;
@@ -241,14 +244,22 @@
    text-align:center;
 }
 .loginCorner {
-   position: absolute;
-   top: 0;
-   right: 0;
+  height: 100px;
+  text-align: center;
 }
 .loginCorner .loginUserInfo {
-  display: inline-block;
-  margin-top: 20px;
+  display: block;
   vertical-align: top;
+  margin-top: 20px;
+}
+@media screen and (min-width: 400px) {
+  .loginCorner {
+   float: right;
+   height: 57px;
+  }
+  .loginCorner .loginUserInfo {
+   display: inline-block;
+  }
 }
 .loginFrame {
    width: 250px;
