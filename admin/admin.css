@@ -1,3 +1,6 @@
+body {
+  font-family: "Roboto", sans-serif;
+}
 * {
   line-height: normal;
 }
@@ -32,9 +35,26 @@
 }
 .adminTabs {
   -webkit-box-flex: 0;
-    -ms-flex: 0 0 600px;
-      flex: 0 0 600px;
+    -ms-flex: 1 0 600px;
+      flex: 1 0 600px;
   padding-right: 10px;
+}
+.nav-tabs>li>a {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 250ms;
+  outline: 0;
+}
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover  {
+  color: #82bf2b;
+}
+.tab-content {
+  background-color: #F7F7F9;
+  padding: 2em 160px 2em 2em;
 }
 .adminTrees {
   float: left;

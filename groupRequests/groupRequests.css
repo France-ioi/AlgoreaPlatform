@@ -2,25 +2,9 @@
 	margin: 10px;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
-	color: #480a2a;
 }
-
-.groupRequest .nav-tabs>li>a {
-	font-size: 14px;
-	font-weight: bold;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	transition: all 250ms;
-	outline: 0;
-}
-.groupRequest .nav-tabs>li.active>a,
-.groupRequest .nav-tabs>li.active>a:focus,
-.groupRequest .nav-tabs>li.active>a:hover  {
-	color: #D1D718;
-}
-
 .groupRequest-tabContent {
-	background-color: #edebed;
+	background-color: #F7F7F9;
 	padding: 2em;
 }
 .groupRequest-tabContent > div {
@@ -41,7 +25,7 @@
 	margin: 0 0 1em;
 	line-height: inherit;
 }
-.groupRequest .groupRequest-title span {
+.groupRequest .groupRequest-title .title-desc {
 	display: block;
 	font-size: 16px;
 	font-weight: normal;
@@ -64,6 +48,9 @@
 	line-height: 1.2em;
 	text-shadow: 1px 1px 1px #fff;
 }
+.groupRequest .table-hover>tbody>tr:hover {
+	background-color: #e8e8e8;
+}
 /* Search Groups */
 .groupRequest .search-groups-results {
 	border-collapse: collapse;
@@ -80,7 +67,7 @@
 	vertical-align: middle;
 }
 .groupRequest .search-groups-results tbody:hover td {
-	background-color: #f5f5f5;
+	background-color: #e8e8e8;
 }
 .groupRequest .search-groups-results .groupName {
 	font-weight: bold;
@@ -152,7 +139,7 @@
 	clear: both;
 }
 .groupRequest .list-block.list-groups li:hover {
-	background-color: #edebed;
+	background-color: #e8e8e8;
 }
 .groupRequest .list-block.list-groups a {
 	cursor: pointer;
@@ -173,5 +160,5 @@
 	padding: 3px 10px;
 }
 .groupRequest .history-list li.historyActive {
-	background-color: #edebed;
+	background-color: #e8e8e8;
 }

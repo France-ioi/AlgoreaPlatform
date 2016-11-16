@@ -14,19 +14,6 @@
    margin-right: 10px;
    margin-top: 42px;
 }
-.threadsContainer .nav-tabs>li>a {
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: all 250ms;
-  outline: 0;
-}
-.threadsContainer .nav-tabs>li.active>a,
-.threadsContainer .nav-tabs>li.active>a:focus,
-.threadsContainer .nav-tabs>li.active>a:hover {
-  color: #D1D718;
-}
 .threadsContainer .tab-content {
    padding: 2em;
    background-color: #F7F7F9;

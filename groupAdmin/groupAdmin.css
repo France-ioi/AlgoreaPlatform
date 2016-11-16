@@ -17,7 +17,6 @@ orange : #F29200;
 }
 .groupAdmin {
 	margin: 10px;
-	color: #480a2a;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
@@ -36,21 +35,9 @@ orange : #F29200;
 /*
 	Tabs
 */
-.groupAdmin .nav-tabs>li>a {
-	font-size: 14px;
-	font-weight: bold;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	transition: all 250ms;
-	outline: 0;
-}
-.groupAdmin .nav-tabs>li.active>a,
-.groupAdmin .nav-tabs>li.active>a:focus,
-.groupAdmin .nav-tabs>li.active>a:hover  {
-	color: #D1D718;
-}
+
 .groupAdmin-tabContent {
-	background-color: #edebed;
+	background-color: #F7F7F9;
 	padding: 2em;
 	position: relative;
 }
@@ -67,7 +54,7 @@ orange : #F29200;
 	font-weight: bold;
 	margin-bottom: 1em;
 }
-.groupAdmin .groupAdmin-title span {
+.groupAdmin .groupAdmin-title .title-desc {
 	display: block;
 	font-size: 16px;
 	font-weight: normal;
@@ -109,10 +96,7 @@ orange : #F29200;
 	top: 0;
 	right: 0;
 }
-.groupAdmin .form-control {
-	border-color: #a88996;
-	border-radius: 0;
-}
+
 .groupAdmin .form-control + .form-control {
 	margin-top: 1em;
 }
@@ -120,7 +104,7 @@ orange : #F29200;
 	display: none;
 }
 .groupAdmin .checkboxSwitch input.switch + label {
-	background-color: #480a2a;
+	background-color: #333;
 	width: 70px;
 	height: 30px;
 	border-radius: 15px;
@@ -137,8 +121,9 @@ orange : #F29200;
 	background-color: #e42c20;
 	transition: all 250ms;
 }
+
 .groupAdmin .checkboxSwitch input.switch:checked + label span {
-	background-color: #0FAA8B;
+	background-color: #82bf2b;
 	left: 45px;
 }
 
@@ -147,7 +132,7 @@ orange : #F29200;
 */
 .groupAdmin .list-block {
 	background-color: #fff;
-	border: 1px solid #a88996;
+	border: 1px solid #ccc;
 	line-height: 1.5em;
 	list-style: none;
 	margin-bottom: 2em;
@@ -212,19 +197,14 @@ orange : #F29200;
 }
 .groupAdmin .list-block.list-applicants {
 	max-height: 6em;
-	overflow: auto;
 	max-width: 580px;
 }
 
 /* Buttons */
-.groupAdmin .btn.btn-primary {
-	background-color: #480a2a;
-	border-color: #480a2a;
-}
+
 .groupAdmin .btn-icon {
 	width: 30px;
 	height: 30px;
-	font-size: 28px;
 	line-height: 1;
 	padding: 0;
 	display: inline-block;
@@ -233,6 +213,23 @@ orange : #F29200;
 	background-color: transparent;
 	vertical-align: middle;
 	transition: all 250ms;
+}
+.groupAdmin .btn-icon.btn-small {
+	width: 21px;
+	height: 21px;
+	font-size: 16px;
+}
+.groupAdmin .btn-icon.btn-wide {
+	width: 2.5em;
+}
+.material-icons.md-18 {
+	font-size: 18px;
+}
+.material-icons.md-36 {
+	font-size: 36px;
+}
+.groupAdmin .btn-icon i.material-icons {
+	color: #333;
 }
 .groupAdmin .btn-icon.btn-small {
 	width: 21px;
@@ -259,20 +256,16 @@ orange : #F29200;
 	background-image: url(images/petit-apercu-clic.png);
 }
 .groupAdmin .btn-icon.btn-small.btn-delete {
-	background: url(images/petit-supprimer.png) center center no-repeat;
+	/*background: url(images/petit-supprimer.png) center center no-repeat;*/
 }
-.groupAdmin .btn-icon.btn-small.btn-delete:active,
-.groupAdmin .btn-icon.btn-small.btn-delete:focus,
-.groupAdmin .btn-icon.btn-small.btn-delete:hover {
-	background-image: url(images/petit-supprimer-clic.png);
+.groupAdmin .btn-icon.btn-delete i.material-icons:active,
+.groupAdmin .btn-icon.btn-delete i.material-icons:focus,
+.groupAdmin .btn-icon.btn-delete i.material-icons:hover {
+	/*background-image: url(images/petit-supprimer-clic.png);*/
+	color: #e42c20;
 }
 .groupAdmin .btn-icon.btn-add {
-	background: url(images/ajouter.png) center no-repeat;
-}
-.groupAdmin .btn-icon.btn-add:active,
-.groupAdmin .btn-icon.btn-add:focus,
-.groupAdmin .btn-icon.btn-add:hover {
-	background-image: url(images/ajouter.png);
+	/*background: url(images/ajouter.png) center no-repeat;*/
 }
 .groupAdmin .btn-icon.btn-zoom-in {
 	background: url(images/vue-detaillee.png) center no-repeat;
@@ -304,21 +297,23 @@ orange : #F29200;
 	text-shadow: none;
 }
 .groupAdmin .group-delete {
-	color: #480a2a;
+	color: #333;
 	display: inline-block;
 	font-size: 16px;
 	font-weight: bold;
 	line-height: 30px;
-	padding-right: 40px;
 	cursor: pointer;
-	background: url(images/grand-supprimer-clic.png) center right no-repeat;
-	transition: all 500ms;
 }
 .groupAdmin .group-delete:hover {
 	text-decoration: none;
-	background-image: url(images/grand-supprimer.png);
 }
-
+.groupAdmin .group-delete i {
+	vertical-align: text-bottom;
+	transition: all 500ms;
+}
+.groupAdmin .group-delete:hover i {
+	color: #e42c20;
+}
 /*
 	Home
 */
@@ -463,11 +458,11 @@ orange : #F29200;
 }
 .groupAdmin .table-activity {
 	background-color: #fff;
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 }
 .groupAdmin .table-activity th,
 .groupAdmin .table-activity td {
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 }
 .groupAdmin .table-activity th {
 	font-weight: normal;
@@ -521,7 +516,7 @@ orange : #F29200;
 }
 .groupAdmin .table-progress td,
 .groupAdmin .table-progress th {
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 	padding: 3px;
 	background-color: #fff;
 	background-clip: padding-box;
@@ -560,7 +555,7 @@ orange : #F29200;
 	overflow: visible;
 	background-color: #fff;
 	height: auto;
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 	padding: 5px;
 	opacity: 0.9;
 	z-index: 1;
@@ -592,7 +587,7 @@ orange : #F29200;
 	text-transform: none;
 }
 .groupAdmin .table-progress.view-global th.name .user-info {
-	border-bottom: 1px solid #a88996;
+	border-bottom: 1px solid #000;
 	padding: 5px;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -826,7 +821,7 @@ orange : #F29200;
 .groupAdmin .table-administrators {
 	max-height: 200px;
 	overflow: auto;
-	border: 1px solid #a88996;
+	border: 1px solid #ccc;
 	margin-bottom: 2em;
 	background-color: #fff;
 }
