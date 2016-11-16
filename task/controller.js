@@ -128,7 +128,7 @@ angular.module('algorea')
          angular.forEach($scope.intervals, function(interval) {
             $interval.cancel(interval);
          });
-         scope.intervals = {};
+         $scope.intervals = {};
       }
    });
    $scope.$on('algorea.taskViewChange', function(event, toParams) {
