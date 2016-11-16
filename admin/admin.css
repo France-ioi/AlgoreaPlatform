@@ -72,8 +72,10 @@
   margin-top: 104px;
 }
 .accessItemsRows {
-  max-height: calc(100vh - 365px);
+  height: calc(100vh - 365px);
+  min-height: 197px;
   overflow-y: auto;
+  width: -moz-fit-content;
   width: fit-content;
   border-bottom: 1px dotted #ccc;
 }
@@ -145,29 +147,29 @@
 }
 
 
-.itemLevel .accessItemCell, .itemLevel .accessCell {
+.itemLevel .accessCellItem,
+.itemLevel .accessCell .accessButtons > div:first-child {
   padding-left: 10px;
 }
-
-.itemLevel .itemLevel .accessItemCell, .itemLevel .itemLevel .accessCell {
+.itemLevel .itemLevel .accessCellItem,
+.itemLevel .itemLevel .accessCell .accessButtons > div:first-child  {
   padding-left: 20px;
 }
-.itemLevel .itemLevel .itemLevel .accessItemCell,
-.itemLevel .itemLevel .itemLevel .accessCell {
+.itemLevel .itemLevel .itemLevel .accessCellItem,
+.itemLevel .itemLevel .itemLevel .accessCell .accessButtons > div:first-child {
   padding-left: 30px;
 }
-.itemLevel .itemLevel .itemLevel .itemLevel .accessItemCell,
-.itemLevel .itemLevel .itemLevel .itemLevel .accessCell {
+.itemLevel .itemLevel .itemLevel .itemLevel .accessCellItem,
+.itemLevel .itemLevel .itemLevel .itemLevel .accessCell .accessButtons > div:first-child {
   padding-left: 40px;
 }
-.itemLevel .itemLevel .itemLevel .itemLevel .itemLevel .accessItemCell,
-.itemLevel .itemLevel .itemLevel .itemLevel .itemLevel .accessCell {
+.itemLevel .itemLevel .itemLevel .itemLevel .itemLevel .accessCellItem,
+.itemLevel .itemLevel .itemLevel .itemLevel .itemLevel .accessCell .accessButtons > div:first-child {
   padding-left: 50px;
 }
-.itemLevel .accessItemCell, .itemLevel .accessCell {
-  padding-left: 10px;
+.accessCell .accessButtons > div:nth-child(2) {
+  text-align: right;
 }
-
 
 .accessCellItem .prepTile {}
 .accessCellItem .prepTile.prepValidation {
@@ -227,9 +229,6 @@
   color: black;
 }
 
-.btn-sumary {
-  float: right;
-}
 
 /* LOGIN */
 .loginCentered {

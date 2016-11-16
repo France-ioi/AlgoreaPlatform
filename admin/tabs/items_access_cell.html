@@ -1,18 +1,18 @@
 <div ng-init="computeAccessRights(group_group.child, item_item)">
-   <div ng-repeat="group_item in [getGroupItem(group_group.child.ID, item_item.child.ID)]" ng-controller="AccessDialogCtrl">
+   <div ng-repeat="group_item in [getGroupItem(group_group.child.ID, item_item.child.ID)]" ng-controller="AccessDialogCtrl" class="accessButtons">
       <div ng-repeat="access in [accessManager.dynComputeGroupItemAccess(group_group.child.ID, item_item.child.ID)]">
          <button type="button" ng-show="access != null" class="btn btn-xs" ng-class="{full: 'btn-success', partial: 'btn-warning', grayed: 'btn-info', none: 'btn-error'}[access.sAccessType]" ng-click="switchAccessMode(group_group.child.ID, item_item)" uib-tooltip="{{ access.sAccessTitle }}">{{ access.sAccessLabel }}</button>
-         <button type="button" ng-show="access == null" class="btn btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" ng-i18next="[title]admin_access_non_computed">?</button>
+         <button type="button" ng-show="access == null" class="btn btn-default btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" ng-i18next="[title]admin_access_non_computed">?</button>
       </div>
       <div>
          <button type="button" class="btn btn-default btn-xs btn-dialog" ng-click="showGenDialog(templatesPrefix+'/admin/tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" ng-i18next="[title]admin_access_edit">
             ...
          </button>
-         <button type="button" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-default btn-info" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" uib-tooltip="{{ group_item.sAccessReason }}">
+         <button type="button" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-default btn-dates" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" uib-tooltip="{{ group_item.sAccessReason }}">
             <i class="material-icons">chat_bubble</i>
          </button>
          <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" ng-i18next="[title]admin_no_access_removal"></span>
-         <button type="button" class="btn btn-default btn-xs btn-sumary" uib-popover-template="'access-cell-details.html'" popover-trigger="mouseenter" popover-placement="top">
+         <button type="button" class="btn btn-default btn-xs btn-sumary" uib-popover-template="'access-cell-details.html'"  popover-trigger="mouseenter" popover-trigger="'mouseenter'" popover-placement="top">
             <i class="material-icons">zoom_in</i>
          </button>
          <script type="text/ng-template" id="access-cell-details.html">
