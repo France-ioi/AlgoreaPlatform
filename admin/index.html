@@ -44,88 +44,72 @@
    </head>
    <body>
       <div ng-show="loginReady" ng-class="loginClass">
-         {{loginInnerHtml}}
+         <span class="loginUserInfo">{{loginInnerHtml}}</span>
          <iframe id="loginFrame" class="loginFrame" ng-src="{{loginModuleUrl}}"></iframe>
       </div>
       <div ng-hide="loginReady" class="loginCentered">
          <img src="../images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="admin_retrieving_login"></strong></p>
       </div>
       <div ng-controller="ItemsCtrl" ng-show="userLogged && loginReady">
-         <a href="#" class="btn btn-default" ng-click="selectModelName('items')" ng-class="{'items': 'btn-success'}[selectedModelName]"><span ng-i18next="item"></span> : <b>{{ item.strings[0].sTitle }}</b></a>
-         <a href="#" class="btn btn-default" ng-click="showItems = !showItems"><i class="glyphicon glyphicon-chevron-up" ng-show="showItems"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showItems"></i></a>
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <a href="#" class="btn btn-default" ng-click="selectModelName('groups')" ng-class="{'groups': 'btn-success'}[selectedModelName]"><span ng-i18next="group"></span> : <b>{{ group.sName }}</b></a>
-         <a href="#" class="btn btn-default" ng-click="showGroups = !showGroups"><i class="glyphicon glyphicon-chevron-up" ng-show="showGroups"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showGroups"></i></a>
-         <br/>
-         <table><tr>
-            <td ng-show="showItems" style="vertical-align:top">
-               <table>
-                  <tr>
-                     <td>
-                        <b ng-i18next="admin_items"></b>
-                        <span style="float:right">
-<!--
-                           <span ng-controller="ItemsSearchCtrl" style="display:inline-block">
-                              <a href="#" class="btn btn-xs" ng-click="open()">
-                                 <i class="icon-search"></i>
-                              </a>
-                              <div ng-include='"itemsSearchDialog.html"'></div>
-                           </span>
--->
-                           <a href="#" class="btn btn-xs" ng-click="twoColumnsItems = !twoColumnsItems" style="display:inline-block">
-                              <i ng-show="twoColumnsItems" class="glyphicon glyphicon-chevron-left"></i>
-                              <i ng-show="!twoColumnsItems" class="glyphicon glyphicon-chevron-right"></i>
-                           </a>
-                        </span>
-                     </td>
-                     <td ng-show="twoColumnsItems" ng-i18next="admin_items_move">
-                     </td>
-                  </tr>
-                  <tr>
-                     <td>
-                        <div id="treeItems" style="width:300px;overflow: visible;height:500px "></div>
-                     </td>
-                     <td ng-show="twoColumnsItems">
-                        <div id="treeItems2" style="width:300px;overflow: visible;height:500px"></div>
-                     </td>
-                  </tr>
-               </table>
-            </td>
-            <td ng-show="showGroups" style="vertical-align:top">
-               <table>
-                  <tr>
-                     <td>
-                        <b ng-i18next="admin_groups"></b>
-                        <span style="float:right">
-<!--
-                           <span ng-controller="GroupsSearchCtrl" style="display:inline-block">
-                              <a href="#" class="btn btn-xs" ng-click="open()">
-                                 <i class="icon-search"></i>
-                              </a>
-                              <div ng-include='"groupsSearchDialog.html"'></div>
-                           </span>
--->
-                           <a href="#" class="btn btn-xs" ng-click="twoColumnsGroups = !twoColumnsGroups" style="display:inline-block">
-                              <i ng-show="twoColumnsGroups" class="glyphicon glyphicon-chevron-left"></i>
-                              <i ng-show="!twoColumnsGroups" class="glyphicon glyphicon-chevron-right"></i>
-                           </a>
-                        </span>
-                     </td>
-                     <td ng-show="twoColumnsGroups" ng-i18next="admin_groups_move">
-                     </td>
-                  </tr>
-                  <tr>
-                     <td>
-                        <div id="treeGroups" style="width:300px;overflow: visible;height:500px "></div>
-                     </td>
-                     <td ng-show="twoColumnsGroups">
-                        <div id="treeGroups2" style="width:300px;overflow: visible;height:500px"></div>
-                     </td>
-                  </tr>
-               </table>
-            </td>
-            <td style="vertical-align:top">
-               <span  ng-show="selectedModelName == 'items'">
+         <div class="adminTreesControllers">
+            <div class="btn-group">
+               <button class="btn btn-default" ng-click="selectModelName('items')" ng-class="{'items': 'btn-success'}[selectedModelName]">Item : <b>{{ item.strings[0].sTitle }}</b></button>
+               <button class="btn btn-default" ng-click="showItems = !showItems"><i class="glyphicon glyphicon-chevron-up" ng-show="showItems"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showItems"></i></button>
+            </div>
+            <div class="btn-group">
+               <button href="#" class="btn btn-default" ng-click="selectModelName('groups')" ng-class="{'groups': 'btn-success'}[selectedModelName]">Groupe : <b>{{ group.sName }}</b></button>
+               <button class="btn btn-default" ng-click="showGroups = !showGroups"><i class="glyphicon glyphicon-chevron-up" ng-show="showGroups"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showGroups"></i></button>
+            </div>
+         </div>
+         <div class="adminAccessControllers">
+            <div class="adminTreesWrapper">
+               <div ng-show="showItems" class="adminTrees adminTreesItems">
+                  <div class="adminMainTree">
+                     <span class="adminTreeTitle">Items :</span>
+      <!--
+                     <span ng-controller="ItemsSearchCtrl" style="display:inline-block">
+                        <a href="#" class="btn btn-xs" ng-click="open()">
+                           <i class="icon-search"></i>
+                        </a>
+                        <div ng-include='"itemsSearchDialog.html"'></div>
+                     </span>
+      -->
+                     <button class="btn btn-xs adminToggleTree" ng-click="twoColumnsItems = !twoColumnsItems">
+                        <i ng-show="twoColumnsItems" class="glyphicon glyphicon-chevron-left"></i>
+                        <i ng-show="!twoColumnsItems" class="glyphicon glyphicon-chevron-right"></i>
+                     </button>
+                     <div id="treeItems" class="adminTree"></div>
+                  </div>
+                  <div ng-show="twoColumnsItems" class="adminSecondaryTree">
+                     <span class="adminTreeTitle" ng-i18next="admin_items_move"></span>
+                     <div id="treeItems2" class="adminTree"></div>
+                  </div>
+               </div>
+               <div ng-show="showGroups" class="adminTrees adminTreesGroups">
+                  <div class="adminMainTree">
+                     <span class="adminTreeTitle">Groupes :</span>
+      <!--
+                     <span ng-controller="GroupsSearchCtrl" style="display:inline-block">
+                        <a href="#" class="btn btn-xs" ng-click="open()">
+                           <i class="icon-search"></i>
+                        </a>
+                        <div ng-include='"groupsSearchDialog.html"'></div>
+                     </span>
+      -->
+                     <button class="btn btn-xs adminToggleTree" ng-click="twoColumnsGroups = !twoColumnsGroups" style="display:inline-block">
+                        <i ng-show="twoColumnsGroups" class="glyphicon glyphicon-chevron-left"></i>
+                        <i ng-show="!twoColumnsGroups" class="glyphicon glyphicon-chevron-right"></i>
+                     </button>
+                     <div id="treeGroups" class="adminTree"></div>
+                  </div>
+                  <div class="adminSecondaryTree" ng-show="twoColumnsGroups">
+                     <span class="adminTreeTitle" ng-i18next="admin_groups_move"></span>
+                     <div id="treeGroups2" class="adminTree"></div>
+                  </div>
+               </div>
+            </div>
+            <div class="adminTabs">
+               <div ng-show="selectedModelName == 'items'">
                   <uib-tabset>
                      <uib-tab heading="{{'admin_item_settings' | i18next}}"><div ng-include="templatesPrefix+'/admin/tabs/items_params.html'"></div></uib-tab>
                      <uib-tab heading="{{'admin_texts' | i18next}}" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_texts.html'"></div></uib-tab>
@@ -135,17 +119,17 @@
                      <uib-tab heading="{{'admin_summary' | i18next}}" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_progression.html'"></div></uib-tab>
                      <uib-tab heading="{{'admin_stats' | i18next}}" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO</uib-tab>
                   </uib-tabset>
-               </span>
-               <span ng-show="selectedModelName == 'groups'">
+               </div>
+               <div ng-show="selectedModelName == 'groups'">
                   <uib-tabset>
                      <uib-tab heading="{{'admin_group_settings' | i18next}}"><div ng-include="templatesPrefix+'/admin/tabs/groups_params.html'"></div></uib-tab>
                      <!--<tab ng-show="user" heading="Utilisateur associé"><div ng-include='"tabs/users_params.html"'></div></tab>-->
                      <uib-tab heading="{{'admin_access' | i18next}}"><div ng-include="templatesPrefix+'/admin/tabs/items_access.html'"></div></uib-tab>
                      <uib-tab heading="{{'admin_summary' | i18next}}" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_progression.html'"></div></uib-tab>
                   </uib-tabset>
-               </span>
-            </td>
-         </tr></table>
+               </div>
+            </div>
+         </div>
       </div>
          <script>
   window.i18next.use(window.i18nextXHRBackend);
@@ -161,7 +145,6 @@
     }
   });
   window.i18next.on('initialized', function (options) {
-    console.error('test');
     window.i18nextOptions = options;
     angular.bootstrap(document, ['algorea']);
   });
