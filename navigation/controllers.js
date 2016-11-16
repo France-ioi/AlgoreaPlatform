@@ -300,6 +300,12 @@ angular.module('algorea')
                $scope.leftLink = {sref: pathService.getSrefFunction(basePath, $scope.pathParams.path.length-1, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: $scope.pathParams.path.length-1, selr: null, viewr: null}};
             }
          }
+         // setting map link. Some additional logic could be added here
+         if (this.pathParams.parentItemID > 0) {// for some forgotten logic, value is -2 when there is no parent item
+            $scope.hasMap = true;
+         } else {
+            $scope.hasMap = false;
+         }
       }
       $scope.goLeftLink = function() {
          if ($scope.leftLink) {
