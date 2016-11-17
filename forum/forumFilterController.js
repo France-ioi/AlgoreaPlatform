@@ -57,7 +57,7 @@ angular.module('algorea')
    $scope.newFilter = function() {
       var newFilter = ModelsManager.createRecord('filters');
       ModelsManager.insertRecord('filters', newFilter);
-      newFilter.idUser = $scope.myUserID;
+      newFilter.idUser = SyncQueue.requests.loginData.ID;
       newFilter.sName = "Nouveau filtre";
       $scope.selectFilter(newFilter.ID);
    };
@@ -109,7 +109,7 @@ angular.module('algorea')
          var filter = ModelsManager.createRecord('filters');
          filter.bSelected = true;
          filter.sName = "Filtre par défaut";
-         filter.idUser = $scope.myUserID;
+         filter.idUser = SyncQueue.requests.loginData.ID;
          $scope.$parent.currentFilter = filter;
          $scope.filters = [filter];
       } else {

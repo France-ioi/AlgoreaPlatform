@@ -17,7 +17,7 @@ angular.module('algorea')
    };
    $scope.currentGlobalFilter = $scope.globalFilters.all;
    $scope.init = function() {
-      $scope.myUserID = $rootScope.myUserID;
+      $scope.myUserID = SyncQueue.requests.loginData.ID;
       $scope.threads = ModelsManager.getRecords('threads');
       $scope.loading = false;
       $timeout($scope.$apply);
