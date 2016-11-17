@@ -166,6 +166,7 @@
 }
 .threadInForum .taskInThread {
    margin: -1px 2em 1em;
+   padding-bottom: 1px;
 }
 .threadInTask .threadEvent {
    margin-top: 20px;
@@ -174,7 +175,6 @@
    border: 1px solid #ddd;
    border-top-width: 5px;
    border-radius: 3px;
-   padding: 10px 10px 20px;
    margin-top: 20px;
 }
 .threadEventContentDefault {
@@ -186,8 +186,53 @@
 .threadEventContent-fail {
    border-top-color: #d9534f;
 }
+
+/* message content */
+.eventInfo {
+   font-size: 16px;
+   padding: 5px 10px;
+   background: #efefef;
+}
+.eventBody {
+   padding: 10px;
+}
+.eventBodyContent {
+   white-space: pre-wrap;
+}
 .taskInThread {
    border: 1px solid #ddd;
    border-top-color: #fff;
    margin: -1px auto 0;
+}
+.threadAnswer {
+   margin: 2em;
+   padding: 2em;
+   border: 1px solid #ddd;
+   background: #F7F7F9;
+   border-radius: 3px;
+}
+.threadAnswer label {
+   font-size: 28px;
+   font-weight: normal;
+}
+.threadAnswer button {
+   margin-top: 10px;
+}
+.inThreadTaskTrial h3   {
+   font-size: 36px;
+   padding: 10px 10px 10px 36px;
+   background: #2aa3ff;
+   text-transform: uppercase;
+   color: #fff;
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+}
+.threadTitle {
+   font-size: 36px;
+   background: #e8e8e8;
+   padding: 10px 10px 10px 1em;
+   margin-top: 0;
+   color: #0f4a6d;
+}
+.threadTitleLabel {
+   font-size: 18px;
 }
