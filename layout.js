@@ -68,12 +68,9 @@ function affixMeDirective ($window, $timeout) {
 }
 angular.module('algorea').directive('affixMe', affixMeDirective);
 
-console.error('debug0');
-
 // More global menu
 angular.module('algorea')
    .factory('layoutService', ['$rootScope', function ($rootScope) {
-    console.error('debug1');
       function reset () {
         $rootScope.affix = 'toolbar';
         $rootScope.navOverlay = false;
@@ -468,6 +465,3 @@ angular.module('algorea')
     $interval($scope.layout.refreshSizes, 1000);
     $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
 }]);
-
-
-console.error('debug00');
