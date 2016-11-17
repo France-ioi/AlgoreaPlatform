@@ -155,8 +155,8 @@
 					<div class="progression-type-select">
 						<span class="pull-left" ng-i18next="groupAdmin_visualization_select"></span>
 						<div class="inline-block">
-							<label><input type="radio" ng-model="formValues.progressionType" value="chronological" ng-i18next="groupAdmin_chronological"></label><br>
-							<label><input type="radio" ng-model="formValues.progressionType" value="collective" ng-i18next="groupAdmin_collective"></label>
+							<label><input type="radio" ng-model="formValues.progressionType" value="chronological">{{'groupAdmin_chronological' | i18next}}</label><br>
+							<label><input type="radio" ng-model="formValues.progressionType" value="collective">{{'groupAdmin_collective' | i18next}}</label>
 						</div>
 					</div>
 					<div>
@@ -239,7 +239,7 @@
 						<table class="table-progress table-head" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 							<thead>
 								<tr>
-									<th class="fixed-width step-name" ng-i18next="groupAdmin_step_name"></th>
+									<th class="fixed-width step-name" ng-i18next="groupAdmin_chapter_name"></th>
 									<th class="fixed-width step-descr" ng-if="formValues.showDescription" ng-i18next="description"></th>
 									<th ng-repeat="child in group.children | confirmed" ng-if="!formValues.detailedView" class="text-center name" uib-tooltip="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})" tooltip-placement="top-right"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
 									<th ng-repeat="child in group.children | confirmed" ng-if="formValues.detailedView" class="text-center name"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
