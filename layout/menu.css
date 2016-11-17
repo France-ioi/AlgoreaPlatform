@@ -2,7 +2,7 @@
    display: -webkit-flex;
    display: flex;
    flex-flow: row wrap;
-   min-height:75px;
+   min-height: 45px;
    font-family: 'Roboto', sans-serif;
    font-size:17.5pt;
    justify-content: center;
