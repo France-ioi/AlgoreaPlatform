@@ -157,7 +157,7 @@
                </div>
             </div>
             <div>
-               <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="[html]groupRequests_title_history"></h2>
+               <h2 class="groupRequest-title" ng-hide="loading"><span ng-i18next="groupRequests_title_history"></span> <span ng-i18next="groupRequests_subtitle_history"></span></h2>
 
                <ul ng-if="!loading" class="history-list list list-block">
                   <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}"  ng-if="mygroupgroup.parent.sType != 'RootSelf'">
