@@ -154,4 +154,40 @@
 .form-group {
    position: relative;
 }
+
+/* THREAD CONTENT */
 .inTaskThreadForm {}
+.threadInTask .taskInThread,
+.threadInTask .threadEvent {
+   width: 802px;
+}
+.threadInForum .threadEvent {
+   margin: 1em 2em 0;
+}
+.threadInForum .taskInThread {
+   margin: -1px 2em 1em;
+}
+.threadInTask .threadEvent {
+   margin-top: 20px;
+}
+.threadEventContent {
+   border: 1px solid #ddd;
+   border-top-width: 5px;
+   border-radius: 3px;
+   padding: 10px 10px 20px;
+   margin-top: 20px;
+}
+.threadEventContentDefault {
+   border-top-color: #777;
+}
+.threadEventContent-success {
+   border-top-color: #5cb85c;
+}
+.threadEventContent-fail {
+   border-top-color: #d9534f;
+}
+.taskInThread {
+   border: 1px solid #ddd;
+   border-top-color: #fff;
+   margin: -1px auto 0;
+}
