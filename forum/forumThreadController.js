@@ -28,7 +28,6 @@ angular.module('algorea')
    }
    $scope.newMessage = null;
    $scope.newMessageInserted = false;
-   //$scope.myUserID = null;
    $scope.answers = [];
    $scope.events = [];
    $scope.canValidate = false;
@@ -37,7 +36,7 @@ angular.module('algorea')
    $scope.createEmptyNewMessage = function() {
       $scope.newMessage = ModelsManager.createRecord('messages');
       $scope.newMessage.idThread = $scope.thread.ID;
-      $scope.newMessage.idUser = $scope.myUserID;
+      $scope.newMessage.idUser = SyncQueue.requests.loginData.ID;
       $scope.newMessage.sLogin = $scope.myLogin;
       $scope.newMessage.bPublished = false;
       $scope.newMessage.sSubmissionDate = false;
@@ -52,9 +51,9 @@ angular.module('algorea')
       angular.forEach($scope.thread.user_thread, function(found_user_thread) {
          $scope.user_thread = found_user_thread;
       });
-      if (!$scope.user_thread || $scope.user_thread.idUser != $scope.myUserID) {
+      if (!$scope.user_thread || $scope.user_thread.idUser != SyncQueue.requests.loginData.ID) {
          $scope.user_thread = ModelsManager.createRecord('users_threads');
-         $scope.user_thread.idUser = $scope.myUserID;
+         $scope.user_thread.idUser = SyncQueue.requests.loginData.ID;
          $scope.user_thread.idThread = $scope.thread.ID;
          ModelsManager.insertRecord('users_threads', $scope.user_thread);
       }
@@ -75,9 +74,9 @@ angular.module('algorea')
          if (!thread) {
             return;
          }
-         $scope.ownThread = ($scope.myUserID == thread.idUserCreated);
+         $scope.ownThread = (SyncQueue.requests.loginData.ID == thread.idUserCreated);
          angular.forEach(thread.messages, function(message) {
-            if (message.idUser == $scope.myUserID && message.sSubmissionDate === null) {
+            if (message.idUser == SyncQueue.requests.loginData.ID && message.sSubmissionDate === null) {
                $scope.newMessage = message;
                $scope.newMessageInserted = true;
             }
@@ -90,7 +89,7 @@ angular.module('algorea')
             if (!$scope.item.ID) {
                $scope.item = ModelsManager.getRecord('items', $scope.thread.idItem);
             }
-            $scope.user_item = itemService.getUserItem($scope.item, $rootScope.myUserID);
+            $scope.user_item = itemService.getUserItem($scope.item);
             $scope.other_user_item = itemService.getUserItem($scope.item, thread.idUserCreated);
             var typeStr = itemService.getItemTypeStr($scope.item);
             $scope.itemStr = typeStr+' : '+($scope.item.strings[0] ? $scope.item.strings[0].sTitle : '');
@@ -165,7 +164,7 @@ angular.module('algorea')
       $scope.newThread = true;
       itemService.onNewLoad(function() {
          var newThread = ModelsManager.createRecord('threads');
-         newThread.idUserCreated = $scope.myUserID;
+         newThread.idUserCreated = SyncQueue.requests.loginData.ID;
          if (item) {
             newThread.idItem = item.ID;
             newThread.sTitle = item.strings[0].sTitle;
@@ -190,7 +189,7 @@ angular.module('algorea')
    function lookupThread() {
       var result = null;
       angular.forEach($scope.item.threads, function(thread) {
-         if (thread.idUserCreated == $scope.myUserID) {
+         if (thread.idUserCreated == SyncQueue.requests.loginData.ID) {
             result = thread;
          }
       });
