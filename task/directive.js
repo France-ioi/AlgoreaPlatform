@@ -219,6 +219,7 @@ angular.module('algorea')
                }
             }
             if (metaData.autoHeight) {
+               scope.taskIframe.css('height', '');
                elem.addClass('task-auto-height');
             } else {
                elem.removeClass('task-auto-height');
