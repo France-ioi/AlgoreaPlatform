@@ -387,6 +387,7 @@ orange : #F29200;
 .tab-members .action-col .access-code {
 	font-size: 16px;
 	font-family: 'DejaVu Sans Mono', Courier, monospace;
+	width: 130px;
 }
 .tab-members .action-col .bloc-inscription {
 	margin-bottom: 2em;
