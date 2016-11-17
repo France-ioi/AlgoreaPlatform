@@ -92,7 +92,7 @@ body {
   margin-top: 104px;
 }
 .accessItemsRows {
-  height: calc(100vh - 365px);
+  max-height: calc(100vh - 365px);
   min-height: 197px;
   overflow-y: auto;
   width: -moz-fit-content;
