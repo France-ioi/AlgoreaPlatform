@@ -652,7 +652,7 @@ $viewsModels = array(
          // ),
          "accessibleWrite" => array(
             "joins" => array("left_users_items", "threads"),
-            "condition"  => "((`[PREFIX]threads`.`sType` = 'General' or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser) or (`[PREFIX]left_users_items`.`ID` IS NOT NULL AND `[PREFIX]left_users_items`.`idUser` = :[PREFIX_FIELD]idUser and `[PREFIX]left_users_items`.`bValidated` = 1) and `[PREFIX]messages`.`idUser` = :[PREFIX_FIELD]idUser)",
+            "condition"  => "((`[PREFIX]threads`.`sType` = 'General' or `[PREFIX]threads`.`sType` = 'Bug' or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser) or (`[PREFIX]left_users_items`.`ID` IS NOT NULL AND `[PREFIX]left_users_items`.`idUser` = :[PREFIX_FIELD]idUser and `[PREFIX]left_users_items`.`bValidated` = 1) and `[PREFIX]messages`.`idUser` = :[PREFIX_FIELD]idUser)",
          ),
          // "accessibleGeneralOrMineRead" => array(
          //    "joins" => array("threads", "users"),
@@ -690,7 +690,7 @@ $viewsModels = array(
             "condition"  => '((`[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedGrayedAccess` = 1 OR `[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
          "accessibleGeneralOrMineRead" => array(
-            "condition"  => "(`[PREFIX]threads`.`sType` = 'General' or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
+            "condition"  => "(`[PREFIX]threads`.`sType` = 'General' or `[PREFIX]threads`.`sType` = 'Bug' or `[PREFIX]threads`.`idUserCreated` = :[PREFIX_FIELD]idUser)",
          ),
          "groupDescendants" => array(
             "joins" => array("selfUserDescendants", "selfGroupDescendants"),
