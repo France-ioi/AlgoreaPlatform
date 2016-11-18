@@ -139,4 +139,7 @@
          <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
       </div>
    </div>
+   <div ng-if="!inTask" class="backButton">
+      <button ng-click="goToForum();" ng-i18next="forum_back"></button>
+   </div>
 </div>
