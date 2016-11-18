@@ -248,6 +248,7 @@
     "forum_get_help": "Ask for help",
     "forum_general": "General",
     "forum_loading": "Loading...",
+    "forum_back": "Back to forum",
 
     "groupRequests_myaccount_desc": "In this tab, you will soon be able to modify your personal profile and your login information.",
     "groupRequests_member_no_group": "You currently don't belong to any group.",

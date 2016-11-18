@@ -248,6 +248,7 @@
     "forum_get_help": "Se faire aider",
     "forum_general": "Général",
     "forum_loading": "Chargement...",
+    "forum_back": "Retour au forum",
 
     "groupRequests_myaccount_desc": "Dans cet onglet, vous pourrez bientôt modifier vos informations personnelles et vos informations de connexion.",
     "groupRequests_member_no_group": "Vous ne faites actuellement partie d'aucun groupe.",

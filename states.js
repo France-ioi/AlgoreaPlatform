@@ -135,6 +135,20 @@ angular.module('algorea')
                    template: '',
                 },
              },
+          }).state("newThreadType", {
+            url: "/forum/thread/new/:sType",
+            views: {
+               'left': {
+                   template: '',
+                },
+                'right': {
+                   templateUrl: templatesPrefix+'forum/thread.html',
+                   controller: 'forumThreadController',
+                },
+                'breadcrumbs': {
+                   template: '',
+                },
+             },
           }).state("thread", {
             url: "/forum/thread/:idThread",
             views: {
