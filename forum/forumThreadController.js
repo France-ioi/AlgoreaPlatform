@@ -159,7 +159,7 @@ angular.module('algorea')
          itemService.unsyncThread($scope.thread.ID);
       }
    });
-   function startNewThread(item) {
+   function startNewThread(item, sType) {
       $scope.ownThread = true;
       $scope.newThread = true;
       itemService.onNewLoad(function() {
@@ -176,6 +176,8 @@ angular.module('algorea')
             $scope.events = $scope.answers;
             $scope.hasTask = true;
             $scope.taskLoading = false;
+         } else if (sType) {
+            newThread.sType = sType;
          }
          newThread.sLastActivityDate = new Date();
          $scope.thread = newThread;
@@ -206,7 +208,9 @@ angular.module('algorea')
          }
       } else {
          if ($state.current.name == 'newThread') {
-            startNewThread();
+            startNewThread(null, 'Help');
+         } else if ($state.current.name == 'newThreadType') {
+            startNewThread(null, $state.params.sType);
          } else {
             if ($scope.inPopup) {
                if ($scope.thread) {

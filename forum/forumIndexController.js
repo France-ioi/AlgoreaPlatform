@@ -47,8 +47,11 @@ angular.module('algorea')
    $scope.goToUser = function(userID) {
       console.log('goToUser('+userID+');');
    };
-   $scope.newThread = function() {
-      $state.go('newThread');
+   $scope.newThread = function(sType) {
+      if (!sType) {
+         sType = 'Help';
+      }
+      $state.go('newThreadType', {sType: sType});
    };
 }]);
 
