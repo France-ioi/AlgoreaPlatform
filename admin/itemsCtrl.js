@@ -655,7 +655,6 @@ angular.module('algorea')
             parentFieldName: "parent",
             childFieldName: "child",
             displayUnused: false,
-            staticData: true,
             isObjectRoot: function(object) {
                return (object.sType == "Root");
             },
