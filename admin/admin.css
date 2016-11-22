@@ -10,22 +10,22 @@ body {
 }
 
 /* STRUCTURE GENERALE */
+.adminContainer {
+  padding-top: 20px;
+}
 .adminTreesControllers {
   padding: 10px 10px 15px;
 }
-.adminAccessControllers {
+.adminContainerTabContent {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
    -ms-flex-flow: row nowrap;
     flex-flow: row nowrap;
-  overflow: auto;
-  max-height: calc(100vh - 59px);
   -webkit-box-align: start;
     -ms-flex-align: start;
       align-items: flex-start;
   padding-bottom: 2em;
-  min-height: calc(100vh - 59px);
 }
 .adminTreesWrapper {
   -webkit-box-flex: 0;
@@ -54,7 +54,7 @@ body {
 }
 .tab-content {
   background-color: #F7F7F9;
-  padding: 2em 160px 2em 2em;
+  padding: 2em 160px 0 1em;
 }
 .adminTrees {
   float: left;
@@ -92,7 +92,7 @@ body {
   margin-top: 104px;
 }
 .accessItemsRows {
-  max-height: calc(100vh - 365px);
+  max-height: calc(100vh - 172px);
   min-height: 197px;
   overflow-y: auto;
   width: -moz-fit-content;
