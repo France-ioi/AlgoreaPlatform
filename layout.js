@@ -238,27 +238,15 @@ angular.module('algorea')
       },
       closeMenu: function() {
          $scope.layout.menuOpen = false;
-         if ($(window).width() < 1100) {
-            if ($('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
-         } else {
-            if (!$('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
-         }
+          if (!$('#headerContainer').hasClass('menu-toggled')) {
+             $scope.layout.toggleMenu();
+          }
          $scope.layout.syncBreadcrumbs();
       },
       openMenu: function() {
          $scope.layout.menuOpen = true;
-         if ($(window).width() < 1100) {
-            if (!$('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
-         } else {
-            if ($('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
+         if ($('#headerContainer').hasClass('menu-toggled')) {
+           $scope.layout.toggleMenu();
          }
          $scope.layout.syncBreadcrumbs();
       },
