@@ -93,6 +93,8 @@ angular.module('algorea')
          Validation: "Validation",
          Application: "Application"
       };
+      $scope.longCategoryNames = models.items_items.fields.sCategory.values;
+      $scope.longValidationTypesNames = models.items.fields.sValidationType.values;
       $scope.smallCategoryNames = { // TODO : should not be needed anymore
          Undefined: "I",
          Challenge: "Ch",
