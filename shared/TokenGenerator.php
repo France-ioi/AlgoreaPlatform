@@ -39,15 +39,12 @@ class TokenGenerator
    public function encodeJWS($params)
    {
       $params['date'] = date('d-m-Y');
-      $jws = JWSFactory::createJWS($params);
-      $signer = SignerFactory::createSigner(['RS512']);
-      $signer->addSignature(
-         $jws,
+      $jws = JWSFactory::createJWSToCompactJSON(
+         $params,
          $this->key,
-         ['alg' => 'RS512']
+         ['alg'  => 'RS512']
       );
-      return $jws->toCompactJSON(0);
-      //return $jws;
+      return $jws;
    }
 
    public function encodeJWE($params, $useKey2 = false)
