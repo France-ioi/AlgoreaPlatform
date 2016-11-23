@@ -80,6 +80,59 @@ function createTempUser($db) {
    echo json_encode(array('result' => true, 'sLogin' => $sLogin, 'ID' => $userId, 'loginData' => $_SESSION['login']));
 }
 
+function addUserToGroupHierarchy($idGroupSelf, $groupHierarchy, $role) {
+   global $db;
+   if ($role != 'member') return;
+   $previousGroupId = null;
+   $launchTriggers = false;
+   foreach($groupHierarchy as $groupName) {
+      $groupId = null;
+      if (!$previousGroupId) {
+         $stmt = $db->prepare('select ID from groups where sName = :groupName;');
+         $stmt->execute(['groupName' => $groupName]);
+         $groupId = $stmt->fetchColumn();
+      } else {
+         $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sName = :groupName and groups_groups.idGroupParent = :previousGroupId;');
+         $stmt->execute(['groupName' => $groupName, 'previousGroupId' => $previousGroupId]);
+         $groupId = $stmt->fetchColumn();
+      }
+      if (!$groupId) {
+         $launchTriggers = true;
+         $groupId = getRandomID();
+         $stmt = $db->prepare('insert into groups (ID, sName, sDateCreated) values (:ID, :sName, NOW());');
+         $stmt->execute(['ID' => $groupId, 'sName' => $groupName]);
+         if ($previousGroupId) {
+            $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+            $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $groupId]);
+         }
+      }
+      $previousGroupId = $groupId;
+   }
+   if (!$previousGroupId) return;
+   $stmt = $db->prepare('select groups_groups.ID from groups_groups where groups_groups.idGroupChild = :idGroupSelf and groups_groups.idGroupParent = :previousGroupId;');
+   $stmt->execute(['idGroupSelf' => $idGroupSelf, 'previousGroupId' => $previousGroupId]);
+   $groupGroupId = $stmt->fetchColumn();
+   if (!$groupGroupId) {
+      $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+      $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $idGroupSelf]);
+      $launchTriggers = true;
+   }
+   if ($launchTriggers) {
+      Listeners::createNewAncestors($db, "groups", "Group");
+   }
+
+}
+
+function handleBadges($idUser, $idGroupSelf, $aBadges) {
+   foreach($aBadges as $badge) {
+      if (substr($badge, 0, 9) === 'groups://') {
+         $splitGroups = explode('/', substr($badge, 9));
+         $role = array_pop($splitGroups);
+         addUserToGroupHierarchy($idGroupSelf, $splitGroups, $role);
+      }
+   }
+}
+
 if ($action == 'login') {
   // user has logged through login platform, we receive the token here:
   // we fill the session and, if not already creted, create a new user
@@ -102,18 +155,39 @@ if ($action == 'login') {
    if(! $stm->rowCount()) {
       list($userAdminGroupId, $userSelfGroupId) = createGroupsFromLogin($db, $params['sLogin']);
       $userId = getRandomID();
-      $query = "insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`) values ('$userId', '".$params['idUser']."', '".$params['sLogin']."', '0', NOW(), $userSelfGroupId, $userAdminGroupId);";
-      $db->exec($query);
+      $stmt = $db->prepare("insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`) values (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName);");
+      $stmt->execute([
+         'ID' => $userId,
+         'idUser' => $params['idUser'],
+         'sLogin' => $params['sLogin'],
+         'userAdminGroupId' => $userAdminGroupId,
+         'userSelfGroupId' => $userSelfGroupId,
+         'sEmail' => (isset($params['sEmail']) ? $params['sEmail'] : null),
+         'sFirstName' => (isset($params['sFirstName']) ? $params['sFirstName'] : null),
+         'sLastName' => (isset($params['sLastName']) ? $params['sLastName'] : null)
+      ]);
       $_SESSION['login']['ID'] = $userId;
       $_SESSION['login']['idGroupSelf'] = $userSelfGroupId;
       $_SESSION['login']['idGroupOwned'] = $userAdminGroupId;
       $_SESSION['login']['bIsAdmin'] = false;
    } else {
       $res = $stm->fetch();
+      if (isset($params['sEmail']) || isset($params['sFirstName']) || isset($params['sLastName'])) {
+         $stmt = $db->prepare("update `users` set `sEmail` = :sEmail, `sFirstName` = :sFirstName, `sLastName` = :sLastName where ID = :ID;");
+         $stmt->execute([
+            'ID' => $res['ID'],
+            'sEmail' => (isset($params['sEmail']) ? $params['sEmail'] : null),
+            'sFirstName' => (isset($params['sFirstName']) ? $params['sFirstName'] : null),
+            'sLastName' => (isset($params['sLastName']) ? $params['sLastName'] : null)
+         ]);
+      }
       $_SESSION['login']['ID'] = $res['ID'];
       $_SESSION['login']['idGroupSelf'] = $res['idGroupSelf'];
       $_SESSION['login']['idGroupOwned'] = $res['idGroupOwned'];
       $_SESSION['login']['bIsAdmin'] = $res['bIsAdmin'];
+   }
+   if (isset($params['aBadges'])) {
+      handleBadges($_SESSION['login']['ID'], $_SESSION['login']['idGroupSelf'], $params['aBadges']);
    }
    echo json_encode(array('result' => true, 'sLogin' => $params['sLogin'], 'ID' => $_SESSION['login']['ID'], 'loginData' => $_SESSION['login']));
 } else if ($action == 'notLogged') {

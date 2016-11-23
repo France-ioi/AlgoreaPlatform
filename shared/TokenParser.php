@@ -38,12 +38,14 @@ class TokenParser
     */
    public function decodeJWS($tokenString)
    {
-      $result = Loader::load($tokenString);
-      $verifier = VerifierFactory::createVerifier(['RS512']);
-      $valid_signature = $verifier->verifyWithKey($result, $this->key);
-      if (false === $valid_signature) {
-         throw new Exception('Signature cannot be validated, please check your SSL keys');
-      }
+      $loader = new Loader();
+      $signature_index = null;
+      $result = $loader->loadAndVerifySignatureUsingKey(
+         $tokenString,
+         $this->key,
+         ['RS512'],
+         $signature_index
+      );
       $datetime = new DateTime();
       $datetime->modify('+1 day');
       $tomorrow = $datetime->format('d-m-Y');
