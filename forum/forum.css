@@ -157,25 +157,31 @@
 
 /* THREAD CONTENT */
 .inTaskThreadForm {}
-.threadInTask .taskInThread,
-.threadInTask .threadEvent {
+.threadInForum .threadMessages {
+   padding: 1em 2em 0;
+}
+.threadEvent,
+.taskInThread {
    width: 802px;
 }
-.threadInForum .threadEvent {
-   margin: 1em 2em 0;
+.threadEvent {
+   margin-top: 20px;
 }
-.threadInForum .taskInThread {
-   margin: -1px 2em 1em;
+.taskInThread {
+   margin-top: -1px;
    padding-bottom: 1px;
 }
-.threadInTask .threadEvent {
-   margin-top: 20px;
+.threadInForum .threadEvent {
+   float: left;
+}
+.threadInForum .threadEvent.originalPoster,
+.threadInForum .threadEvent.originalPoster + .taskInThread {
+   float: right;
 }
 .threadEventContent {
    border: 1px solid #ddd;
    border-top-width: 5px;
    border-radius: 3px;
-   margin-top: 20px;
 }
 .threadEventContentDefault {
    border-top-color: #777;

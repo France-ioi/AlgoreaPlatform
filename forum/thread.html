@@ -6,20 +6,27 @@
 <div ng-if="!loading && (thread || fakeThread)" ng-class="{'threadInTask': inTask, 'threadInForum': !inTask}">
    <div ng-if="inPopup"><span ng-i18next="forum_activities_of"></span> {{user_item.user.sLogin}} <span ng-i18next="forum_on_exercise"></span> {{item.strings[0].sTitle}}
    </div>
-   <div ng-form="threadForm" ng-if="!readOnly && (ownThread || newThread)" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
+   <div ng-if="!inTask && !newThread" class="threadTypeTitle">
+      <h1 ng-show="thread.sType == 'Help'">Me faire aider</h1>
+      <h1 ng-show="thread.sType == 'General'">Discussion générale </h1>
+      <h1 ng-show="thread.sType == 'Bug'">Signaler une anomalie</h1>
+   </div>
+   <div ng-form="threadForm" ng-if="!readOnly && newThread" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
+      <div ng-if="!inTask" class="threadTypeTitle">
+         <h1 ng-show="thread.sType == 'Help'" ng-i18next="forum_type_help"></h1>
+         <h1 ng-show="thread.sType == 'General'" ng-i18next="forum_type_general"></h1>
+         <h1 ng-show="thread.sType == 'Bug'" ng-i18next="forum_type_bug"></h1>
+      </div>
       <div ng-if="inTask">
          <h4 ng-i18next="forum_title_welcome"></h4>
          <p ng-i18next="[html]forum_title_desc"></p>
+         <input type="hidden" name="sTitle" ng-model="thread.sTitle" id="sTitle">
       </div>
-      <div class="form-group" ng-show="!inTask">
-         <label for="sType" ng-i18next="forum_type"></label>
-         <select name="sType" ng-model="thread.sType" id="sType" class="form-control" style="width:300px;">
-            <option value="Help" ng-i18next="forum_type_help"></option>
-            <option value="General" ng-i18next="forum_type_general"></option>
-            <option value="Bug" ng-i18next="forum_type_bug"></option>
-         </select>
+      <div class="form-group" ng-show="thread.sType != 'Help'">
+         <label for="sTitle" ng-i18next="forum_title"></label>
+         <input type="text" name="sTitle" ng-model="thread.sTitle" id="sTitle" class="form-control">
       </div>
-      <div class="form-group" ng-show="thread.sType == 'Help' && !inTask">
+      <div class="form-group" ng-show="!inTask && thread.sType == 'Help'">
          <label for="idItem" ng-i18next="forum_item_associated"></label>
          <p class="input-group">
             <input type="text" name="idItem" ng-model="thread.idItem" id="idItem" class="form-control" item-text readonly/>
@@ -31,20 +38,16 @@
             </ul>
          </p>
       </div>
-      <div class="form-group" ng-show="thread.sType != 'Help'">
-         <label for="sTitle" ng-i18next="forum_title"></label>
-         <input type="text" name="sTitle" ng-model="thread.sTitle" id="sTitle" class="form-control">
-      </div>
-      <div class="form-group" ng-if="newThread">
-         <label for="sBody" ng-hide="inTask" ng-i18next="forum_message"></label>
+      <div class="form-group">
+         <label for="sBody" ng-i18next="forum_message"></label>
          <textarea name="sMessage" ng-model="newMessage.sBody" id="sBody" class="form-control"></textarea>
       </div>
-      <button ng-show="!readOnly && (!inTask || newThread)" class="btn btn-default" ng-click="submitForm(threadForm)" ng-i18next="save"></button>
+      <button class="btn btn-default" ng-click="submitForm(threadForm)" ng-i18next="save"></button>
    </div>
    <div ng-if="!newThread && !readOnly">
-      <div ng-if="!ownThread"><!-- Ajouter info sur type de message (ex: discussion générale) -->
-         <h2 class="threadTitle"><span ng-i18next="forum_subject" class="threadTitleLabel"></span> {{thread.sTitle}}</h2>
-         <p ng-show="itemStr"><span ng-i18next="forum_item" class="threadTitleLabel"></span> {{itemStr}}</p>
+      <div><!-- Ajouter info sur type de message (ex: discussion générale) -->
+         <h2 ng-hide="itemStr" class="threadTitle">{{thread.sTitle}}</h2>
+         <h2 ng-show="itemStr" class="threadTitle">{{itemStr}}</h2>
       </div>
    </div>
    <div ng-if="taskLoadingError">
@@ -52,74 +55,80 @@
    </div>
    <span ng-show="!events.length && fakeThread" ng-i18next="forum_no_activity"></span>
    <h2 ng-if="inTask" ng-show="events.length" ng-i18next="events"></h2>
-   <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'before':threadData.currentAnswer track by event.ID" class="threadEvent">
-      <div ng-if="event.bTrainersOnly !== undefined" class="threadEventContent threadEventContentDefault"><!-- case of message -->
-         <div ng-switch="getMessageState(event)">
-            <div ng-switch-when="typing" class="eventBody">
-               <strong>{{event.sLogin}}</strong> <span ng-i18next="forum_is_answering"></span>
-            </div>
-            <div ng-switch-when="noDisplay"></div>
-            <div ng-switch-default>
-               <div class="eventInfo">
-                  <span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
+   <div class="threadMessages clearfix">
+      <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'before':threadData.currentAnswer track by event.ID" class="threadEvent clearfix" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
+         <div ng-if="event.bTrainersOnly !== undefined"><!-- case of message -->
+            <div ng-switch="getMessageState(event)">
+               <div ng-switch-when="typing" class="threadEventContent threadEventContentTyping">
+                  <div class="eventBody">
+                     <strong>{{event.sLogin}}</strong> <span ng-i18next="forum_is_answering"></span>
+                  </div>
                </div>
-               <div class="eventBody">
-                  <div class="eventBodyContent">{{event.sBody}}</div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div ng-if="event.bTrainersOnly === undefined" ng-click="openAnswer(event);" class="threadEventContent" ng-class="{'threadEventContent-success': event.bValidated=='1', 'threadEventContent-fail': event.bValidated=='0'}">
-         <div class="eventInfo">
-            <span ng-hide="event.iScore === null"><span ng-i18next="forum_score"></span> : {{event.iScore}}%</span>
-            <span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
-            <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
-         </div>
-         <div>
-            <span class="eventBody" ng-show="event.iScore === null" ng-i18next="forum_not_evaluated"></span>
-            <span class="eventBody" ng-if="event.idUserGrader !== null">
-               <span ng-i18next="forum_evaluated_by"></span> {{event.graderLogin}}
-            </span>
-            <span class="eventBody" ng-if="canValidate">, <span ng-i18next="forum_evaluate_manual"></span> <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);" ng-i18next="ok"></button></span>
-         </div>
-      </div>
-   </div>
-   <div ng-if="hasTask && !taskLoading && answers.length" ng-controller="taskController" class="taskInThread">
-      <div uib-tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task" active="askedView">
-         <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" index="view.name"></li>
-      </div>
-      <div ng-show="threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true" style="position: relative;"></div>
-      <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
-   </div>
-   <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID" class="threadEvent">
-      <div ng-if="event.bTrainersOnly !== undefined" class="threadEventContent threadEventContentDefault"><!-- case of message -->
-         <div ng-switch="getMessageState(event)">
-            <div ng-switch-when="typing">
-               <strong>{{event.sLogin}}</strong> <span ng-i18next="forum_is_answering"></span>
-            </div>
-            <div ng-switch-when="noDisplay"></div>
-            <div ng-switch-default>
-               <div class="eventInfo">
-                  <span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
-               </div>
-               <div class="eventBody">
-                  <div class="eventBodyContent">{{event.sBody}}</div>
+               <div ng-switch-when="noDisplay"></div>
+               <div ng-switch-default class="threadEventContent threadEventContentDefault">
+                  <div class="eventInfo">
+                     <span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
+                  </div>
+                  <div class="eventBody">
+                     <div class="eventBodyContent">{{event.sBody}}</div>
+                  </div>
                </div>
             </div>
          </div>
-      </div>
-      <div ng-if="event.bTrainersOnly === undefined" ng-click="openAnswer(event);" class="threadEventContent" ng-class="{'threadEventContent-success': event.bValidated=='1', 'threadEventContent-fail': event.bValidated=='0'}">
-         <div class="eventInfo">
-            <span ng-hide="event.iScore === null"><span ng-i18next="forum_score"></span> : {{event.iScore}}%</span>
-            <span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
-            <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
+         <div ng-if="event.bTrainersOnly === undefined" ng-click="openAnswer(event);" class="threadEventContent" ng-class="{'threadEventContent-success': event.bValidated=='1', 'threadEventContent-fail': event.bValidated=='0'}">
+            <div class="eventInfo">
+               <span ng-hide="event.iScore === null"><span ng-i18next="forum_score"></span> : {{event.iScore}}%</span>
+               <span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
+               <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
+            </div>
+            <div>
+               <span class="eventBody" ng-show="event.iScore === null" ng-i18next="forum_not_evaluated"></span>
+               <span class="eventBody" ng-if="event.idUserGrader !== null">
+                  <span ng-i18next="forum_evaluated_by"></span> {{event.graderLogin}}
+               </span>
+               <span class="eventBody" ng-if="canValidate">, <span ng-i18next="forum_evaluate_manual"></span> <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);" ng-i18next="ok"></button></span>
+            </div>
          </div>
-         <div>
-            <span class="eventBody" ng-show="event.iScore === null" ng-i18next="forum_not_evaluated"></span>
-            <span class="eventBody" ng-if="event.idUserGrader !== null">
-               <span ng-i18next="forum_evaluated_by"></span> {{event.graderLogin}}
-            </span>
-            <span class="eventBody" ng-if="canValidate">, <span ng-i18next="forum_evaluate_manual"></span> <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);" ng-i18next="ok"></button></span>
+      </div>
+      <div ng-if="hasTask && !taskLoading && answers.length" ng-controller="taskController" class="taskInThread">
+         <div uib-tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task" active="askedView">
+            <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" index="view.name"></li>
+         </div>
+         <div ng-show="threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true" style="position: relative;"></div>
+         <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
+      </div>
+      <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID" class="threadEvent clearfix" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
+         <div ng-if="event.bTrainersOnly !== undefined"><!-- case of message -->
+            <div ng-switch="getMessageState(event)">
+               <div ng-switch-when="typing" class="threadEventContent threadEventContentTyping">
+                  <div class="eventBody">
+                     <strong>{{event.sLogin}}</strong> <span ng-i18next="forum_is_answering"></span>
+                  </div>
+               </div>
+               <div ng-switch-when="noDisplay"></div>
+               <div ng-switch-default class="threadEventContent threadEventContentDefault">
+                  <div class="eventInfo">
+                     <span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
+                  </div>
+                  <div class="eventBody">
+                     <div class="eventBodyContent">{{event.sBody}}</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div ng-if="event.bTrainersOnly === undefined" ng-click="openAnswer(event);" class="threadEventContent" ng-class="{'threadEventContent-success': event.bValidated=='1', 'threadEventContent-fail': event.bValidated=='0'}">
+            <div class="eventInfo">
+               <span ng-hide="event.iScore === null"><span ng-i18next="forum_score"></span> : {{event.iScore}}%</span>
+               <span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
+               <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
+            </div>
+            <div>
+               <span class="eventBody" ng-show="event.iScore === null" ng-i18next="forum_not_evaluated"></span>
+               <span class="eventBody" ng-if="event.idUserGrader !== null">
+                  <span ng-i18next="forum_evaluated_by"></span> {{event.graderLogin}}
+               </span>
+               <span class="eventBody" ng-if="canValidate">, <span ng-i18next="forum_evaluate_manual"></span> <input type="text" ng-model="event.iScore" style="width:20px;"/>/100 <button ng-click="manualGrade(event);" ng-i18next="ok"></button></span>
+            </div>
          </div>
       </div>
    </div>
