@@ -11,6 +11,9 @@
       <h1 ng-show="thread.sType == 'General'">Discussion générale </h1>
       <h1 ng-show="thread.sType == 'Bug'">Signaler une anomalie</h1>
    </div>
+   <div ng-if="!inTask" class="backButton">
+      <button ng-click="goToForum();" ng-i18next="forum_back"></button>
+   </div>
    <div ng-form="threadForm" ng-if="!readOnly && newThread" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
       <div ng-if="!inTask" class="threadTypeTitle">
          <h1 ng-show="thread.sType == 'Help'" ng-i18next="forum_type_help"></h1>
@@ -55,7 +58,9 @@
    </div>
    <span ng-show="!events.length && fakeThread" ng-i18next="forum_no_activity"></span>
    <h2 ng-if="inTask" ng-show="events.length" ng-i18next="events"></h2>
+
    <div class="threadMessages">
+
       <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'before':threadData.currentAnswer track by event.ID" class="threadEvent" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
          <div ng-if="event.bTrainersOnly !== undefined"><!-- case of message -->
             <div ng-switch="getMessageState(event)">
@@ -67,6 +72,7 @@
                <div ng-switch-when="noDisplay"></div>
                <div ng-switch-default class="threadEventContent threadEventContentDefault">
                   <div class="eventInfo">
+                     <i class="material-icons">comment</i>
                      <span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
                   </div>
                   <div class="eventBody">
@@ -77,8 +83,8 @@
          </div>
          <div ng-if="event.bTrainersOnly === undefined" ng-click="openAnswer(event);" class="threadEventContent" ng-class="{'threadEventContent-success': event.bValidated=='1', 'threadEventContent-fail': event.bValidated=='0'}">
             <div class="eventInfo">
-               <span ng-hide="event.iScore === null"><span ng-i18next="forum_score"></span> : {{event.iScore}}%</span>
-               <span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
+               <span ng-hide="event.iScore === null" class="score"><i ng-show="event.iScore === 100" class="material-icons">done</i><i ng-show="event.iScore !== 100" class="material-icons">close</i> {{event.iScore}}%</span>
+               <span ng-i18next="submission"></span> <span ng-i18next="forum_evaluated_by"></span> {{thread.sUserCreatedLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
                <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
             </div>
             <div>
@@ -90,6 +96,7 @@
             </div>
          </div>
       </div>
+
       <div ng-if="hasTask && !taskLoading && answers.length" ng-controller="taskController" class="taskInThread">
          <div uib-tabset justified="true" ng-show="taskLoaded && threadData.currentAnswer" class="tabset-task" active="askedView">
             <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" index="view.name"></li>
@@ -97,6 +104,7 @@
          <div ng-show="threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true" style="position: relative;"></div>
          <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
       </div>
+
       <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID" class="threadEvent" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
          <div ng-if="event.bTrainersOnly !== undefined"><!-- case of message -->
             <div ng-switch="getMessageState(event)">
@@ -108,6 +116,7 @@
                <div ng-switch-when="noDisplay"></div>
                <div ng-switch-default class="threadEventContent threadEventContentDefault">
                   <div class="eventInfo">
+                     <i class="material-icons">comment</i>
                      <span ng-i18next="forum_message_from"></span> {{event.sLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}} <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
                   </div>
                   <div class="eventBody">
@@ -117,9 +126,9 @@
             </div>
          </div>
          <div ng-if="event.bTrainersOnly === undefined" ng-click="openAnswer(event);" class="threadEventContent" ng-class="{'threadEventContent-success': event.bValidated=='1', 'threadEventContent-fail': event.bValidated=='0'}">
-            <div class="eventInfo">
-               <span ng-hide="event.iScore === null"><span ng-i18next="forum_score"></span> : {{event.iScore}}%</span>
-               <span ng-i18next="submission"></span> <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
+             <div class="eventInfo">
+               <span ng-hide="event.iScore === null" class="score"><i ng-show="event.iScore === 100" class="material-icons">done</i><i ng-show="event.iScore !== 100" class="material-icons">close</i> {{event.iScore}}%</span>
+               <span ng-i18next="submission"></span> <span ng-i18next="forum_evaluated_by"></span> {{thread.sUserCreatedLogin}} <span ng-i18next="forum_date_on"></span> {{event.sSubmissionDate|date}}
                <span ng-i18next="forum_date_at"></span> {{event.sSubmissionDate|date:'shortTime'}}
             </div>
             <div>
@@ -132,11 +141,13 @@
          </div>
       </div>
    </div>
+
    <div ng-hide="newThread || readOnly" class="threadAnswer">
       <label for="messageTextarea" ng-i18next="forum_your_answer"></label>
       <textarea id="messageTextarea" class="form-control" rows="3" name="sBody" ng-model="newMessage.sBody" ng-focus="newMessageFocus()" ng-blur="newMessageBlur()"></textarea>
       <button type="button" ng-click="newMessageSave()" class="btn btn-default btn-primary" ng-i18next="forum_answer"></button>
    </div>
+
    <div ng-if="!inTask && hasTask && !taskLoading && !readOnly" class="inThreadTaskTrial">
       <h3 ng-show="ownThread" ng-i18next="forum_try_again"></h3>
       <h3 ng-hide="ownThread" ng-i18next="forum_my_version"></h3>
@@ -147,8 +158,5 @@
          <div ng-show="!showForum" include-task task-name="my-task"></div>
          <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
       </div>
-   </div>
-   <div ng-if="!inTask" class="backButton">
-      <button ng-click="goToForum();" ng-i18next="forum_back"></button>
    </div>
 </div>
