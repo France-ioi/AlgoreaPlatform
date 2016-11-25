@@ -223,7 +223,7 @@ var models = {
             type: "enum",
             widget: "radio",
             values: {
-               Undefined: {label: "<span class='CategoryUndefined'>Indéfini</span> : cas où parent ne gère pas la validation par catégorie"},
+               Undefined: {label: "<span class='CategoryUndefined'>Indéfini</span> : cas où le parent ne gère pas la validation par catégorie"},
                Course: {label: "<span class='CategoryCourse'>Cours</span> : simple cours, pas de résolution"},
                Discovery: {label: "<span class='CategoryDiscovery'>Découverte</span> : permet de découvrir une nouvelle notion"},
                Application: {label: "<span class='CategoryApplication'>Application</span> : permet de mettre en application une notion"},
