@@ -12,13 +12,32 @@
             <i class="material-icons">chat_bubble</i>
          </button>
          <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" ng-i18next="[title]admin_no_access_removal"></span>
-         <button type="button" class="btn btn-default btn-xs btn-sumary" uib-popover-template="'access-cell-details.html'"  popover-trigger="mouseenter" popover-trigger="'mouseenter'" popover-placement="top">
+         <button type="button" class="btn btn-default btn-xs btn-sumary" uib-popover-template="'access-cell-details.html'"  popover-trigger="'mouseenter'" popover-placement="top">
             <i class="material-icons">zoom_in</i>
          </button>
          <script type="text/ng-template" id="access-cell-details.html">
-            <div>
-               <div>{{item_item.child.strings[0].sTitle}}</div>
-               <div>{{ group_group.child.sName }}</div>
+            <div class="itemAccessDetails">
+               <div class="login">{{ group_group.child.sName }}</div>
+               <div class="item">{{item_item.child.strings[0].sTitle}}</div>
+               <ul>
+                  <li>Mode de validation : {{ categoryNames[item_item.sCategory] }}</li>
+                  <li>Type de validation : {{ longValidationTypesNames[item_item.child.sValidationType].label }}</li>
+                  <li>Mode d'accès : <span ng-switch="item_item.bAccessRestricted">
+                        <span ng-switch-when=0 >Accessible</span>
+                        <span ng-switch-when=1 >Restreint</span>
+                     </span>
+                  </li>
+                  <li>Visibilité<span ng-switch="item_item.bAlwaysVisible">
+                        <span ng-switch-when=1 >Toujours visible</span>
+                        <span ng-switch-when=0 >Caché si inaccessible</span>
+                     </span>
+                  </li>
+                  <li>{{ access.sAccessTitle }}</li>
+                  <li>Accès partiel donné à partir de :</li>
+                  <li>Accès complet donné à partir de :</li>
+                  <li>Commentaire sur l'accès :</li>
+                  <li>Accès aux solutions</li>
+               </ul>
             </div>
          </script>
       </div>

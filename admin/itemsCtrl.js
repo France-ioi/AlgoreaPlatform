@@ -114,7 +114,10 @@ angular.module('algorea')
       $scope.test = function() {
          alert('test');
       };
-
+      $scope.selectedView = 'itemsEditable';
+      $scope.selectView = function(view) {
+         $scope.selectedView = view;
+      };
       $scope.itemIsExpanded = true;
       $scope.toggleItemExpanded = function() {
          this.itemIsExpanded = !this.itemIsExpanded;

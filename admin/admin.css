@@ -14,7 +14,12 @@ body {
   padding-top: 20px;
 }
 .adminTreesControllers {
-  padding: 10px 10px 15px;
+  padding-top: 20px;
+  margin: 0 10px 0;
+}
+.adminTreesControllers .tab-content {
+  background-color: transparent;
+  padding: 0;
 }
 .adminContainerTabContent {
   display: -webkit-box;
