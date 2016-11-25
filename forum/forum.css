@@ -160,9 +160,12 @@
 .threadInForum .threadMessages {
    padding: 1em 2em 0;
 }
+.threadInTask .taskInThread,
+.threadInTask .threadEvent {
+   width: 802px;
+}
 .threadEvent,
 .taskInThread {
-   width: 802px;
 }
 .threadEvent {
    margin-top: 20px;
@@ -172,11 +175,39 @@
    padding-bottom: 1px;
 }
 .threadInForum .threadEvent {
-   float: left;
+   margin-right: 10%;
+   margin-left: 0;
+   position: relative;
 }
 .threadInForum .threadEvent.originalPoster,
 .threadInForum .threadEvent.originalPoster + .taskInThread {
-   float: right;
+   margin-left: 10%;
+   margin-right: 0;
+}
+.threadInForum .threadEvent::before {
+   content: " ";
+   border: 10px solid #efefef;
+   display: block;
+   position: absolute;
+   top: 9px;
+   left: -9px;
+   border-top-color: transparent;
+   border-left: none;
+   border-bottom-color: transparent;
+}
+.threadInForum .threadEvent.originalPoster::before {
+   content: normal;
+}
+.threadInForum .threadEvent.originalPoster::after {
+   content: " ";
+   border: 10px solid #efefef;
+   display: block;
+   position: absolute;
+   top: 9px;
+   right: -9px;
+   border-top-color: transparent;
+   border-right: none;
+   border-bottom-color: transparent;
 }
 .threadEventContent {
    border: 1px solid #ddd;

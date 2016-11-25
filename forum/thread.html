@@ -55,8 +55,8 @@
    </div>
    <span ng-show="!events.length && fakeThread" ng-i18next="forum_no_activity"></span>
    <h2 ng-if="inTask" ng-show="events.length" ng-i18next="events"></h2>
-   <div class="threadMessages clearfix">
-      <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'before':threadData.currentAnswer track by event.ID" class="threadEvent clearfix" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
+   <div class="threadMessages">
+      <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'before':threadData.currentAnswer track by event.ID" class="threadEvent" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
          <div ng-if="event.bTrainersOnly !== undefined"><!-- case of message -->
             <div ng-switch="getMessageState(event)">
                <div ng-switch-when="typing" class="threadEventContent threadEventContentTyping">
@@ -97,7 +97,7 @@
          <div ng-show="threadData.currentAnswer" include-task user-item-var="other_user_item" task-name="task-answers" read-only="true" style="position: relative;"></div>
          <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
       </div>
-      <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID" class="threadEvent clearfix" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
+      <div ng-repeat="event in events | orderBy: eventsSortFunction | eventsFilter:'after':threadData.currentAnswer track by event.ID" class="threadEvent" ng-class="{'originalPoster': event.idUser == thread.idUserCreated}">
          <div ng-if="event.bTrainersOnly !== undefined"><!-- case of message -->
             <div ng-switch="getMessageState(event)">
                <div ng-switch-when="typing" class="threadEventContent threadEventContentTyping">
