@@ -1,147 +1,147 @@
 <div ng-if="!loading && !error" class="groupAdmin">
 	<uib-tabset active="formValues.activeTab">
 		<uib-tab heading="{{'groupAdmin_description' | i18next}}" index="0">
-				<div class="groupAdmin-tabContent tab-group-description">
-							<div class="flex-container">
-								<label class="control-label item-label">
-									<span class="label-title" ng-i18next="groupAdmin_group_name"></span>
-									<span class="label-description" ng-i18next="groupAdmin_group_name_desc"></span>
-								</label>
-								<input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
-							</div>
-							<div class="flex-container">
-								<label class="control-label item-label">
-									<span class="label-title" ng-i18next="type"></span>
-									<span class="label-description" ng-i18next="groupAdmin_type_desc"></span>
-								</label>
-								<select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
-									<option value="Class" ng-selected="group.sType == 'Class'" ng-i18next="class"></option>
-									<option value="Friends" ng-selected="group.sType == 'Friends'" ng-i18next="team"></option>
-									<option value="Other" ng-selected="group.sType == 'Other'" ng-i18next="other"></option>
-								</select>
-							</div>
-							<div class="flex-container">
-									<label class="control-label item-label">
-										<span class="label-title" ng-i18next="description"></span>
-										<span class="label-description" ng-i18next="groupAdmin_description_desc"></span>
-									</label>
-									<textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
-							</div>
-							<div ng-if="group.sType == 'Class'" class="flex-container">
-									<label class="control-label item-label" ng-if="group.sType == 'Class'">
-										<span class="label-title" ng-i18next="level"></span>
-										<span class="label-description" ng-i18next="groupAdmin_level_desc"></span>
-									</label>
-									<div class="item-control">
-										<select ng-model="group.iGrade" class="form-control">
-											<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
-										</select>
-										<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
-								</div>
-							</div>
-							<div class="group-action" ng-if="adminOnGroup">
-								<div class="group-save">
-									<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)" ng-i18next="save"></a>
-								</div>
-								<div class="block-delete">
-									<a class="group-delete" confirm="deleteGroup();"><span ng-i18next="groupAdmin_delete_group;[rel]groupAdmin_delete_group_msg"></span><i class="material-icons">delete</i></a>
-								</div>
-							</div>
+			<div class="groupAdmin-tabContent tab-group-description">
+				<div class="flex-container">
+					<label class="control-label item-label">
+						<span class="label-title" ng-i18next="groupAdmin_group_name"></span>
+						<span class="label-description" ng-i18next="groupAdmin_group_name_desc"></span>
+					</label>
+					<input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
 				</div>
+				<div class="flex-container">
+					<label class="control-label item-label">
+						<span class="label-title" ng-i18next="type"></span>
+						<span class="label-description" ng-i18next="groupAdmin_type_desc"></span>
+					</label>
+					<select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
+						<option value="Class" ng-selected="group.sType == 'Class'" ng-i18next="class"></option>
+						<option value="Friends" ng-selected="group.sType == 'Friends'" ng-i18next="team"></option>
+						<option value="Other" ng-selected="group.sType == 'Other'" ng-i18next="other"></option>
+					</select>
+				</div>
+				<div class="flex-container">
+						<label class="control-label item-label">
+							<span class="label-title" ng-i18next="description"></span>
+							<span class="label-description" ng-i18next="groupAdmin_description_desc"></span>
+						</label>
+						<textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
+				</div>
+				<div ng-if="group.sType == 'Class'" class="flex-container">
+						<label class="control-label item-label" ng-if="group.sType == 'Class'">
+							<span class="label-title" ng-i18next="level"></span>
+							<span class="label-description" ng-i18next="groupAdmin_level_desc"></span>
+						</label>
+						<div class="item-control">
+							<select ng-model="group.iGrade" class="form-control">
+								<option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+							</select>
+							<input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
+					</div>
+				</div>
+				<div class="group-action" ng-if="adminOnGroup">
+					<div class="group-save">
+						<a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)" ng-i18next="save"></a>
+					</div>
+					<div class="block-delete">
+						<a class="group-delete" confirm="deleteGroup();"><span ng-i18next="groupAdmin_delete_group;[rel]groupAdmin_delete_group_msg"></span><i class="material-icons">delete</i></a>
+					</div>
+				</div>
+			</div>
 		</uib-tab>
 
 		<uib-tab heading="{{'members' | i18next}}" index="1">
-				<div class="groupAdmin-tabContent tab-members">
+			<div class="groupAdmin-tabContent tab-members">
 
-					<div class="flex-container">
+				<div class="flex-container">
 
-						<div class="members-col">
-							<div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span> «&nbsp;{{group.sName}}&nbsp;»</div>
-							<ul class="list list-block list-users">
-								<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
-									<span class="user-status connected"></span>
-									<span class="user-name" ng-if="child.child.sType == 'UserSelf'">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
-									<span class="user-name" ng-if="child.child.sType != 'UserSelf'"><a ui-sref="groupAdminGroup({idGroup: child.child.ID})">{{child.child.sName}}</a></span>
-									<span class="action" ng-if="child.child.sType == 'UserSelf'">
-										<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" uib-tooltip="supprimer"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="delete"></span></button>
-									</span>
+					<div class="members-col">
+						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span> «&nbsp;{{group.sName}}&nbsp;»</div>
+						<ul class="list list-block list-users">
+							<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
+								<span class="user-status connected"></span>
+								<span class="user-name" ng-if="child.child.sType == 'UserSelf'">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
+								<span class="user-name" ng-if="child.child.sType != 'UserSelf'"><a ui-sref="groupAdminGroup({idGroup: child.child.ID})">{{child.child.sName}}</a></span>
+								<span class="action" ng-if="child.child.sType == 'UserSelf'">
+									<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" uib-tooltip="supprimer"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="delete"></span></button>
+								</span>
+							</li>
+						</ul>
+						<div class="groupAdmin-title" ng-i18next="groupAdmin_invited_users"></div>
+						<ul class="list list-block list-applicants">
+								<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
+									<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})<span ng-if="child.sType == 'invitationRefused'" ng-i18next="groupAdmin_invite_rejected"></span></span>
+									<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" uib-tooltip="Annuler"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="cancel"></span></button></span>
 								</li>
-							</ul>
-							<div class="groupAdmin-title" ng-i18next="groupAdmin_invited_users"></div>
-							<ul class="list list-block list-applicants">
-									<li class="list-item" ng-repeat="child in group.children | invitation | userSort">
-										<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})<span ng-if="child.sType == 'invitationRefused'" ng-i18next="groupAdmin_invite_rejected"></span></span>
-										<span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" uib-tooltip="Annuler"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="cancel"></span></button></span>
-									</li>
-							</ul>
+						</ul>
+					</div>
+
+					<div class="action-col">
+						<div class="bloc-inscription">
+							<div class="groupAdmin-title"><span ng-i18next="groupAdmin_registration_management"></span>
+							<span class="title-desc" ng-i18next="gropuAdmin_registration_management_desc"></span></div>
+							<div class="label-title label-list-item" ng-i18next="groupAdmin_title_invite"></div>
+							<div class="flex-container">
+								<div class="left-col">
+									<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" ng-i18next="[placeholder]groupAdmin_insert_logins">
+								</div>
+								<div class="right-col">
+									<button class="btn-icon btn-add" ng-click="inviteLogins()"><i class="material-icons md-36">add_circle</i><span class="btn-label" ng-i18next="add"></span></button>
+								</div>
+							</div>
+							<span ng-if="invitationError" style="font-weight:bold;" ng-i18next="groupAdmin_error"></span> <span ng-bind="invitationError"></span>
 						</div>
 
-						<div class="action-col">
-							<div class="bloc-inscription">
-								<div class="groupAdmin-title"><span ng-i18next="groupAdmin_registration_management"></span>
-								<span class="title-desc" ng-i18next="gropuAdmin_registration_management_desc"></span></div>
-								<div class="label-title label-list-item" ng-i18next="groupAdmin_title_invite"></div>
-								<div class="flex-container">
-									<div class="left-col">
-										<input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" ng-i18next="[placeholder]groupAdmin_insert_logins">
-									</div>
-									<div class="right-col">
-										<button class="btn-icon btn-add" ng-click="inviteLogins()"><i class="material-icons md-36">add_circle</i><span class="btn-label" ng-i18next="add"></span></button>
-									</div>
+						<!--<field model="group" field="groups.bFreeAccess" />-->
+						<div class="bloc-inscription">
+							<div class="flex-container">
+								<div class="left-col">
+									<div class="label-title label-list-item" ng-i18next="groupAdmin_title_code"></div>
+									<p ng-i18next="groupAdmin_code_desc"></p>
 								</div>
-								<span ng-if="invitationError" style="font-weight:bold;" ng-i18next="groupAdmin_error"></span> <span ng-bind="invitationError"></span>
-							</div>
-
-							<!--<field model="group" field="groups.bFreeAccess" />-->
-							<div class="bloc-inscription">
-								<div class="flex-container">
-									<div class="left-col">
-										<div class="label-title label-list-item" ng-i18next="groupAdmin_title_code"></div>
-										<p ng-i18next="groupAdmin_code_desc"></p>
-									</div>
-									<div class="right-col">
-										<div class="checkboxSwitch">
-											<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
-											<label for="codeInscr"><span></span></label>
-										</div>
-									</div>
-								</div>
-								<div class="flex-container" ng-if="formValues.hasPassword">
-									<div class="left-col">
-										<p ng-i18next="groupAdmin_code_label"></p>
-									</div>
-									<div class="right-col form-inline">
-										<input type="text" class="form-control access-code" ng-model="group.sPassword" readonly/>
-										<button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
+								<div class="right-col">
+									<div class="checkboxSwitch">
+										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
+										<label for="codeInscr"><span></span></label>
 									</div>
 								</div>
 							</div>
-							<div class="bloc-inscription">
-								<div class="flex-container">
-									<div class="left-col">
-										<div class="label-title label-list-item" ng-i18next="groupAdmin_title_spontaneous"></div>
-										<p ng-i18next="groupAdmin_allow_spontaneous"></p>
-									</div>
-									<div class="right-col">
-										<div class="checkboxSwitch">
-											<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
-											<label for="demSpont"><span></span></label>
-										</div>
+							<div class="flex-container" ng-if="formValues.hasPassword">
+								<div class="left-col">
+									<p ng-i18next="groupAdmin_code_label"></p>
+								</div>
+								<div class="right-col form-inline">
+									<input type="text" class="form-control access-code" ng-model="group.sPassword" readonly/>
+									<button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
+								</div>
+							</div>
+						</div>
+						<div class="bloc-inscription">
+							<div class="flex-container">
+								<div class="left-col">
+									<div class="label-title label-list-item" ng-i18next="groupAdmin_title_spontaneous"></div>
+									<p ng-i18next="groupAdmin_allow_spontaneous"></p>
+								</div>
+								<div class="right-col">
+									<div class="checkboxSwitch">
+										<input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
+										<label for="demSpont"><span></span></label>
 									</div>
 								</div>
+							</div>
 
-								<div  ng-if="group.bOpened" class="">
-									<ul class="list list-block list-applicants">
-										<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
-											<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
-											<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" ng-i18next="[title]accept"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" ng-i18next="[title]reject"></i></button></span>
-										</li>
-									</ul>
-								</div>
+							<div  ng-if="group.bOpened" class="">
+								<ul class="list list-block list-applicants">
+									<li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
+										<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
+										<span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" ng-i18next="[title]accept"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" ng-i18next="[title]reject"></i></button></span>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
+			</div>
 		</uib-tab>
 
 		<uib-tab heading="{{'progress' | i18next}}" index="2">
@@ -270,22 +270,22 @@
 											<span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
 										</div>
 										<button ng-if="!formValues.detailedView" uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
-										<script type="text/ng-template" id="progress-details.html">
-											<ul class="progress-details">
-												<li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
-												<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
-												<li class="date" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_last_activity"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
-												<li class="date" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_validation_date"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
-												<li class="time" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_time_spent"></span> : {{getDuration(thisUserItem)}}</li>
-												<li class="time" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_time_validation"></span> : {{getDuration(thisUserItem)}}</li>
-												<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} <span ng-i18next="groupAdmin_attempt"</span>{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
-												<li class="questions"><span ng-i18next="groupAdmin_forum_requests"></span> : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
-												<li class="help"><span ng-i18next="groupAdmin_hints_requested"></span> : {{thisUserItem.nbHintsCached}}</li>
-											</ul>
-										</script>
 										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_code" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button>
 									</td>
 								</tr>
+								<script type="text/ng-template" id="progress-details.html">
+									<ul class="progress-details">
+										<li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
+										<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
+										<li class="date" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_last_activity"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+										<li class="date" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_validation_date"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+										<li class="time" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_time_spent"></span> : {{getDuration(thisUserItem)}}</li>
+										<li class="time" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_time_validation"></span> : {{getDuration(thisUserItem)}}</li>
+										<li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} <span ng-i18next="groupAdmin_attempt"</span>{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
+										<li class="questions"><span ng-i18next="groupAdmin_forum_requests"></span> : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+										<li class="help"><span ng-i18next="groupAdmin_hints_requested"></span> : {{thisUserItem.nbHintsCached}}</li>
+									</ul>
+								</script>
 							</tbody>
 						</table>
 					</div>
