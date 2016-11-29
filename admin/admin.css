@@ -10,18 +10,27 @@ body {
 }
 
 /* STRUCTURE GENERALE */
-.adminContainer {
-  padding-top: 20px;
-}
 .adminTreesControllers {
-  padding-top: 20px;
-  margin: 0 10px 0;
+  padding: 0 10px 0;
+}
+.adminTreesControllers::before {
+  content: " ";
+  display: table;
+  clear: both;
+}
+.adminContainer {
+  padding: 20px;
+  margin-top: -1px;
+  border-top: 1px solid #ddd;
+  background-color: #F7F7F9;
+  overflow: auto;
+  height: calc(100vh - 98px);
 }
 .adminTreesControllers .tab-content {
   background-color: transparent;
   padding: 0;
 }
-.adminContainerTabContent {
+.adminContent {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -38,11 +47,18 @@ body {
       flex: 0 0 auto;
   padding-left: 10px;
 }
-.adminTabs {
+.adminContainerTabContent {
   -webkit-box-flex: 0;
     -ms-flex: 1 0 600px;
       flex: 1 0 600px;
   padding-right: 10px;
+}
+.adminContainerTabContent .tab-content {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+}
+.adminTabs {
 }
 .nav-tabs>li>a {
   font-size: 14px;
@@ -59,7 +75,7 @@ body {
 }
 .tab-content {
   background-color: #F7F7F9;
-  padding: 2em 160px 0 1em;
+  padding: 2em 160px 1em 1em;
 }
 .adminTrees {
   float: left;
@@ -70,6 +86,33 @@ body {
   float: left;
 }
 /* ARBRES DE SELECTION */
+
+.checkboxSwitch input.switch {
+  display: none;
+}
+.checkboxSwitch input.switch + label {
+  background-color: #333;
+  width: 70px;
+  height: 30px;
+  border-radius: 15px;
+  position: relative;
+  vertical-align: middle;
+}
+.checkboxSwitch input.switch + label span {
+  width: 20px;
+  height: 20px;
+  top: 5px;
+  left: 5px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #e42c20;
+  transition: all 250ms;
+}
+.checkboxSwitch input.switch:checked + label span {
+  background-color: #82bf2b;
+  left: 45px;
+}
+
 .adminTreeTitle {
   font-weight: bold;
   padding-left: 5px;
@@ -97,7 +140,7 @@ body {
   margin-top: 104px;
 }
 .accessItemsRows {
-  max-height: calc(100vh - 172px);
+  max-height: calc(100vh - 262px);
   min-height: 197px;
   overflow-y: auto;
   width: -moz-fit-content;
@@ -124,12 +167,11 @@ body {
   width: 270px;
   overflow: hidden;
 }
-.accessCellGroup {
-  width: 120px;
-}
+.accessCellGroup,
 .accessCellChild {
   width: 90px;
 }
+.accessTitleCell.accessCellGroup,
 .accessTitleCell.accessCellChild {
   border-width: 0 0 1px 0;
   vertical-align: bottom;
@@ -143,22 +185,16 @@ body {
   display: block;
 }
 
-.accessGroupName {
-  line-height: 20px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: block;
-}
-
 .accessCellChild + .accessCellChild {
   border-left: none;
 }
+.accessCellGroup .groupNameWrapper,
 .accessCellChild .childNameWrapper {
   transform: rotate(-45deg) translate(52px, 44px);
   width: 90px;
   display: block;
 }
+.accessCellGroup .accessGroupName,
 .accessCellChild .childName {
   border-bottom: 1px solid #000;
   padding: 5px;
@@ -253,8 +289,21 @@ body {
 .PreparationReady {
   color: black;
 }
+.accessCell .popover {
+  max-width: initial;
+}
+.accessCell .itemAccessDetails {
 
-
+}
+.accessCell .itemAccessDetails .login,
+.accessCell .itemAccessDetails .item {
+  font-weight: bold;
+  padding-left: 20px;
+  line-height: 2em;
+}
+.accessCell .itemAccessDetails ul {
+  padding-left: 20px;
+}
 /* LOGIN */
 .loginCentered {
    height: 300px;
