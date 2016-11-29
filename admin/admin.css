@@ -25,6 +25,7 @@ body {
   background-color: #F7F7F9;
   overflow: auto;
   height: calc(100vh - 98px);
+  clear: both;
 }
 .adminTreesControllers .tab-content {
   background-color: transparent;
@@ -86,21 +87,25 @@ body {
   float: left;
 }
 /* ARBRES DE SELECTION */
-
+.adminTreesWrapper .checkboxSwitch {
+  float: right;
+  margin-right: 10px;
+  margin-top: 3px;
+}
 .checkboxSwitch input.switch {
   display: none;
 }
 .checkboxSwitch input.switch + label {
   background-color: #333;
-  width: 70px;
-  height: 30px;
+  width: 40px;
+  height: 20px;
   border-radius: 15px;
   position: relative;
   vertical-align: middle;
 }
 .checkboxSwitch input.switch + label span {
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   top: 5px;
   left: 5px;
   position: absolute;
@@ -110,7 +115,7 @@ body {
 }
 .checkboxSwitch input.switch:checked + label span {
   background-color: #82bf2b;
-  left: 45px;
+  left: 25px;
 }
 
 .adminTreeTitle {
@@ -134,6 +139,10 @@ body {
   overflow: auto;
 }
 
+
+.adminContainerTabContent h2 {
+  margin-top: 0;
+}
 /* ACCESS TABLE */
 .access-wrapper {
   white-space: nowrap;
@@ -170,6 +179,12 @@ body {
 .accessCellGroup,
 .accessCellChild {
   width: 90px;
+}
+.accessCell.accessCellGroup {
+  background-color: #87909e;
+}
+.accessTitleCell.accessCellGroup {
+  color: #87909e;
 }
 .accessTitleCell.accessCellGroup,
 .accessTitleCell.accessCellChild {
@@ -290,7 +305,7 @@ body {
   color: black;
 }
 .accessCell .popover {
-  max-width: initial;
+  max-width: 380px;
 }
 .accessCell .itemAccessDetails {
 
@@ -303,7 +318,16 @@ body {
 }
 .accessCell .itemAccessDetails ul {
   padding-left: 20px;
+  list-style: none;
 }
+.accessCell .itemAccessDetails li {
+  line-height: 1.3;
+  font-weight: bold;
+}
+.accessCell .itemAccessDetails .itemAccessDetails_label {
+  font-weight: normal;
+}
+
 /* LOGIN */
 .loginCentered {
    height: 300px;
