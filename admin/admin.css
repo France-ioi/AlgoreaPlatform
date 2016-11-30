@@ -96,26 +96,28 @@ body {
   display: none;
 }
 .checkboxSwitch input.switch + label {
-  background-color: #333;
-  width: 40px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 35px;
   height: 20px;
   border-radius: 15px;
   position: relative;
   vertical-align: middle;
+  cursor: pointer;
 }
 .checkboxSwitch input.switch + label span {
   width: 10px;
   height: 10px;
-  top: 5px;
+  top: 4px;
   left: 5px;
   position: absolute;
   border-radius: 50%;
-  background-color: #e42c20;
+  background-color: #ddd;
   transition: all 250ms;
 }
 .checkboxSwitch input.switch:checked + label span {
-  background-color: #82bf2b;
-  left: 25px;
+  background-color: #2aa3ff;
+  left: 18px;
 }
 
 .adminTreeTitle {
