@@ -8,8 +8,48 @@ body {
   font-size: 16px;
   vertical-align: text-top;
 }
-
-/* STRUCTURE GENERALE */
+/* GENERIC ELEMENTS */
+.checkboxSwitch input.switch {
+  display: none;
+}
+.checkboxSwitch input.switch + label {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  position: relative;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.checkboxSwitch.small input.switch + label {
+  width: 35px;
+  height: 20px;
+}
+.checkboxSwitch input.switch + label span {
+  width: 20px;
+  height: 20px;
+  top: 4px;
+  left: 5px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #ddd;
+  transition: all 250ms;
+}
+.checkboxSwitch.small input.switch + label span {
+  width: 10px;
+  height: 10px;
+  top: 4px;
+  left: 5px;
+}
+.checkboxSwitch input.switch:checked + label span {
+  background-color: #2aa3ff;
+  left: 33px;
+}
+.checkboxSwitch.small input.switch:checked + label span {
+  left: 18px;
+}
+/* PAGE STRUCTURE */
 .adminTreesControllers {
   padding: 0 10px 0;
 }
@@ -86,40 +126,12 @@ body {
 .adminSecondaryTree {
   float: left;
 }
-/* ARBRES DE SELECTION */
+/* TREES */
 .adminTreesWrapper .checkboxSwitch {
   float: right;
   margin-right: 10px;
   margin-top: 3px;
 }
-.checkboxSwitch input.switch {
-  display: none;
-}
-.checkboxSwitch input.switch + label {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  width: 35px;
-  height: 20px;
-  border-radius: 15px;
-  position: relative;
-  vertical-align: middle;
-  cursor: pointer;
-}
-.checkboxSwitch input.switch + label span {
-  width: 10px;
-  height: 10px;
-  top: 4px;
-  left: 5px;
-  position: absolute;
-  border-radius: 50%;
-  background-color: #ddd;
-  transition: all 250ms;
-}
-.checkboxSwitch input.switch:checked + label span {
-  background-color: #2aa3ff;
-  left: 18px;
-}
-
 .adminTreeTitle {
   font-weight: bold;
   padding-left: 5px;
@@ -141,10 +153,10 @@ body {
   overflow: auto;
 }
 
-
 .adminContainerTabContent h2 {
   margin-top: 0;
 }
+
 /* ACCESS TABLE */
 .access-wrapper {
   white-space: nowrap;
@@ -328,6 +340,13 @@ body {
 }
 .accessCell .itemAccessDetails .itemAccessDetails_label {
   font-weight: normal;
+}
+
+/* FORMS */
+.form-horizontal .control-label,
+.control-label {
+  text-align: left;
+  font-weight: bold;
 }
 
 /* LOGIN */
