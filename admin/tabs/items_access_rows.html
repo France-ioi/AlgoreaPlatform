@@ -5,8 +5,8 @@
          <span ng-include='"tabs/validationCategoryDialog.html"'></span>
          </span>-->
       <div class="prepTile prepValidation">
-         <button type="button" class="btn btn-default validationMode Category{{ item_item.sCategory }}" ng-click="showGenDialog('tabs/validationCategoryDialog.html' , 'items_items', 'item_item', item_item)" uib-tooltip-html="'Mode de validation : <br /><b>{{ categoryNames[item_item.sCategory] }}</b>'" tooltip-placement="top-left">{{ smallCategoryNames[item_item.sCategory] }}</button>
-         <button type="button" class="btn btn-default validationType" ng-click="showGenDialog('tabs/validationTypeDialog.html' , 'items', 'item', item_item.child)" uib-tooltip-html="'Type de validation :<br /><b>{{ longValidationTypesNames[item_item.child.sValidationType].label }}</b>'" tooltip-placement="top-left">{{ validationTypesNames[item_item.child.sValidationType] }} </button>
+         <button type="button" class="btn btn-default validationMode Category{{ item_item.sCategory }}" ng-click="showGenDialog(templatesPrefix+'/admin/tabs/validationCategoryDialog.html' , 'items_items', 'item_item', item_item)" uib-tooltip-html="'Mode de validation : <br /><b>{{ categoryNames[item_item.sCategory] }}</b>'" tooltip-placement="top-left">{{ smallCategoryNames[item_item.sCategory] }}</button>
+         <button type="button" class="btn btn-default validationType" ng-click="showGenDialog(templatesPrefix+'/admin/tabs/validationTypeDialog.html' , 'items', 'item', item_item.child)" uib-tooltip-html="'Type de validation :<br /><b>{{ longValidationTypesNames[item_item.child.sValidationType].label }}</b>'" tooltip-placement="top-left">{{ validationTypesNames[item_item.child.sValidationType] }} </button>
       </div>
       <div class="prepTile prepVisibility">
          <span ng-controller="AccessModeCtrl">

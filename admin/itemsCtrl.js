@@ -858,7 +858,7 @@ angular.module('algorea')
          bAlwaysVisible: 1
       };
       $scope.open = function() {
-         $scope.showGenDialog('tabs/accessEditDialog.html', 'items_items', 'item_item', $scope.$parent.item_item);
+         $scope.showGenDialog(templatesPrefix+'/admin/tabs/accessEditDialog.html', 'items_items', 'item_item', $scope.$parent.item_item);
       };
 
 
