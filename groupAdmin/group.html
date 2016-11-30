@@ -1,4 +1,5 @@
 <div ng-if="!loading && !error" class="groupAdmin">
+	<h1><span ng-i18next="group"></span> : <span class="groupName">{{group.sName}}</span></h1>
 	<uib-tabset active="formValues.activeTab">
 		<uib-tab heading="{{'groupAdmin_description' | i18next}}" index="0">
 			<div class="groupAdmin-tabContent tab-group-description">
@@ -56,7 +57,7 @@
 				<div class="flex-container">
 
 					<div class="members-col">
-						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span> «&nbsp;{{group.sName}}&nbsp;»</div>
+						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span></div>
 						<ul class="list list-block list-users">
 							<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
 								<span class="user-status connected"></span>
@@ -153,7 +154,7 @@
 
 				<div class="flex-container progression-controllers">
 					<div class="progression-type-select">
-						<span class="pull-left" ng-i18next="groupAdmin_visualization_select"></span>
+						<span class="pull-left" ng-i18next="groupAdmin_visualization_select"></span>&nbsp;
 						<div class="inline-block">
 							<label><input type="radio" ng-model="formValues.progressionType" value="chronological">{{'groupAdmin_chronological' | i18next}}</label><br>
 							<label><input type="radio" ng-model="formValues.progressionType" value="collective">{{'groupAdmin_collective' | i18next}}</label>
@@ -334,7 +335,7 @@
 		<uib-tab heading="{{'administration' | i18next}}" index="3">
 			<div class="groupAdmin-tabContent tab-admin">
 				<div class="inline-block">
-						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span> «&nbsp;{{group.sName}}&nbsp;» :</div>
+						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span></div>
 
 						<table class="table-administrators">
 							<thead>

@@ -31,6 +31,12 @@ orange : #F29200;
 .groupAdmin .block-context {
 	overflow: auto;
 }
+.groupAdmin h1 {
+	font-size: 28px;
+}
+.groupAdmin h1 .groupName {
+	font-weight: bold;
+}
 
 /*
 	Tabs
