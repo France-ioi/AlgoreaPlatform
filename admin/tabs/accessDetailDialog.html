@@ -4,14 +4,14 @@
       <span ng-i18next="groupAdmin_access_given_group"></span> <b>{{ group_item.group.sName }}</b>
    </div>
    <div class="modal-body">
-      <form>
-         <field model="group_item" field="groups_items.sPartialAccessDate" class="row" />
-         <field model="group_item" field="groups_items.sFullAccessDate" class="row" />
-         <field model="group_item" field="groups_items.sAccessReason" class="row" />
-         <field model="group_item" field="groups_items.sAccessSolutionsDate" class="row" />
+      <form class="form-horizontal">
+         <field model="group_item" field="groups_items.sPartialAccessDate" />
+         <field model="group_item" field="groups_items.sFullAccessDate" />
+         <field model="group_item" field="groups_items.sAccessReason" />
+         <field model="group_item" field="groups_items.sAccessSolutionsDate" />
          <div ng-if="group_item.item.bOwnerAccess">
-            <field model="group_item" field="groups_items.bOwnerAccess" class="row" />
-            <field model="group_item" field="groups_items.bManagerAccess" class="row" />
+            <field model="group_item" field="groups_items.bOwnerAccess" />
+            <field model="group_item" field="groups_items.bManagerAccess" />
          </div>
       </form>
    </div>

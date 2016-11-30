@@ -167,7 +167,7 @@ var models = {
          iValidationMin: {type: "int", label: "Minimum de fils à valider"},
          sPreparationState: {
             type: "enum",
-            widget: "radio",
+            widget: "radio-buttons",
             values: {
                NotReady: {label: "<span class='PreparationNotReady'>Pas encore prêt</span>"},
                Reviewing: {label: "<span class='PreparationReviewing'>À vérifier</span>"},

@@ -2,7 +2,7 @@
    <p ng-show="(item_item == undefined) || (group_group == undefined)">
       <b ng-i18next="admin_select_item_group_progression"></b>
    </p>
-   <span ng-if="item_item != undefined">
+   <div ng-if="item_item != undefined">
       <span class="accessTitleCell accessItemCell" ng-i18next="access">
       </span>
       <span class="accessTitleCell" ng-show="group_group != undefined">
@@ -11,6 +11,6 @@
       <span class="accessTitleCell accessGroupNameChild" ng-repeat="group_group in group_group.child.children | manageableGroups">
          {{ group_group.parent.sName }}<br/><span style="font-weight:bold;" uib-tooltip="{{group_group.child.sName}}">&nbsp;&nbsp;>&nbsp;{{ group_group.child.sName }}&nbsp;</span>
       </span>
-      <span ng-include="templatesPrefix+'/admin/tabs/items_progression_rows.html'"></span>
-   </span>
+      <div ng-include="templatesPrefix+'/admin/tabs/items_progression_rows.html'"></div>
+   </div>
 </div>
