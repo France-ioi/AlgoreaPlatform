@@ -851,14 +851,14 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('AccessModeCtrl', ['$scope', function($scope) {
+   .controller('AccessModeCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
       $scope.shouldBeOpen = false;
       $scope.data = {
          bAccessRestricted: true,
          bAlwaysVisible: 1
       };
       $scope.open = function() {
-         $scope.showGenDialog(templatesPrefix+'/admin/tabs/accessEditDialog.html', 'items_items', 'item_item', $scope.$parent.item_item);
+         $scope.showGenDialog($rootScope.templatesPrefix+'/admin/tabs/accessEditDialog.html', 'items_items', 'item_item', $scope.$parent.item_item);
       };
 
 
