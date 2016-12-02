@@ -161,6 +161,10 @@ body {
   color: #82bf2b;
 }
 
+/* Generic elements */
+.radio-label {
+  font-weight: normal;
+}
 /* Footer */
 footer {
    background:#2aa3ff;

@@ -234,11 +234,11 @@ var models = {
             defaultValue : 'Undefined'
          },
          bAccessRestricted: {
-            type: "iny",
+            type: "int",
             widget: "radio",
             values: {
-               0: {label: "<a href='#' class='btn btn-mini btn-success'><i class='material-icons'>lock_open</i></a> Accessible directement si un parent est accessible"},
-               1: {label: "<a href='#' class='btn btn-mini btn-danger'><i class='material-icons'>lock</i></a> Déblocable par un entraîneur ou par la validation d'autres contenus"}
+               0: {label: "<span class='btn btn-mini btn-success'><i class='material-icons'>lock_open</i></span> Accessible directement si un parent est accessible"},
+               1: {label: "<span class='btn btn-mini btn-danger'><i class='material-icons'>lock</i></span> Déblocable par un entraîneur ou par la validation d'autres contenus"}
             },
             label: "Mode d'accès",
             defaultValue: 1
@@ -247,8 +247,8 @@ var models = {
             type: "int",
             widget: "radio",
             values: {
-               0: {label: "<a href='#' class='btn btn-mini btn-danger'><i class='material-icons'>visibility_off</i></a> Caché si inaccessible"},
-               1: {label: "<a href='#' class='btn btn-mini btn-success'><i class='material-icons'>visibility</i></a> Visible en grisé si inaccessible"}
+               0: {label: "<span class='btn btn-mini btn-danger'><i class='material-icons'>visibility_off</i></span> Caché si inaccessible"},
+               1: {label: "<span class='btn btn-mini btn-success'><i class='material-icons'>visibility</i></span> Visible en grisé si inaccessible"}
             },
             label: "Visibilité",
             defaultValue: 1

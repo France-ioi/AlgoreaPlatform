@@ -49,6 +49,10 @@ body {
 .checkboxSwitch.small input.switch:checked + label span {
   left: 18px;
 }
+.radio-label {
+  font-weight: normal;
+}
+
 /* PAGE STRUCTURE */
 .adminTreesControllers {
   padding: 0 10px 0;
