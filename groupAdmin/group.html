@@ -154,10 +154,10 @@
 
 				<div class="flex-container progression-controllers">
 					<div class="progression-type-select">
-						<span class="pull-left" ng-i18next="groupAdmin_visualization_select"></span>&nbsp;
-						<div class="inline-block">
-							<label><input type="radio" ng-model="formValues.progressionType" value="chronological">{{'groupAdmin_chronological' | i18next}}</label><br>
-							<label><input type="radio" ng-model="formValues.progressionType" value="collective">{{'groupAdmin_collective' | i18next}}</label>
+						<span ng-i18next="groupAdmin_visualization_select"></span>&nbsp;
+						<div class="inline-block btn-group">
+							<label ng-model="formValues.progressionType" uib-btn-radio="'chronological'" class="btn btn-default">{{'groupAdmin_chronological' | i18next}}</label>
+							<label ng-model="formValues.progressionType" uib-btn-radio="'collective'" class="btn btn-default">{{'groupAdmin_collective' | i18next}}</label>
 						</div>
 					</div>
 					<div>
