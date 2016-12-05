@@ -143,6 +143,18 @@ if ($action == 'login') {
       echo '{"result": false, "error": "invalid or empty token"}';
       return;
    }
+   if (isset($config->shared->domains['current']->loginMandatoryFields)) {
+      $missingFields = [];
+      foreach($config->shared->domains['current']->loginMandatoryFields as $mandatoryField) {
+         if (!isset($params[$mandatoryField]) || !$params[$mandatoryField]) {
+            $missingFields[] = $mandatoryField;
+         }
+      }
+      if (count($missingFields)) {
+         echo json_encode(['result' => false, 'missingFields' => $missingFields, 'error' => 'missing fields']);
+         exit();
+      }
+   }
    foreach ($params as $param_k => $param_v) {
       $_SESSION['login'][$param_k] = $param_v;
    }
