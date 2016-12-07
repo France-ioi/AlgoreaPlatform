@@ -180,6 +180,8 @@ if ($action == 'login') {
       ]);
       $_SESSION['login']['ID'] = $userId;
       $_SESSION['login']['idGroupSelf'] = $userSelfGroupId;
+      $_SESSION['login']['sFirstName'] = (isset($params['sFirstName']) ? $params['sFirstName'] : null);
+      $_SESSION['login']['sLastName'] = (isset($params['sLastName']) ? $params['sLastName'] : null);
       $_SESSION['login']['idGroupOwned'] = $userAdminGroupId;
       $_SESSION['login']['bIsAdmin'] = false;
    } else {
@@ -197,6 +199,8 @@ if ($action == 'login') {
       $_SESSION['login']['idGroupSelf'] = $res['idGroupSelf'];
       $_SESSION['login']['idGroupOwned'] = $res['idGroupOwned'];
       $_SESSION['login']['bIsAdmin'] = $res['bIsAdmin'];
+      $_SESSION['login']['sFirstName'] = (isset($params['sFirstName']) ? $params['sFirstName'] : null);
+      $_SESSION['login']['sLastName'] = (isset($params['sLastName']) ? $params['sLastName'] : null);
    }
    if (isset($params['aBadges'])) {
       handleBadges($_SESSION['login']['ID'], $_SESSION['login']['idGroupSelf'], $params['aBadges']);

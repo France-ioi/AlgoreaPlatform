@@ -1,0 +1,2 @@
+ALTER TABLE `items` ADD `bShowUserInfos` TINYINT(1) NOT NULL DEFAULT '0' COMMENT 'always show user infos in title bar of all descendants' AFTER `sEndContestDate`;
+ALTER TABLE `history_items` ADD `bShowUserInfos` TINYINT(1) NOT NULL DEFAULT '0' AFTER `sEndContestDate`;
