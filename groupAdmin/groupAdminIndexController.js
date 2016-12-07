@@ -54,12 +54,13 @@ angular.module('algorea')
          $scope.error = $i18next.t('groupAdmin_name_required');
          return;
       }
-      $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: $scope.groupId, sName: sName}, {responseType: 'json'}).success(function(postRes) {
+      $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: null, sName: sName}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
             SyncQueue.planToSend(0);
             $scope.formValues.groupName = '';
+            //$state.go('groupAdminGroup', {idGroup: postRes.idGroup});
          }
       })
       .error(function() {
