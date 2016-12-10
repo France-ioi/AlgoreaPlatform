@@ -37,6 +37,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
           if (!loginDone) {
             if (loginData) {
                state = 'login';
+               loggedOut = false;
                tempUser = loginData.tempUser;
                userID = loginData.ID;
                userSelfGroup = loginData.idGroupSelf;
@@ -154,7 +155,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
            }, function () {
            });
         }
-        function openLoginPopup() {
+        function openLoginPopup(logout) {
             var additionalArgs = '';
             if (config.domains.current.additionalLoginArgs) {
               additionalArgs = '&'+config.domains.current.additionalLoginArgs; 
@@ -162,12 +163,12 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
             if (config.domains.current.loginMandatoryFields) {
                additionalArgs += '&requiredFields='+encodeURIComponent(config.domains.current.loginMandatoryFields.join());
             }
-            if (!loggedOut && !tempUser) {
+            if (logout) {
                additionalArgs += '&autoLogout=1';
             }
             additionalArgs += '&fallbackReturnUrl='+encodeURIComponent(config.domains.current.baseUrl+'login/loginModule-fallback.php');
             var popup = window.open(loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
-            if (loggedOut || tempUser) {
+            if (!logout) {
                connectToPopup(popup);
             } else {
                onLogout();

@@ -139,8 +139,8 @@ if ($action == 'login') {
    require_once(dirname(__FILE__)."/../shared/TokenParser.php");
    $tokenParser = new TokenParser($config->login->public_key, $config->login->name);
    $params = $tokenParser->decodeJWS($request['token']);
-   if (!$params || empty($params)) {
-      echo '{"result": false, "error": "invalid or empty token"}';
+   if (!$params || empty($params) || !isset($params['idUser']) || !intval($params['idUser'])) {
+      echo json_encode(["result" => false, "error" => "invalid or empty token"]);
       return;
    }
    if (isset($config->shared->domains['current']->loginMandatoryFields)) {
@@ -164,10 +164,11 @@ if ($action == 'login') {
    $query = 'select ID, idGroupSelf, idGroupOwned, bIsAdmin from users where `loginID`= :idUser ;';
    $stm = $db->prepare($query);
    $stm->execute(array('idUser' => $params['idUser']));
-   if(! $stm->rowCount()) {
+   $res = $stm->fetch();
+   if(!$res) {
       list($userAdminGroupId, $userSelfGroupId) = createGroupsFromLogin($db, $params['sLogin']);
       $userId = getRandomID();
-      $stmt = $db->prepare("insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`) values (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName);");
+      $stmt = $db->prepare("insert into `users` (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`, `sStudentId`) values (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName, :sStudentId);");
       $stmt->execute([
          'ID' => $userId,
          'idUser' => $params['idUser'],
@@ -176,7 +177,8 @@ if ($action == 'login') {
          'userSelfGroupId' => $userSelfGroupId,
          'sEmail' => (isset($params['sEmail']) ? $params['sEmail'] : null),
          'sFirstName' => (isset($params['sFirstName']) ? $params['sFirstName'] : null),
-         'sLastName' => (isset($params['sLastName']) ? $params['sLastName'] : null)
+         'sLastName' => (isset($params['sLastName']) ? $params['sLastName'] : null),
+         'sStudentId' => (isset($params['sStudentId']) ? $params['sStudentId'] : null),
       ]);
       $_SESSION['login']['ID'] = $userId;
       $_SESSION['login']['idGroupSelf'] = $userSelfGroupId;
@@ -185,14 +187,14 @@ if ($action == 'login') {
       $_SESSION['login']['idGroupOwned'] = $userAdminGroupId;
       $_SESSION['login']['bIsAdmin'] = false;
    } else {
-      $res = $stm->fetch();
       if (isset($params['sEmail']) || isset($params['sFirstName']) || isset($params['sLastName'])) {
-         $stmt = $db->prepare("update `users` set `sEmail` = :sEmail, `sFirstName` = :sFirstName, `sLastName` = :sLastName where ID = :ID;");
+         $stmt = $db->prepare("update `users` set `sEmail` = :sEmail, `sFirstName` = :sFirstName, `sLastName` = :sLastName, sStudentId = :sStudentId where ID = :ID;");
          $stmt->execute([
             'ID' => $res['ID'],
             'sEmail' => (isset($params['sEmail']) ? $params['sEmail'] : null),
             'sFirstName' => (isset($params['sFirstName']) ? $params['sFirstName'] : null),
-            'sLastName' => (isset($params['sLastName']) ? $params['sLastName'] : null)
+            'sLastName' => (isset($params['sLastName']) ? $params['sLastName'] : null),
+            'sStudentId' => (isset($params['sStudentId']) ? $params['sStudentId'] : null)
          ]);
       }
       $_SESSION['login']['ID'] = $res['ID'];
