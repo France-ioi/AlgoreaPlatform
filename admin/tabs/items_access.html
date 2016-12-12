@@ -13,12 +13,12 @@
       <div class="accessTitleRow">
          <span class="accessTitleCell accessCellItem" ng-i18next="access">
          </span>
-         <span class="accessTitleCell accessCellGroup" ng-show="group_group != undefined" uib-tooltip="{{ group_group.child.sName }}">
+         <span class="accessTitleCell accessCellGroup" ng-show="group_group != undefined" uib-tooltip="{{ group_group.child.sName }}" tooltip-placement="bottom">
             <span class="groupNameWrapper">
                <span class="accessGroupName">{{ group_group.child.sName }}</span>
             </span>
          </span>
-         <span class="accessTitleCell accessCellChild" ng-repeat="group_group in group_group.child.children | manageableGroups" uib-tooltip="{{group_group.child.sName}}" tooltip-placement="top-right">
+         <span class="accessTitleCell accessCellChild" ng-repeat="group_group in group_group.child.children | manageableGroups" uib-tooltip="{{group_group.child.sName}}" tooltip-placement="bottom">
             <span class="childNameWrapper">
                <span class="childName">{{ group_group.child.sName }}</span>
             </span>
