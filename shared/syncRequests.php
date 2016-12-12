@@ -458,6 +458,12 @@ function setupExpandedItemsRequests($params, &$requests) {
          //$requests['zero_'.$table]["debug"] = true;
       }
    }
+   if (isset($requests['users_items'])) {
+      unset($requests['users_items']);
+   }
+   if (isset($requests['zero_users_items'])) {
+      unset($requests['zero_users_items']);
+   }
    //file_put_contents(__DIR__.'/../logs/groups_items.log', date(DATE_RFC822).'  '.json_encode($requests['groups_items'])."\n", FILE_APPEND);
 }
 

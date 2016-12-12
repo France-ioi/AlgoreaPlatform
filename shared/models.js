@@ -182,6 +182,7 @@ var models = {
          sAccessOpenDate: {type: "jsdate", label: "Date d'ouverture de l'accès"},
          sDuration: {type: "string", label: "Durée de l'épreuve"},
          sEndContestDate: {type: "jsdate", label: "Date de fermeture du concours"},
+         bShowUserInfos: {type: "boolean", label: "Afficher les infos utilisateur dans les barres de titre des descendants"},
          sContestPhase: {
             type: "enum",
             values: {

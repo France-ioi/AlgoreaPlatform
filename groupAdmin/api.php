@@ -180,7 +180,7 @@ function createGroup($idGroup, $sName) {
    $stmt = $db->prepare('insert into groups_groups (idGroupChild, idGroupParent, sRole) values (:idGroup, :idGroupOwned, \'owner\');');
    $stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']]);
    Listeners::groupsGroupsAfter($db);
-   echo json_encode(array('success' => true));
+   echo json_encode(array('success' => true, 'idGroup' => $idGroup));
 }
 
 if ($request['action'] == 'refreshCode') {

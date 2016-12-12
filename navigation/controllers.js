@@ -175,6 +175,48 @@ angular.module('algorea')
          }
       };
       $scope.setItemIcon($scope.item);
+
+      $scope.setUserInfos = function() {
+         $scope.userInfos = '';
+         itemService.onNewLoad(function() {
+            var loginData = SyncQueue.requests.loginData;
+            if (loginData) {
+               if (loginData.tempUser) {
+                  $scope.userInfos = 'Non connecté';
+                  return;
+               }
+               if (loginData.sFirstName && loginData.sLastName) {
+                  $scope.userInfos = loginData.sFirstName+' '+loginData.sLastName;
+               } else {
+                  $scope.userInfos = loginData.sLogin;
+               }
+            }
+         });   
+      }
+      $scope.$on('syncResetted', function() {
+         $scope.setUserInfos();
+      });
+      $scope.setUserInfos();
+
+      $scope.setShowUserInfos = function(item, pathParams) {
+         this.showUserInfos = false;
+         var that = this;
+         if (!item) return;
+         if (item.bShowUserInfos) {
+            this.showUserInfos = true;
+            return;
+         }
+         angular.forEach(pathParams.path, function(itemID, idx) {
+            if (itemID == item.ID || idx >= pathParams.selr-1) {
+               return false;
+            }
+            var ancestorItem = itemService.getRecord('items',itemID);
+            if (ancestorItem && ancestorItem.bShowUserInfos) {
+               that.showUserInfos = true;
+            }
+         });
+      };
+
       $scope.item_percent_done = function(user_item) {
          if (!user_item) {
             return 0;
@@ -242,6 +284,7 @@ angular.module('algorea')
             }
             itemService.onSeen(item);
             that.setItemIcon(item);
+            that.setShowUserInfos(item, that.pathParams);
             if(callback) {
                callback(item);
             }

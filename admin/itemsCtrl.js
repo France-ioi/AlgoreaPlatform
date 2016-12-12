@@ -748,10 +748,10 @@ angular.module('algorea')
       SyncQueue.requestSets = [
          {name: "groupsAncestors"},
          {name: "groupsDescendants"},
-         {name: "groupsDescendantsAncestors"},
-         {name: "groupsGroupsDescendantsAncestors"},
+         //{name: "groupsDescendantsAncestors"},
+         //{name: "groupsGroupsDescendantsAncestors"},
          {name: "groupsGroupsAncestors"},
-         {name: "groupsItemsDescendantsAncestors"},
+         //{name: "groupsItemsDescendantsAncestors"},
          {name: "groupsItemsAncestors"},
          //{name: "itemsOrphaned"},
          //{name: "itemsStringsOrphaned"},

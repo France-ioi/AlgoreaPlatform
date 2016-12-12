@@ -159,7 +159,7 @@ if (isset($_GET['login']) && $_GET['login'] && isset($_GET['nbMinutes']) && isse
 ?>
 <h1>Ajout de temps sur un concours</h1>
 
-<p>Sur cette page vous pouvez ajouter du temps de concours à un élève qui est dans un de vos groupes :</p>
+<p>Sur cette page vous pouvez ajouter du temps de concours (auquel vous avez un accès complet ou un accès aux solutions) à un élève qui est dans un des groupes que vous administrez :</p>
 
 <form method="get">
 	<div class="form-group">
