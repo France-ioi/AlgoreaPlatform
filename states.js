@@ -183,7 +183,7 @@ angular.module('algorea')
       * but I find it less elegant because it breaks ui-sref
       */
       $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-         if (fromState.name == 'contents' && toState.name == 'contents' && fromParams.path == toParams.path && fromParams.sell == toParams.sell && fromParams.selr == toParams.selr) {
+         if (fromState.name == 'contents' && toState.name == 'contents' && fromParams.path == toParams.path && fromParams.sell == toParams.sell && typeof toParams.selr == "undefined" && fromParams.selr == toParams.path.split('/').length) {
              // here, only the parameters that shouldn't change the view are changed in the URL
              event.preventDefault();
              /* Ok, we prevent default, *but*, preventing default in this signal
@@ -198,6 +198,7 @@ angular.module('algorea')
                    $state.go(toState, toParams, {notify: false, location: 'replace'});
                    $rootScope.$broadcast('algorea.taskViewChange', toParams, fromParams);
                 },0);
+             return;
          }
          /* This part is also a hack due to the limited capacities of routers.
           * It's been done after reporting https://github.com/angular-ui/ui-router/issues/1744
