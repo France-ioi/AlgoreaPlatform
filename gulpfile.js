@@ -76,7 +76,7 @@ gulp.task('admin-templates', function () {
 
 gulp.task('vendor-js', function() {
   // exclude bootstrap from included js, include fr_fr locale
-  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "dynatree": {"dependencies": {"jquery-ui": "*"}}, "angular": {"dependencies": {"jquery": "*"}}, "angular-i18n": {"main": ['angular-locale_fr-fr.js'], "dependencies": {"angular":"*"}}}})) 
+  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "dynatree": {"dependencies": {"jquery-ui": "*"}}, "angular": {"dependencies": {"jquery": "*"}}, "angular-i18n": {"main": ['angular-locale_fr-fr.js'], "dependencies": {"angular":"*"}}}}))
     .pipe(uglify())
     .pipe(concat('vendor.min.js'))
     .pipe(gulp.dest(''));
@@ -100,7 +100,7 @@ gulp.task('dynatree-images', function() {
 });
 
 gulp.task('vendor-images', ['dynatree-images'], function() {
-  return gulp.src(mainBowerFiles([['**/images/*.png']]))
+  return gulp.src(mainBowerFiles({ filter: '**/images/*.png' }))
     .pipe(gulp.dest('images'));
 });
 
