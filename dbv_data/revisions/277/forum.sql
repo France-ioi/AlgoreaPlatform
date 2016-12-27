@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `users_threads` ;
 
 CREATE TABLE IF NOT EXISTS `users_threads` (
   `ID` BIGINT NOT NULL,
-  `idUser` INT(11) NOT NULL,
+  `idUser` BIGINT NOT NULL,
   `idThread` BIGINT NOT NULL,
   `sLastReadDate` VARCHAR(45) NULL,
   `sLastWriteDate` VARCHAR(45) NULL,
@@ -54,7 +54,7 @@ DROP TABLE IF EXISTS `filters` ;
 
 CREATE TABLE IF NOT EXISTS `filters` (
   `ID` BIGINT NOT NULL,
-  `idUser` INT NOT NULL,
+  `idUser` BIGINT NOT NULL,
   `sName` VARCHAR(45) NOT NULL,
   `bStarred` TINYINT(1) NULL DEFAULT NULL,
   `sStartDate` DATETIME NULL DEFAULT NULL,
