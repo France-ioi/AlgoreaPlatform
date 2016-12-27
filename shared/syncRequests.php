@@ -404,6 +404,9 @@ function getSyncRequests($params, $minServerVersion) {
    $requests['messages']['lowPriority'] = true;
    $requests['users_threads']['lowPriority'] = true;
    $requests['groups_groups']['lowPriority'] = true;
+   // these two aren't used yet, uncomment when ready
+   unset($requests['cached_windows_items_access']);
+   unset($requests['windows']);
    //var_export($requests);
    algoreaCustomRequest($params, $requests, $db, $minServerVersion);
    //echo json_encode($requests);
