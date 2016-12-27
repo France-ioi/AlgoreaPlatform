@@ -3,6 +3,7 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 require_once __DIR__.'/syncUserItems.php';
+require_once(__DIR__.'/../contest/common.php');
 
 function checkExpandedItemResults(&$serverChanges) {
    /* specific to ExpandedItems request: we have marked the records with either
@@ -33,12 +34,17 @@ function checkExpandedItemResults(&$serverChanges) {
    }
 }
 
+// will be filled in getSyncRequests
+$contestData = null;
+
 function syncAddCustomServerChanges($db, $minServerVersion, &$serverChanges, &$serverCounts, $params) {
+   global $contestData;
    if (!empty($_SESSION) && !empty($_SESSION['login'])) {
       $serverChanges['loginData'] = $_SESSION['login'];
    } else {
       $serverChanges['loginData'] = null;
    }
+   $serverChanges['contestData'] = $contestData;
    if (empty($_SESSION) || empty($_SESSION['login']) || !isset($_SESSION['login']['ID']) || empty($serverChanges) || (isset($params["requests"]["algorea"]['admin']) && $params["requests"]["algorea"]['admin'] == true)) {
       checkExpandedItemResults($serverChanges);
       return;
@@ -66,9 +72,7 @@ function handleClientUserItems($db, $minServerVersion, &$clientChanges) {
 
 
 function syncAddCustomClientChanges($db, $minServerVersion, &$clientChanges) {
-   if (!isset($_SESSION)) {
-      session_start();
-   }
+   if (session_status() === PHP_SESSION_NONE){session_start();}
    if (empty($_SESSION) || empty($_SESSION['login']) || !$_SESSION['login']['ID'] || empty($clientChanges)) {
       return;
    }
@@ -280,14 +284,17 @@ function setupExpandedItemsRequests($params, &$requests) {
          //$requests['zero_'.$table]["debug"] = true;
       }
    }
+   if (isset($requests['users_items'])) {
+      unset($requests['users_items']);
+   }
+   if (isset($requests['zero_users_items'])) {
+      unset($requests['zero_users_items']);
+   }
    //file_put_contents(__DIR__.'/../logs/groups_items.log', date(DATE_RFC822).'  '.json_encode($requests['groups_items'])."\n", FILE_APPEND);
 }
 
 function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
    global $config;
-   if (!isset($_SESSION)) {
-      session_start();
-   }
    if (!count($_SESSION) || !isset($_SESSION['login']) || !isset($_SESSION['login']['ID'])) {
       $requests = array();
       return;
@@ -389,7 +396,10 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
 }
 
 function getSyncRequests($params, $minServerVersion) {
-   global $db;
+   global $db, $contestData;
+   if (session_status() === PHP_SESSION_NONE){session_start();}
+   $contestData = adjustContestAndGetData();
+   //echo json_encode($contestData);
    $requests = syncGetTablesRequests(null, false);
    $requests['messages']['lowPriority'] = true;
    $requests['users_threads']['lowPriority'] = true;

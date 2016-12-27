@@ -1,7 +1,8 @@
 .menu {
    display: -webkit-flex;
    display: flex;
-   min-height:75px;
+   flex-flow: row wrap;
+   min-height: 45px;
    font-family: 'Roboto', sans-serif;
    font-size:17.5pt;
    justify-content: center;
@@ -9,7 +10,23 @@
 }
 
 .menu-toggled > #menu {
-   display:none !important;
+   display: none;
+}
+
+.affix {
+   position: fixed;
+   top: 0;
+   width: 100%;
+}
+#navOverlay {
+   position: fixed;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   z-index: 3;
+   background-color: #ccc;
+   background-color: rgba(0,0,0,0.3);
 }
 
 /*@media all and (max-width: 1100px) {*/
@@ -21,27 +38,6 @@
 /*   }*/
 /*}*/
 
-#menu-logo {
-   -webkit-flex: 0 0 325px;
-   flex: 0 0 325px;
-   background-color:#82bf2b;
-   color:white;
-   border:0px;
-}
-
-#menu-logo-content:after {
-   content: "Algoréa";
-}
-
-#menu-else {
-   -webkit-flex: 1 1 auto;
-   flex: 1 1 auto;
-   display: -webkit-flex;
-   display:flex;
-   flex-direction:row;
-   flex-wrap:wrap;
-   justify-content:space-between;
-}
 
 .menu-item {
    display: -webkit-flex;
@@ -49,29 +45,167 @@
    -webkit-flex-direction:column;
    flex-direction:column;
    background: #e8e8e8;
-   -webkit-flex: 1 0 140px;
-   flex: 1 0 140px;
+   -webkit-flex: 1 1 150px;
+   flex: 1 1 150px;
    justify-content:space-around;
-   border-left: 1px solid #d9d9d9;
-   border-right: 1px solid #d9d9d9;
    color: #5d5d5d;
    cursor:pointer;
+   white-space: nowrap;
 }
-
+.menu-item-active {
+   background: #2aa3ff !important;
+   color:white !important;
+}
 .menu-item-content {
    text-align: center;
 }
-
-.userinfo {
-   position: relative;
-   overflow:visible;
-   text-align:center;
-   -webkit-flex: 0 0 258px;
-   flex: 0 0 258px;
-   background-color:#878787;
+.menu-item-icon {
+   position:relative;
+   top:4px;
+}
+/*
+*
+   MAIN NAVIGATION
+*
+*/
+#menu-logo {
+   -webkit-flex: 0 1 325px;
+   flex: 0 1 325px;
+   background-color:#82bf2b;
    color:white;
    border:0px;
 }
+
+#menu-main {
+   -webkit-flex: 3 1 auto;
+   flex: 3 1 auto;
+   display: -webkit-flex;
+   display:flex;
+   flex-direction:row;
+   justify-content:space-between;
+}
+#menu-main .menu-item {
+   border-left: 1px solid #d9d9d9;
+   border-right: 1px solid #d9d9d9;
+}
+#userinfocontainer {
+   -webkit-flex: 1 1 auto;
+   flex: 1 1 auto;
+   order: 3;
+}
+/*@media all and (max-width: 700px) {
+   .menu {
+      -webkit-flex-direction:column;
+      flex-direction:column;
+   }
+}*/
+@media all and (max-width: 1040px) {
+   #menu-logo {
+      -webkit-flex-basis: 50%;
+      flex-basis: 50%;
+   }
+   #userinfocontainer {
+      -webkit-flex-basis: 50%;
+      flex-basis: 50%;
+      order: 2;
+   }
+   #menu-main {
+      -webkit-flex-basis: 100%;
+      flex-basis: 100%;
+      flex-wrap: wrap;
+      order: 3;
+   }
+   #loginFrame {
+      width:160px;
+      top:32px;
+   }
+}
+@media all and (max-width: 1100px)  and (min-width: 1041px) {
+   .menu {
+      align-items: stretch;
+   }
+   #menu-logo {
+      -webkit-flex-basis: 150px;
+      flex-basis: 150px;
+   }
+}
+@media all and (max-width: 480px) {
+   .menu {
+      -webkit-flex-direction:column;
+      flex-direction:column;
+   }
+   #menu-logo {
+      -webkit-flex-basis: auto;
+      flex-basis: auto;
+   }
+   #userinfocontainer {
+      -webkit-flex-basis: auto;
+      flex-basis: auto;
+      order: 2;
+   }
+   #menu-main {
+      flex-wrap: nowrap;
+      flex-basis: auto;
+      flex-direction: column;
+   }
+   .menu-item {
+      flex-basis: 40px;
+      border-bottom: 1px solid #d9d9d9;
+   }
+}
+.menu-item-login {
+   background-color: #878787;
+   color: #fff;
+}
+.menu-item-login-logged .userbox-text {
+   display: none;
+}
+.userInfosLink,
+.userInfosLink:focus,
+.userInfosLink:hover {
+   color: #fff;
+}
+.userInfosLink:hover {
+   color: inherit;
+}
+.userInfosLink .menu-item-icon {
+   margin-right: 7px;
+}
+.userinfo .logout-btn {
+   color: #fff;
+   transition: all 250ms;
+}
+.userinfo .logout-btn:active,
+.userinfo .logout-btn:hover,
+.userinfo .logout-btn:focus {
+   color: #d9d9d9;
+}
+#userinfocontainer-breadcrumbs {
+   display:none;
+}
+
+.userinfocontainer-breadcrumbs-toggled {
+   display:block !important;
+}
+
+@media all and (max-width: 1100px)  and (min-width: 701px) {
+   #loginFrame {
+      width:160px;
+      top:32px;
+   }
+   #userinfocontainer-breadcrumbs {
+      display:block;
+   }
+   .userinfocontainer-breadcrumbs-toggled {
+      display:none;
+   }
+}
+
+/*
+*
+   LOGIN FRAME
+*
+*/
 .loginFrame {
    z-index:5;
    position: absolute;
@@ -83,147 +217,69 @@
    width:260px;
    overflow: hidden;
    border: 0px solid;
-   box-shadow:         0px 0px 0px;
+   box-shadow: 0px 0px 0px;
 }
-
-#userinfocontainer-breadcrumbs {
-   display:none;
-}
-
-.userinfocontainer-breadcrumbs-toggled {
-   display:block !important;
-}
-
-@media all and (max-width: 1100px)  and (min-width: 700px) {
-   .menu-item {
-      -webkit-flex-basis:200px;
-      flex-basis:200px;
-   }
-   #menu-logo {
-      -webkit-flex-basis:250px;
-      flex-basis:250px;
-   }
-   .menu {
-      align-items: stretch;
-   }
-   .menu-item-content {
-   }
-   #loginFrame {
-      width:160px;
-      top:32px;
-   }
-   #userinfocontainer > .userinfo {
-      -webkit-flex-basis:200px;
-      flex-basis:200px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-   }
-   #userinfocontainer {
-      -webkit-flex-basis:200px;
-      flex-basis:200px;
-   }
-   #userinfocontainer-breadcrumbs {
-      display:block;
-   }
-   .userinfocontainer-breadcrumbs-toggled {
-      display:none;
-   }
-}
-
-@media all and (max-width: 700px) {
-   #menu-logo {
-      -webkit-flex-basis:37px;
-      flex-basis:37px;
-      width:100%;
-   }
-   .menu {
-      -webkit-flex-direction:column;
-      flex-direction:column;
-   }
-   #loginFrame {
-      width:160px;
-      top:32px;
-   }
-}
-
-.menu-item-icon {
-   position:relative;
-   top:4px;
-}
-
-.menu-item-active {
-   background: #2aa3ff !important;
-   color:white !important;
-}
-
-.menu-item-login {
-   background-color: #878787 !important;
-   color:white !important;
-}
-
-#breadcrumbs {
-   background-color:#2aa3ff;
-   font-size:12pt;
-   display: -webkit-flex;
-   display: flex;
-   justify-content: -webkit-flex-start;
-   justify-content: flex-start;
-   width:100%;
-   -webkit-flex-wrap:wrap;
-   flex-wrap:wrap;
-   min-height:25px;
-   padding-right:20px;
-}
-
-.breadcrumbs-item {
-   height:25px;
-   background-color:#2aa3ff;
-   -webkit-flex: 0 0 auto;
-   flex: 0 0 auto;
-   padding-right:10px;
-}
-
-.breadcrumbs-toggled {
-   
-}
-
-.breadcrumbs-after-selected a {
-   color: gray!important;
-}
-
-.breadcrumbs-item-active {
-   color:white;
-}
-
-#breadcrumbs a {
-   color:black;
-}
-
-#breadcrumbs>div>span>a:after
-{
-  content: '>';
-}
-#breadcrumbs>div>span>span:after
-{
-  content: '>';
-}
-#breadcrumbs>div:nth-last-child(2)>span>a:after
-{
-  content: '';
-}
-#breadcrumbs>div:nth-last-child(2)>span>span:after
-{
-  content: '';
-}
-
 .loginFrame-login {
    height:175px;
 }
 .loginFrame-logout {
    height:105px;
 }
-.userInfosLink {
-   color: rgb(2, 118, 196) !important;
+
+/*
+*
+   BREADCRUMBS
+*
+*/
+#toolbar {
+   background-color: #2aa3ff;
+   font-size: 12pt;
+   min-height: 25px;
+   padding: 0 20px;
+   display: -webkit-flex;
+   display: flex;
+   justify-content: -webkit-space-between;
+   justify-content: space-between;
+}
+#toolbar.affix {
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+}
+#breadcrumbs {
+   display: -webkit-flex;
+   display: flex;
+   justify-content: -webkit-flex-start;
+   justify-content: flex-start;
+   -webkit-flex-wrap: wrap;
+   flex-wrap: wrap;
+}
+.breadcrumbs-item {
+   -webkit-flex: 0 1 auto;
+   flex: 0 1 auto;
+   padding-right:10px;
+}
+
+.breadcrumbs-toggled {
+}
+#breadcrumbs a {
+   color: #000;
+}
+#breadcrumbs .breadcrumbs-item-active {
+   color: #fff;
+}
+#breadcrumbs .breadcrumbs-after-selected,
+#breadcrumbs .breadcrumbs-after-selected a {
+   color: #ccc;
+}
+#breadcrumbs .breadcrumbs-item-inactive-not-last::after,
+#breadcrumbs .breadcrumbs-inactive-not-last::after,
+#breadcrumbs .breadcrumbs-active-not-last::after {
+  content: '>';
+  padding-left: 5px;
+}
+
+.menu-more {
+   color: #fff;
+   cursor: pointer;
 }
 
 .arrow-link-icon {

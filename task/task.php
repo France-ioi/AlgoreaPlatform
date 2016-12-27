@@ -11,7 +11,7 @@ $request = (array) json_decode($postdata);
 
 require_once __DIR__.'/../config.php';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 
 if (!isset($request['action'])) {
@@ -25,30 +25,47 @@ if (!isset($_SESSION['login'])) {
 
 require_once(dirname(__FILE__)."/../shared/TokenParser.php");
 require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
+require_once(__DIR__.'/../contest/common.php');
 
 function getTokenParams($request) {
-   global $config;
+   global $config, $db;
    $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
    try {
-      $params = $tokenParser->decodeJWS($request['sToken']);
+      if (isset($request['sToken'])) {
+         $params = $tokenParser->decodeJWS($request['sToken']);
+      } elseif (isset($request['scoreToken'])) {
+         $params = $tokenParser->decodeJWS($request['scoreToken']);
+      } else {
+         echo json_encode(array('result' => false, 'error' => 'no sToken nor scoreToken argument'));
+         exit;
+      }
    } catch (Exception $e) {
       echo json_encode(array('result' => false, 'error' => $e->getMessage()));
+      exit;
+   }
+   if (!$params['idUser'] || (!$params['itemUrl'] && !$params['idItemLocal'])) {
+      echo json_encode(array('result' => false, 'error' => 'missing idUser or itemUrl in token'));
+      exit;
+   }
+   if (!$params['idItemLocal']) {
+      $stmt = $db->prepare('select ID from items where sUrl = :itemUrl;');
+      $stmt->execute(['itemUrl' => $params['itemUrl']]);
+      $params['idItemLocal'] = $stmt->fetchColumn();
+      if (!$params['idItemLocal']) {
+         echo json_encode(array('result' => false, 'error' => 'cannot find item with url '.$params['itemUrl']));
+         exit;     
+      }
+   }
+   if (isset($_SESSION) && isset($_SESSION['login']) && $params['idUser'] != $_SESSION['login']['ID']) {
+      echo json_encode(array('result' => false, 'error' => 'token doesn\'t correspond to user session: got '.$params['idUser'].', expected '.$_SESSION['login']['ID'], 'token' => $params, 'session' => $_SESSION));
       exit;
    }
    return $params;
 }
 
-
-function checkParams($params) {
-   if ($params['idUser'] != $_SESSION['login']['ID']) {
-      echo json_encode(array('result' => false, 'error' => 'token doesn\'t correspond to user session: got '.$params['idUser'].', expected '.$_SESSION['login']['ID'], 'token' => $params, 'session' => $_SESSION));
-      exit;
-   }
-}
-
 // this function checks the platformToken if necessary an returns a safe score
 // TODO: maybe sAnswer or bValidated should be added to the token?
-function getScore($request, $params, $otherPlatformToken, $db) {
+function getScoreParams($request, $params, $otherPlatformToken, $db) {
    if (!isset($params['idItemLocal']) || !intval($params['idItemLocal'])) {
       echo json_encode(array('result' => false, 'error' => 'no item ID!', 'token' => $params));
       exit;
@@ -62,7 +79,7 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       exit;
    }
    if (!$platform['bUsesTokens']) {
-      return floatval($request['score']);  // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+      return ['score' => $request['score']];
    }
    if (!$otherPlatformToken) {
       echo json_encode(array('result' => false, 'error' => 'platform token was ommited, please transmit it.', 'token' => $params));
@@ -80,11 +97,10 @@ function getScore($request, $params, $otherPlatformToken, $db) {
       error_log('possible hack attempt from user ID '.$_SESSION['login']['ID']);
       exit;
    }
-   return floatval($params['score']); // XXX: hack to get score on 100 instead of 10, should be removed when beaver tasks are transformed
+   return $params;
 }
 
-// function returning the idUserAnswer field of $otherPlatformToken, an
-// answerToken as returned by askHint()
+// function returning the idUserAnswer field of answerToken when no scoreToken is provided
 function getIdUserAnswer($params, $answerToken) {
    global $config;
    $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
@@ -111,11 +127,23 @@ if (file_exists( __DIR__."/../shared/debug.php")) {
 require_once("../shared/listeners.php");
 require_once(dirname(__FILE__)."/../shared/TokenGenerator.php");
 
+function createUserItemIfMissing($userItemId, $params) {
+   global $db;
+   if (!$userItemId) return;
+   $stmt = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`) VALUES (:ID, :idUser, :idItem);");
+   $stmt->execute(['ID' => $userItemId,'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']]);
+}
+
 function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
+   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['submissionPossible']) {
+      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+      return;
+   }
+   createUserItemIfMissing($request['userItemId'], $params);
    $ID = getRandomID();
-   checkParams($params);
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
    $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'sAnswer' => $request['sAnswer']));
@@ -126,10 +154,10 @@ function askValidation($request, $db) {
 
    $answerParams = array(
       'sAnswer' => $request['sAnswer'],
-      'idUser' => intval($_SESSION['login']['ID']),
-      'idItem' => intval($params['idItem']),
-      'itemUrl' => intval($params['itemUrl']),
-      'idItemLocal' => intval($params['idItemLocal']),
+      'idUser' => $_SESSION['login']['ID'],
+      'idItem' => $params['idItem'],
+      'itemUrl' => $params['itemUrl'],
+      'idItemLocal' => $params['idItemLocal'],
       'idUserAnswer' => $ID
    );
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
@@ -140,7 +168,12 @@ function askValidation($request, $db) {
 function askHint($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   checkParams($params);
+   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['submissionPossible']) {
+      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+      return;
+   }
+   createUserItemIfMissing($request['userItemId'], $params);
    $query = "UPDATE `users_items` SET nbHintsCached = nbHintsCached + 1, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
@@ -155,11 +188,21 @@ function askHint($request, $db) {
 function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   checkParams($params);
-   $score = getScore($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
-   $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);
+   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['submissionPossible']) {
+      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+      return;
+   }
+   $scoreParams = getScoreParams($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
+   $score = floatval($scoreParams['score']);
+   if (!isset($request['scoreToken'])) {
+      $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);   
+   } else {
+      $idUserAnswer = isset($params['idUserAnswer']) ? $params['idUserAnswer'] : $scoreParams['idUserAnswer'];
+   }
    // TODO: handle validation in a proper way
-   $bValidated = ($score > 50);
+   $bValidated = ($score > 99);
+
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
@@ -173,7 +216,7 @@ function graderResult($request, $db) {
       Listeners::computeAllUserItems($db);
    }
    $token = $request['sToken'];
-   if ($bValidated && !$params['bAccessSolutions']) {
+   if ($bValidated && isset($params['bAccessSolutions']) && !$params['bAccessSolutions']) {
       $params['bAccessSolutions'] = true;
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
       $token = $tokenGenerator->encodeJWS($params);
@@ -217,7 +260,7 @@ function getToken($request, $db) {
       'bReadAnswers' => true,
       'aAnswers' => $answers,
       'idUser' => intval($_SESSION['login']['ID']),
-      'idItemLocal' => intval($request['idItem']),
+      'idItemLocal' => $request['idItem'],
       'idItem' => $data['sTextId'],
       'itemUrl' => $data['sUrl'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],
@@ -233,7 +276,7 @@ if ($request['action'] == 'askValidation') {
    askValidation($request, $db);
 } elseif ($request['action'] == 'askHint') {
    askHint($request, $db);
-} elseif ($request['action'] == 'graderResult') {
+} elseif ($request['action'] == 'graderResult' || $request['action'] == 'graderReturn') {
    graderResult($request, $db);
 } elseif ($request['action'] == 'getToken') {
    getToken($request, $db);

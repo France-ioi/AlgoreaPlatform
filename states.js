@@ -3,13 +3,21 @@
 // Make sure to include the `ui.router` module as a dependency
 angular.module('algorea')
    .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
-       $rootScope.$state = $state;
-       $rootScope.$stateParams = $stateParams;
+      $rootScope.$state = $state;
+      $rootScope.$stateParams = $stateParams;
+      $rootScope.templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
    }]);
 
 // Make sure to include the `ui.router` module as a dependency.
 angular.module('algorea')
-   .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
+   .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$sceDelegateProvider', function ($stateProvider, $urlRouterProvider, $locationProvider, $sceDelegateProvider) {
+      if (config.domains.current.assetsBaseUrl) {
+         $sceDelegateProvider.resourceUrlWhitelist([
+            'self',
+            config.domains.current.assetsBaseUrl+'**'
+         ]);
+      }
+      var templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
       $urlRouterProvider
          .otherwise(config.domains.current.defaultPath);
       $stateProvider
@@ -31,7 +39,7 @@ angular.module('algorea')
       '</div>'+
    '</div>'+
    '</div>'+
-   '</div><div class="sidebar-left-content" ng-include="\'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
+   '</div><div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {
@@ -39,7 +47,7 @@ angular.module('algorea')
                    controller: 'rightNavigationController',
                 },
                 'breadcrumbs': {
-                   templateUrl: 'navigation/views/super-bread-crumbs.html',
+                   templateUrl: templatesPrefix+'navigation/views/super-bread-crumbs.html',
                    controller: 'superBreadCrumbsController',
                 },
              },
@@ -50,11 +58,11 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'groupRequests/groupRequests.html',
+                   templateUrl: templatesPrefix+'groupRequests/groupRequests.html',
                    controller: 'groupRequestsController',
                 },
                 'breadcrumbs': {
-                   template: '',
+                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Profil</span></div>',
                 },
              },
           }).state('userInfos', {
@@ -64,11 +72,11 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'userInfos/index.html',
+                   templateUrl: templatesPrefix+'userInfos/index.html',
                    controller: 'userInfosController',
                 },
                 'breadcrumbs': {
-                   template: '',
+                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Profil</span></div>',
                 },
              },
           }).state("forum", {
@@ -78,25 +86,11 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'forum/index.html',
+                   templateUrl: templatesPrefix+'forum/index.html',
                    controller: 'forumIndexController',
                 },
                 'breadcrumbs': {
                    template: '',
-                },
-             },
-          }).state("groupAdmin", {
-            url: "/groupAdmin/",
-            views: {
-               'left': {
-                   template: '',
-                },
-                'right': {
-                   templateUrl: 'groupAdmin/index.html',
-                   controller: 'groupAdminIndexController',
-                },
-                'breadcrumbs': {
-                   template: '<div><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Groupes</span></div>',
                 },
              },
           }).state("groupAdminGroup", {
@@ -106,11 +100,11 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'groupAdmin/group.html',
+                   templateUrl: templatesPrefix+'groupAdmin/group.html',
                    controller: 'groupAdminController',
                 },
                 'breadcrumbs': {
-                   template: '<div><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupAdmin()">Groupes</a></span> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{group.sName}}</span></div>',
+                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupRequests()" ng-i18next="profile"></a></span></div><div class="breadcrumbs-item"> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{group.sName}}</span></div>',
                    controller: 'groupAdminBreadCrumbsController',
                 },
              },
@@ -121,7 +115,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'static/concourir.html',
+                   templateUrl: templatesPrefix+'static/concourir.html',
                 },
                 'breadcrumbs': {
                    template: '',
@@ -134,7 +128,21 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'forum/thread.html',
+                   templateUrl: templatesPrefix+'forum/thread.html',
+                   controller: 'forumThreadController',
+                },
+                'breadcrumbs': {
+                   template: '',
+                },
+             },
+          }).state("newThreadType", {
+            url: "/forum/thread/new/:sType",
+            views: {
+               'left': {
+                   template: '',
+                },
+                'right': {
+                   templateUrl: templatesPrefix+'forum/thread.html',
                    controller: 'forumThreadController',
                 },
                 'breadcrumbs': {
@@ -148,7 +156,7 @@ angular.module('algorea')
                    template: '',
                 },
                 'right': {
-                   templateUrl: 'forum/thread.html',
+                   templateUrl: templatesPrefix+'forum/thread.html',
                    controller: 'forumThreadController',
                 },
                 'breadcrumbs': {
@@ -175,7 +183,7 @@ angular.module('algorea')
       * but I find it less elegant because it breaks ui-sref
       */
       $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-         if (fromState.name == 'contents' && toState.name == 'contents' && fromParams.path == toParams.path && fromParams.sell == toParams.sell && fromParams.selr == toParams.selr) {
+         if (fromState.name == 'contents' && toState.name == 'contents' && fromParams.path == toParams.path && fromParams.sell == toParams.sell && typeof toParams.selr == "undefined" && fromParams.selr == toParams.path.split('/').length) {
              // here, only the parameters that shouldn't change the view are changed in the URL
              event.preventDefault();
              /* Ok, we prevent default, *but*, preventing default in this signal
@@ -190,6 +198,7 @@ angular.module('algorea')
                    $state.go(toState, toParams, {notify: false, location: 'replace'});
                    $rootScope.$broadcast('algorea.taskViewChange', toParams, fromParams);
                 },0);
+             return;
          }
          /* This part is also a hack due to the limited capacities of routers.
           * It's been done after reporting https://github.com/angular-ui/ui-router/issues/1744
@@ -220,9 +229,6 @@ angular.module('algorea')
                },0);
             }
          }
-      });
-      $rootScope.$on('$stateChangeSuccess', function (event) {
-        $window.ga('send', 'pageview', $location.path());
       });
     /* 
      * Simple service for path parsing and analysis and url factoring

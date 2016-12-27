@@ -38,12 +38,17 @@ class TokenParser
     */
    public function decodeJWS($tokenString)
    {
-      $result = Loader::load($tokenString);
-      $verifier = VerifierFactory::createVerifier(['RS512']);
-      $valid_signature = $verifier->verifyWithKey($result, $this->key);
-      if (false === $valid_signature) {
-         throw new Exception('Signature cannot be validated, please check your SSL keys');
-      }
+      $loader = new Loader();
+      $signature_index = null;
+      $result = $loader->loadAndVerifySignatureUsingKey(
+         $tokenString,
+         $this->key,
+         ['RS512'],
+         $signature_index
+      );
+      $datetime = new DateTime();
+      $datetime->modify('-1 day');
+      $yesterday = $datetime->format('d-m-Y');
       $datetime = new DateTime();
       $datetime->modify('+1 day');
       $tomorrow = $datetime->format('d-m-Y');
@@ -56,8 +61,8 @@ class TokenParser
             throw new Exception('Invalid Task token, unable to decrypt: '.json_encode($params).'; current: '.date('d-m-Y'));
          }
       }
-      else if ($params['date'] != date('d-m-Y') && $params['date'] != $tomorrow) {
-         throw new Exception('API token expired');
+      else if ($params['date'] != $yesterday && $params['date'] != date('d-m-Y') && $params['date'] != $tomorrow) {
+         throw new Exception('API token expired: ' . $params['date']);
       }
       
       return $params;

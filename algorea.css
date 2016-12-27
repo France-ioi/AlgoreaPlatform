@@ -136,6 +136,7 @@ body {
 }
 
 .level-image {
+  padding-left:20px;
   width:150px;
   flex: 0 0 auto;
 }
@@ -143,4 +144,71 @@ body {
 .level-notimage {
   padding: 15px;
   flex: 0 1 auto;
+}
+
+/* Tab sections */
+.nav-tabs>li>a {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 250ms;
+  outline: 0;
+}
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover  {
+  color: #82bf2b;
+}
+
+/* Generic elements */
+.checkboxSwitch input.switch {
+  display: none;
+}
+.checkboxSwitch input.switch + label {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  position: relative;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.checkboxSwitch.small input.switch + label {
+  width: 35px;
+  height: 20px;
+}
+.checkboxSwitch input.switch + label span {
+  width: 20px;
+  height: 20px;
+  top: 4px;
+  left: 5px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #ddd;
+  transition: all 250ms;
+}
+.checkboxSwitch.small input.switch + label span {
+  width: 10px;
+  height: 10px;
+  top: 4px;
+  left: 5px;
+}
+.checkboxSwitch input.switch:checked + label span {
+  background-color: #2aa3ff;
+  left: 33px;
+}
+.checkboxSwitch.small input.switch:checked + label span {
+  left: 18px;
+}
+.radio-label {
+  font-weight: normal;
+}
+/* Footer */
+footer {
+   background:#2aa3ff;
+}
+footer a {
+  color: #005CA2;
 }

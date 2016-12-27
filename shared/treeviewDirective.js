@@ -78,8 +78,28 @@ angular.module('algorea')
                childrenFieldName: "children",
                parentFieldName: "parent",
                childFieldName: "child",
+               onQueryActivate: function(flag, dtnode) {
+                  var item_item = ModelsManager.getRecord('items_items',dtnode.data.idRelation);
+                  if (!item_item) return false;
+                  if (item_item.child.sType == 'Task') {
+                     return true;
+                  }
+                  return false;
+               },
+               objectFilter: function(item) {
+                  if (item.sType == 'Course' || item.sType == 'Presentation') {
+                     return false;
+                  }
+                  return true;
+               },
+               relationFilter: function(item_item) {
+                  if (item_item.child.sType == 'Course' || item_item.child.sType == 'Presentation') {
+                     return false;
+                  }
+                  return true;
+               },
                isObjectRoot: function(object) {
-                  return (object.ID == config.ProgressRootItemId);
+                  return (object.ID == config.domains.current.ProgressRootItemId);
                },
                getObjectTitle: getItemTitle,
                objectSelected: function(recordID) {scope.$emit('treeview.recordSelected', recordID, null, id);},

@@ -2,8 +2,18 @@
 
 // index of groups
 
+angular.module('algorea').
+  filter('groupsgroupsChildrenNameSort', function() {
+    return function(groups_groups) {
+      var res = _.sortBy(groups_groups, function(g_g) {
+         return g_g.child.sName;
+      });
+      return res;
+    };
+  });
+
 angular.module('algorea')
-   .controller('groupAdminIndexController', ['$scope', '$state', '$http', 'itemService', function ($scope, $state, $http, itemService) {
+   .controller('groupAdminIndexController', ['$scope', '$state', '$http', 'itemService', '$i18next', function ($scope, $state, $http, itemService, $i18next) {
    $scope.error = '';
    $scope.loading = true;
    $scope.formValues = {};
@@ -41,15 +51,16 @@ angular.module('algorea')
       $scope.error = '';
       var sName = $scope.formValues.groupName;
       if (!sName) {
-         $scope.error = 'vous devez indiquer un nom pour le groupe que vous allez créer.';
+         $scope.error = $i18next.t('groupAdmin_name_required');
          return;
       }
-      $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: $scope.groupId, sName: sName}, {responseType: 'json'}).success(function(postRes) {
+      $http.post('/groupAdmin/api.php', {action: 'createGroup', idGroup: null, sName: sName}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from admin groupAdmin/api.php: "+postRes.error);
          } else {
             SyncQueue.planToSend(0);
             $scope.formValues.groupName = '';
+            //$state.go('groupAdminGroup', {idGroup: postRes.idGroup});
          }
       })
       .error(function() {
@@ -63,7 +74,7 @@ angular.module('algorea')
    	$scope.loading = true;
    	$scope.error = '';
    	if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser == 1) {
-   		$scope.error = 'Vous devez être connecté(e) pour accéder à l\'interface de gestion des groupes.';
+   		$scope.error = $i18next.t('groupAdmin_login_required');
    		$scope.loading = false;
    		return;
    	}

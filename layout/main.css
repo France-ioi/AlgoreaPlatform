@@ -79,12 +79,11 @@ body {
    display:flex;
    flex-wrap:wrap;
    background-color: #e8e8e8;
-   height:74px;
 }
 
 .main-titlebar-item {
-   line-height:74px;
-   vertical-align:center;
+   line-height:1;
+   vertical-align:middle;
 }
 
 .main-titlebar-icon {
@@ -101,7 +100,6 @@ body {
    -webkit-flex: 1 0 auto;
    flex: 1 0 auto;
    font-size:20pt;
-   line-height:30px;
    padding-left:10px;
    padding-top:5px;
 }
@@ -109,6 +107,21 @@ body {
 .main-titlebar-title1 {
    font-weight:bold;
    font-size:25pt;
+}
+
+.contest-timer {
+   font-weight:bold;
+   font-size:40pt; 
+   float:right;
+   margin-right:20px;
+}
+
+.menubar-userinfos {
+   font-weight:bold;
+   font-size:20pt; 
+   float:right;
+   margin-right:20px;
+   margin-top:10px;
 }
 
 .main-titlebar-icon1 {

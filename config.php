@@ -33,13 +33,21 @@ $config = (object) array(
       "RootAdminGroupId" => "3",
       "RootTempGroupId" => "4",
       "OrphanedRootItemId" => "5",
+      "loginUrl" => "https://loginaws.algorea.org/login.html",
+      "timezone" => ini_get('date.timezone'),
       "domains" => array( // global root
          "current" => (object) array( // domain-specific root. All config is read from "current", implement your own mechanism to make it point to the data you want to according to the domain
+            "defaultLanguage" => 'fr',
+            "defaultAungularLocale" => 'fr-fr',
+            "customStringsName" => '',
             "title" => 'Change title here',
             "taglineHtml" => "Pour convertir ses idées<br>en applications numériques",
             "animationHtmlFile" => null,
             "usesLeftNavigation" => false,
-            "domain" => 'domain url, optional for "default"',
+            "baseUrl" => "http://localhost",
+            "assetsBaseUrl" => "http://localhost",
+            "compiledMode" => false,
+            "domain" => 'domain name, optional',
             "defaultPath" => '/contents/4022/4023',
             "usesForum" => true,
             "additionalCssUrl" => 'additional css url',
@@ -52,6 +60,7 @@ $config = (object) array(
             "ContestRootItemId" => "4",
             "CustomContestRootItemId" => "41",
             "OfficialContestRootItemId" => "42",
+            "additionalLoginArgs" => "",
          )
       )
    )
@@ -59,17 +68,17 @@ $config = (object) array(
 
 // Tabs
 $config->shared->domains['current']->tabs[0] = array(
-      'title' => 'Découvrir',
+      'title' => 'menu_discover',
       'path' => '4022/4023',
       'icon' => 'explore'
       );
 $config->shared->domains['current']->tabs[1] = array(
-      'title' => 'Progresser',
+      'title' => 'menu_progress',
       'path' => '4026/4021',
       'icon' => 'trending_up'
       );
 $config->shared->domains['current']->tabs[2] = array(
-      'title' => 'S\'entraider',
+      'title' => 'menu_forum',
       'path' => 'forum',
       'icon' => 'group'
       );
@@ -77,3 +86,5 @@ $config->shared->domains['current']->tabs[2] = array(
 if (is_readable(__DIR__.'/config_local.php')) {
    include_once __DIR__.'/config_local.php';
 }
+
+date_default_timezone_set($config->shared->timezone);

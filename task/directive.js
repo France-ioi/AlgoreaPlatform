@@ -1,8 +1,5 @@
 'use strict';
 
-// root url of tasks, everything before task.php
-var taskRootUrl = 'http://tasks.eroux.fr/';
-
 angular.module('algorea')
   .directive('includeTask', function () {
     return {
@@ -10,7 +7,7 @@ angular.module('algorea')
       scope: false,
       template: function(elem, attrs) {
         var userItemVarStr = attrs.userItemVar ? 'user-item-var="'+attrs.userItemVar+'"' : '';
-        return '<iframe ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen></iframe>';
+        return '<span ng-show="loadingError">{{loadingError}}</span><iframe ng-hide="loadingError" ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen></iframe>';
       },
       link: function(scope, elem, attrs) {
          // user-item-var can be used to take a variable other than
@@ -29,8 +26,13 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', 'mapService', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, mapService) {
+.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', '$injector', 'itemService', 'pathService', '$i18next', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, $injector, itemService, pathService, $i18next) {
+   var mapService = null;
+   if (config.domains.current.useMap) {
+      mapService = $injector.get('mapService');
+   }
    function loadTask(scope, elem, sameUrl) {
+      scope.loadingError = false;
       if (scope.item.sType == 'Task') {
          elem.addClass('iframe-task');
       } else {
@@ -41,16 +43,26 @@ angular.module('algorea')
          scope.taskLoaded = true;
          return;
       }
+      var currentId = scope.currentId;
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
+         if(scope.currentId != currentId) { return; }
          scope.task = task;
          configureTask(scope, elem, sameUrl);
-      }, !sameUrl);
+      }, !sameUrl, function() {
+         if(scope.currentId != currentId) { return; }
+         scope.taskLoaded = true;
+         scope.loadingError = $i18next.t('task_communicate_error');
+      });
    }
    function configureTask(scope, elem, sameUrl) {
       scope.loadedUserItemID = scope.user_item.ID;
       scope.task.unloaded = false;
       // not sure the following line is still necessary
-      TaskProxyManager.getGraderProxy(scope.taskName, function(grader) {scope.grader = grader;});
+      var currentId = scope.currentId;
+      TaskProxyManager.getGraderProxy(scope.taskName, function(grader) {
+         if(scope.currentId != currentId) { return; }
+         scope.grader = grader;
+      });
       scope.platform = new Platform(scope.task);
       TaskProxyManager.setPlatform(scope.task, scope.platform);
       scope.platform.showView = function(view, success, error) {
@@ -81,7 +93,7 @@ angular.module('algorea')
       scope.platform.askHint = function(hintToken, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
-         $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken, hintToken: hintToken}, {responseType: 'json'}).success(function(postRes) {
+         $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken, hintToken: hintToken, userItemId: scope.user_item.ID}, {responseType: 'json'}).success(function(postRes) {
             if ( ! postRes.result) {
                error("got error from task.php: "+postRes.error);
             } else if (!scope.canGetState || scope.user_item.ID != scope.askHintUserItemID) {
@@ -100,20 +112,14 @@ angular.module('algorea')
          if (scope.loadedUserItemID != scope.user_item.ID) return;
          var validateUserItemID = scope.user_item.ID;
          if (mode == 'cancel') {
-            scope.task.reloadAnswer('', function () {
-               $http.post('/task/task.php', {action: 'askValidation', sToken: scope.user_item.sToken, sAnswer: ''}, {responseType: 'json'}).success(function(postRes) {
-                  if ( ! postRes.result) {
-                     console.error("got error from task.php: "+postRes.error);
-                  }
-               });
-            });
+            scope.task.reloadAnswer('', success, error);
          } else if (mode == 'nextImmediate') {
             scope.moveToNext();
          } else {
             if (!scope.canGetState) {console.error('canGetState = false'); return};
             scope.task.getAnswer(function (answer) {
                if (scope.loadedUserItemID != scope.user_item.ID) error('scope.loadedUserItemID != scope.user_item.ID');
-               $http.post('/task/task.php', {action: 'askValidation', sToken: scope.user_item.sToken, sAnswer: answer}, {responseType: 'json'}).success(function(postRes) {
+               $http.post('/task/task.php', {action: 'askValidation', sToken: scope.user_item.sToken, sAnswer: answer, userItemId: scope.user_item.ID}, {responseType: 'json'}).success(function(postRes) {
                   if (scope.loadedUserItemID != scope.user_item.ID) {
                      error('loadedUserItemID != user_item.ID');
                      return;
@@ -125,11 +131,12 @@ angular.module('algorea')
                   } else if (scope.item.sValidationType != 'Manual') {
                      var newAnswer = ModelsManager.createRecord('users_answers');
                      newAnswer.ID = postRes.answer.idUserAnswer;
-                     newAnswer.idItem = postRes.answer.idItem;
-                     newAnswer.idGroup = postRes.answer.idGroup;
+                     newAnswer.idItem = postRes.answer.idItemLocal;
+                     newAnswer.idUser = postRes.answer.idUser;
                      newAnswer.sAnswer = postRes.answer.sAnswer;
                      newAnswer.sSubmissionDate = new Date();
-                     ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
+                     //ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
+                     ModelsManager.insertRecord('users_answers', newAnswer, 'noSync');
                      scope.user_answer = newAnswer;
                      scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
                         if (success) { success(); }
@@ -145,7 +152,7 @@ angular.module('algorea')
             });
          }
       };
-      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser, options: {}};
+      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser, options: {}, returnUrl: config.domains.current.baseUrl+'/task/task.php'};
       scope.platform.getTaskParams = function(key, defaultValue, success, error) {
          var res = scope.taskParams;
          if (key) {
@@ -165,7 +172,11 @@ angular.module('algorea')
       };
       scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
-            $http.post('/task/task.php', {action: 'graderResult', sToken: scope.user_item.sToken, scoreToken: scoreToken, answerToken: answerToken, score: score, message: message, idItem: scope.item.ID}, {responseType: 'json'}).success(function(postRes) {
+            var postParams = {action: 'graderResult', scoreToken: scoreToken, score: score, message: message, sToken: scope.user_item.sToken};
+            if (!scoreToken) {
+               postParams.answerToken = answerToken;
+            }
+            $http.post('/task/task.php', postParams, {responseType: 'json'}).success(function(postRes) {
                if ( ! postRes.result) {
                   console.error("got error from task.php: "+postRes.error);
                   return;
@@ -174,24 +185,26 @@ angular.module('algorea')
                   error("grading old task");
                   return;
                }
+               scope.user_item.nbTasksTried = scope.user_item.nbTasksTried+1;
                if (!scope.user_item.bValidated && postRes.bValidated) {
                   scope.user_item.sToken = postRes.sToken;
                   scope.user_item.bValidated = true;
                   scope.user_item.sValidationDate = new Date();
+                  scope.user_answer.sGradingDate = new Date();
                   if (config.domains.current.useMap) {
                      mapService.updateSteps();
                   }
                   ModelsManager.updated('users_items', scope.user_item.ID, false, true);
-                  $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                   scope.task.updateToken(postRes.sToken, function() {
                      scope.task.getViews(function(views) {
                         scope.showSolution();
                         scope.setTabs(views);
                      });
                   });
-                  $rootScope.$evalAsync($rootScope.$apply);
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
+               $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
+               scope.$applyAsync();
                if (success) { success(postRes.bValidated); } else { return postRes.bValidated; };
             })
             .error(function() {
@@ -201,8 +214,10 @@ angular.module('algorea')
       };
       var views = {'task': true, 'solution': true, 'editor': true, 'hints': true, 'grader': true,'metadata':true};
       scope.taskLoaded = true;
+      var currentId = scope.currentId;
       scope.task.load(views, function() {
          //scope.taskLoaded = true;
+         if(scope.currentId != currentId) { return; }
          scope.task.getMetaData(function(metaData) {
             scope.metaData = metaData;
             if (metaData.minWidth) {
@@ -213,6 +228,7 @@ angular.module('algorea')
                }
             }
             if (metaData.autoHeight) {
+               scope.taskIframe.css('height', '');
                elem.addClass('task-auto-height');
             } else {
                elem.removeClass('task-auto-height');
@@ -222,6 +238,9 @@ angular.module('algorea')
          scope.task.getViews(function(views) {
             scope.setTabs(views);
          });
+      }, function() {
+         if(scope.currentId != currentId) { return; }
+         scope.loadingError = $i18next.t('task_load_error');
       });
     }
     return {
@@ -239,6 +258,8 @@ angular.module('algorea')
          scope.taskIframe = elem;
          function initTask(sameUrl) {
             scope.currentView = null;
+            // ID of the current instance, allows to avoid callbacks from old tasks
+            scope.currentId = Math.random() * 1000000000;
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
                   var itemUrl = scope.item.sUrl;
@@ -274,12 +295,13 @@ angular.module('algorea')
             scope.canGetState = false;
             //scope.selectTab('task');
             scope.currentView = null;
+            angular.forEach(scope.intervals, function(interval, name) {
+               $interval.cancel(interval);
+            });
+            scope.intervals = {};
             var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (scope.task && !scope.task.unloaded) {
                scope.task.unloaded = true;
-               angular.forEach(scope.intervals, function(interval) {
-                  $interval.cancel(interval);
-               });
                scope.task.unload(function() {
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);

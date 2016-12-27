@@ -9,7 +9,7 @@ $request = (array) json_decode($postdata);
 
 require_once __DIR__.'/../config.php';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 
 if (!isset($request['action']) || ($request['action'] != 'createGroup' && !isset($request['idGroup']))) {
@@ -180,7 +180,7 @@ function createGroup($idGroup, $sName) {
    $stmt = $db->prepare('insert into groups_groups (idGroupChild, idGroupParent, sRole) values (:idGroup, :idGroupOwned, \'owner\');');
    $stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']]);
    Listeners::groupsGroupsAfter($db);
-   echo json_encode(array('success' => true));
+   echo json_encode(array('success' => true, 'idGroup' => $idGroup));
 }
 
 if ($request['action'] == 'refreshCode') {

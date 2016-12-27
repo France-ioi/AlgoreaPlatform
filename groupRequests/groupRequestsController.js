@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('groupRequestsController', ['$scope', '$http', 'loginService', '$rootScope', 'itemService', '$filter', '$timeout', function ($scope, $http, loginService, $rootScope, itemService, $filter, $timeout) {
+   .controller('groupRequestsController', ['$scope', '$http', 'loginService', '$rootScope', 'itemService', '$filter', '$timeout', '$i18next', function ($scope, $http, loginService, $rootScope, itemService, $filter, $timeout, $i18next) {
    $scope.layout.isOnePage(true);
    $scope.layout.hasMap('never');
    $scope.loading = true;
@@ -130,7 +130,7 @@ angular.module('algorea')
             $scope.error = postRes.error;
          } else {
             if (!postRes.results.length) {
-               $scope.resultError = "Aucun groupe correspondant à votre recherche n'a été trouvé.";
+               $scope.resultError = $i18next.t('groupRequests_no_group_found');
                $scope.results = null;
             } else {
                $scope.results = postRes.results;
@@ -148,17 +148,20 @@ angular.module('algorea')
 
    $scope.joinGroup = function(result) {
       result.joinLog = "chargement...";
-      $scope.passwordError = null;
+      $scope.passwordInfo = null;
       $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
-            var error = (postRes && postRes.error) ? postRes.error : 'Une erreur est survenue, merci de contacter un administrateur.';
+            var error = (postRes && postRes.error) ? postRes.error : $i18next.t('groupRequests_error_please_contact');
             console.error("got error from groupRequests handler: "+error);
             if (result.password && !result.ID) {
-               $scope.passwordError = error;
+               $scope.passwordInfo = error;
             } else {
                result.joinLog = error;
             }
          } else {
+            if (result.password) {
+               $scope.passwordInfo = $i18next.t('groupRequests_join_success')+postRes.groupName;
+            }
             result.relationType = postRes.type;
             var record = ModelsManager.getRecord('groups_groups', postRes.ID);
             if (record) {
@@ -178,18 +181,18 @@ angular.module('algorea')
       $scope.updateGroups();
       loginService.getLoginData(function(res) {
          if (res.tempUser) {
-            $scope.error = "Vous n'êtes pas identifié et ne pouvez pas accéder aux groupes. Les groupes permettent à un enseignant ou animateur de gérer un ensemble d'utilisateurs pour leur donner accès à du contenu personnalisé, et suivre leur progression.";
+            $scope.error = $i18next.t('groupRequests_not_logged');
             return;
          }
          $scope.loginLoading = false;
-         SyncQueue.addSyncEndListeners('getGroups', function() {
+         SyncQueue.addSyncEndListeners('groupRequestsInit', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
-               $scope.updateGroups();
                $scope.loading = false;
                $scope.myGroup = myGroup;
                $scope.user = ModelsManager.getRecord('users', res.ID);
+               $scope.updateGroups();
             });
-            SyncQueue.removeSyncEndListeners('getGroups');
+            SyncQueue.removeSyncEndListeners('groupRequestsInit');
          });
       });
    };
@@ -207,8 +210,8 @@ angular.module('algorea')
    });
 
    $scope.stopSync = function() {
-      delete(SyncQueue.requestSets.groupAdmin);
       SyncQueue.removeSyncEndListeners('groupRequests');
+      SyncQueue.removeSyncEndListeners('groupRequestsInit');
       ModelsManager.removeListener('groups_groups', 'deleted', 'groupRequestsDeleted');
       ModelsManager.removeListener('groups_groups', 'inserted', 'groupRequestsInserted');
       ModelsManager.removeListener('groups_groups', 'updated', 'groupRequestsUpdated');

@@ -1,8 +1,8 @@
 angular.module('algorea')
-   .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout) {
+   .controller('userController', ['$scope', '$rootScope', '$sce', '$location', '$http', 'itemService', 'loginService', '$timeout', '$i18next', function ($scope, $rootScope, $sce, $location, $http, itemService, loginService, $timeout, $i18next) {
       'use strict';
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html');
-      $scope.innerHtml = "Chargement...";
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl);
+      $scope.innerHtml = $i18next.t('login_loading');
       $scope.loggedIn = false;
       $scope.loginStr = null;
       $scope.frameHidden = true;
@@ -11,7 +11,7 @@ angular.module('algorea')
       $scope.infoWord = '';
       loginService.bindScope($rootScope);
       $scope.$on('login.login', function(event, data) {
-         $scope.innerHtml = 'Se déconnecter';
+         $scope.innerHtml = $i18next.t('login_disconnect');
          if (data.tempUser) {
             $scope.loginStr = null;   
          } else {
@@ -21,7 +21,7 @@ angular.module('algorea')
          $scope.tempUser = data.tempUser;
          if (data.tempUser) {
             $scope.loginFrameClass = 'loginFrame-login';
-            $scope.innerHtml = "Se connecter";
+            $scope.innerHtml = $i18next.t('login_connect');
          } else {
             $scope.infoWord = '';
             $scope.loginFrameClass = 'loginFrame-logout';
@@ -49,11 +49,5 @@ angular.module('algorea')
          }
       };
       loginService.init();
-      $scope.openLoginPopup = function() {
-         var additionalArgs = '';
-         if ($scope.loggedIn && !$scope.tempUser) {
-            additionalArgs = '&autoLogout=1';
-         }
-         window.open($scope.loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
-      };
+      $scope.openLoginPopup = loginService.openLoginPopup;
 }]);

@@ -2,12 +2,27 @@
 
 class groupAdmin {
    public static function getSyncRequests($requestSet, $minServerVersion) {
+      global $db;
       $baseRequests = syncGetTablesRequests(array('groups' => true, 'groups_groups' => true, 'users' => true, 'users_items' => true, 'threads' => true), false);
 
       $groupId = $requestSet['groupId'];
       $itemId = $requestSet['itemId'];
 
-      // TODO: check if user can access this group and item
+      if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
+         return;
+      }
+
+      $query = "select ID from groups_ancestors where idGroupAncestor = :idGroupOwned and idGroupChild = :mainGroupId;";
+      $stmt=$db->prepare($query);
+      $stmt->execute([
+         'idGroupOwned' => $_SESSION['login']['idGroupOwned'],
+         'mainGroupId' => $groupId
+      ]);
+      $test = $stmt->fetchColumn();
+      if (!$test) {
+         error_log('warning: user '.$_SESSION['login']['ID'].' tried syncRequest groupAdmin with group '.$groupId.' without permission.');
+         return []; // TODO: proper error message?
+      }
 
       $requests = [];
       $requests['groupAdminThreadsDescendants'] = $baseRequests['threads'];

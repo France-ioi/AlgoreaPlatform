@@ -1,25 +1,24 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('forumIndexController', ['$scope', 'itemService', 'loginService', '$state', '$timeout', '$rootScope', function ($scope, itemService, loginService, $state, $timeout, $rootScope) {
+   .controller('forumIndexController', ['$scope', 'itemService', 'loginService', '$state', '$timeout', '$rootScope', '$i18next', function ($scope, itemService, loginService, $state, $timeout, $rootScope, $i18next) {
    $scope.layout.isOnePage(true);
    $scope.loading = true;
    $scope.threads = {};
    $scope.currentFilter = null;
    $scope.globalFilters = {
       all: {filter: null, description: 'Tous'},
-      favorites: {filter: {bStarred: true}, description: 'Favoris'},
-      unread: {filter: {bUnread: true}, description: 'Non-lus'},
-      participated: {filter: {bParticipated: true}, description: 'Où j\'ai participé'}
+      favorites: {filter: {bStarred: true}, description: $i18next.t('forum_favorites')},
+      unread: {filter: {bUnread: true}, description: $i18next.t('forum_favorites')},
+      participated: {filter: {bParticipated: true}, description: $i18next.t('forum_participated')}
    };
    $scope.selectGlobalFilter = function(filter) {
       $scope.currentGlobalFilter = filter;
    };
    $scope.currentGlobalFilter = $scope.globalFilters.all;
    $scope.init = function() {
-      $scope.loading = false;
+      $scope.myUserID = SyncQueue.requests.loginData.ID;
       SyncQueue.requestSets.forumIndex = {minVersion: 0, name: 'forumIndex'};
-      $scope.myUserID = $rootScope.myUserID;
       itemService.syncForumIndex(function() {
          $scope.threads = ModelsManager.getRecords('threads');
          $scope.loading = false;
@@ -41,7 +40,8 @@ angular.module('algorea')
    $scope.tabs = {
       'helpOthers': {active: true, length: 0},
       'getHelp': {active: false, length: 0},
-      'general': {active: false, length: 0}
+      'general': {active: false, length: 0},
+      'technicalSupport': {active: false, length: 0}
    };
    $scope.setGlobalFilter = function(filterField) {
       $scope.globalFilter = {};
@@ -53,13 +53,16 @@ angular.module('algorea')
    $scope.goToUser = function(userID) {
       console.log('goToUser('+userID+');');
    };
-   $scope.newThread = function() {
-      $state.go('newThread');
+   $scope.newThread = function(sType) {
+      if (!sType) {
+         sType = 'Help';
+      }
+      $state.go('newThreadType', {sType: sType});
    };
 }]);
 
 angular.module('algorea')
-   .controller('forumIndexThreadController', ['$scope', '$state', 'itemService', function ($scope, $state, itemService) {
+   .controller('forumIndexThreadController', ['$scope', '$state', 'itemService', '$i18next', function ($scope, $state, itemService, $i18next) {
    function getUserThread(thread) {
       var result_user_thread = null;
       angular.forEach(thread.user_thread, function(user_thread) {
@@ -88,7 +91,7 @@ angular.module('algorea')
       }
    };
    if (!$scope.accessible) {
-      $scope.accessibiltyMessage = "Vous devez résoudre l'exercice avant de pouvoir consulter les demandes d'aide des autres utilisateurs";
+      $scope.accessibiltyMessage = $i18next.t('forum_needs_solved');
    }
    $scope.isUserThreadTmp = false;
    if (! $scope.user_thread) {

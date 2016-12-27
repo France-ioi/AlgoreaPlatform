@@ -22,9 +22,8 @@
 }
 
 .sidebar-left-content {
-   -webkit-flex: 1 0 auto;
-   flex: 1 0 auto;
-   max-height:75px;
+   -webkit-flex: 0 0 auto;
+   flex: 0 0 auto;
    border-bottom:2px solid #cecece;
    display:-webkit-flex;
    display:flex;
@@ -37,6 +36,8 @@
 .sidebar-left-content:first-child {
    background:#82bf2b;
    color:white;
+   height: 67px;
+   border-bottom: none;
 }
 
 .sidebar-left .sidebar-left-content:first-child a {
@@ -47,7 +48,7 @@
    color:white;
 }
 
-@media all and (max-width: 1100px) and (min-width: 700px) {
+@media all and (max-width: 1130px) and (min-width: 700px) {
    .sidebar-left {
       -webkit-flex: 0 0 82px;
       flex: 0 0 82px;
@@ -61,7 +62,6 @@
 .sidebar-left-item-content-container {
    -webkit-flex: 1 1 auto;
    flex: 1 1 auto;
-   vertical-align:center;
    display:-webkit-flex;
    display:flex;
    -webkit-justify-content:space-around;
@@ -82,9 +82,8 @@
 }
 
 .sidebar-left-item-content {
-   vertical-align:center;
-   -webkit-flex: 0 0 45px;
-   flex: 0 0 45px;
+   -webkit-flex: 0 0 auto;
+   flex: 0 0 auto;
    display:-webkit-flex;
    display:flex;
    -webkit-flex-direction:row;
@@ -94,7 +93,6 @@
 .sidebar-left-item-contents-icon1 {
    -webkit-flex: 0 0 45px;
    flex: 0 0 45px;
-   align:center;
    display:-webkit-flex;
    display:flex;
    -webkit-flex-direction:column;
@@ -105,7 +103,7 @@
 
 .sidebar-left-item-contents-text {
    -webkit-flex: 1 1 auto;
-   flex: 1 1 auto;
+   flex: 1 1 100%;
    display:-webkit-flex;
    display:flex;
    -webkit-flex-direction:column;
@@ -133,7 +131,7 @@
    display:none;
 }
 
-@media all and (max-width: 1100px) and (min-width: 700px) {
+@media all and (max-width: 1130px) and (min-width: 700px) {
    .sidebar-left-toggled  .sidebar-left-item-contents-text{
       display:block;
    }
@@ -181,7 +179,7 @@
    -webkit-justify-content:space-around;
 }
 
-@media all and (max-width: 1100px) and (min-width: 700px) {
+@media all and (max-width: 1130px) and (min-width: 700px) {
    .sidebar-left-toggled .sidebar-left-item-final-icons {
       -webkit-flex: 0 1 24px;
       flex: 0 1 24px;

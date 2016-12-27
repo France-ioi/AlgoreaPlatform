@@ -28,7 +28,6 @@ angular.module('algorea')
    }
    $scope.newMessage = null;
    $scope.newMessageInserted = false;
-   //$scope.myUserID = null;
    $scope.answers = [];
    $scope.events = [];
    $scope.canValidate = false;
@@ -37,8 +36,8 @@ angular.module('algorea')
    $scope.createEmptyNewMessage = function() {
       $scope.newMessage = ModelsManager.createRecord('messages');
       $scope.newMessage.idThread = $scope.thread.ID;
-      $scope.newMessage.idUser = $scope.myUserID;
-      $scope.newMessage.sLogin = $scope.myLogin;
+      $scope.newMessage.idUser = SyncQueue.requests.loginData.ID;
+      $scope.newMessage.sLogin = SyncQueue.requests.loginData.sLogin;
       $scope.newMessage.bPublished = false;
       $scope.newMessage.sSubmissionDate = false;
    };
@@ -48,15 +47,15 @@ angular.module('algorea')
          $scope.threadData.currentAnswer = answer;
       }
    };
-   $scope.ensureUserThread = function() {
+   $scope.ensureUserThread = function(delaySync) {
       angular.forEach($scope.thread.user_thread, function(found_user_thread) {
          $scope.user_thread = found_user_thread;
       });
-      if (!$scope.user_thread || $scope.user_thread.idUser != $scope.myUserID) {
+      if (!$scope.user_thread || $scope.user_thread.idUser != SyncQueue.requests.loginData.ID) {
          $scope.user_thread = ModelsManager.createRecord('users_threads');
-         $scope.user_thread.idUser = $scope.myUserID;
+         $scope.user_thread.idUser = SyncQueue.requests.loginData.ID;
          $scope.user_thread.idThread = $scope.thread.ID;
-         ModelsManager.insertRecord('users_threads', $scope.user_thread);
+         ModelsManager.insertRecord('users_threads', $scope.user_thread, delaySync);
       }
    };
    $scope.updateReadDate = function() {
@@ -75,9 +74,9 @@ angular.module('algorea')
          if (!thread) {
             return;
          }
-         $scope.ownThread = ($scope.myUserID == thread.idUserCreated);
+         $scope.ownThread = (SyncQueue.requests.loginData.ID == thread.idUserCreated);
          angular.forEach(thread.messages, function(message) {
-            if (message.idUser == $scope.myUserID && message.sSubmissionDate === null) {
+            if (message.idUser == SyncQueue.requests.loginData.ID && message.sSubmissionDate === null) {
                $scope.newMessage = message;
                $scope.newMessageInserted = true;
             }
@@ -90,7 +89,7 @@ angular.module('algorea')
             if (!$scope.item.ID) {
                $scope.item = ModelsManager.getRecord('items', $scope.thread.idItem);
             }
-            $scope.user_item = itemService.getUserItem($scope.item, $rootScope.myUserID);
+            $scope.user_item = itemService.getUserItem($scope.item);
             $scope.other_user_item = itemService.getUserItem($scope.item, thread.idUserCreated);
             var typeStr = itemService.getItemTypeStr($scope.item);
             $scope.itemStr = typeStr+' : '+($scope.item.strings[0] ? $scope.item.strings[0].sTitle : '');
@@ -160,12 +159,12 @@ angular.module('algorea')
          itemService.unsyncThread($scope.thread.ID);
       }
    });
-   function startNewThread(item) {
+   function startNewThread(item, sType) {
       $scope.ownThread = true;
       $scope.newThread = true;
       itemService.onNewLoad(function() {
          var newThread = ModelsManager.createRecord('threads');
-         newThread.idUserCreated = $scope.myUserID;
+         newThread.idUserCreated = SyncQueue.requests.loginData.ID;
          if (item) {
             newThread.idItem = item.ID;
             newThread.sTitle = item.strings[0].sTitle;
@@ -177,11 +176,13 @@ angular.module('algorea')
             $scope.events = $scope.answers;
             $scope.hasTask = true;
             $scope.taskLoading = false;
+         } else if (sType) {
+            newThread.sType = sType;
          }
          newThread.sLastActivityDate = new Date();
          $scope.thread = newThread;
          $scope.createEmptyNewMessage();
-         $scope.ensureUserThread();
+         $scope.ensureUserThread(true);
          $scope.loading = false;
       });
    }
@@ -190,7 +191,7 @@ angular.module('algorea')
    function lookupThread() {
       var result = null;
       angular.forEach($scope.item.threads, function(thread) {
-         if (thread.idUserCreated == $scope.myUserID) {
+         if (thread.idUserCreated == SyncQueue.requests.loginData.ID) {
             result = thread;
          }
       });
@@ -207,7 +208,9 @@ angular.module('algorea')
          }
       } else {
          if ($state.current.name == 'newThread') {
-            startNewThread();
+            startNewThread(null, 'Help');
+         } else if ($state.current.name == 'newThreadType') {
+            startNewThread(null, $state.params.sType);
          } else {
             if ($scope.inPopup) {
                if ($scope.thread) {
@@ -249,12 +252,12 @@ angular.module('algorea')
    $scope.submitForm = function(form) {
       if ($scope.inTask) {
          if ($scope.newThread) {
-            ModelsManager.insertRecord('threads', $scope.thread);
+            ModelsManager.insertRecord('threads', $scope.thread, true);
             $scope.newThread = false;
             var item = ModelsManager.getRecord('items', $scope.thread.idItem);
             var userItem = itemService.getUserItem(item);
             userItem.sThreadStartDate = new Date();
-            ModelsManager.updated('users_items', userItem.IDs);
+            ModelsManager.updated('users_items', userItem.IDs, null, true);
             $scope.newMessage.sSubmissionDate = new Date();
             $scope.newMessage.bPublished = true;
             ModelsManager.insertRecord('messages', $scope.newMessage);
@@ -268,12 +271,15 @@ angular.module('algorea')
       } else {
          if ($state.current.name == 'newThread') {
             ModelsManager.insertRecord('threads', $scope.thread);
-            var item = ModelsManager.getRecord('items', $scope.thread.idItem);
-            var userItem = itemService.getUserItem(item);
-            userItem.sThreadStartDate = new Date();
-            ModelsManager.updated('users_items', userItem.IDs);
+            if ($scope.thread.idItem) {
+               var item = ModelsManager.getRecord('items', $scope.thread.idItem);
+               var userItem = itemService.getUserItem(item);
+               userItem.sThreadStartDate = new Date();
+               ModelsManager.updated('users_items', userItem.IDs, null, true);
+            }
+            $scope.newMessage.bPublished = true;
             $scope.newMessage.sSubmissionDate = new Date();
-            ModelsManager.insertRecord('messages', $scope.newMessage);
+            ModelsManager.insertRecord('messages', $scope.newMessage, true);
             $state.go('thread', {idThread: $scope.thread.ID});
          } else {
             itemService.saveRecord('threads', $scope.thread.ID);

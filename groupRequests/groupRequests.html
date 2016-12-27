@@ -1,93 +1,63 @@
 <div class="groupRequest">
    <uib-tabset active="active">
       <uib-tab heading="Mon compte">
-         <div class="groupRequest-tabContent">
-            Dans cet onglet, vous pourrez bientôt modifier vos informations personnelles et vos informations de connexion.
+         <div class="groupRequest-tabContent" ng-i18next="groupRequests_myaccount_desc">
          </div>
       </uib-tab>
       <uib-tab heading="Mes groupes">
          <div class="groupRequest-tabContent">
-            <div class="groupAdmin groupAdmin-home" ng-controller="groupAdminIndexController">
-               <div class="groupAdmin-homeContent">
-                  <div ng-if="loading">Chargement...</div>
-                  <div ng-show="error">{{error}}</div>
-                  <div ng-if="!loading && !error">
-
-                     <p>Dans cet espace d'animation, vous pouvez constituer des groupes puis les administrer en leur assignant un parcours à réaliser. Vous avez également accès à un forum pour interagir avec l'équipe Declick.</p>
-
-                     <div ng-hide="myGroupAdmin.children.length">
-                        <p>Vous n'avez aucun groupe</p>
-                     </div>
-                     <div ng-show="myGroupAdmin.children.length">
-                        <p class="groupAdmin-title">Consulter un groupe :</p>
-                        <ul class="list list-block list-groups">
-                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
-                        </ul>
-                     </div>
-                     <div>
-                     <p class="groupAdmin-title">Créer un nouveau groupe :</p>
-                     <div class="form-inline">
-                        <input type="text" ng-model="formValues.groupName" class="form-control" placeholder="Entrez le nom du nouveau groupe"/>
-                        <button ng-click="newGroup();" class="btn-icon btn-add"><span class="btn-label">Ajouter un groupe</span></button>
-                     </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
             <div class="">
-               <h2 class="groupRequest-title" ng-hide="loading">Les groupes dont je fais partie</h2>
-
                <div ng-if="!loading && !showTable()">
-                  <p>Vous ne faites actuellement partie d'aucun groupe.</p>
+                  <p data-18n="groupRequests_member_no_group"></p>
                </div>
-               Invitations et requêtes:
+               <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_invites"></h2>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
                         <tr>
-                           <th>Groupe</th>
-                           <th>Date</th>
-                           <th>État</th>
-                           <th>Action</th>
+                           <th ng-i18next="group"></th>
+                           <th ng-i18next="date"></th>
+                           <th ng-i18next="status"></th>
+                           <th ng-i18next="action"></th>
                         </tr>
                      </thead>
                      <tbody>
-                        <tr ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType == 'invitationSent' || mygroupgroup.sType == 'requestSent'">
+                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="mygroupgroup.sType == 'invitationSent' || mygroupgroup.sType == 'requestSent'">
                            <td>{{mygroupgroup.parent.sName}}</td>
                            <td>{{mygroupgroup.sStatusDate | date}}</td>
                            <td>{{printType(mygroupgroup.sType)}}</td>
                            <td>
                               <div ng-if="mygroupgroup.sType == 'invitationSent'">
-                                 <button class="btn btn-default" ng-click="acceptInvitation(mygroupgroup)">Accepter</button>
-                                 <button class="btn btn-default" confirm="refuseInvitation(mygroupgroup)" rel="Êtes-vous sûr de vouloir refuser l'invitation au groupe {{group_group.parent.sName}} ?">Refuser</button>
+                                 <button class="btn btn-default" ng-click="acceptInvitation(mygroupgroup)" ng-i18next="accept"></button>
+                                 <button class="btn btn-default" confirm="refuseInvitation(mygroupgroup)" rel="Êtes-vous sûr de vouloir refuser l'invitation au groupe {{group_group.parent.sName}} ?" ng-i18next="reject"></button>
                               </div>
                               <div ng-if="mygroupgroup.sType == 'requestSent'">
-                                 <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)">Annuler</button>
+                                 <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)" ng-i18next="cancel"></button>
                               </div>
                            </td>
                         </tr>
                      </tbody>
                   </table>
                </div>
-               Groupes dont je fais partie:
+               <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_my_groups"></h2>
                <div class="table-wrapper">
                   <table class="table table-bordered table-hover" ng-if="showTable()">
                      <thead>
                         <tr>
-                           <th>Groupe</th>
-                           <th>Date</th>
-                           <th>État</th>
-                           <th>Action</th>
+                           <th ng-i18next="group"></th>
+                           <th ng-i18next="date"></th>
+                           <th ng-i18next="status"></th>
+                           <th ng-i18next="action"></th>
                         </tr>
                      </thead>
                      <tbody>
-                        <tr ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate'" ng-if="mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct'">
+                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="(mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct') && mygroupgroup.parent.sType != 'RootSelf'">
                            <td>{{mygroupgroup.parent.sName}}</td>
                            <td>{{mygroupgroup.sStatusDate | date}}</td>
                            <td>{{printType(mygroupgroup.sType)}}</td>
                            <td>
                               <div>
-                                 <button class="btn btn-default" confirm="leaveGroup(mygroupgroup)" rel="Êtes-vous sûr de vouloir quitter le groupe {{group_group.parent.sName}} ?'">Quitter le groupe</button>
+                                 <button class="btn btn-default" confirm="leaveGroup(mygroupgroup)" rel="test" ng-i18next="groupRequests_leave_group;[rel]groupRequests_leave_confirm"></button>
                               </div>
                            </td>
                         </tr>
@@ -96,23 +66,23 @@
                </div>
             </div>
             <div class="">
-               <h2 class="groupRequest-title" ng-hide="loading">Rejoindre un groupe</h2>
+               <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_join"></h2>
                <div ng-if="!loading">
                   <form class="form">
-                     <label for="askedPassword">Rejoindre avec un mot de passe :</label>
+                     <label class="label-title" for="askedPassword"><span ng-i18next="groupRequests_join_code"></span><span class="label-description" ng-i18next="groupRequests_join_code_desc"></span></label>
                      <div class="form-group form-inline">
-                        <input type="text" class="form-control" name="askedPassword" ng-model="pageData.askedPassword">
-                        <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword">Rejoindre</button>
+                        <input type="text" class="form-control" name="askedPassword" id="askedPassword" ng-model="pageData.askedPassword">
+                        <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword" ng-i18next="join"></button>
                      </div>
                   </form>
-                  <div ng-if="passwordError">
-                     {{passwordError}}
+                  <div ng-if="passwordInfo">
+                     {{passwordInfo}}
                   </div>
                   <form class="form">
-                     <label for="lookupString">Rechercher par nom :</label>
+                     <label class="label-title" for="lookupString"><span ng-i18next="groupRequests_search_name"></span><span class="label-description" ng-i18next="groupRequests_search_name_desc"></span></label>
                      <div class="form-group form-inline">
-                        <input type="text" class="form-control" name="lookupString" ng-model="pageData.lookupString">
-                        <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString">Rechercher</button>
+                        <input type="search" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
+                        <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString" ng-i18next="search"></button>
                      </div>
                   </form>
                   <p>{{resultsError}}</p>
@@ -123,30 +93,30 @@
                            <td class="helper-text">
                               <p ng-if="result.hasPassword && result.bOpened">
                                  <i class="material-icons">lock</i>
-                                 <span>Ce groupe nécessite un mot de passe</span>
+                                 <span ng-i18next="groupRequests_password_needed"></span>
                               </p>
                               <p ng-if="!result.hasPassword && result.bOpened">
                                  <i class="material-icons">lock_open</i>
-                                 <span>Ce groupe est ouvert à tous. <span ng-hide="result.bFreeAccess">Vous ne ferez partie du groupe qu'une fois qu'un modérateur aura validé votre demande.</span></span>
+                                 <span><span ng-i18next="groupRequests_open_group"></span> <span ng-hide="result.bFreeAccess" ng-i18next="groupRequests_approval_needed"></span></span>
                               </p>
                            </td>
                            <td ng-switch="result.relationType">
-                              <p ng-switch-when="invitationSent">Vous avez reçu une invitation pour ce groupe.</p>
-                              <p ng-switch-when="invitationAccepted">Vous faites partie de ce groupe.</p>
-                              <p ng-switch-when="requestAccepted">Vous faites partie de ce groupe.</p>
-                              <p ng-switch-when="direct">Vous faites partie de ce groupe.</p>
-                              <p ng-switch-when="requestSent"><i class="material-icons">query_builder</i> Vous avez fait une demande pour rejoindre ce groupe.</p>
+                              <p ng-switch-when="invitationSent" ng-i18next="groupRequests_rel_invitationSent"></p>
+                              <p ng-switch-when="invitationAccepted" ng-i18next="groupRequests_rel_invitationAccepted"></p>
+                              <p ng-switch-when="requestAccepted" ng-i18next="groupRequests_rel_requestAccepted"></p>
+                              <p ng-switch-when="direct" ng-i18next="groupRequests_rel_direct"></p>
+                              <p ng-switch-when="requestSent"><i class="material-icons">query_builder</i> <span ng-i18next="groupRequests_rel_requestSent"></span></p>
                               <div ng-switch-default>
                                  <div class="form-inline" ng-if="result.hasPassword && result.bOpened">
-                                    <label for="password{{result.sName}}">Mot de passe :</label>
+                                    <label for="password{{result.sName}}" ng-i18next="groupRequests_password"></label>
                                     <input type="text" id="password{{result.sName}}" name="password" class="form-control" ng-model="result.password" placeholder="Mot de passe">
-                                    <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)">Rejoindre le groupe</button>
+                                    <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)" ng-i18next="groupRequests_join_group"></button>
                                  </div>
                                  <p ng-if="!result.hasPassword && result.bOpened">
-                                    <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)">Rejoindre le groupe</button>
-                                    <span ng-hide="result.bFreeAccess">Vous ne ferez partie du groupe qu'une fois qu'un modérateur aura validé votre demande.</span>
+                                    <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)" ng-i18next="groupRequests_join_group"></button>
+                                    <span ng-hide="result.bFreeAccess" ng-i18next="groupRequests_approval_needed"></span>
                                  </p>
-                                 <p ng-if="!result.bOpened">Ce groupe est actuellement fermé.</p>
+                                 <p ng-if="!result.bOpened" ng-i18next="groupRequests_closed_group"></p>
                                  <div class="alert alert-warning" role="alert" ng-show="result.joinLog">{{result.joinLog}}</div>
                               </div>
                            </td>
@@ -154,32 +124,60 @@
                         <tr class="{{result.relationType}}">
                            <td colspan=3>
                               <span ng-if="result.sDescription" class="description">{{result.sDescription}}</span>
-                              <span ng-if="!result.sDescription" class="no-description">Pas de description</span>
+                              <span ng-if="!result.sDescription" class="no-description" ng-i18next="groupRequests_no_description"></span>
                            </td>
                         </tr>
                      </tbody>
                   </table>
                </div>
             </div>
+            <div class="adminGroup">
+               <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_my_groups"></h2>
+               <div ng-controller="groupAdminIndexController">
+                  <div ng-if="loading" ng-i18next="groupRequests_loading"></div>
+                  <div ng-show="error" class="alert alert-warning">{{error}}</div>
+                  <div ng-if="!loading">
+                     <div ng-hide="myGroupAdmin.children.length">
+                        <p ng-i18next="groupRequests_error_no_group"></p>
+                     </div>
+                     <div ng-show="myGroupAdmin.children.length">
+                        <h3 ng-i18next="groupRequests_view_group"></h3>
+                        <ul class="list list-block list-groups">
+                           <li class="list-item" ng-repeat="group_group in myGroupAdmin.children | groupsgroupsChildrenNameSort"><a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a></li>
+                        </ul>
+                     </div>
+                     <div>
+                        <label for="newGroupName"><span ng-i18next="groupRequests_create_group"></span><span class="label-description" ng-i18next="groupRequests_create_group_desc"></span></label>
+                        <div class="form-inline">
+                           <input type="text" ng-model="formValues.groupName" class="form-control" id="newGroupName"/>
+                           <button ng-click="newGroup();" class="btn btn-default"><span class="btn-label" ng-i18next="groupRequests_add_group"></span></button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
             <div>
-               <h2 class="groupRequest-title" ng-hide="loading">Historique complet</h2>
+               <h2 class="groupRequest-title" ng-hide="loading">
+                  <span ng-i18next="groupRequests_title_history"></span>
+                  <span class="title-desc" ng-i18next="groupRequests_subtitle_history"></span>
+               </h2>
 
-               <ul ng-if="!loading" class="history-list">
-                  <li ng-repeat="mygroupgroup in myGroupParents track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}">
+               <ul ng-if="!loading" class="history-list list list-block">
+                  <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}"  ng-if="mygroupgroup.parent.sType != 'RootSelf'">
                      {{mygroupgroup.sStatusDate | date}}&nbsp;:
                      <span ng-switch="mygroupgroup.sType">
-                        <span ng-switch-when="invitationRefused">vous avez refusé l'invitation au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-                        <span ng-switch-when="requestRefused">vous avez été refusé dans le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-                        <span ng-switch-when="invitationSent">vous avez été invité au groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-                        <span ng-switch-when="requestSent">vous avez demandé à rejoindre le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-                        <span ng-switch-when="left">vous avez quitté le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-                        <span ng-switch-when="removed">vous avez été supprimé du groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
-                        <span ng-switch-default>vous avez rejoint le groupe <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="invitationRefused"><span ng-i18next="groupRequests_mytype_invitationRefused"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="requestRefused"><span ng-i18next="groupRequests_mytype_requestRefused"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="invitationSent"><span ng-i18next="groupRequests_mytype_invitationSent"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="requestSent"><span ng-i18next="groupRequests_mytype_requestSent"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="left"><span ng-i18next="groupRequests_mytype_left"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="removed"><span ng-i18next="groupRequests_mytype_removed"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-default><span ng-i18next="groupRequests_mytype_default"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
                      </span>
                   </li>
                </ul>
-               <button class="btn btn-standard" ng-click="addHistoryLimit()" ng-if="!loading && parentsLength && parentsLength > historyLimit">Voir 10 de plus</button>
-               <button class="btn btn-default" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength">Marquer comme lu</button>
+               <button class="btn btn-standard" ng-click="addHistoryLimit()" ng-if="!loading && parentsLength && parentsLength > historyLimit" ng-i18next="groupRequests_ten_more"></button>
+               <button class="btn btn-default" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength" ng-i18next="groupRequests_mark_read"></button>
             </div>
          </div>
       </uib-tab>
@@ -188,6 +186,6 @@
       {{error}}
    </div>
    <div ng-if="loading && !error">
-      <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
+      <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="groupRequests_loading"></strong></p></center>
    </div>
 </div>

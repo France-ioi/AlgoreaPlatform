@@ -1,25 +1,32 @@
 <div>
    <p ng-show="(item_item == undefined) || (group_group == undefined)">
-      <b>Sélectionnez d'abord l'item et le groupe pour lesquels vous souhaitez configurer les accès.</b>
+      <b ng-i18next="admin_select_item_group_access"></b>
    </p>
    <div ng-if="item_item && group_group">
       <a target="_self" ng-href="zip_export.php?itemId={{item_item.idItemChild}}&groupId={{group_group.idGroupChild}}">
-         <button>Exporter un zip avec toutes les soumissions</button>
+         <button ng-i18next="admin_zip_export"></button>
       </a>
    </div>
-   <span ng-if="item_item != undefined">
-      <span class="accessTitleCell accessItemCell">
-         Accès
-      </span>
-      <span class="accessTitleCell" ng-show="group_group != undefined">
-         <span title="{{ group_group.child.sName }}" class="accessGroupName">{{ group_group.child.sName }}</span>
-      </span>
-      <span class="accessTitleCell accessGroupNameChild" ng-repeat="group_group in group_group.child.children | manageableGroups">
-         {{ group_group.parent.sName }}<br/><span style="font-weight:bold;" title="{{group_group.child.sName}}">&nbsp;&nbsp;>&nbsp;{{ group_group.child.sName }}&nbsp;</span>
-      </span>
-      <span ng-include='"tabs/items_access_rows.html"'></span>
+   <h2>Gérer les accès</h2>
+   <p>Utilisez la molette de la souris ou un mouvement avec deux doigts pour vous déplacer verticalement dans le tableau</p>
+   <div ng-if="item_item != undefined" class="access-wrapper">
+      <div class="accessTitleRow">
+         <span class="accessTitleCell accessCellItem" ng-i18next="access">
+         </span>
+         <span class="accessTitleCell accessCellGroup" ng-show="group_group != undefined" uib-tooltip="{{ group_group.child.sName }}" tooltip-placement="bottom">
+            <span class="groupNameWrapper">
+               <span class="accessGroupName">{{ group_group.child.sName }}</span>
+            </span>
+         </span>
+         <span class="accessTitleCell accessCellChild" ng-repeat="group_group in group_group.child.children | manageableGroups" uib-tooltip="{{group_group.child.sName}}" tooltip-placement="bottom">
+            <span class="childNameWrapper">
+               <span class="childName">{{ group_group.child.sName }}</span>
+            </span>
+         </span>
+      </div>
+      <div ng-include="templatesPrefix+'/admin/tabs/items_access_rows.html'" class="accessItemsRows"></div>
       <!-- <span ng-repeat="item_item in item_item.child.children" class="itemLevel">
          <span ng-include='"tabs/items_access_rows.html"'></span>
       </span> -->
-   </span>
+   </div>
 </div>

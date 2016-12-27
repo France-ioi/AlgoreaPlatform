@@ -19,7 +19,10 @@ angular.module('algorea')
       'bImportant': null
    };
    $scope.loading = true;
+   $scope.saveFilter= false;
    $scope.showFilters = false;
+   $scope.showSavedFilter = false;
+   $scope.editFilter = false;
    $scope.plusActiveVar = false;
    $scope.filters = [];
    // using object here due to prototypal inheritance / scope mess, see
@@ -54,7 +57,7 @@ angular.module('algorea')
    $scope.newFilter = function() {
       var newFilter = ModelsManager.createRecord('filters');
       ModelsManager.insertRecord('filters', newFilter);
-      newFilter.idUser = $scope.myUserID;
+      newFilter.idUser = SyncQueue.requests.loginData.ID;
       newFilter.sName = "Nouveau filtre";
       $scope.selectFilter(newFilter.ID);
    };
@@ -106,7 +109,7 @@ angular.module('algorea')
          var filter = ModelsManager.createRecord('filters');
          filter.bSelected = true;
          filter.sName = "Filtre par défaut";
-         filter.idUser = $scope.myUserID;
+         filter.idUser = SyncQueue.requests.loginData.ID;
          $scope.$parent.currentFilter = filter;
          $scope.filters = [filter];
       } else {
@@ -156,6 +159,8 @@ angular.module('algorea')
          return thread.sType === 'Help' && thread.idUserCreated != userID;
       if (tab == 'general')
          return thread.sType === 'General';
+      if (tab == 'technicalSupport')
+         return thread.sType === 'Bug';
    }
    return function(threads, tab, userID, currentFilter, currentGlobalFilter) {
       if (!currentFilter && !tab)

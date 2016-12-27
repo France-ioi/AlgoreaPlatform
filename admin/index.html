@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="fr" ng-app="algorea"  ng-controller="adminCtrl">
+<html lang="fr" ng-controller="adminCtrl">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <script src="../config.js.php" type="text/javascript"></script>
-      <!--<script src="../ext/dynatree/jquery/jquery.js" type="text/javascript"></script>-->
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js" type="text/javascript"></script>
+      <script src="../bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
       <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
-      <!--<script src="../ext/dynatree/jquery/jquery.cookie.js" type="text/javascript"></script>-->
-      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-      <script src="https://code.angularjs.org/1.5.5/i18n/angular-locale_fr-fr.js"></script>
+      <script src="../bower_components/angular/angular.min.js"></script>
+      <script src="../bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+      <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
+      <script src="../bower_components/angular-i18n/angular-locale_fr-fr.js"></script>
+      <script src="../bower_components/i18next/i18next.min.js"></script>
+      <script src="../bower_components/i18next-xhr-backend/i18nextXHRBackend.min.js"></script>
+      <script src="../bower_components/ng-i18next/dist/ng-i18next.min.js"></script>
+      <script>
+         var rootUrl = '../commonFramework/';
+      </script>
       <script src="../commonFramework/modelsManager/modelsManager.js"></script>
       <script src="../commonFramework/sync/syncQueue.js"></script>
       <script src="../shared/models.js"></script>
@@ -31,123 +34,128 @@
       <script src="../task/directive.js" type="text/javascript"></script>
       <script src="groupsCtrl.js" type="text/javascript"></script>
       <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"  type="text/javascript"></script>
-      <!--<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">-->
       <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
-      <!-- http://medialize.github.io/jQuery-contextMenu/index.html -->
       <script src="../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.js" type="text/javascript"></script>
-<!--    <script src="../ext/contextMenu/jquery.ui.position.js" type="text/javascript"></script>--> <!-- seems incompatible with dynatree -->
       <link href="../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css" rel="stylesheet" type="text/css" >
       <link href="admin.css" rel="stylesheet" type="text/css" >
-      <script>
-         var rootUrl = "../commonFramework/";
-      </script>
+      <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <style>
+          [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+          }
+      </style>
    </head>
-   <body>
+   <body ng-cloak>
       <div ng-show="loginReady" ng-class="loginClass">
-         {{loginInnerHtml}}
+         <span class="loginUserInfo">{{loginInnerHtml}}</span>
          <iframe id="loginFrame" class="loginFrame" ng-src="{{loginModuleUrl}}"></iframe>
       </div>
       <div ng-hide="loginReady" class="loginCentered">
-         <img src="../images/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Retrieving login information...</strong></p>
+         <img src="../images/spinner.gif" height="50px"><p style="margin-top:10px"><strong  ng-i18next="admin_retrieving_login"></strong></p>
       </div>
-      <div ng-controller="ItemsCtrl" ng-show="userLogged && loginReady">
-         <a href="#" class="btn btn-default" ng-click="selectModelName('items')" ng-class="{'items': 'btn-success'}[selectedModelName]">Item : <b>{{ item.strings[0].sTitle }}</b></a>
-         <a href="#" class="btn btn-default" ng-click="showItems = !showItems"><i class="glyphicon glyphicon-chevron-up" ng-show="showItems"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showItems"></i></a>
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <a href="#" class="btn btn-default" ng-click="selectModelName('groups')" ng-class="{'groups': 'btn-success'}[selectedModelName]">Groupe : <b>{{ group.sName }}</b></a>
-         <a href="#" class="btn btn-default" ng-click="showGroups = !showGroups"><i class="glyphicon glyphicon-chevron-up" ng-show="showGroups"></i><i class="glyphicon glyphicon-chevron-down" ng-show="!showGroups"></i></a>
-         <br/>
-         <table><tr>
-            <td ng-show="showItems" style="vertical-align:top">
-               <table>
-                  <tr>
-                     <td>
-                        <b>Items :</b>
-                        <span style="float:right">
-<!--
-                           <span ng-controller="ItemsSearchCtrl" style="display:inline-block">
-                              <a href="#" class="btn btn-xs" ng-click="open()">
-                                 <i class="icon-search"></i>
-                              </a>
-                              <div ng-include='"itemsSearchDialog.html"'></div>
-                           </span>
--->
-                           <a href="#" class="btn btn-xs" ng-click="twoColumnsItems = !twoColumnsItems" style="display:inline-block">
-                              <i ng-show="twoColumnsItems" class="glyphicon glyphicon-chevron-left"></i>
-                              <i ng-show="!twoColumnsItems" class="glyphicon glyphicon-chevron-right"></i>
+      <div ng-show="userLogged && loginReady" ng-controller="ItemsCtrl">
+         <uib-tabset class="adminTreesControllers">
+            <uib-tab heading="Items" select="selectView('itemsEditable')"></uib-tab>
+            <uib-tab heading="Groupes" select="selectView('groupsEditable')"></uib-tab>
+            <uib-tab heading="Gestion des droits" select="selectView('accessRules')"></uib-tab>
+         </uib-tabset>
+         <div class="adminContainer">
+            <div class="adminContent">
+               <div class="adminTreesWrapper" ng-show="selectedView == 'itemsEditable' || selectedView == 'accessRules'">
+                  <div class="adminTrees adminTreesItems">
+                     <div class="adminMainTree">
+                        <span class="adminTreeTitle">Sélectionnez un item :</span>
+                        <div class="checkboxSwitch small" ng-show="selectedView == 'itemsEditable'" uib-tooltip="Afficher deux arborescences pour transférer des items">
+                           <input type="checkbox" id="toggleItems" class="switch" ng-click="twoColumnsItems = !twoColumnsItems">
+                           <label for="toggleItems"><span></span></label>
+                        </div>
+            <!--
+                        <span ng-controller="ItemsSearchCtrl" style="display:inline-block">
+                           <a href="#" class="btn btn-xs" ng-click="open()">
+                              <i class="icon-search"></i>
                            </a>
+                           <div ng-include='"itemsSearchDialog.html"'></div>
                         </span>
-                     </td>
-                     <td ng-show="twoColumnsItems">
-                        Glissez les items d'un arbre à l'autre
-                     </td>
-                  </tr>
-                  <tr>
-                     <td>
-                        <div id="treeItems" style="width:300px;overflow: visible;height:500px "></div>
-                     </td>
-                     <td ng-show="twoColumnsItems">
-                        <div id="treeItems2" style="width:300px;overflow: visible;height:500px"></div>
-                     </td>
-                  </tr>
-               </table>
-            </td>
-            <td ng-show="showGroups" style="vertical-align:top">
-               <table>
-                  <tr>
-                     <td>
-                        <b>Groupes :</b>
-                        <span style="float:right">
-<!--
-                           <span ng-controller="GroupsSearchCtrl" style="display:inline-block">
-                              <a href="#" class="btn btn-xs" ng-click="open()">
-                                 <i class="icon-search"></i>
-                              </a>
-                              <div ng-include='"groupsSearchDialog.html"'></div>
-                           </span>
--->
-                           <a href="#" class="btn btn-xs" ng-click="twoColumnsGroups = !twoColumnsGroups" style="display:inline-block">
-                              <i ng-show="twoColumnsGroups" class="glyphicon glyphicon-chevron-left"></i>
-                              <i ng-show="!twoColumnsGroups" class="glyphicon glyphicon-chevron-right"></i>
+            -->
+                        <div id="treeItems" class="adminTree"></div>
+                     </div>
+                     <div ng-show="twoColumnsItems && selectedView == 'itemsEditable'" class="adminSecondaryTree">
+                        <span class="adminTreeTitle">Glissez les items d'un arbre à l'autre</span>
+                        <div id="treeItems2" class="adminTree"></div>
+                     </div>
+                  </div>
+               </div>
+               <div class="adminTreesWrapper" ng-show="selectedView == 'groupsEditable' || selectedView == 'accessRules'">
+                  <div class="adminTrees adminTreesGroups">
+                     <div class="adminMainTree">
+                        <span class="adminTreeTitle">Sélectionnez un groupe :</span>
+                        <div class="checkboxSwitch small" ng-show="selectedView == 'groupsEditable'" uib-tooltip="Afficher deux arborescences pour transférer des groupes">
+                           <input type="checkbox" id="toggleGroups" class="switch" ng-click="twoColumnsGroups = !twoColumnsGroups">
+                           <label for="toggleGroups"><span></span></label>
+                        </div>
+            <!--
+                        <span ng-controller="GroupsSearchCtrl" style="display:inline-block">
+                           <a href="#" class="btn btn-xs" ng-click="open()">
+                              <i class="icon-search"></i>
                            </a>
+                           <div ng-include='"groupsSearchDialog.html"'></div>
                         </span>
-                     </td>
-                     <td ng-show="twoColumnsGroups">
-                        Glissez les groupes d'un arbre à l'autre
-                     </td>
-                  </tr>
-                  <tr>
-                     <td>
-                        <div id="treeGroups" style="width:300px;overflow: visible;height:500px "></div>
-                     </td>
-                     <td ng-show="twoColumnsGroups">
-                        <div id="treeGroups2" style="width:300px;overflow: visible;height:500px"></div>
-                     </td>
-                  </tr>
-               </table>
-            </td>
-            <td style="vertical-align:top">
-               <span  ng-show="selectedModelName == 'items'">
-                  <uib-tabset>
-                     <uib-tab heading="Paramètres de l'item"><div ng-include='"tabs/items_params.html"'></div></uib-tab>
-                     <uib-tab heading="Textes" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include='"tabs/items_texts.html"'></div></uib-tab>
+            -->
+                        <div id="treeGroups" class="adminTree"></div>
+                     </div>
+                     <div ng-show="twoColumnsGroups && selectedView == 'groupsEditable'" class="adminSecondaryTree">
+                        <span class="adminTreeTitle">Glissez les groupes d'un arbre à l'autre</span>
+                        <div id="treeGroups2" class="adminTree"></div>
+                     </div>
+                  </div>
+               </div>
+               <div class="adminContainerTabContent" ng-show="selectedView == 'itemsEditable'">
+                  <h2>Item : {{ item.strings[0].sTitle }}</h2>
+                  <uib-tabset class="adminTabs">
+                     <uib-tab heading="Paramètres"><div ng-include="templatesPrefix+'/admin/tabs/items_params.html'"></div></uib-tab>
+                     <uib-tab heading="Textes" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_texts.html'"></div></uib-tab>
                      <uib-tab heading="Édition" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO : édition de l'item sur l'interface tasks (si c'est un sujet ou un cours)</uib-tab>
-                     <uib-tab heading="Preview" ng-show="group_item.bCachedFullAccess || group_item.bOwnerAccess || group_item.bCachedAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_preview.html'"></div></uib-tab>
-                     <uib-tab heading="Accès et validation" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_access.html'"></div></uib-tab>
-                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
+                     <uib-tab heading="Preview" ng-show="group_item.bCachedFullAccess || group_item.bOwnerAccess || group_item.bCachedAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_preview.html'"></div></uib-tab>
+                     <uib-tab heading="Accès et validation" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_access.html'"></div></uib-tab>
+                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_progression.html'"></div></uib-tab>
                      <uib-tab heading="Statistiques" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess">TODO</uib-tab>
                   </uib-tabset>
-               </span>
-               <span ng-show="selectedModelName == 'groups'">
-                  <uib-tabset>
-                     <uib-tab heading="Paramètres du groupe"><div ng-include='"tabs/groups_params.html"'></div></uib-tab>
+               </div>
+               <div class="adminContainerTabContent" ng-show="selectedView == 'groupsEditable'">
+                  <h2>Groupe : {{ group.sName }}</h2>
+                  <uib-tabset class="adminTabs">
+                     <uib-tab heading="Paramètres"><div ng-include="templatesPrefix+'/admin/tabs/groups_params.html'"></div></uib-tab>
                      <!--<tab ng-show="user" heading="Utilisateur associé"><div ng-include='"tabs/users_params.html"'></div></tab>-->
-                     <uib-tab heading="Accès et Validations"><div ng-include='"tabs/items_access.html"'></div></uib-tab>
-                     <uib-tab heading="Résumés et soumissions" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="'tabs/items_progression.html'"></div></uib-tab>
                   </uib-tabset>
-               </span>
-            </td>
-         </tr></table>
+               </div>
+               <div class="adminContainerTabContent" ng-show="selectedView == 'accessRules'">
+                  <h2>Item et Groupe : {{ group.sName }} {{ item.strings[0].sTitle }}</h2>
+                  <uib-tabset class="adminTabs">
+                     <!--<tab ng-show="user" heading="Utilisateur associé"><div ng-include='"tabs/users_params.html"'></div></tab>-->
+                     <uib-tab heading="{{'admin_access' | i18next}}"><div ng-include="templatesPrefix+'/admin/tabs/items_access.html'"></div></uib-tab>
+                     <uib-tab heading="{{'admin_summary' | i18next}}" ng-show="group_item.bOwnerAccess || group_item.bAccessSolutions || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_progression.html'"></div></uib-tab>
+                  </uib-tabset>
+               </div>
+            </div>
+         </div>
       </div>
+         <script>
+  window.i18next.use(window.i18nextXHRBackend);
+  window.i18next.init({
+    'lng': config.domains.current.defaultLanguage,
+    'fallbackLng': ['en'],
+    'fallbackNS': 'algorea',
+    'debug': true,
+    'ns': config.domains.current.customStringsName ? [config.domains.current.customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
+    'backend' : {
+      'allowMultiLoading' : false,
+      'loadPath' : '/i18n/{{lng}}/{{ns}}.json'
+    }
+  });
+  window.i18next.on('initialized', function (options) {
+    window.i18nextOptions = options;
+    angular.bootstrap(document, ['algorea']);
+  });
+</script>
    </body>
 </html>

@@ -1,53 +1,75 @@
+.threadsContainer {
+   margin: 20px 10px 10px;
+   display:-webkit-flex;
+   display:flex;
+   -webkit-flex-direction:row;
+   flex-direction:row;
+   -webkit-flex-wrap:wrap;
+   flex-wrap:wrap;
+}
+.threadsContainer .tabsContainer {
+   flex: 2 1 0;
+}
+.threadsContainer .globalFilters {
+   margin-right: 10px;
+   margin-top: 42px;
+}
+.threadsContainer .tab-content {
+   padding: 2em;
+   background-color: #F7F7F9;
+}
 .threadsInIndex {
-   display: table;
-   width:100%;
-   min-width: 800px;
-   line-height: 25px;
-   text-overflow: ellipsis;
-   overflow: hidden;
+   border: 1px solid #ccc;
+   position: relative;
 }
 
 .threadInIndex {
-   display: table-row;
-   background-color: rgb(232, 232, 232);
-   cursor:pointer;
+   background-color: #e8e8e8;
+   cursor: pointer;
+   border-bottom: 1px solid #ccc;
 }
-
+.threadInIndex:last-child {
+   border-bottom: none;
+}
 .threadInIndex:hover {
    background-color: #B0B0B0;
 }
 
+.threadInIndex .thread {
+   padding: 3px 10px;
+   display: flex;
+   flex-wrap: wrap;
+}
 .threadInIndexSelected {
    background-color: #B8B8B8;
 }
-
 .threadInIndexReadOnly {
    cursor:not-allowed;
    color: #808080;
 }
 
 .threadInIndexCell {
-   height: 50px;
+   vertical-align: middle;
+   display: inline-block;
+   line-height: 2em;
 }
 
 .threadInIndexCheckBox {
-   display: table-cell;
-   width: 20px;
 }
 
 .threadInIndexFavorite {
-   display: table-cell;
-   width: 20px;
+   flex: 0 0 40px;
+   text-align: center;
 }
-
+   .threadInIndexFavorite button {
+      padding: 0;
+   }
 .threadInIndexImportant {
-   display: table-cell;
-   width: 20px;
+   width: 40px;
 }
 
 .threadInIndexUser {
-   display: table-cell;
-   width: 150px;
+   flex: 0 1 150px;
 }
 
 .threadInIndexUser span {
@@ -55,7 +77,7 @@
 }
 
 .threadInIndexMessage {
-   display: table-cell;
+   flex: 2 0 200px;
 }
 
 .threadInIndexMessage:hover {
@@ -68,25 +90,27 @@
 
 .threadInIndexDoNotOverflow {
    display: block;
-   /*white-space: nowrap;*/
+   white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
-   height: 50px;
 }
-
+.threadInIndexLastActivityDate {
+   font-size: 12px;
+   flex: 1 1 auto;
+   line-height: 18px;
+   text-align: right;
+}
+.globalFilters {
+   margin-bottom: 1em;
+}
 .globalFilter {
    font-weight: bold;
    color: black;
-   font-size: 16pt;
-   line-height: 30pt;
+   line-height: 30px;
 }
 
 .globalFilterSelected {
    background-color: #D0D0D0;
-}
-
-.threadsContainer {
-   margin-top: 20px;
 }
 
 .transparentButton {
@@ -97,6 +121,8 @@
    outline:none;
 }
 
+/* FILTERS */
+
 .filterContainer {
    margin: 10px;
    padding: 10px;
@@ -104,4 +130,160 @@
    border-left-width: 8px;
    border-radius: 4px;
    background-color: #F7F7F9;
+}
+.filterFormDatePickers {
+   display: flex;
+   flex-wrap: wrap;
+}
+@media screen and (min-width: 768px) {
+   .filterFormDatePickers > div:not(:last-child) {
+      margin-right: 2em;
+   }
+}
+.filterContainer .saveFilter {
+   border: 1px solid #ccc;
+   padding: 10px;
+   box-shadow: 0 0 6px #ccc;
+   background-color: #fff;
+}
+.forumThreadForm {
+   margin: 20px 10px 10px;
+   padding: 2em;
+   background-color: #edebed;
+}
+.form-group {
+   position: relative;
+}
+
+/* THREAD CONTENT */
+.threadTitle {
+   font-size: 36px;
+   background: #e8e8e8;
+   padding: 10px 10px 10px 1em;
+   margin-top: 0;
+   color: #0f4a6d;
+}
+.threadTitleLabel {
+   font-size: 18px;
+}
+
+.inTaskThreadForm {}
+.threadInForum .threadMessages {
+   padding: 1em 2em 0;
+}
+.threadInTask .taskInThread,
+.threadInTask .threadEvent {
+   width: 802px;
+}
+.threadEvent,
+.taskInThread {
+}
+.threadEvent {
+   margin-top: 20px;
+}
+.taskInThread {
+   margin-top: -1px;
+   padding-bottom: 1px;
+}
+.threadInForum .threadEvent {
+   margin-right: 10%;
+   margin-left: 0;
+   position: relative;
+}
+.threadInForum .threadEvent.originalPoster,
+.threadInForum .threadEvent.originalPoster + .taskInThread {
+   margin-left: 10%;
+   margin-right: 0;
+}
+.threadInForum .threadEvent::before {
+   content: " ";
+   border: 10px solid #efefef;
+   display: block;
+   position: absolute;
+   top: 9px;
+   left: -9px;
+   border-top-color: transparent;
+   border-left: none;
+   border-bottom-color: transparent;
+}
+.threadInForum .threadEvent.originalPoster::before {
+   content: normal;
+}
+.threadInForum .threadEvent.originalPoster::after {
+   content: " ";
+   border: 10px solid #efefef;
+   display: block;
+   position: absolute;
+   top: 9px;
+   right: -9px;
+   border-top-color: transparent;
+   border-right: none;
+   border-bottom-color: transparent;
+}
+.threadEventContent {
+   border: 1px solid #ddd;
+   border-top-width: 5px;
+   border-radius: 3px;
+}
+.threadEventContentDefault {
+   border-top-color: #777;
+}
+.threadEventContent-success {
+   border-top-color: #5cb85c;
+}
+.threadEventContent-fail {
+   border-top-color: #d9534f;
+}
+
+/* message content */
+.threadEventContent .eventInfo {
+   font-size: 16px;
+   padding: 5px 10px;
+   background: #efefef;
+}
+.threadEventContent .eventInfo i {
+   vertical-align: bottom;
+}
+.threadEventContent .eventInfo .score {
+   font-weight: bold;
+}
+.threadEventContent-success .eventInfo .score i {
+   color: #5cb85c;
+}
+.threadEventContent-fail .eventInfo .score i {
+   color: #d9534f;
+}
+
+.threadEventContent .eventBody {
+   padding: 10px;
+}
+.threadEventContent .eventBodyContent {
+   white-space: pre-wrap;
+}
+.taskInThread {
+   border: 1px solid #ddd;
+   border-top-color: #fff;
+   margin: -1px auto 0;
+}
+.threadAnswer {
+   margin: 2em;
+   padding: 2em;
+   border: 1px solid #ddd;
+   background: #F7F7F9;
+   border-radius: 3px;
+}
+.threadAnswer label {
+   font-size: 28px;
+   font-weight: normal;
+}
+.threadAnswer button {
+   margin-top: 10px;
+}
+.inThreadTaskTrial h3   {
+   font-size: 36px;
+   padding: 10px 10px 10px 36px;
+   background: #2aa3ff;
+   text-transform: uppercase;
+   color: #fff;
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }

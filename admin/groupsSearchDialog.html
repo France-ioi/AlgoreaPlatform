@@ -1,6 +1,6 @@
 <div modal="shouldBeOpen" close="close()" options="opts">
    <div class="modal-header">
-      <h3>Recherche de groupes</h3>
+      <h3 ng-i18next="groupAdmin_title_group_search"></h3>
    </div>
    <div class="modal-body">
    <form>
@@ -10,7 +10,7 @@
    </form>                
    </div>
    <div class="modal-footer">
-      <button class="btn btn-primary" ng-click="search()">Rechercher</button>
-      <button class="btn btn-warning cancel" ng-click="close()">Annuler</button>
+      <button class="btn btn-primary" ng-click="search()" ng-i18next="search"></button>
+      <button class="btn btn-warning cancel" ng-click="close()" ng-i18next="cancel"></button>
    </div>
 </div>

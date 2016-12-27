@@ -1,6 +1,6 @@
 angular.module('algorea')
-   .service('itemService', ['$rootScope', '$timeout', 'loginService', '$stateParams', function($rootScope, $timeout, loginService, $stateParams) {
       'use strict';
+   .service('itemService', ['$rootScope', '$timeout', 'loginService', '$i18next', '$stateParams', function($rootScope, $timeout, loginService, $i18next, $stateParams) {
     /*
      * Simple service providing items.
      */
@@ -19,7 +19,7 @@ angular.module('algorea')
       function setSyncInterval() {
          if (!intervalIsSet) {
             intervalIsSet = true;
-            setInterval(SyncQueue.planToSend, 30000);
+            setInterval(SyncQueue.planToSend, 300000);
          }
       }
       setSyncInterval();
@@ -361,17 +361,17 @@ angular.module('algorea')
             if (type == 'Root') return '';
             var typeStr;
             if (type == 'Level') {
-               typeStr = 'Niveau' + (item.iLevel ? ' '+item.iLevel : '');
+               typeStr = $i18next.t('navigation_level') + (item.iLevel ? ' '+item.iLevel : '');
             } else if(type == 'Chapter') {
-               typeStr = 'Chapitre';
+               typeStr = $i18next.t('navigation_chapter');
             } else if (type == 'Category') {
-               typeStr = 'Catégorie';
+               typeStr = $i18next.t('navigation_category');
             } else if (type == 'Section') {
-               typeStr = 'Section';
+               typeStr = $i18next.t('navigation_section');
             } else if (type == 'Task') {
-               typeStr = 'Exercice';
+               typeStr = $i18next.t('navigation_task');
             } else if (type == 'Course') {
-               typeStr = 'Cours';
+               typeStr = $i18next.t('navigation_course');
             }
             return typeStr;
          },

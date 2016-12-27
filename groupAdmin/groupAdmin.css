@@ -17,7 +17,6 @@ orange : #F29200;
 }
 .groupAdmin {
 	margin: 10px;
-	color: #480a2a;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
@@ -32,26 +31,21 @@ orange : #F29200;
 .groupAdmin .block-context {
 	overflow: auto;
 }
+.groupAdmin h1 {
+	font-size: 28px;
+}
+.groupAdmin h1 .groupName {
+	font-weight: bold;
+}
 
 /*
 	Tabs
 */
-.groupAdmin .nav-tabs>li>a {
-	font-size: 14px;
-	font-weight: bold;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	transition: all 250ms;
-	outline: 0;
-}
-.groupAdmin .nav-tabs>li.active>a,
-.groupAdmin .nav-tabs>li.active>a:focus,
-.groupAdmin .nav-tabs>li.active>a:hover  {
-	color: #D1D718;
-}
+
 .groupAdmin-tabContent {
-	background-color: #edebed;
+	background-color: #F7F7F9;
 	padding: 2em;
+	position: relative;
 }
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
@@ -66,7 +60,7 @@ orange : #F29200;
 	font-weight: bold;
 	margin-bottom: 1em;
 }
-.groupAdmin .groupAdmin-title span {
+.groupAdmin .groupAdmin-title .title-desc {
 	display: block;
 	font-size: 16px;
 	font-weight: normal;
@@ -108,45 +102,18 @@ orange : #F29200;
 	top: 0;
 	right: 0;
 }
-.groupAdmin .form-control {
-	border-color: #a88996;
-	border-radius: 0;
-}
+
 .groupAdmin .form-control + .form-control {
 	margin-top: 1em;
 }
-.groupAdmin .checkboxSwitch input.switch {
-	display: none;
-}
-.groupAdmin .checkboxSwitch input.switch + label {
-	background-color: #480a2a;
-	width: 70px;
-	height: 30px;
-	border-radius: 15px;
-	position: relative;
-	vertical-align: middle;
-}
-.groupAdmin .checkboxSwitch input.switch + label span {
-	width: 20px;
-	height: 20px;
-	top: 5px;
-	left: 5px;
-	position: absolute;
-	border-radius: 50%;
-	background-color: #e42c20;
-	transition: all 250ms;
-}
-.groupAdmin .checkboxSwitch input.switch:checked + label span {
-	background-color: #0FAA8B;
-	left: 45px;
-}
+
 
 /*
 	Users lists
 */
 .groupAdmin .list-block {
 	background-color: #fff;
-	border: 1px solid #a88996;
+	border: 1px solid #ccc;
 	line-height: 1.5em;
 	list-style: none;
 	margin-bottom: 2em;
@@ -211,19 +178,14 @@ orange : #F29200;
 }
 .groupAdmin .list-block.list-applicants {
 	max-height: 6em;
-	overflow: auto;
 	max-width: 580px;
 }
 
 /* Buttons */
-.groupAdmin .btn.btn-primary {
-	background-color: #480a2a;
-	border-color: #480a2a;
-}
+
 .groupAdmin .btn-icon {
 	width: 30px;
 	height: 30px;
-	font-size: 28px;
 	line-height: 1;
 	padding: 0;
 	display: inline-block;
@@ -232,6 +194,23 @@ orange : #F29200;
 	background-color: transparent;
 	vertical-align: middle;
 	transition: all 250ms;
+}
+.groupAdmin .btn-icon.btn-small {
+	width: 21px;
+	height: 21px;
+	font-size: 16px;
+}
+.groupAdmin .btn-icon.btn-wide {
+	width: 2.5em;
+}
+.material-icons.md-18 {
+	font-size: 18px;
+}
+.material-icons.md-36 {
+	font-size: 36px;
+}
+.groupAdmin .btn-icon i.material-icons {
+	color: #333;
 }
 .groupAdmin .btn-icon.btn-small {
 	width: 21px;
@@ -258,20 +237,19 @@ orange : #F29200;
 	background-image: url(images/petit-apercu-clic.png);
 }
 .groupAdmin .btn-icon.btn-small.btn-delete {
-	background: url(images/petit-supprimer.png) center center no-repeat;
+	/*background: url(images/petit-supprimer.png) center center no-repeat;*/
 }
-.groupAdmin .btn-icon.btn-small.btn-delete:active,
-.groupAdmin .btn-icon.btn-small.btn-delete:focus,
-.groupAdmin .btn-icon.btn-small.btn-delete:hover {
-	background-image: url(images/petit-supprimer-clic.png);
+.groupAdmin .btn-icon.btn-delete i.material-icons:active,
+.groupAdmin .btn-icon.btn-delete i.material-icons:focus,
+.groupAdmin .btn-icon.btn-delete i.material-icons:hover {
+	/*background-image: url(images/petit-supprimer-clic.png);*/
+	color: #e42c20;
 }
 .groupAdmin .btn-icon.btn-add {
-	background: url(images/ajouter.png) center no-repeat;
+	/*background: url(images/ajouter.png) center no-repeat;*/
 }
-.groupAdmin .btn-icon.btn-add:active,
-.groupAdmin .btn-icon.btn-add:focus,
-.groupAdmin .btn-icon.btn-add:hover {
-	background-image: url(images/ajouter.png);
+.groupAdmin .btn-icon.btn-add i {
+	color: #2aa3ff;
 }
 .groupAdmin .btn-icon.btn-zoom-in {
 	background: url(images/vue-detaillee.png) center no-repeat;
@@ -303,21 +281,23 @@ orange : #F29200;
 	text-shadow: none;
 }
 .groupAdmin .group-delete {
-	color: #480a2a;
+	color: #333;
 	display: inline-block;
 	font-size: 16px;
 	font-weight: bold;
 	line-height: 30px;
-	padding-right: 40px;
 	cursor: pointer;
-	background: url(images/grand-supprimer-clic.png) center right no-repeat;
-	transition: all 500ms;
 }
 .groupAdmin .group-delete:hover {
 	text-decoration: none;
-	background-image: url(images/grand-supprimer.png);
 }
-
+.groupAdmin .group-delete i {
+	vertical-align: text-bottom;
+	transition: all 500ms;
+}
+.groupAdmin .group-delete:hover i {
+	color: #e42c20;
+}
 /*
 	Home
 */
@@ -391,6 +371,7 @@ orange : #F29200;
 .tab-members .action-col .access-code {
 	font-size: 16px;
 	font-family: 'DejaVu Sans Mono', Courier, monospace;
+	width: 130px;
 }
 .tab-members .action-col .bloc-inscription {
 	margin-bottom: 2em;
@@ -399,6 +380,28 @@ orange : #F29200;
 /*
 	Tab: Progression
 */
+.tab-progression .flex-container {
+	display: flex;
+	flex-flow: row wrap;
+}
+.tab-progression .flex-container.progression-controllers > div:first-child {
+	flex: 1 1 450px;
+}
+.tab-progression .flex-container.progression-controllers > div + div {
+	flex: 1 1 auto;
+}
+.tab-progression .flex-container.view-chrono {
+	margin: 0 -15px;
+}
+.tab-progression .flex-container.view-chrono > div {
+	padding: 0 15px;
+}
+.tab-progression .flex-container.view-chrono > div:first-child {
+	flex: 1 1 310px;
+}
+.tab-progression .flex-container.view-chrono > div + div {
+	flex: 2 1 620px;
+}
 .groupAdmin .validated {
 	background-color: #0faa8b !important;
 }
@@ -415,6 +418,13 @@ orange : #F29200;
 	background-color: #C6C6C6 !important;
 }
 .groupAdmin .tab-progression .parcours-select {
+}
+.groupAdmin .tab-progression .parcours-select select {
+	margin-right: 3px;
+	margin-bottom: 5px;
+}
+.groupAdmin .tab-progression .dl-link {
+	margin-top: 10px;
 	margin-bottom: 2em;
 }
 /* Individual view */
@@ -427,20 +437,23 @@ orange : #F29200;
 	margin: 5px 0;
 	line-height: normal;
 }
+.groupAdmin .view-chrono .select-toggle {
+	margin-top: -1em;
+	margin-bottom: 2em;
+}
 .groupAdmin .table-activity {
 	background-color: #fff;
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 }
 .groupAdmin .table-activity th,
 .groupAdmin .table-activity td {
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 }
 .groupAdmin .table-activity th {
 	font-weight: normal;
 	text-transform: uppercase;
 }
 .groupAdmin .table-activity .activity-type {
-	position: relative;
 	background-color: #C6C6C6;
 }
 .groupAdmin .table-activity .activity-type.validation {
@@ -450,9 +463,7 @@ orange : #F29200;
 	background-color: #e42c20;
 }
 .groupAdmin .table-activity .activity-type button {
-	position: absolute;
-	bottom: 3px;
-	right: 3px;
+	float: right;
 }
 /*
 .groupAdmin .table-activity .activity-type .btn-modal {
@@ -478,6 +489,9 @@ orange : #F29200;
 .groupAdmin .tab-progression .checkboxSwitch > span {
 	margin-right: 0.5em;
 }
+.groupAdmin .tab-progression .table-wrapper {
+	overflow-x: auto;
+}
 .groupAdmin .table-progress {
 	border-collapse: collapse;
 	margin-top: 40px;
@@ -487,17 +501,30 @@ orange : #F29200;
 }
 .groupAdmin .table-progress td,
 .groupAdmin .table-progress th {
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 	padding: 3px;
 	background-color: #fff;
 	background-clip: padding-box;
 }
 .groupAdmin .table-progress td.fixed-width.step-name,
 .groupAdmin .table-progress th.fixed-width.step-name {
-	width: 14em;
-	min-width: 14em;
-	max-width: 14em;
-	position: relative;
+	width: 15em;
+	min-width: 15em;
+	max-width: 15em;
+}
+.groupAdmin .table-progress td.fixed-width.step-name p {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 0;
+}
+.groupAdmin .table-progress td.fixed-width.step-name .tooltip {
+	white-space: nowrap;
+	width: auto;
+	font-family: inherit;
+}
+.groupAdmin .table-progress td.fixed-width.step-name .tooltip .tooltip-inner {
+	max-width: initial;
 }
 .groupAdmin .table-progress .step-descr {
 	width: 400px;
@@ -513,7 +540,7 @@ orange : #F29200;
 	overflow: visible;
 	background-color: #fff;
 	height: auto;
-	border: 1px solid #480a2a;
+	border: 1px solid #000;
 	padding: 5px;
 	opacity: 0.9;
 	z-index: 1;
@@ -529,64 +556,81 @@ orange : #F29200;
 	padding: 0;
 }
 
+	/* Collective view: Global */
 .groupAdmin .table-progress.view-global th.name {
 	white-space: nowrap;
 	width: 60px;
+	min-width: 60px;
+	max-width: 60px;
 	border: none;
 	background-color: transparent;
 	padding: 0;
 }
-
-	/* Collective view: Global */
-.groupAdmin .table-progress.view-global th.name div {
+.groupAdmin .table-progress.view-global th.name .user-info-wrapper {
 	transform: rotate(-45deg) translate(32px, 33px);
 	width: 30px;
 	text-transform: none;
 }
 .groupAdmin .table-progress.view-global th.name .user-info {
-	border-bottom: 1px solid #a88996;
+	border-bottom: 1px solid #000;
 	padding: 5px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: inline-block;
 	width: 200px;
 	text-align: left;
+	cursor: default;
 }
 .groupAdmin .table-progress.view-global td.status {
-	position: relative;
 	width: 60px;
 	min-width: 60px;
 	max-width: 60px;
 	padding: 3px;
 	vertical-align: bottom;
 }
+.groupAdmin .table-progress.view-global td.status.unread div.score {
+	display: none;
+}
+.groupAdmin .table-progress.view-global td.status div.score {
+	text-align: center;
+	opacity: 1;
+	transition: all 250ms;
+	line-height: 0;
+	position: relative;
+	top: 10px;
+}
+.groupAdmin .table-progress.view-global td.status:hover div.score {
+	opacity: 0;
+}
 .groupAdmin .table-progress.view-global td.status button {
 	opacity: 0;
 	transition: all 250ms;
+	position: relative;
 }
 .groupAdmin .table-progress.view-global td.status:hover button {
 	opacity: 1;
 }
-.groupAdmin .table-progress.view-global td.status .progress-details {
-	position: absolute;
-	border: 1px solid #0FAA8B;
+.groupAdmin .table-progress td.status .popover {
+	max-width: initial;
+}
+.groupAdmin .table-progress td.status .popover .progress-details {
 	background-color: #fff;
 	list-style: none;
 	font-size: 14px;
 	line-height: 1.4;
 	margin: 0;
-	padding: 10px;
-	bottom: 40px;
-	right: 0;
-	display: none;
-	width: 300px;
+	padding: 0;
+	width: 330px;
 }
-.groupAdmin .table-progress.view-global td.status button.btn-preview:hover + ul.progress-details {
-	display: block;
-}
-.groupAdmin .table-progress.view-global .progress-details li {
+.groupAdmin .table-progress .popover .progress-details li {
 	position: relative;
 	padding-left: 20px;
+}
+.groupAdmin .table-progress .popover .progress-details li.login {
+	font-weight: bold;
+}
+.groupAdmin .table-progress .popover .progress-details li.time {
+	white-space: nowrap;
 }
 
 /* fixed header */
@@ -604,13 +648,13 @@ orange : #F29200;
 .groupAdmin .table-progress tbody {
 	display: block;
 	max-height: 400px;
-	max-height: calc(100vh - 365px);
+	max-height: calc(100vh - 175px);
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 .groupAdmin .table-progress.view-detail tbody {
 	max-height: 400px;
-	max-height: calc(100vh - 235px);
+	max-height: calc(100vh - 100px);
 }
 	/* Collective view: Detailed */
 .groupAdmin .table-progress.view-detail th.name {
@@ -628,9 +672,9 @@ orange : #F29200;
 }
 .groupAdmin .table-progress.view-detail th.name,
 .groupAdmin .table-progress.view-detail td.status {
-	max-width: 261px;
-	min-width: 261px;
-		width: 261px;
+	max-width: 265px;
+	min-width: 265px;
+		width: 265px;
 
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row {
@@ -650,14 +694,21 @@ orange : #F29200;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	float: left;
+	cursor: default;
 }
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.date {width: 112px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.time {width:107px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.help {width:40px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.score {width:78px;}
-.groupAdmin .table-progress.view-detail .progress-details .details-row > div.submissions {width:86px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.score {width:68px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.submissions {width:85px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.questions {width:55px;}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div.button {width: 39px;}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.tooltip {
+	padding: 5px 0;
+}
+.groupAdmin .table-progress.view-detail .progress-details .details-row > div.tooltip .tooltip-inner {
+	max-width: initial;
+}
 .groupAdmin .table-progress.view-detail .progress-details .details-row > div:first-child {
 	border-left: none;
 }
@@ -713,9 +764,9 @@ orange : #F29200;
 }
 .groupAdmin .legend {
 	list-style: none;
-	margin-bottom: 0;
+	padding: 0;
 }
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1494px) {
 	.groupAdmin .legend {
 		-webkit-column-count: 2;
 		   -moz-column-count: 2;
@@ -730,17 +781,33 @@ orange : #F29200;
 }
 
 .groupAdmin .legend-color {
-	width: 15px;
-	height: 15px;
+	width: 14px;
+	height: 14px;
 	display: inline-block;
 	vertical-align: middle;
 	margin-right: 5px;
+	border: 7px solid;
 }
-.groupAdmin .legend-color.green { background-color: #0FAA8B;}
-.groupAdmin .legend-color.red { background-color: #e42c20;}
-.groupAdmin .legend-color.orange { background-color: #F29200;}
-.groupAdmin .legend-color.dark-grey { background-color: #707070;}
-.groupAdmin .legend-color.light-grey { background-color: #C6C6C6;}
+.groupAdmin .legend-color.green {
+	border-color: #0FAA8B;
+	background-color: #0FAA8B;
+}
+.groupAdmin .legend-color.red {
+	border-color: #e42c20;
+	background-color: #e42c20;
+}
+.groupAdmin .legend-color.orange {
+	border-color: #F29200;
+	background-color: #F29200;
+}
+.groupAdmin .legend-color.dark-grey {
+	border-color: #707070;
+	background-color: #707070;
+}
+.groupAdmin .legend-color.light-grey {
+	border-color: #C6C6C6;
+	background-color: #C6C6C6;
+}
 .groupAdmin .view-switcher .btn-icon {
 	vertical-align: bottom;
 }
@@ -754,7 +821,7 @@ orange : #F29200;
 .groupAdmin .table-administrators {
 	max-height: 200px;
 	overflow: auto;
-	border: 1px solid #a88996;
+	border: 1px solid #ccc;
 	margin-bottom: 2em;
 	background-color: #fff;
 }
@@ -783,4 +850,157 @@ orange : #F29200;
 
 .groupAdmin .chapter_string {
 	font-weight: bold;
+}
+
+@media screen {
+	.print {
+		display: none;
+	}
+}
+
+/*
+*
+	PRINT
+*
+*/
+@media print {
+	#menu, .breadcrumbs-item-inactive, #footer,
+	.sidebar-left,
+	.nav-tabs,
+	.checkboxSwitch,
+	.btn, .dl-link,
+	.progression-type-select,
+	.groupAdmin .table-progress  {
+		display: none !important;
+	}
+	/*
+	*
+	GROUP ADMIN
+	*
+	*/
+	/* Progression tables */
+	body,
+	#main,
+	.tab-progression .flex-container {
+		display: block !important;
+	}
+	body {
+		overflow: initial !important;
+	}
+	.groupAdmin .table-progress-print + .table-progress-print {
+		page-break-before: always;
+	}
+	.groupAdmin .table-progress-print tr {
+		-webkit-page-break-inside: avoid;
+		page-break-inside: avoid;
+	}
+	.groupAdmin .table-progress-print td {
+		border: 1pt solid #000;
+	}
+	.groupAdmin .table-progress-print td.fixed-width.step-name {
+		width: 180pt;
+		min-width: 180pt;
+		max-width: 180pt;
+	}
+	.groupAdmin .table-progress-print td.fixed-width.step-name div {
+		height: 32pt;
+		min-height: 32pt;
+		max-height: 32pt;
+		overflow: hidden;
+	}
+		/* Detailed view */
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row:first-child,
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div {
+		border-color: #000;
+	}
+	.groupAdmin .table-progress-print.view-detail td.status {
+		max-width: 195pt;
+		min-width: 195pt;
+			width: 195pt;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row {
+		text-align: center;
+		overflow: hidden;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row:first-child {
+		border-bottom: 1pt solid #000;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div {
+		vertical-align: middle;
+		border-left: 1pt solid #000;
+		padding: 0 4px;
+		text-align: center;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		float: left;
+	}
+	.groupAdmin .view-detail .status.unread .progress-details .details-row,
+	.groupAdmin .view-detail .status.unread .progress-details .details-row > div {
+		border: none;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.date {width: 84pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.time {width:80pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.help {width:30pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.score {width:58pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.submissions {width:64pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div.questions {width:70pt;}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row > div:first-child {
+		border-left: none;
+	}
+	.groupAdmin .table-progress-print.view-detail .status.unread .progress-details .details-row > div {
+		display: none;
+	}
+	.groupAdmin .table-progress-print.view-detail .progress-details .details-row .btn-icon {
+		height: 12pt;
+	}
+
+
+		/* Global view */
+	.groupAdmin .table-progress-print.view-global th {
+		vertical-align: bottom;
+	}
+	.groupAdmin .table-progress-print.view-global th.name {
+		white-space: nowrap;
+		border: none;
+		background-color: transparent;
+		padding: 0;
+		height: 140pt;
+		width: 50pt;
+		max-width: 50pt;
+		min-width: 50pt;
+	}
+	.groupAdmin .table-progress-print.view-global th.name div {
+		transform: rotate(-45deg);
+		transform-origin: left bottom;
+		position: relative;
+		left: calc(100% + 2pt);
+		text-transform: none;
+		bottom: -2pt;
+		line-height: 1;
+	}
+	.groupAdmin .table-progress-print.view-global th.name .user-info {
+		border-bottom: 1pt solid #000;
+		padding: 5pt;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: inline-block;
+		text-align: left;
+		width: 200pt;
+	}
+	.groupAdmin .table-progress-print.view-global td {
+		border: 1pt solid #000;
+	}
+	@page{
+		size: A4 landscape;
+		@bottom-left-corner {
+			content: counter(page);
+		}
+	}
+	.avertissement {
+		position: relative;
+		display: block;
+		color: #C6C6C6 !important;
+		background-color: #C6C6C6 !important;
+		margin-bottom: 5pt;
+	}
 }

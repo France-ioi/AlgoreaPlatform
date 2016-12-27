@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('taskController', ['$scope', '$rootScope', '$location', '$interval', '$injector', function ($scope, $rootScope, $location, $interval, $injector) {
+   .controller('taskController', ['$scope', '$rootScope', '$location', '$interval', '$injector', '$i18next', function ($scope, $rootScope, $location, $interval, $injector, $i18next) {
    var itemService, $state;
    if ($injector.has('itemService')) {
       itemService = $injector.get('itemService');
@@ -25,9 +25,9 @@ angular.module('algorea')
    var platformViews = {};
    var initPlatformViews = function() {
       platformViews = {
-         'task': {tabString: 'Énoncé', taskViews: {'task': true}},
-         'editor': {tabString: 'Résolution', taskViews: {'editor': true}},
-         'hints': {tabString: 'Indices', taskViews: {'hints': true}},
+         'task': {tabString: $i18next.t('task_statement'), taskViews: {'task': true}},
+         'editor': {tabString: $i18next.t('task_solve'), taskViews: {'editor': true}},
+         'hints': {tabString: $i18next.t('task_hints'), taskViews: {'hints': true}},
       };
    };
    initPlatformViews();
@@ -35,7 +35,7 @@ angular.module('algorea')
       delete(platformViews.task);
    }
    $scope.showSolution = function() {
-      platformViews.solution = {tabString: 'Solution', taskViews: {'solution': true}};
+      platformViews.solution = {tabString: $i18next.t('task_solution'), taskViews: {'solution': true}};
    };
    $scope.hideSolution = function() {
       delete platformViews.solution;
@@ -45,20 +45,22 @@ angular.module('algorea')
       if ($scope.loadedUserItemID != $scope.user_item.ID) {
          return;
       }
+      $scope.firstViewLoaded = true;
       $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
+      var state = $scope.user_item.sState;
+      if (!state) {state = '';} // default state is the empty string
       if ($scope.user_answer) {
          $scope.task.reloadAnswer($scope.user_answer.sAnswer, function() {
             if ($scope.loadedUserItemID != $scope.user_item.ID) return;
             if ($scope.taskName != 'task-answer') {
-               //$scope.task.reloadState($scope.user_item.sState, $scope.sync);
-               $scope.sync();
+               $scope.task.reloadState(state, $scope.sync);
             } else {
                $scope.sync();
             }
          });
       } else {
          if ($scope.taskName != 'task-answer') {
-            $scope.task.reloadState($scope.user_item.sState, $scope.sync);
+            $scope.task.reloadState(state, $scope.sync);
          } else {
             $scope.sync();
          }
@@ -126,6 +128,7 @@ angular.module('algorea')
          angular.forEach($scope.intervals, function(interval) {
             $interval.cancel(interval);
          });
+         $scope.intervals = {};
       }
    });
    $scope.$on('algorea.taskViewChange', function(event, toParams) {
@@ -150,7 +153,8 @@ angular.module('algorea')
          } else {
             this.showForum = false;
             if (!$scope.task.unloaded) {
-               $scope.task.showViews(platformViews[platformView].taskViews, $scope.load_answer_and_sync, function(){});
+               var callbackFun = $scope.firstViewLoaded ? function() {} : $scope.load_answer_and_sync;
+               $scope.task.showViews(platformViews[platformView].taskViews, callbackFun, function(){});
             }
          }
          $scope.currentView = platformView;
@@ -168,6 +172,7 @@ angular.module('algorea')
       }
    };
    $scope.setTabs = function (taskViews) {
+      $scope.firstViewLoaded = false;
       initPlatformViews();
       if (!this.inForum && this.useForum) {
          platformViews.forum = {tabString: 'Aide'};
@@ -186,14 +191,16 @@ angular.module('algorea')
       }
       var scopeViews = [];
       var scopeViewsIndex = [];
+      $scope.askedView = $scope.currentView;
       angular.forEach(platformViews, function(platformView, platformViewName) {
-         if ($scope.isActive(platformViewName)) {
+         if (!$scope.currentView && $scope.isActive(platformViewName)) {
             $scope.askedView = platformViewName;
          }
          scopeViewsIndex[platformViewName] = scopeViews.push({
             string:    platformView.tabString,
             name:      platformViewName,
             id:        $scope.taskName+'-'+platformViewName,
+            active:    platformViewName == $scope.askedView,
             disabled:  $scope.isDisabled(platformViewName),
             taskViews: platformView.taskViews,
          });
@@ -203,6 +210,7 @@ angular.module('algorea')
       if (!$scope.askedView) {
          $scope.askedView = 'task';
       }
+      $scope.views[$scope.viewsIndex[$scope.askedView] -1].active = true;
       $scope.showView($scope.askedView);
    };
    $scope.isActive = function(view) {

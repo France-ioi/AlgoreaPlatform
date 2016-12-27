@@ -1,8 +1,23 @@
 "use strict";
 
-var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize', 'ngAnimate']);
+var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize', 'ngAnimate', 'jm.i18next']);
 
-app.directive('field', function() {
+angular.module('algorea')
+   .config(['$sceDelegateProvider', function ($sceDelegateProvider) {
+      if (config.domains.current.assetsBaseUrl) {
+         $sceDelegateProvider.resourceUrlWhitelist([
+            'self',
+            config.domains.current.assetsBaseUrl+'**'
+         ]);
+      }
+      }]);
+
+angular.module('algorea')
+   .run(['$rootScope', function ($rootScope) {
+      $rootScope.templatesPrefix = (config.domains.current.compiledMode || !config.domains.current.assetsBaseUrl) ? '' : config.domains.current.assetsBaseUrl;
+   }]);
+
+app.directive('field', ['$rootScope', function($rootScope) {
    return {
       restrict: 'E',
       scope: {
@@ -21,19 +36,19 @@ app.directive('field', function() {
             }
          };
       }],
-      templateUrl: ((typeof compiled !== 'undefined' && compiled)?'':"../")+"commonFramework/angularDirectives/formField.html",
+      templateUrl: $rootScope.templatesPrefix+"/commonFramework/angularDirectives/formField.html",
       replace: true
    };
-});
+}]);
 
 angular.module('algorea')
    .controller('adminCtrl', ['$scope', '$rootScope', 'loginService', '$sce', '$location', '$timeout', function($scope, $rootScope, loginService, $sce, $location, $timeout) {
       $scope.userLogged = false;
       $scope.loginReady = false;
       $scope.loginClass = 'loginCentered';
-      loginService.init($rootScope);
+      loginService.initEventListener();
       $scope.loginInnerHtml = '';
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl('https://loginaws.algorea.org/login.html#' + $location.absUrl());
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl+'?'+config.domains.current.additionalLoginArgs);
       $scope.$on('login.login', function(event, data) {
          if (data.tempUser) {
             $scope.userLogged = false;
@@ -65,7 +80,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('ItemsCtrl', ['$scope', '$uibModal', 'loginService', function($scope, $uibModal, loginService) {
+   .controller('ItemsCtrl', ['$scope', '$uibModal', 'loginService', '$i18next', function($scope, $uibModal, loginService, $i18next) {
       $scope.models = models;
       $scope.inForum = true;// TODO: used by tasks, should be better
       $scope.accessManager = AccessManager;
@@ -78,6 +93,8 @@ angular.module('algorea')
          Validation: "Validation",
          Application: "Application"
       };
+      $scope.longCategoryNames = models.items_items.fields.sCategory.values;
+      $scope.longValidationTypesNames = models.items.fields.sValidationType.values;
       $scope.smallCategoryNames = { // TODO : should not be needed anymore
          Undefined: "I",
          Challenge: "Ch",
@@ -97,7 +114,10 @@ angular.module('algorea')
       $scope.test = function() {
          alert('test');
       };
-
+      $scope.selectedView = 'itemsEditable';
+      $scope.selectView = function(view) {
+         $scope.selectedView = view;
+      };
       $scope.itemIsExpanded = true;
       $scope.toggleItemExpanded = function() {
          this.itemIsExpanded = !this.itemIsExpanded;
@@ -140,7 +160,7 @@ angular.module('algorea')
          hasChanged |= $scope.hasObjectChanged("items", $scope.item);
          hasChanged |= $scope.hasObjectChanged("items_strings", $scope.item_strings);
          if (hasChanged) {
-            if (confirm("Des données de l'item en cours ont été modifiées, vous allez perdre les changements")) {
+            if (confirm($i18next.t('groupAdmin_confirm_unsaved'))) {
                $scope.resetObjectChanges("items_items", $scope.item_item);
                $scope.resetObjectChanges("items", $scope.item);
                $scope.resetObjectChanges("items_strings", $scope.item_strings);
@@ -151,12 +171,20 @@ angular.module('algorea')
          return true;
       };
 
+      function getGroupAncestors(group, ancestors) {
+         if (!group || !group.parents) return;
+         ancestors[group.ID] = true;
+         angular.forEach(group.parents, function(group_group_parent) {
+            getGroupAncestors(group_group_parent.parent, ancestors);
+         });
+      }
+
       $scope.computeAccessRights = function(to_group, item_item) {
          var child_group_item = getGroupItem($scope.loginData.idGroupSelf, item_item.child.ID);
          if (!to_group || !child_group_item || (!child_group_item.bOwnerAccess && !child_group_item.bManagerAccess)) {
             this.canGiveAccess = false;
             this.canRemoveAccess = false;
-            this.canGiveAccessReason = "Vous devez avoir les droits manager pour pouvoir donner directement accès à cet item.";
+            this.canGiveAccessReason = $i18next.t('groupAdmin_manager_required');
             return false;
          }
          var that = this;
@@ -179,25 +207,32 @@ angular.module('algorea')
             });
          });
          // we can give and remove access if parent is a root item
-         if (parent.ID === config.domains.current.OfficialProgressItemId || parent.ID === config.domains.current.CustomProgressItemId || parent.ID === config.domains.current.CustomContestRootItemId || parent.ID === config.domains.current.OfficialContestRootItemId) {
+         if (parent.ID === config.domains.current.OfficialProgressItemId || 
+               parent.ID === config.domains.current.CustomProgressItemId || 
+               parent.ID === config.domains.current.CustomContestRootItemId || 
+               parent.ID === config.domains.current.OfficialContestRootItemId ||
+               parent.ID === config.domains.current.ProgressRootItemId ||
+               parent.ID === config.domains.current.ContestRootItemId) {
             this.canGiveAccess = true;
             that.canRemoveAccess = true;
             return true;
          }
          this.canGiveAccess = false;
+         var group_ancestors = {};
+         getGroupAncestors(to_group, group_ancestors);
          angular.forEach(parent.group_items, function(group_item) {
-            if (group_item.idGroup == to_group.ID) {
+            if (group_ancestors[group_item.idGroup] && (group_item.bCachedFullAccess || group_item.bCachedPartialAccess)) {
                that.canGiveAccess = true;
                return true;
             }
          });
-         this.canGiveAccessReason = "Vous ne pouvez pas donner l'accès à un item à un groupe si celui-ci n'a pas accès à l'item parent";
+         this.canGiveAccessReason = $i18next.t('groupAdmin_parent_access_required');
          return this.canGiveAccess;
       };
 
       $scope.newItem = function(itemItemID) {
          if (!$scope.checkUserRight(itemItemID, 'items_items', 'insert')) {
-            alert("Vous n'avez pas le droit d'ajouter un objet à cet endroit");
+            alert($i18next.t('groupAdmin_add_here_unauthorized'));
             return;
          }
          if (!$scope.checkSaveItem()) {
@@ -220,7 +255,7 @@ angular.module('algorea')
          var itemStrings = ModelsManager.createRecord("items_strings");
          itemStrings.idItem = item.ID;
          itemStrings.idLanguage = 1; // TODO: handle this
-         itemStrings.sTitle = "Nouvel item";
+         itemStrings.sTitle = $i18next.t('groupAdmin_new_item');
          ModelsManager.insertRecord("items_strings", itemStrings);
          var itemItemParent = ModelsManager.getRecord("items_items", itemItemID);
          var itemItem = ModelsManager.createRecord("items_items");
@@ -241,7 +276,7 @@ angular.module('algorea')
 
       $scope.newGroup = function(groupGroupID) {
          var group = ModelsManager.createRecord("groups");
-         group.sName = "Nouveau groupe";
+         group.sName = $i18next.t('groupAdmin_new_group');
          group.sType = "Class";
          group.sDateCreated = new Date();
          ModelsManager.insertRecord("groups", group);
@@ -464,7 +499,7 @@ angular.module('algorea')
          var getItemTitle = function(item, item_item) {
             var title = "";
             if (item.strings.length === 0) {
-               title = "loading...";
+               title = $i18next.t('groupAdmin_loading');
             } else {
                title = item.strings[0].sTitle;
             }
@@ -598,16 +633,16 @@ angular.module('algorea')
             var prefix = models.groups.fields.sType.values[group.sType ? group.sType : 'Other'].label + " : ";
             if (group.sType == 'UserSelf') {
                if ($scope.loginData.idGroupSelf == group.ID) {
-                  prefix = 'Mon compte : ';
+                  prefix = $i18next.t('groupAdmin_account_mine');
                } else {
-                  prefix = 'Utilisateur : ';
+                  prefix = $i18next.t('groupAdmin_account_other');
                }
             }
             if (group.sType == 'UserAdmin') {
                if ($scope.loginData.idGroupOwned == group.ID) {
-                  return 'Mes groupes ('+group.sName+')';
+                  return $i18next.t('groupAdmin_groups_mine') +' ('+group.sName+')';
                } else {
-                  prefix = 'Les groupes de : ';
+                  prefix = $i18next.t('groupAdmin_groups_other')+' : ';
                }
             }
             return preprefix+prefix + group.sName + suffix;
@@ -625,7 +660,6 @@ angular.module('algorea')
             parentFieldName: "parent",
             childFieldName: "child",
             displayUnused: false,
-            staticData: true,
             isObjectRoot: function(object) {
                return (object.sType == "Root");
             },
@@ -714,10 +748,10 @@ angular.module('algorea')
       SyncQueue.requestSets = [
          {name: "groupsAncestors"},
          {name: "groupsDescendants"},
-         {name: "groupsDescendantsAncestors"},
-         {name: "groupsGroupsDescendantsAncestors"},
+         //{name: "groupsDescendantsAncestors"},
+         //{name: "groupsGroupsDescendantsAncestors"},
          {name: "groupsGroupsAncestors"},
-         {name: "groupsItemsDescendantsAncestors"},
+         //{name: "groupsItemsDescendantsAncestors"},
          {name: "groupsItemsAncestors"},
          //{name: "itemsOrphaned"},
          //{name: "itemsStringsOrphaned"},
@@ -761,7 +795,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('ItemsSearchCtrl', ['$scope', function($scope) {
+   .controller('ItemsSearchCtrl', ['$scope', '$i18next', function($scope, $i18next) {
       $scope.searchItems = {
          sTextId: "",
          sTitle: "",
@@ -774,7 +808,7 @@ angular.module('algorea')
       };
 
       $scope.close = function() {
-         $scope.closeMsg = 'I was closed at: ' + new Date();
+         $scope.closeMsg = $i18next.t('groupAdmin_closed_at') + new Date();
          $scope.shouldBeOpen = false;
       };
 
@@ -790,7 +824,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('GroupsSearchCtrl', ['$scope', function($scope) {
+   .controller('GroupsSearchCtrl', ['$scope', '$i18next', function($scope, $i18next) {
       $scope.searchGroups = {
          sName: "",
          sType: "",
@@ -801,7 +835,7 @@ angular.module('algorea')
       };
 
       $scope.close = function() {
-         $scope.closeMsg = 'I was closed at: ' + new Date();
+         $scope.closeMsg = $i18next.t('groupAdmin_closed_at') + new Date();
          $scope.shouldBeOpen = false;
       };
 
@@ -817,14 +851,14 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('AccessModeCtrl', ['$scope', function($scope) {
+   .controller('AccessModeCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
       $scope.shouldBeOpen = false;
       $scope.data = {
          bAccessRestricted: true,
          bAlwaysVisible: 1
       };
       $scope.open = function() {
-         $scope.showGenDialog('tabs/accessEditDialog.html', 'items_items', 'item_item', $scope.$parent.item_item);
+         $scope.showGenDialog($rootScope.templatesPrefix+'/admin/tabs/accessEditDialog.html', 'items_items', 'item_item', $scope.$parent.item_item);
       };
 
 
@@ -868,7 +902,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('AccessDialogCtrl', ['$scope', '$controller', function($scope, $controller) {
+   .controller('AccessDialogCtrl', ['$scope', '$controller', '$i18next', function($scope, $controller, $i18next) {
       $controller('GenericDialogCtrl', {
          $scope: $scope
       });
@@ -883,8 +917,13 @@ angular.module('algorea')
 
       $scope.switchAccessMode = function(idGroup, item_item) {
          var idItem = item_item.child.ID;
-         if (!$scope.computeAccessRights(idGroup, item_item)) {
-            alert('vous n\'avez pas les droits suffisants pour changer les droits de ce groupe sur cet item: '+$scope.canGiveAccessReason);
+         var group = ModelsManager.getRecord('groups', idGroup);
+         if (!group) {
+            console.error('cannot find group '+idGroup);
+            return;
+         }
+         if (!$scope.computeAccessRights(group, item_item)) {
+            alert($i18next.t('groupAdmin_insufficient_rights')+$scope.canGiveAccessReason);
             return;
          }
          var access = AccessManager.dynComputeGroupItemAccess(idGroup, idItem);
@@ -941,15 +980,33 @@ var AccessManager = {
          "sAccessSolutionsDate": 'sCachedAccessSolutionsDate',
          "sCachedGrayedAccessDate": 'sCachedGrayedAccessDate'
       };
+      var fieldTextNames = {
+         "sFullAccessDate": 'fullInheritedFrom',
+         "sPartialAccessDate": 'partialInheritedFrom',
+         "sAccessSolutionsDate": 'solutionsInheritedFrom'
+      };
       angular.forEach(fieldNames, function(cachedFieldName, fieldName) {
          var otherFieldName = cached ? cachedFieldName : fieldName;
          if ((access[cachedFieldName] == null) || ((otherAccess[otherFieldName] != null) && (otherAccess[otherFieldName] < access[cachedFieldName]))) {
             access[cachedFieldName] = otherAccess[otherFieldName];
+            if (fieldTextNames[fieldName]) {
+               if (otherAccess.idItem) {
+                  access[fieldTextNames[fieldName]].push(otherAccess.idGroup);      
+               } else {
+                  access[fieldTextNames[fieldName]] = access[fieldTextNames[fieldName]].concat(otherAccess[fieldTextNames[fieldName]]);
+               }
+            }
          }
       });
       if (cached && otherAccess.bCachedManagerAccess) {
+         if (otherAccess.idItem) {
+            access.managerInheritedFrom.push(otherAccess.idGroup);
+         }
          access.bCachedManagerAccess = true;
       } else if (!cached && otherAccess.bManagerAccess) {
+         if (otherAccess.idItem) {
+            access.managerInheritedFrom.push(otherAccess.idGroup);
+         }
          access.bCachedManagerAccess = true;
       }
    },
@@ -974,7 +1031,12 @@ var AccessManager = {
          sCachedGrayedAccessDate: null,
          bCachedManagerAccess: false,
          bOwnerAccess: false,
-         bManagerAccess: false
+         bManagerAccess: false,
+         partialInheritedFrom: [],
+         fullInheritedFrom: [],
+         partialInheritedFrom: [],
+         solutionsInheritedFrom: [],
+         managerInheritedFrom: [],
       };
       var group_item = getGroupItem(group.ID, item.ID);
       if (group_item) {
@@ -986,6 +1048,9 @@ var AccessManager = {
       }
       for (var idParentGroupGroup in group.parents) {
          var parentGroupGroup = group.parents[idParentGroupGroup];
+         if (parentGroupGroup.sType != 'direct' && parentGroupGroup.sType != 'invitationAccepted' && parentGroupGroup.sType != 'requestAccepted') {
+            continue;
+         }
          var parentGroup = parentGroupGroup.parent;
          var parentAccess = AccessManager.dynComputeGroupItemAccess(parentGroup.ID, item.ID);
          AccessManager.updateAccess(access, parentAccess, true);
@@ -1002,17 +1067,17 @@ var AccessManager = {
             access.sAccessType = "full";
             if ((group_item) && (group_item.sFullAccessDate) && (curDate >= group_item.sFullAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += "Accès complet donné directement. ";
+               access.sAccessTitle += i18next.t('groupAdmin_access_complete_direct');
             } else {
-               access.sAccessTitle += "Accès complet hérité. ";
+               access.sAccessTitle += i18next.t('groupAdmin_access_complete_inherited');
             }
             access.sAccessLabel += "C";
          } else {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += "Accès complet futur donné directement. ";
+               sFutureAccessTitle += i18next.t('groupAdmin_access_complete_direct_future');
             } else {
-               sFutureAccessTitle += "Accès complet futur hérité. ";
+               sFutureAccessTitle += i18next.t('groupAdmin_access_complete_inherited_future');
             }
             sFutureAccessLabel += "C";
             access.bHasFutureAccess = true;
@@ -1023,62 +1088,61 @@ var AccessManager = {
             access.sAccessType = "partial";
             if ((group_item) && (group_item.sPartialAccessDate) && (curDate >= group_item.sPartialAccessDate)) {
                access.sAccessLabel += "+";
-               access.sAccessTitle += "Accès partiel donné directement. ";
+               access.sAccessTitle += i18next.t('groupAdmin_access_partial_direct');
             } else {
-               access.sAccessTitle += "Accès partiel hérité. ";
+               access.sAccessTitle += i18next.t('groupAdmin_access_partial_inherited');
             }
             access.sAccessLabel += "P";
          } else if (sFutureAccessLabel == "") {
             if ((group_item) && (group_item.sFullAccessDate)) {
                sFutureAccessLabel += "+";
-               sFutureAccessTitle += "Accès partiel futur donné directement. ";
+               sFutureAccessTitle += i18next.t('groupAdmin_access_partial_direct_future');
             } else {
-               sFutureAccessTitle += "Accès partiel futur hérité. ";
+               sFutureAccessTitle += i18next.t('groupAdmin_access_partial_inherited_future');
             }
             sFutureAccessLabel += "P";
             access.bHasFutureAccess = true;
          }
       }
       if (access.bOwnerAccess) {
-         access.sAccessTitle += "Accès Propriétaire donné directement. ";
+         access.sAccessTitle += $i18next.t('groupAdmin_access_owner_direct');
          access.sAccessLabel += "+O";
       }
       if (access.bCachedManagerAccess || access.bManagerAccess) {
-         access.sAccessTitle += "Accès Manager ";
          if (access.bManagerAccess) {
-            access.sAccessTitle += 'donné directement. ';
+            access.sAccessTitle += i18next.t('groupAdmin_access_manager_direct');
             access.sAccessLabel += "+";
          } else {
-            access.sAccessTitle += 'hérité. ';
+            access.sAccessTitle += i18next.t('groupAdmin_access_manager_inherited');
          }
          access.sAccessLabel += "M";
       }
       if (access.sCachedGrayedAccessDate && access.sAccessType != "full" && access.sAccessType != "partial" && curDate >= access.sCachedGrayedAccessDate) {
          access.sAccessType = "grayed";
-         access.sAccessTitle += "Accès grisé.";
+         access.sAccessTitle += i18next.t('groupAdmin_access_grayed');
          access.sAccessLabel += "G";
       }
       if (access.sAccessType == "none") {
          access.sAccessLabel = "X";
-         access.sAccessTitle += "Aucun accès actuellement. ";
+         access.sAccessTitle += i18next.t('groupAdmin_access_none');
       }
       access.sAccessSolutionType = "none";
       if ((access.sCachedAccessSolutionsDate) && (curDate >= access.sCachedAccessSolutionsDate)) {
          access.sAccessSolutionType = "full";
          if ((group_item) && (group_item.sAccessSolutionsDate != null)) {
             access.sAccessLabel += "+";
-            access.sAccessTitle += "Accès aux solutions donné directement. ";
+            access.sAccessTitle += i18next.t('groupAdmin_access_solutions_direct');
          } else {
-            access.sAccessTitle += "Accès aux solutions hérité. ";
+            access.sAccessTitle += i18next.t('groupAdmin_access_solutions_inherited');
          }
          access.sAccessLabel += "S";
       } else if (access.sCachedAccessSolutionsDate) {
          access.sAccessSolutionType = "future";
          if ((group_item) && (group_item.sAccessSolutionsDate)) {
             sFutureAccessLabel += "+";
-            sFutureAccessTitle += "Accès futur aux solutions donné directement. ";
+            sFutureAccessTitle += i18next.t('groupAdmin_access_solutions_direct_future');
          } else {
-            sFutureAccessTitle += "Accès futur aux solutions hérité. ";
+            sFutureAccessTitle += i18next.t('groupAdmin_access_solutions_inherited_future');
          }
          sFutureAccessLabel += "S";
          access.bHasFutureAccess = true;
@@ -1090,7 +1154,7 @@ var AccessManager = {
       if (SyncQueue.status != SyncQueue.statusIdle) {
          access.sAccessLabel += "?";
          AccessManager.wasDuringSync = true;
-         access.sAccessTitle = "[En attente de synchro] " + access.sAccessTitle;
+         access.sAccessTitle = '['+i18next.t('groupAdmin_access_waiting_sync')+'] '+access.sAccessTitle;
       }
       return access;
    }
@@ -1138,7 +1202,7 @@ function createGroupItem(idGroup, idItem, doNotInsert) {
 
 
 angular.module('algorea')
-   .controller('GenDialogCtrl', ['$scope', '$uibModalInstance', 'modelName', 'recordName', 'record', 'group_group', 'item_item', 'canRemoveAccess', function($scope, $uibModalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess) {
+   .controller('GenDialogCtrl', ['$scope', '$uibModalInstance', 'modelName', 'recordName', 'record', 'group_group', 'item_item', 'canRemoveAccess', '$i18next', function($scope, $uibModalInstance, modelName, recordName, record, group_group, item_item, canRemoveAccess, $i18next) {
       $scope.freshlyCreated = false;
       $scope.canRemoveAccess = canRemoveAccess;
       if (!record && modelName === 'groups_items') {
@@ -1157,11 +1221,11 @@ angular.module('algorea')
       $scope.checkGroupItem = function() {
          if (!$scope.group_item.sFullAccessDate && !$scope.group_item.sPartialAccessDate) {
             if ($scope.group_item.bManagerAccess || $scope.group_item.bOwnerAccess) {
-               alert("Vous devez donner l'accès en lecture pour pouvoir donner l'accès en écriture");
+               alert($i18next.t('groupAdmin_needs_read_for_write'));
                return false;
             }
             if (canRemoveAccess === false) {
-               alert("Vous ne pouvez pas retirer l'accès à cet item à ce groupe, car il a un accès direct à un item enfant");
+               alert($i18next.t('groupAdmin_still_has_access_child'));
                return false;
             }
          }

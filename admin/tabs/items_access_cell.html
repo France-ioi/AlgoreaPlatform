@@ -1,17 +1,47 @@
 <div ng-init="computeAccessRights(group_group.child, item_item)">
-   <span ng-repeat="group_item in [getGroupItem(group_group.child.ID, item_item.child.ID)]">
-      <span ng-controller="AccessDialogCtrl">
-         <span ng-repeat="access in [accessManager.dynComputeGroupItemAccess(group_group.child.ID, item_item.child.ID)]">
-            <button ng-show="access != null" class="btn btn-xs" ng-class="{full: 'btn-success', partial: 'btn-warning', grayed: 'btn-info', none: 'btn-error'}[access.sAccessType]" ng-click="switchAccessMode(group_group.child.ID, item_item)" title="{{ access.sAccessTitle }}">{{ access.sAccessLabel }}</button>
-            <button ng-show="access == null" class="btn btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" title="Accès non calculé">?</button>
-         </span>
-         <a href="#" class="btn btn-default btn-xs" ng-click="showGenDialog('tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" title="Edit access">
+   <div ng-repeat="group_item in [getGroupItem(group_group.child.ID, item_item.child.ID)]" ng-controller="AccessDialogCtrl" class="accessButtons">
+      <div ng-repeat="access in [accessManager.dynComputeGroupItemAccess(group_group.child.ID, item_item.child.ID)]">
+         <button type="button" ng-show="access != null" class="btn btn-xs" ng-class="{full: 'btn-success', partial: 'btn-warning', grayed: 'btn-info', none: 'btn-error'}[access.sAccessType]" ng-click="switchAccessMode(group_group.child.ID, item_item)" uib-tooltip="{{ access.sAccessTitle }}">{{ access.sAccessLabel }}</button>
+         <button type="button" ng-show="access == null" class="btn btn-default btn-xs" ng-click="switchAccessMode(group_group.child.ID, item_item)" ng-i18next="[title]admin_access_non_computed">?</button>
+      </div>
+      <div>
+         <button type="button" class="btn btn-default btn-xs btn-dialog" ng-click="showGenDialog(templatesPrefix+'/admin/tabs/accessDetailDialog.html' , 'groups_items', 'group_item', group_item)" ng-i18next="[title]admin_access_edit">
             ...
-         </a>
-         <a href="#" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-info" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" title="{{ group_item.sAccessReason }}">
-            <i class="glyphicon glyphicon-comment"></i>
-         </a>
-         <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" title="Vous ne pouvez pas retirer l'accès à cet item à ce groupe car il a un accès direct à un item enfant">
-      </span>
-   </span>
+         </button>
+         <button type="button" ng-show="(group_item.sAccessReason != '') && (group_item.sAccessReason != undefined)" class="btn btn-xs btn-default btn-dates" ng-click="openGroupItem(group_group.child.ID, item_item.child.ID)" uib-tooltip="{{ group_item.sAccessReason }}">
+            <i class="material-icons">chat_bubble</i>
+         </button>
+         <span ng-if="canGiveAccess && !canRemoveAccess" class="glyphicon glyphicon-warning-sign" style="color:red;" aria-hidden="true" ng-i18next="[title]admin_no_access_removal"></span>
+         <button type="button" class="btn btn-default btn-xs btn-sumary" uib-popover-template="'access-cell-details.html'"  popover-trigger="'mouseenter'" popover-placement="top">
+            <i class="material-icons">zoom_in</i>
+         </button>
+      </div>
+   </div>
+   <script type="text/ng-template" id="access-cell-details.html">
+      <div class="itemAccessDetails">
+         <div class="login">{{ group_group.child.sName }}</div>
+         <div class="item">{{item_item.child.strings[0].sTitle}}</div>
+         <ul>
+            <li><span class="itemAccessDetails_label">Mode de validation :</span> {{ categoryNames[item_item.sCategory] }}</li>
+            <li><span class="itemAccessDetails_label">Type de validation :</span> {{ longValidationTypesNames[item_item.child.sValidationType].label }}</li>
+            <li><span class="itemAccessDetails_label">Mode d'accès :</span>
+               <span ng-switch="item_item.bAccessRestricted">
+                  <span ng-switch-when=0 >Accessible</span>
+                  <span ng-switch-when=1 >Restreint</span>
+               </span>
+            </li>
+            <li><span class="itemAccessDetails_label">Visibilité : </span>
+               <span ng-switch="item_item.bAlwaysVisible">
+                  <span ng-switch-when=1 >Toujours visible</span>
+                  <span ng-switch-when=0 >Caché si inaccessible</span>
+               </span>
+            </li>
+            <li ng-show="access != null"><span class="itemAccessDetails_label"></span>{{ group_item.sAccessTitle }}</li>
+            <li ng-show="group_item.sPartialAccessDate"><span class="itemAccessDetails_label">Accès partiel donné à partir de :</span> {{group_item.sPartialAccessDate | date}}</li>
+            <li ng-show="group_item.sFullAccessDate"><span class="itemAccessDetails_label">Accès complet donné à partir de :</span> {{group_item.sFullAccessDate | date}}</li>
+            <li ng-show="group_item.sAccessReason"><span class="itemAccessDetails_label">Commentaire sur l'accès :</span> {{group_item.sAccessReason}}</li>
+            <li ng-show="group_item.sAccessSolutionsDate"><span class="itemAccessDetails_label">Accès aux solutions :</span> {{group_item.sAccessSolutionsDate | date}}</li>
+         </ul>
+      </div>
+   </script>
 </div>

@@ -1,10 +1,14 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','mapService','$timeout', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, mapService, $timeout) {
+   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
-      $scope.viewsBaseUrl = 'navigation/views/';
+      $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
+      var mapService = null;
+      if (config.domains.current.useMap) {
+         mapService = $injector.get('mapService');
+      }
       $scope.getChildren = function() {
          return itemService.getChildren(this.item);
       };
@@ -21,7 +25,7 @@ angular.module('algorea')
       $scope.errorItem = {ID: -1};
       this.firstApply = true;
       $scope.setItemOnMap = function() {
-         if (this.item) {
+         if (this.item && config.domains.current.useMap) {
             mapService.setCurrentItem(this.item, this.pathParams);
          }
       }
@@ -85,13 +89,10 @@ angular.module('algorea')
       // possible status: 'not visited', 'visited', 'validated', 'validated-ol' (in another language), 'failed', 'hintasked'
       $scope.item_status = function() {
          var user_item = itemService.getUserItem(this.item);
-         if (!user_item) {
-            return 'not visited';
-         }
-         if (this.item.bGrayedAccess) {
+         if (this.item.bGrayedAccess && !this.item.sDuration) {
             return 'grayed';
          }
-         if (!user_item.sLastActivityDate || user_item.sLastActivityDate.getTime() == 0) {
+         if (!user_item || !user_item.sLastActivityDate || user_item.sLastActivityDate.getTime() == 0) {
             return 'not visited';
          }
          if (user_item.bValidated == true) {
@@ -104,6 +105,25 @@ angular.module('algorea')
             return 'hint asked';
          }
          return 'visited';
+      };
+      $scope.openContest = function() {
+         var idItem = this.item.ID;
+         var self = this;
+         $http.post('contest/api.php', {action: 'openContest', idItem: idItem}, {responseType: 'json'}).success(function(res) {
+            if (!res.success) {
+               alert(res.error);
+               return;
+            }
+            config.contestData = {endTime: res.endTime, startTime: res.startTime, duration: res.duration, idItem: idItem};
+            contestTimerService.startContest(idItem, res.duration);
+            var user_item = itemService.getUserItem(self.item);
+            if (user_item) {user_item.sContestStartDate = new Date();}
+            // for some reason, sync doesn't work in this case
+            SyncQueue.sentVersion = 0;
+            SyncQueue.serverVersion = 0;
+            SyncQueue.resetSync = true;
+            SyncQueue.planToSend(0);
+         });
       };
       // TODO: cleanup
       var type_iconName = {
@@ -155,6 +175,48 @@ angular.module('algorea')
          }
       };
       $scope.setItemIcon($scope.item);
+
+      $scope.setUserInfos = function() {
+         $scope.userInfos = '';
+         itemService.onNewLoad(function() {
+            var loginData = SyncQueue.requests.loginData;
+            if (loginData) {
+               if (loginData.tempUser) {
+                  $scope.userInfos = 'Non connecté';
+                  return;
+               }
+               if (loginData.sFirstName && loginData.sLastName) {
+                  $scope.userInfos = loginData.sFirstName+' '+loginData.sLastName;
+               } else {
+                  $scope.userInfos = loginData.sLogin;
+               }
+            }
+         });   
+      }
+      $scope.$on('syncResetted', function() {
+         $scope.setUserInfos();
+      });
+      $scope.setUserInfos();
+
+      $scope.setShowUserInfos = function(item, pathParams) {
+         this.showUserInfos = false;
+         var that = this;
+         if (!item) return;
+         if (item.bShowUserInfos) {
+            this.showUserInfos = true;
+            return;
+         }
+         angular.forEach(pathParams.path, function(itemID, idx) {
+            if (itemID == item.ID || idx >= pathParams.selr-1) {
+               return false;
+            }
+            var ancestorItem = itemService.getRecord('items',itemID);
+            if (ancestorItem && ancestorItem.bShowUserInfos) {
+               that.showUserInfos = true;
+            }
+         });
+      };
+
       $scope.item_percent_done = function(user_item) {
          if (!user_item) {
             return 0;
@@ -202,16 +264,14 @@ angular.module('algorea')
             that.item = item;
             that.parentItemID = item.ID;
             that.strings = itemService.getStrings(item);
-            if (that.strings) {
-               that.imageUrl = that.strings.sImageUrl ? that.strings.sImageUrl : 'images/default-level.png'
-            } else {
-               console.error('no strings for item '+item.ID);
-            }
+            that.imageUrl = (that.strings && that.strings.sImageUrl) ? that.strings.sImageUrl : 'images/default-level.png';
             that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
                console.error('cannot find user item for item '+item.ID);
-               if (callback) {callback(null);}
+               if(callback) {
+                  callback(item);
+               }
                return;
             }
             if (that.pathParams.parentItemID && that.pathParams.parentItemID != -2) {
@@ -226,12 +286,14 @@ angular.module('algorea')
                   if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
                      mapService.updateSteps();
                   }
+                  that.setShowUserInfos(item, that.pathParams);
                   if(callback) { callback(item); }
                });
             } else {
                if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
                   mapService.updateSteps();
                }
+               that.setShowUserInfos(item, that.pathParams);
                if(callback) { callback(item); }
             }
          });
@@ -242,7 +304,11 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', function ($scope, pathService, itemService, $timeout) {
+   .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', '$injector', function ($scope, pathService, itemService, $timeout, $injector) {
+      var mapService = null;
+      if (config.domains.current.useMap) {
+         mapService = $injector.get('mapService');
+      }
       $scope.panel = 'right';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('right');};
       $scope.setArrowLinks = function() {
@@ -285,6 +351,12 @@ angular.module('algorea')
                $scope.leftLink = {sref: pathService.getSrefFunction(basePath, $scope.pathParams.path.length-1, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: $scope.pathParams.path.length-1, selr: null, viewr: null}};
             }
          }
+         // setting map link. Some additional logic could be added here
+         if (this.pathParams.parentItemID > 0) {// for some forgotten logic, value is -2 when there is no parent item
+            $scope.hasMap = true;
+         } else {
+            $scope.hasMap = false;
+         }
       }
       $scope.goLeftLink = function() {
          if ($scope.leftLink) {
@@ -304,6 +376,9 @@ angular.module('algorea')
          $scope.getItem(function() {
             $scope.setArrowLinks();
             $scope.setItemOnMap();
+            if (config.domains.current.useMap) {
+               mapService.updateSteps();
+            }
          });
       };
       $scope.localInit();
@@ -389,6 +464,7 @@ angular.module('algorea')
             $scope.linkClass = "unvisited-item-link";
          }
       }
+      $scope.$applyAsync();
    }
    init();
    $scope.$on('algorea.reloadView', function(event, viewName){
@@ -437,6 +513,7 @@ angular.module('algorea')
 
 angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
+      $scope.siteTitle = config.domains.current.title;
       $scope.tagline = config.domains.current.taglineHtml;
       $scope.gotoMenuItem = function(i, tabPath) {
          $scope.activated = i;

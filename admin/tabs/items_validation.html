@@ -3,20 +3,20 @@
       <h3>{{ item_item.child.strings[0].sTitle }}</h3>
    </div>
    <div class="modal-body">
-      <form>
+      <form class="container-fluid">
         <field model="item" field="items.sValidationType" />
       </form>
    </div>
    <div class="modal-header">
-      Mode de validation au sein de <b>{{ item_item.parent.strings[0].sTitle }}</b>
+      <span ng-i18next="admin_validation_mode"></span> <b>{{ item_item.parent.strings[0].sTitle }}</b>
    </div>
    <div class="modal-body">
-      <form>
+      <form class="container-fluid">
          <field model="item_item" field="items_items.sCategory" />
       </form>
    </div>
    <p>
-      <a class="btn btn-warning" ng-click="resetObjectChanges('items_items', item_item);resetObjectChanges('items', item);">Reset</a>
-      <a class="btn btn-primary" ng-click="saveObject('items', item);saveObject('items_items', item_item);">Enregistrer</a>
+      <a class="btn btn-warning" ng-click="resetObjectChanges('items_items', item_item);resetObjectChanges('items', item);" ng-i18next="reset"></a>
+      <a class="btn btn-primary" ng-click="saveObject('items', item);saveObject('items_items', item_item);" ng-i18next="save"></a>
    </p>
 </div>

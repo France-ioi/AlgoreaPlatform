@@ -8,6 +8,33 @@ ini_set('display_errors', 1);
 $main_group_id = $_GET['groupId'];
 $main_item_id = $_GET['itemId'];
 
+if (session_status() === PHP_SESSION_NONE){session_start();}
+
+if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
+   echo "Vous devez être connecté pour pouvoir accéder à cette fonctionnalité";
+   return;
+}
+
+$query = "select ID from groups_ancestors where idGroupAncestor = :idGroupOwned and idGroupChild = :mainGroupId;";
+$stmt=$db->prepare($query);
+$stmt->execute([
+   'idGroupOwned' => $_SESSION['login']['idGroupOwned'],
+   'mainGroupId' => $main_group_id
+]);
+$test = $stmt->fetchColumn();
+if (!$test) {
+   error_log('warning: user '.$_SESSION['login']['ID'].' tried to export zip for group '.$main_group_id.' without permission.');
+   echo "You don't have access to this group!";
+   return;
+}
+
+$query = "select sName from groups where ID = :mainGroupId;";
+$stmt=$db->prepare($query);
+$stmt->execute(['mainGroupId' => $main_group_id]);
+
+$groupName = $stmt->fetchColumn();
+$groupName = preg_replace("/[^a-zA-Z0-9_\-]/", "_" , $groupName);
+
 function make_and_change_directory($name) {
    $name = preg_replace("/[^a-zA-Z0-9_\-]/", "_" , $name);
    if($name == "") {
@@ -84,8 +111,13 @@ function make_item_directory_tree(&$db, &$item_information, $item_id, $item_orde
          
          $item_information[$item_id] = array("name" => $row["sTitle"], "directory" => getcwd());
       
-         $stmt_loc = $db->prepare("SELECT idItemChild, iChildOrder FROM items_items WHERE idItemParent = :itemId ORDER BY iChildOrder ASC;");
-         if ($stmt_loc->execute(['itemId' => $item_id])) {
+         $stmt_loc = $db->prepare("SELECT idItemChild, iChildOrder FROM items_items 
+                     JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
+                     JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items_items.idItemChild
+                     JOIN users_items ON items_items.idItemChild = items_items.idItemChild AND users_items.idUser = :idUser
+                     WHERE idItemParent = :itemId AND (`groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1)
+                     GROUP BY items_items.idItemChild ORDER BY iChildOrder ASC;");
+         if ($stmt_loc->execute(['itemId' => $item_id, 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idUser' => $_SESSION['login']['ID']])) {
             while ($row_loc = $stmt_loc->fetch()) {
                make_item_directory_tree($db, $item_information, $row_loc["idItemChild"], $row_loc["iChildOrder"]);
             }
@@ -110,6 +142,8 @@ function &obtain_item_information(&$db, $main_item_id, &$base_dir) {
 
 
 function populate_user_information(&$db, &$user_information, &$item_information, $main_group_id, $main_item_id) {
+   // here we fetch data with less restrictions (items that may not be accessible by the user), but it doesn't really
+   // matter as only those matching accessible items will be used
    $stmt = $db->prepare("SELECT users_items.idUser, users_items.idItem, users_items.iScore,
          users_items.nbSubmissionsAttempts, users_items.bValidated, users_items.bFinished, users_items.sStartDate, users_items.sValidationDate, users_items.nbCorrectionsRead, users_items.nbHintsCached, users_items.nbCorrectionsRead, users_items.nbTasksWithHelp, users_items.nbChildrenValidated, users_items.nbTasksSolved, users_items.nbTasksTried
       FROM users_items
@@ -186,12 +220,12 @@ $langProgToExt = [
 ];
 
 function write_files(&$db, &$user_information, &$item_information) {
-   global $langProgToExt;
-   $csv = fopen("grades.csv", "w");
+   global $langProgToExt, $groupName;
+   $csv = fopen($groupName.".csv", "w");
       if ($csv) {
 
       foreach ($item_information as $item_info) {
-         fwrite($csv,";" . $item_info["name"]);
+         fwrite($csv,';"' . $item_info["name"] . '"');
       }
 
       fwrite($csv,"\n");
@@ -229,10 +263,20 @@ function write_files(&$db, &$user_information, &$item_information) {
                   } else {
                      try {
                         $answer = json_decode($sAnswer, true);
-                        $extension = isset($langProgToExt[$answer['langProg']]) ? $langProgToExt[$answer['langProg']] : 'txt';
+                        if (isset($answer['langProg']) && isset($langProgToExt[$answer['langProg']])) {
+                          $extension = $langProgToExt[$answer['langProg']];
+                        } else {
+                          $extension = 'txt';
+                        }
                         $filename = $directory . ++$counter . "-" . $row["iScore"] . "-"   . $row["ID"] . "." . $extension;
                         // TODO: handle tests better (directory?)
-                        $answerContent = $answer['sourceCode'] ? $answer['sourceCode'] : json_encode($answer['tests']);
+                        if (isset($answer['sourceCode']) && $answer['sourceCode']) {
+                          $answerContent = $answer['sourceCode'];  
+                        } elseif (isset($answer['tests']) && $answer['tests']) {
+                          $answerContent = json_encode($answer['tests']);
+                        } else {
+                          $answerContent = json_encode($answer);
+                        }
                      } catch (Exception $e) {
                         $filename = $directory . ++$counter . "-" . $row["iScore"] . "-"   . $row["ID"] . ".txt";
                         $answerContent = 'Erreur dans la réponse : '.$sAnswer;
@@ -292,16 +336,10 @@ populate_user_information($db, $user_information, $item_information, $main_group
 
 write_files($db, $user_information, $item_information);
 
-
-//print("Creating zip file ".$zip_id.".zip ... ");
 $zip_id = make_zip_file_name($db, $main_group_id, $main_item_id);
-exec("zip -r ". $zip_id . ".zip " . $base_dir . " grades.csv");
-//print("done. \n");
+exec("zip -r ". $zip_id . ".zip " . $base_dir . ' ' . $groupName . ".csv");
 
 header("Content-Type: application/zip");
 header("Content-Disposition: attachment; filename=".$zip_id.".zip");
 header("Content-Length: " . filesize($zip_id.".zip"));
-
 readfile($zip_id.".zip");
-
-?>
