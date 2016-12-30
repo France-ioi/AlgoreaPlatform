@@ -1,5 +1,12 @@
 <?php
 
+// this file is used when fetching the threads on the forum index page
+// this is by far the most complex request, as one must:
+//   - handle pagination (TODO)
+//   - handle sorting order (done on both the client and the server side) (TODO)
+//   - fetch the current filter of the user and build the request against it (TODO)
+//   - it also fetches the filters
+
 class forumIndex {
    public static function getSyncRequests($requestSet, $minServerVersion) {
       global $db, $config;

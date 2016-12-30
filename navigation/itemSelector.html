@@ -1,0 +1,13 @@
+<div class="parcours-select">
+	<select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">
+	</select>
+	<span ng-if="levelLoading" ng-i18next="loading"></span>
+	<select ng-show="!levelLoading" ng-repeat="(depth, selectedItem) in dropdownSelections" ng-if="depth != 0" ng-change="dropdownSelected(depth)" ng-model="dropdownSelectionsIDs[depth]">
+		<option value="" ng-i18next="all"></option>
+		<option ng-repeat="child in dropdownSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == dropdownSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+	</select>
+	<select ng-show="!levelLoading" ng-if="dropdownSelections[dropdownSelections.length-1].children.length" ng-change="dropdownSelected(0)" ng-model="dropdownSelectionsIDs[dropdownSelections.length]">
+		<option selected="selected" value="" ng-i18next="all"></option>
+		<option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+	</select>
+</div>

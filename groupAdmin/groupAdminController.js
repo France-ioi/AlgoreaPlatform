@@ -686,54 +686,12 @@ angular.module('algorea')
       $scope.formValues.activeTab = 2; // selects members tab
    }
 
-   function fillItemsListWithSonsRec(itemsList, itemsListRev, item) {
-      if (!item) return;
-      angular.forEach(item.children, function(child_item_item) {
-         var child_item = child_item_item.child;
-         if (child_item.sType != 'Course' && child_item.sType != 'Presentation') {
-            itemsList.push(child_item);
-            itemsListRev[child_item.ID] = true;
-         }
-         if (child_item.children) {
-            fillItemsListWithSonsRec(itemsList, itemsListRev, child_item)
-         }
-      });
-   }
-
-   $scope.selectedItemId = 0;
-   $scope.dropdownSelections = [];
-
-   $scope.dropdownSelected = function(depth) {
-      if (depth === 0) { // final dropdown
-         depth = $scope.dropdownSelections.length;
-      }
-      var itemId = $scope.dropdownSelectionsIDs[depth];
-      if (itemId == 0) {
-         depth=depth-1;
-         itemId = $scope.dropdownSelections[depth].ID;
-      }
-      var newSelections = [];
-      var newSelectionsIDs = [];
-      for (var i = 0; i < depth; i++) {
-         newSelections[i] = $scope.dropdownSelections[i];
-         newSelectionsIDs[i] = $scope.dropdownSelections[i].ID;
-      }
-      var newRootItem = ModelsManager.getRecord('items', itemId);
-      newSelections[depth] = newRootItem;
-      newSelectionsIDs[depth] = newRootItem.ID;
-      $scope.dropdownSelections = newSelections;
-      $scope.dropdownSelectionsIDs = newSelectionsIDs;
-      $scope.itemSelected(newRootItem);
-   }
-
-   $scope.itemSelected = function(item) {
-      if ($scope.rootItem == item) return;
-      $scope.rootItem = item;
-      $scope.itemsList = [item];
-      $scope.itemsListRev = {};
-      fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
+   $scope.itemsListRev = {};
+   // called by the item selector
+   // itemsListRev is an object with all descendants of selected items as key and true as value
+   $scope.onItemSelected = function(item, itemsListRev) {
+      $scope.itemsListRev = itemsListRev;
       $scope.startSync($scope.groupId, item.ID, function() {
-         $scope.initItems();
          $scope.initGroup();
          SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
             if (needToUpdateAtEndOfSync) {
@@ -747,30 +705,6 @@ angular.module('algorea')
          });
          $scope.updateEvents();
       });
-   }
-
-   $scope.levelSelected = function() {
-      $scope.itemSelected($scope.formValues.selectedLevel);
-      $scope.dropdownSelections = [];
-      $scope.dropdownSelectionsIDs = [];
-      $scope.dropdownSelections[0] = $scope.formValues.selectedLevel;
-      $scope.dropdownSelectionsIDs[0] = $scope.formValues.selectedLevel.ID;
-   }
-
-   $scope.initItems = function() {
-      var officialRootItem = ModelsManager.getRecord('items', config.domains.current.OfficialProgressItemId);
-      var customRootItem = ModelsManager.getRecord('items', config.domains.current.CustomProgressItemId);
-      $scope.levels = [];
-      angular.forEach(officialRootItem.children, function(child) {
-         $scope.levels.push(child.child);
-      });
-      angular.forEach(customRootItem.children, function(child) {
-         $scope.levels.push(child.child);
-      });
-      if (!$scope.formValues.selectedLevel) {
-         $scope.formValues.selectedLevel = $scope.levels[0];
-         $scope.levelSelected($scope.levels[0].ID);
-      }
    };
 
    $scope.stopSync = function() {
@@ -828,7 +762,6 @@ angular.module('algorea')
          return;
       }
       $scope.startSync($scope.groupId, $scope.itemId, function() {
-         $scope.initItems();
          $scope.initGroup();
          SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
             if (needToUpdateAtEndOfSync) {

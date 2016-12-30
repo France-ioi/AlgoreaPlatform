@@ -1,5 +1,7 @@
 <?php
 
+// gets the descendants of asked item (including strings, threads, answers, etc.)
+
 class itemsDescendants {
    public static function getSyncRequests($requestSet, $minServerVersion) {
       global $db, $config;

@@ -163,6 +163,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('navigation/service.js') ?>"></script>
   <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
   <script src="<?= includeFile('navigation/directives.js') ?>"></script>
+  <script src="<?= includeFile('navigation/itemSelectorDirective.js') ?>"></script>
   <script src="<?= includeFile('community/controller.js') ?>"></script>
   <?php if ($useMap): ?>
     <script src="<?= includeFile('bower_components/paper/dist/paper-full.min.js') ?>"></script>
