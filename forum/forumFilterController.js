@@ -75,34 +75,27 @@ angular.module('algorea')
    }
    function getSelectedFilter(filters) {
       var firstFilter = false;
+      var res = false;
       angular.forEach(filters, function(filter, ID) {
          if (filter.bSelected) {
-            return filter;
+            res = filter;
+            return false;
          }
          if (!firstFilter) {
             firstFilter = filter;
          }
       });
-      if (firstFilter) {firstFilter.bSelected = true;}
-      return firstFilter;
-   }
-   // recordID is the ID in items, upRelationID is the ID of the
-   // items_items relation in which this ID is the son
-   $scope.$on('treeview.recordSelected', function(event, recordID, relationID, id) {
-      event.stopPropagation();
-      if (id == 'treeview_items') {
-         $scope.currentFilter.idItem = recordID;
-         $scope.toggleTreePicker('items');
-      } else {
-         $scope.currentFilter.idGroup = recordID;
-         $scope.toggleTreePicker('groups');
+      if (!res && firstFilter) {
+         res = firstFilter;
+         firstFilter.bSelected = true;
       }
-   });
-   $scope.toggleTreePicker = function(type) {
-      $scope.$broadcast('treeview.load', 'treeview_'+type);
-      $scope['showTreePicker_'+type] = !$scope['showTreePicker_'+type];
+      return res;
+   }
+   $scope.onSelectItem = function(item, itemDescendants) {
+      console.error($scope.$parent.currentFilter);
+      $scope.$parent.currentFilter.idItem = item.ID;
    };
-   itemService.onNewLoad(function() {
+   $scope.init = function() {
       $scope.loading = false;
       $scope.filters = ModelsManager.getRecords('filters');
       if (!$scope.filters || isObjEmpty($scope.filters)) {
@@ -115,6 +108,10 @@ angular.module('algorea')
       } else {
          $scope.$parent.currentFilter = getSelectedFilter($scope.filters);
       }
+   };
+
+   itemService.onNewLoad(function() {
+      $scope.init();
    });
 }]).filter('threadFilter', function() {
    function threadOkForFilter(thread, filter) {

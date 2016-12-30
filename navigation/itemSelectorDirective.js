@@ -56,7 +56,8 @@ angular.module('algorea')
 		      scope.itemsList = [item];
 		      scope.itemsListRev = {};
 		      fillItemsListWithSonsRec(scope.itemsList, scope.itemsListRev, scope.rootItem);
-		      scope.onSelect(item, scope.itemsListRev);
+		      // strange angular syntax when passing function as directive arguments
+		      scope.onSelect()(item, scope.itemsListRev);
 		   };
 
 		   scope.levelSelected = function() {

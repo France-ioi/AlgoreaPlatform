@@ -29,20 +29,7 @@
       </div>
       <div class="form-group">
          <label for="idItem">Concernant l'item :</label>
-         <!-- TODO : use select to pick item like in groupAdmin progression tab -->
-         <select ng-model="" ng-options="" ng-change="levelSelected()">
-         </select>
-
-   <!--                  <p class="input-group">
-            <input type="text" class="form-control" ng-model="filter.idItem" item-text readonly />
-            <span class="input-group-btn">
-               <button type="button" class="btn btn-default" ng-click="toggleTreePicker('items');"><i class="glyphicon glyphicon-chevron-down"></i></button>
-            </span>
-            <ul class="dropdown-menu" ng-style="{display: showTreePicker_items && 'block' || 'none'}" style="width:600px;height:400px;overflow:scroll;">
-               <li><div id="treeview_items" treeview model="items"></div></li>
-            </ul>
-         </p>
-   -->
+         <div item-selector on-select="onSelectItem"></div>
       </div>
       <div class="form-group">
          <label>Filtre supplémentaire&nbsp;:</label>
