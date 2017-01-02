@@ -40,7 +40,7 @@ angular.module('algorea')
          }
       }
 
-      function syncDescendants(idItem, callback, simple) {
+      function syncDescendants(idItem, callback, simple, justOnce) {
          if (!idItem) {
             console.error('syncDescendants called with empty idItem!');
             callback();
@@ -60,7 +60,11 @@ angular.module('algorea')
          var endListenerName = 'itemsDescendants'+idItem;
          SyncQueue.addSyncEndListeners(endListenerName, function() {
             SyncQueue.removeSyncEndListeners(endListenerName);
-            delete(SyncQueue.requestSets['itemsDescendants'].minVersion);
+            if (justOnce) {
+               delete(SyncQueue.requestSets['itemsDescendants']);
+            } else {
+               delete(SyncQueue.requestSets['itemsDescendants'].minVersion);
+            }
             callback();
          }, true);
          SyncQueue.planToSend(0);

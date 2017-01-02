@@ -1,11 +1,21 @@
 'use strict';
 
+// TODO: 
+//   * change SyncQueue.requestSets.forumIndex adding the following arguments:
+//      - tab (others, mine, general or bug)
+//      - page
+//      - threads per page
+//      - order by
+//   * implement pagination
+//   * implement display order according to the different columns (or implement it in the filter tab?)
+
 angular.module('algorea')
    .controller('forumIndexController', ['$scope', 'itemService', 'loginService', '$state', '$timeout', '$rootScope', '$i18next', function ($scope, itemService, loginService, $state, $timeout, $rootScope, $i18next) {
    $scope.layout.isOnePage(true);
    $scope.loading = true;
    $scope.threads = {};
    $scope.currentFilter = null;
+   $scope.formValues = {};
    $scope.globalFilters = {
       all: {filter: null, description: 'Tous'},
       favorites: {filter: {bStarred: true}, description: $i18next.t('forum_favorites')},

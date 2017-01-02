@@ -1,10 +1,14 @@
+// directive showing a few select to choose an item
+// always starts with the levels
+
 angular.module('algorea')
    .directive('itemSelector', ['itemService', '$rootScope', '$i18next', function (itemService, $rootScope, $i18next) {
    'use strict';
    return {
       restrict: 'EA',
       scope: {
-      	onSelect: '&'
+      	onSelect: '&',
+      	allowAll: '&'
       },
       templateUrl: $rootScope.templatesPrefix+'navigation/itemSelector.html',
       link: function(scope, element, attr) {
@@ -60,23 +64,33 @@ angular.module('algorea')
 		      scope.onSelect()(item, scope.itemsListRev);
 		   };
 
+		   // fake level selecting all Levels:
+		   scope.fakeAllLevels = {ID: null, children: [], strings: [{sTitle: 'Tous les niveaux'}]};
+
 		   scope.levelSelected = function() {
 		      //scope.itemSelected(scope.formValues.selectedLevel);
 		      scope.dropdownSelections = [];
 		      scope.dropdownSelectionsIDs = [];
 		      scope.dropdownSelections[0] = scope.formValues.selectedLevel;
 		      scope.dropdownSelectionsIDs[0] = scope.formValues.selectedLevel.ID;
-		      scope.levelLoading = true;
-		      itemService.syncDescendants(scope.formValues.selectedLevel.ID, function() {
-		      	scope.levelLoading = false;
-		      	scope.itemSelected(scope.formValues.selectedLevel);
-		      }, true);
+		      if (scope.formValues.selectedLevel.ID) {
+			      scope.levelLoading = true;
+			      itemService.syncDescendants(scope.formValues.selectedLevel.ID, function() {
+			      	scope.levelLoading = false;
+			      	scope.itemSelected(scope.formValues.selectedLevel);
+			      }, true, true);
+		      } else {
+		      	scope.onSelect()(scope.formValues.selectedLevel, {});
+		      }
 		   };
 
 		   scope.initItems = function() {
 		      var officialRootItem = ModelsManager.getRecord('items', config.domains.current.OfficialProgressItemId);
 		      var customRootItem = ModelsManager.getRecord('items', config.domains.current.CustomProgressItemId);
 		      scope.levels = [];
+		      if (scope.allowAll()) {
+		      	scope.levels.push(scope.fakeAllLevels);
+		      }
 		      angular.forEach(officialRootItem.children, function(child) {
 		         scope.levels.push(child.child);
 		      });

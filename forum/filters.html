@@ -2,7 +2,7 @@
    <center><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
 </div>
 <div ng-if="!loading">
-   <div ng-form="filterForm" class="container-fluid form highlight filterContainer" ng-controller="forumFilterController">
+   <div ng-form="filterForm" class="container-fluid form highlight filterContainer">
       <div ng-if="editFilter">
          <label for="sName">Nom du filtre</label>
          <input type="text" name="sName" ng-model="filter.sName" class="form-control" value="{{filter.sName}}">
@@ -28,8 +28,12 @@
          </div>
       </div>
       <div class="form-group">
-         <label for="idItem">Concernant l'item :</label>
-         <div item-selector on-select="onSelectItem"></div>
+         <label for="idItem">Concernant l'item :</label> {{filter.sItemTitle | json}} <button ng-click="formValues.modifyItem=true" ng-if="!formValues.modifyItem">Modifier</button> <button ng-click="selectNoItem()" ng-if="!formValues.modifyItem">Supprimer</button>
+         <div ng-if="formValues.modifyItem">
+            <div item-selector on-select="onSelectItem" allow-all="true" ng-if="formValues.modifyItem"></div>
+            <button ng-click="validateItemSelection()">Valider</button>
+            <button ng-click="formValues.modifyItem=false">Annuler</button>
+         </div>
       </div>
       <div class="form-group">
          <label>Filtre supplémentaire&nbsp;:</label>

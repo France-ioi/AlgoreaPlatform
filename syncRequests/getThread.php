@@ -1,5 +1,7 @@
 <?php
 
+// fetches everthing necessary to display a thread
+
 class getThread {
    public static function getSyncRequests($requestSet, $minServerVersion) {
       global $db;
@@ -53,7 +55,6 @@ class getThread {
          return [];
       }
       $idItem = $thread['idItem'];
-      // threads initiated by the user are already fetched in the thread_general request
       if ($idItem) {
          $query = "select threads.ID, threads.idUserCreated, users_items.bValidated as bValidated,  MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions from threads
          join groups_items on groups_items.idItem = :idItem

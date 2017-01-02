@@ -1,5 +1,13 @@
 'use strict';
 
+// simple controller for forum filers, 
+// followed by an angular filter using the forum filter to filter threads on the client side
+//
+// the idea is basically to modify the filter with bSelected=1, it will be automatically taken
+// into account by the sync ("forumIndex" requestSet) and change the displayed threads
+//
+// TODO: remove the $parent access
+
 angular.module('algorea')
    .controller('forumFilterController', ['$scope', 'itemService', 'loginService', function ($scope, itemService, loginService) {
    var defaultFilter={
@@ -25,6 +33,7 @@ angular.module('algorea')
    $scope.editFilter = false;
    $scope.plusActiveVar = false;
    $scope.filters = [];
+   $scope.formValues = {};
    // using object here due to prototypal inheritance / scope mess, see
    // here: https://github.com/angular-ui/bootstrap/issues/2540
    $scope.data = {};
@@ -39,7 +48,8 @@ angular.module('algorea')
       startingDay: 1
    };
    $scope.submitForm = function(form) {
-      itemService.saveRecord('filters', $scope.$parent.currentFilter.ID);
+      ModelsManager.updated('filters', $scope.currentFilter.ID);
+      $scope.formValues.editFilter = false;
    };
    $scope.selectFilter = function(filterID) {
       angular.forEach($scope.filters, function(filter, ID) {
@@ -52,7 +62,7 @@ angular.module('algorea')
             itemService.saveRecord('filters', ID);
          }
       });
-      $scope.$parent.currentFilter = $scope.filters[filterID];
+      $scope.currentFilter = $scope.filters[filterID];
    };
    $scope.newFilter = function() {
       var newFilter = ModelsManager.createRecord('filters');
@@ -91,10 +101,19 @@ angular.module('algorea')
       }
       return res;
    }
+   var tempItemSelection = null;
    $scope.onSelectItem = function(item, itemDescendants) {
-      console.error($scope.$parent.currentFilter);
-      $scope.$parent.currentFilter.idItem = item.ID;
+      tempItemSelection = item;
    };
+   $scope.validateItemSelection = function() {
+      $scope.currentFilter.idItem = tempItemSelection.ID;
+      $scope.currentFilter.sItemTitle = tempItemSelection.strings[0].sTitle;
+      $scope.formValues.modifyItem = false;
+   }
+   $scope.selectNoItem = function() {
+      $scope.currentFilter.idItem = null;
+      $scope.currentFilter.sItemTitle = 'Tous';
+   }
    $scope.init = function() {
       $scope.loading = false;
       $scope.filters = ModelsManager.getRecords('filters');
@@ -103,10 +122,10 @@ angular.module('algorea')
          filter.bSelected = true;
          filter.sName = "Filtre par défaut";
          filter.idUser = SyncQueue.requests.loginData.ID;
-         $scope.$parent.currentFilter = filter;
+         $scope.currentFilter = filter;
          $scope.filters = [filter];
       } else {
-         $scope.$parent.currentFilter = getSelectedFilter($scope.filters);
+         $scope.currentFilter = getSelectedFilter($scope.filters);
       }
    };
 

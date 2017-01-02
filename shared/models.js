@@ -18,7 +18,9 @@ var models = {
          newerThan: {type: "int", label: "Ayant moins de X jours"},
          sUsersSearch: {type: "text", label: "Liés aux utilisateurs dans cette liste"},
          sBodySearch: {type: "text", label: "Dont le contenu inclut cette chaîne"},
-         bImportant: {type: "boolean", label: "Dont le statut est classé comme important pour moi"}
+         bImportant: {type: "boolean", label: "Dont le statut est classé comme important pour moi"},
+         sGroupName: {type: "string", label: "Nom du groupe associé à la recherche", defaultValue: null, readOnly: true},
+         sItemTitle: {type: "string", label: "Titre de l'item associé à la recherche", defaultValue: null, readOnly: true},
       }
    },
    groups: {
