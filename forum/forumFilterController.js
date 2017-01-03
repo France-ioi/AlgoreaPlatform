@@ -34,7 +34,6 @@ angular.module('algorea')
    $scope.plusActiveVar = false;
    $scope.formValues = {};
    // $scope.filterInfos is inheritted from forumIndexController
-   console.error($scope.filterInfos.currentFilter);
    // using object here due to prototypal inheritance / scope mess, see
    // here: https://github.com/angular-ui/bootstrap/issues/2540
    $scope.data = {};
@@ -126,7 +125,6 @@ angular.module('algorea')
          $scope.filterInfos.currentFilter = filter;
          $scope.filterInfos.filters = [filter];
       } else {
-         console.error(getSelectedFilter($scope.filterInfos.filters));
          $scope.filterInfos.currentFilter = getSelectedFilter($scope.filterInfos.filters);
       }
    };

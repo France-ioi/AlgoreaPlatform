@@ -20,14 +20,35 @@ angular.module('algorea')
    $scope.globalFilters = {
       all: {filter: null, description: 'Tous'},
       favorites: {filter: {bStarred: true}, description: $i18next.t('forum_favorites')},
-      unread: {filter: {bUnread: true}, description: $i18next.t('forum_favorites')},
+      unread: {filter: {bUnread: true}, description: $i18next.t('forum_unread')},
       participated: {filter: {bParticipated: true}, description: $i18next.t('forum_participated')}
    };
    $scope.selectFilter = function(filter) {
       $scope.filterInfos.currentFilter = filter;
+      SyncQueue.planToSend(0);
    };
-   $scope.selectGlobalFilter = function(filter) {
+   $scope.selectGlobalFilter = function(filter, filterName) {
+      console.error(filterName);
       $scope.currentGlobalFilter = filter;
+      // TODO: cache minVersion for requestSet?
+      SyncQueue.requestSets.forumIndex.minVersion = 0;
+      SyncQueue.requestSets.forumIndex.globalFilter = filterName;
+      SyncQueue.planToSend(0);
+   };
+   $scope.selectTab = function(tabName) {
+      console.error(tabName);
+      // TODO: cache minVersion for requestSet?
+      SyncQueue.requestSets.forumIndex.minVersion = 0;
+      SyncQueue.requestSets.forumIndex.tabName = tabName;
+      SyncQueue.planToSend(0);
+   };
+   $scope.refresh = function() {
+      $scope.refreshing = true;
+      SyncQueue.requestSets.forumIndex.minVersion = 0;
+      itemService.syncForumIndex(function() {
+         $scope.refreshing = false;
+         $scope.$applyAsync();
+      });
    };
    $scope.currentGlobalFilter = $scope.globalFilters.all;
    $scope.init = function() {

@@ -22,6 +22,19 @@ class forumIndex {
       //$filterId = $requestSet['filterId']; // TODO: use filters
       // To build the request against filter.idGroup and filter.idItem, use the "groupDescendants" and "idItemAncestor" sync filters of threads
 
+      // TODO: use the 'globalFilter' argument of $requestSet if no filterId is provided (or combine them? I don't know)
+      //       possible values are:
+      //          * 'favorites' (selecting threads with users_threads.bStarred)
+      //          * 'all' (doing nothing)
+      //          * 'unread' (no users_threads or users_threads.sLastReadDate = NULL)
+      //          * 'participated' (users_threads.bParticipated)
+
+      // TODO: use the 'tab' argument of $requestSet, possible values:
+      //          * 'helpOthers': threads.sType == 'Help' && threads.idUserCreated != $_SESSION['login']['ID']
+      //          * 'getHelp': threads.sType == 'Help' && threads.idUserCreated == $_SESSION['login']['ID']
+      //          * 'general': threads.sType == 'General'
+      //          * 'technicalSupport': threads.sType == 'Bug'
+
       $requests = [];
 
       $baseRequests['users_threads']['filters']['accessible'] = ['values' => ['idUser' => $_SESSION['login']['ID']]];

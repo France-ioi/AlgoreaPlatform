@@ -46,8 +46,8 @@
          </div>
       </div>
       <div class="form-group">
-         <button ng-click="applyFilter()" class="btn btn-primary">Filtrer</button><!-- Applique les filtres sélectionnés -->
-         <button ng-hide="formValues.editFilter" ng-click="formValues.saveFilter=true" class="btn btn-default">Enregistrer le filtre</button>
+         <button ng-click="stopEdition()" class="btn btn-primary"></button>
+         <button ng-hide="formValues.editFilter" ng-click="formValues.saveFilter=true" class="btn btn-default">Enregistrer et appliquer</button>
          <button ng-show="formValues.editFilter" ng-click="formValues.saveFilter=true" class="btn btn-default">Enregistrer les modifications</button>
          <button ng-hide="formValues.editFilter" ng-click="resetFilter();" class="btn btn-default">Valeurs par défaut</button>
          <button ng-show="formValues.editFilter" ng-click="deleteFilter(filterInfos.currentFilter.ID)">Supprimer le filtre<span class="glyphicon glyphicon-remove" aria-label="Remove filter"></span></button>
