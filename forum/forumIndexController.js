@@ -12,6 +12,7 @@
 angular.module('algorea')
    .controller('forumIndexController', ['$scope', 'itemService', 'loginService', '$state', '$timeout', '$rootScope', '$i18next', function ($scope, itemService, loginService, $state, $timeout, $rootScope, $i18next) {
    $scope.layout.isOnePage(true);
+   $scope.refreshing = true;
    $scope.loading = true;
    $scope.threads = {};
    $scope.currentFilter = null;
@@ -33,18 +34,20 @@ angular.module('algorea')
       // TODO: cache minVersion for requestSet?
       SyncQueue.requestSets.forumIndex.minVersion = 0;
       SyncQueue.requestSets.forumIndex.globalFilter = filterName;
-      SyncQueue.planToSend(0);
+      $scope.refresh();
    };
    $scope.selectTab = function(tabName) {
       console.error(tabName);
-      // TODO: cache minVersion for requestSet?
-      SyncQueue.requestSets.forumIndex.minVersion = 0;
-      SyncQueue.requestSets.forumIndex.tabName = tabName;
-      SyncQueue.planToSend(0);
+      if (tabName != $scope.currentTabName) {
+         $scope.currentTabName = tabName;
+         // TODO: cache minVersion for requestSet? seems difficult with pagination, etc.
+         SyncQueue.requestSets.forumIndex.minVersion = 0;
+         SyncQueue.requestSets.forumIndex.tabName = tabName;
+         $scope.refresh();
+      }
    };
    $scope.refresh = function() {
       $scope.refreshing = true;
-      SyncQueue.requestSets.forumIndex.minVersion = 0;
       itemService.syncForumIndex(function() {
          $scope.refreshing = false;
          $scope.$applyAsync();
@@ -53,10 +56,12 @@ angular.module('algorea')
    $scope.currentGlobalFilter = $scope.globalFilters.all;
    $scope.init = function() {
       $scope.myUserID = SyncQueue.requests.loginData.ID;
-      SyncQueue.requestSets.forumIndex = {minVersion: 0, name: 'forumIndex'};
+      $scope.currentTabName = 'helpOthers';
+      SyncQueue.requestSets.forumIndex = {minVersion: 0, name: 'forumIndex', tabName: $scope.currentTabName};
       itemService.syncForumIndex(function() {
          $scope.threads = ModelsManager.getRecords('threads');
          $scope.loading = false;
+         $scope.refreshing = false;
          $timeout($scope.$apply);
       });
    }

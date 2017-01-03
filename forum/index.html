@@ -1,6 +1,8 @@
 <div ng-if="!loading">
    <div ng-controller="forumFilterController" ng-include="templatesPrefix+'forum/filters.html'">
    </div>
+   <img ng-if="refreshing" src="images/spinner.gif" style="position: absolute;right: 20px; top: 80px; height: 40px;">
+   <button ng-click="refresh()" class="btn btn-default" ng-if="!refreshing" style="position: absolute;right: 20px; top: 80px; height: 40px;"><i class="material-icons">refresh</i></button>
    <div class="threadsContainer">
       <div class="btn-group-vertical globalFilters">
          <button type="button" ng-repeat="(globalFilterName,globalFilter) in globalFilters" ng-click="selectGlobalFilter(globalFilter, globalFilterName);" class="btn btn-default globalFilter" ng-class="{globalFilterSelected: globalFilter == currentGlobalFilter}">{{globalFilter.description}}</button>

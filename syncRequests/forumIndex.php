@@ -24,12 +24,12 @@ class forumIndex {
 
       // TODO: use the 'globalFilter' argument of $requestSet if no filterId is provided (or combine them? I don't know)
       //       possible values are:
-      //          * 'favorites' (selecting threads with users_threads.bStarred)
-      //          * 'all' (doing nothing)
-      //          * 'unread' (no users_threads or users_threads.sLastReadDate = NULL)
-      //          * 'participated' (users_threads.bParticipated)
+      //          * 'favorites': users_threads.bStarred == 1
+      //          * 'all': nothing
+      //          * 'unread': no users_threads or users_threads.sLastReadDate = NULL
+      //          * 'participated': threads.idUserCreated == $_SESSION['login']['ID'] && users_threads.bParticipated == 1
 
-      // TODO: use the 'tab' argument of $requestSet, possible values:
+      // TODO: use the 'tabName' argument of $requestSet, possible values:
       //          * 'helpOthers': threads.sType == 'Help' && threads.idUserCreated != $_SESSION['login']['ID']
       //          * 'getHelp': threads.sType == 'Help' && threads.idUserCreated == $_SESSION['login']['ID']
       //          * 'general': threads.sType == 'General'

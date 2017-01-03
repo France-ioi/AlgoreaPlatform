@@ -379,11 +379,15 @@ angular.module('algorea')
             }
             return typeStr;
          },
+         // not sure it's safe to call it several times in a row...
          syncForumIndex: function(callback) {
-            SyncQueue.requestSets['forumIndex'] = {minVersion: 0, name: 'forumIndex'};
+            if (!SyncQueue.requestSets.forumIndex) {
+               SyncQueue.requestSets.forumIndex = {minVersion: 0, name: 'forumIndex'};
+            }
+            SyncQueue.removeSyncEndListeners('forumIndex'); // in case there is one for a sync in progress
             SyncQueue.addSyncEndListeners('forumIndex', function() {
                SyncQueue.removeSyncEndListeners('forumIndex');
-               delete(SyncQueue.requestSets['forumIndex'].minVersion);
+               delete(SyncQueue.requestSets.forumIndex.minVersion);
                callback();
             }, true);
             SyncQueue.planToSend(0);
