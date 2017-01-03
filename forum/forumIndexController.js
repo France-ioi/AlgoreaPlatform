@@ -16,11 +16,15 @@ angular.module('algorea')
    $scope.threads = {};
    $scope.currentFilter = null;
    $scope.formValues = {};
+   $scope.filterInfos = {filters: {}, currentFilter: null};
    $scope.globalFilters = {
       all: {filter: null, description: 'Tous'},
       favorites: {filter: {bStarred: true}, description: $i18next.t('forum_favorites')},
       unread: {filter: {bUnread: true}, description: $i18next.t('forum_favorites')},
       participated: {filter: {bParticipated: true}, description: $i18next.t('forum_participated')}
+   };
+   $scope.selectFilter = function(filter) {
+      $scope.filterInfos.currentFilter = filter;
    };
    $scope.selectGlobalFilter = function(filter) {
       $scope.currentGlobalFilter = filter;

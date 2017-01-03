@@ -2,16 +2,16 @@
    <center><img src="assets/img/spinner.gif" height="50px"><p style="margin-top:10px"><strong>Chargement...</strong></p></center>
 </div>
 <div ng-if="!loading">
-   <div ng-form="filterForm" class="container-fluid form highlight filterContainer">
-      <div ng-if="editFilter">
+   <div ng-form="filterForm" ng-if="formValues.editFilter" class="container-fluid form highlight filterContainer">
+      <div class="form-group filterFormDatePickers">
          <label for="sName">Nom du filtre</label>
-         <input type="text" name="sName" ng-model="filter.sName" class="form-control" value="{{filter.sName}}">
+         <input type="text" name="sName" ng-model="filterInfos.currentFilter.sName" class="form-control">
       </div>
       <div class="form-group filterFormDatePickers">
          <div class="form-inline">
             <label for="sStartDate">Discussions à partir du :</label>
             <p class="input-group">
-               <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="filter.sStartDate" is-open="data.sStartDateOpened" min-date="'2011-01-01'" max-date="'2017-01-01'" datepicker-options="dateOptions" date-disabled="false" ng-required="false" close-text="Fermer" current-text="Aujourd'hui" clear-text="Annuler" starting-day="1" />
+               <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="filterInfos.currentFilter.sStartDate" is-open="data.sStartDateOpened" min-date="'2011-01-01'" max-date="'2017-01-01'" datepicker-options="dateOptions" date-disabled="false" ng-required="false" close-text="Fermer" current-text="Aujourd'hui" clear-text="Annuler" starting-day="1" />
                <span class="input-group-btn">
                   <button type="button" class="btn btn-default" ng-click="open($event, 'sStartDateOpened');"><i class="glyphicon glyphicon-calendar"></i></button>
                </span>
@@ -20,7 +20,7 @@
          <div class="form-inline">
             <label for="sEndDate">jusqu'au :</label>
             <p class="input-group">
-               <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="filter.sEndDate" is-open="data.sEndDateOpened" min-date="'2011-01-01'" max-date="'2017-01-01'" datepicker-options="dateOptions" date-disabled="false" ng-required="false" close-text="Fermer" current-text="Aujourd'hui" clear-text="Annuler" starting-day="1" />
+               <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="filterInfos.currentFilter.sEndDate" is-open="data.sEndDateOpened" min-date="'2011-01-01'" max-date="'2017-01-01'" datepicker-options="dateOptions" date-disabled="false" ng-required="false" close-text="Fermer" current-text="Aujourd'hui" clear-text="Annuler" starting-day="1" />
                <span class="input-group-btn">
                   <button type="button" class="btn btn-default" ng-click="open($event, 'sEndDateOpened');"><i class="glyphicon glyphicon-calendar"></i></button>
                </span>
@@ -28,7 +28,7 @@
          </div>
       </div>
       <div class="form-group">
-         <label for="idItem">Concernant l'item :</label> {{filter.sItemTitle | json}} <button ng-click="formValues.modifyItem=true" ng-if="!formValues.modifyItem">Modifier</button> <button ng-click="selectNoItem()" ng-if="!formValues.modifyItem">Supprimer</button>
+         <label for="idItem">Concernant l'item :</label> <span ng-if="!filterInfos.currentFilter.sItemTitle">Tous</span><span ng-if="filterInfos.currentFilter.sItemTitle">{{filterInfos.currentFilter.sItemTitle}}</span> <button ng-click="formValues.modifyItem=true" ng-if="!formValues.modifyItem">Modifier</button> <button ng-click="selectNoItem()" ng-if="!formValues.modifyItem">Supprimer</button>
          <div ng-if="formValues.modifyItem">
             <div item-selector on-select="onSelectItem" allow-all="true" ng-if="formValues.modifyItem"></div>
             <button ng-click="validateItemSelection()">Valider</button>
@@ -38,38 +38,38 @@
       <div class="form-group">
          <label>Filtre supplémentaire&nbsp;:</label>
          <div class="btn-group">
-            <label class="btn btn-default" ng-model="radioModel" uib-btn-radio="'bStarred'" uncheckable>Favoris</label>
-            <label class="btn btn-default" ng-model="radioModel" uib-btn-radio="'bUnread'" uncheckable>Non-lus</label>
-            <label class="btn btn-default" ng-model="radioModel" uib-btn-radio="'bParticipated'" uncheckable>Où j'ai participé</label>
-            <label class="btn btn-default" ng-model="radioModel" uib-btn-radio="'bImportant'" uncheckable>Importants</label>
-            <label class="btn btn-default" ng-model="radioModel" uib-btn-radio="'bArchived'" uncheckable>Archivés</label>
+            <label class="btn btn-default" ng-model="filterInfos.currentFilter.bStarred" uib-btn-radio="true" uncheckable>Favoris</label>
+            <label class="btn btn-default" ng-model="filterInfos.currentFilter.bUnread" uib-btn-radio="true" uncheckable>Non-lus</label>
+            <label class="btn btn-default" ng-model="filterInfos.currentFilter.bParticipated" uib-btn-radio="true" uncheckable>Où j'ai participé</label>
+            <label class="btn btn-default" ng-model="filterInfos.currentFilter.bImportant" uib-btn-radio="true" uncheckable>Importants</label>
+            <label class="btn btn-default" ng-model="filterInfos.currentFilter.bArchived" uib-btn-radio="true" uncheckable>Archivés</label>
          </div>
       </div>
       <div class="form-group">
-         <button ng-click="" class="btn btn-primary">Filtrer</button><!-- Applique les filtres sélectionnés -->
-         <button ng-hide="editFilter" ng-click="forumFilterController.saveFilter=true" class="btn btn-default">Enregistrer le filtre</button>
-         <button ng-show="editFilter" ng-click="forumFilterController.saveFilter=true" class="btn btn-default">Enregistrer les modifications</button>
-         <button ng-hide="editFilter" ng-click="resetFilter();" class="btn btn-default">Valeurs par défaut</button>
-         <button ng-show="editFilter" ng-click="deleteFilter(filter.ID)">Supprimer le filtre<span class="glyphicon glyphicon-remove" aria-label="Remove filter"></span></button>
+         <button ng-click="applyFilter()" class="btn btn-primary">Filtrer</button><!-- Applique les filtres sélectionnés -->
+         <button ng-hide="formValues.editFilter" ng-click="formValues.saveFilter=true" class="btn btn-default">Enregistrer le filtre</button>
+         <button ng-show="formValues.editFilter" ng-click="formValues.saveFilter=true" class="btn btn-default">Enregistrer les modifications</button>
+         <button ng-hide="formValues.editFilter" ng-click="resetFilter();" class="btn btn-default">Valeurs par défaut</button>
+         <button ng-show="formValues.editFilter" ng-click="deleteFilter(filterInfos.currentFilter.ID)">Supprimer le filtre<span class="glyphicon glyphicon-remove" aria-label="Remove filter"></span></button>
       </div>
-      <div ng-if="forumFilterController.saveFilter" class="saveFilter">
+      <div ng-if="formValues.saveFilter" class="saveFilter">
          <div class="form-group">
             <label for="sName">Nom du filtre</label>
-            <input type="text" name="sName" ng-model="filter.sName" class="form-control" autofocus>
+            <input type="text" name="sName" ng-model="filterInfos.currentFilter.sName" class="form-control" autofocus>
          </div>
          <button ng-click="submitForm(filterForm);" class="btn btn-default">Valider</button>
-         <button ng-click="forumFilterController.saveFilter=false" class="btn btn-default">Annuler</button>
+         <button ng-click="formValues.saveFilter=false" class="btn btn-default">Annuler</button>
          <div>Vous pourrez utiliser ce filtre en le sélectionnant parmi la liste des <em>Filtres enregitrés</em></div>
       </div>
    </div>
 
    <!-- Display selected filter options -->
-   <div ng-if="forumFilterController.showSavedFilter" ng-controller="forumFilterController.filters[filterID]" class="filterContainer">
+   <div ng-if="formValues.showSavedFilter" class="filterContainer">
       <!-- <div ng-repeat="filter in filters track by filter.ID" select="selectFilter(filter.ID)" active="filter.bSelected"> -->
-      <div>{{filter.sName}}</div>
+      <div>{{filterInfos.currentFilter.sName}}</div>
       <p><!-- TODO: ng-if="date à partir du" -->Discussions à partir du&nbsp;: <!-- TODO: date à partir du -->, jusqu'au&nbsp;: <!-- TODO: date à partir du -->.</p>
       <p>Concernant l'item&nbsp;: <!-- TODO: affichage du parcours -->Item Parent / Item enfant</p>
       <p>Favoris / Archivés / Participés / Importants</p>
-      <button ng-click="editFilter=true" class="btn btn-primary">Modifier le filtre</button>
+      <button ng-click="formValues.editFilter=true" class="btn btn-primary">Modifier le filtre</button>
    </div>
 </div>

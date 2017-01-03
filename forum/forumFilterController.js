@@ -32,8 +32,9 @@ angular.module('algorea')
    $scope.showSavedFilter = false;
    $scope.editFilter = false;
    $scope.plusActiveVar = false;
-   $scope.filters = [];
    $scope.formValues = {};
+   // $scope.filterInfos is inheritted from forumIndexController
+   console.error($scope.filterInfos.currentFilter);
    // using object here due to prototypal inheritance / scope mess, see
    // here: https://github.com/angular-ui/bootstrap/issues/2540
    $scope.data = {};
@@ -48,11 +49,11 @@ angular.module('algorea')
       startingDay: 1
    };
    $scope.submitForm = function(form) {
-      ModelsManager.updated('filters', $scope.currentFilter.ID);
+      ModelsManager.updated('filters', $scope.filterInfos.currentFilter.ID);
       $scope.formValues.editFilter = false;
    };
    $scope.selectFilter = function(filterID) {
-      angular.forEach($scope.filters, function(filter, ID) {
+      angular.forEach($scope.filterInfos.filters, function(filter, ID) {
          if (!filter) return; // no idea why, but it happens...
          if (ID && filter.bSelected && ID != filterID) {
             filter.bSelected = false;
@@ -62,7 +63,7 @@ angular.module('algorea')
             itemService.saveRecord('filters', ID);
          }
       });
-      $scope.currentFilter = $scope.filters[filterID];
+      $scope.filterInfos.currentFilter = $scope.filterInfos.filters[filterID];
    };
    $scope.newFilter = function() {
       var newFilter = ModelsManager.createRecord('filters');
@@ -73,7 +74,7 @@ angular.module('algorea')
    };
    $scope.deleteFilter = function(ID) {
       ModelsManager.deleteRecord('filters', ID);
-      if (isObjEmpty($scope.filters)) {
+      if (isObjEmpty($scope.filterInfos.filters)) {
          $scope.newFilter();
       }
    };
@@ -106,26 +107,27 @@ angular.module('algorea')
       tempItemSelection = item;
    };
    $scope.validateItemSelection = function() {
-      $scope.currentFilter.idItem = tempItemSelection.ID;
-      $scope.currentFilter.sItemTitle = tempItemSelection.strings[0].sTitle;
+      $scope.filterInfos.currentFilter.idItem = tempItemSelection.ID;
+      $scope.filterInfos.currentFilter.sItemTitle = tempItemSelection.strings[0].sTitle;
       $scope.formValues.modifyItem = false;
    }
    $scope.selectNoItem = function() {
-      $scope.currentFilter.idItem = null;
-      $scope.currentFilter.sItemTitle = 'Tous';
+      $scope.filterInfos.currentFilter.idItem = null;
+      $scope.filterInfos.currentFilter.sItemTitle = 'Tous';
    }
    $scope.init = function() {
       $scope.loading = false;
-      $scope.filters = ModelsManager.getRecords('filters');
-      if (!$scope.filters || isObjEmpty($scope.filters)) {
+      $scope.filterInfos.filters = ModelsManager.getRecords('filters');
+      if (!$scope.filterInfos.filters || isObjEmpty($scope.filterInfos.filters)) {
          var filter = ModelsManager.createRecord('filters');
          filter.bSelected = true;
          filter.sName = "Filtre par défaut";
          filter.idUser = SyncQueue.requests.loginData.ID;
-         $scope.currentFilter = filter;
-         $scope.filters = [filter];
+         $scope.filterInfos.currentFilter = filter;
+         $scope.filterInfos.filters = [filter];
       } else {
-         $scope.currentFilter = getSelectedFilter($scope.filters);
+         console.error(getSelectedFilter($scope.filterInfos.filters));
+         $scope.filterInfos.currentFilter = getSelectedFilter($scope.filterInfos.filters);
       }
    };
 
