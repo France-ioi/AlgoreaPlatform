@@ -159,7 +159,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('algorea.js') ?>"></script>
   <script src="<?= includeFile('contest/contestTimerService.js') ?>"></script>
   <script src="<?= includeFile('contest/contestTimerDirective.js') ?>"></script>
-  <script src="<?= includeFile('layout.js') ?>"></script>
+  <script src="<?= includeFile('layout/layout.js') ?>"></script>
   <script src="<?= includeFile('navigation/service.js') ?>"></script>
   <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
   <script src="<?= includeFile('navigation/directives.js') ?>"></script>
