@@ -2,5 +2,6 @@
 
 <div class="main-area main-area-normal">
    <div ng-bind-html="strings.sDescription"></div>
+   <center class="spinner" ng-if="levelLoading"><img src="images/spinner.gif" height="50px"><p><strong ng-i18next="loading"></strong></p></center>
    <div ng-include="templatesPrefix+'navigation/views/children-list.html'">
 </div>

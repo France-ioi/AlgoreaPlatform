@@ -282,7 +282,9 @@ angular.module('algorea')
             itemService.onSeen(item);
             that.setItemIcon(item);
             if (item.sType == 'Level') {
+               that.levelLoading = true;
                itemService.syncDescendants(item.ID, function() {
+                  that.levelLoading = false;
                   if (!that.user_item.sLastActivityDate && config.domains.current.useMap) {
                      mapService.updateSteps();
                   }
