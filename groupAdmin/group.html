@@ -249,7 +249,7 @@
 							</table>
 							<table class="table-progress table-body" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
 							<tbody>
-								<tr ng-repeat="item in itemsList">
+								<tr ng-repeat="(idx, item) in itemsList track by idx">
 									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><p uib-tooltip="{{item.strings[0].sTitle}}" tooltip-placement="top-left">{{item.strings[0].sTitle}}</p></td>
 									<td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
 									<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
@@ -300,7 +300,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="item in itemsList">
+								<tr ng-repeat="(idx, item) in itemsList track by idx">
 									<td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><div>{{item.strings[0].sTitle}}</div></td>
 									<td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
 									<td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
