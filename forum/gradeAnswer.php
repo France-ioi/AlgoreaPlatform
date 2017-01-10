@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-// File to handle manual grading
+// File to handle manual grading (used for math tasks for instance)
 
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);

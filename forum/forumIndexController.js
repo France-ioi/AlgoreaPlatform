@@ -1,8 +1,9 @@
 'use strict';
 
+// Controller used on the forum index (/forum/)
+//
 // TODO: 
 //   * change SyncQueue.requestSets.forumIndex adding the following arguments:
-//      - tab (others, mine, general or bug)
 //      - page
 //      - threads per page
 //      - order by
@@ -18,6 +19,7 @@ angular.module('algorea')
    $scope.currentFilter = null;
    $scope.formValues = {};
    $scope.filterInfos = {filters: {}, currentFilter: null};
+   // global filters are on the left
    $scope.globalFilters = {
       all: {filter: null, description: 'Tous'},
       favorites: {filter: {bStarred: true}, description: $i18next.t('forum_favorites')},
@@ -100,6 +102,8 @@ angular.module('algorea')
       $state.go('newThreadType', {sType: sType});
    };
 }]);
+
+// controller of a thread when displayed in the forum index
 
 angular.module('algorea')
    .controller('forumIndexThreadController', ['$scope', '$state', 'itemService', '$i18next', function ($scope, $state, itemService, $i18next) {

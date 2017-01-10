@@ -1,6 +1,14 @@
 <?php
 
+/* The funtions of this file are automatically called by commonFramework/sync/*.php
+ * they allow the maintainance of the *_ancestors, users_items and groups_items tables.
+ */
+
 class Listeners {
+   // at each insert/update/delete of a users_items record, call this function to
+   // propagate the new data to other items. For example if a user validates an item,
+   // if this item was the last he needed in order to validate the whole chapter, this
+   // function will "propagate" the validation to the chapter above.
    public static function computeAllUserItems($db) {
       // We mark as 'todo' all ancestors of objects marked as 'todo'
       $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
@@ -88,6 +96,8 @@ class Listeners {
       syncDebug('UserItemsAfter', 'end');
    }
 
+   // this function generates the items_ancestors and groups_ancestors records when needed
+   // the items/groups that need ancestor recomputation are marked by the triggers of shared/custom_triggers.php
    public static function createNewAncestors($db, $objectName, $upObjectName, $tablePrefix='', $baseTablePrefix='') {
       //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', "\n".date(DATE_RFC822)."\n", FILE_APPEND);
       // We mark as 'todo' all descendants of objects marked as 'todo'
@@ -155,6 +165,9 @@ class Listeners {
       syncDebug('groupsItemsAfter', 'end');
    }
 
+   // This (rather complex) function "propagates" the access information into the groups_items tree
+   // For example if a group is manually given access to an item, this function will propagate this
+   // acces to all descendant items
    public static function computeAllAccess($db) {
       // inserting missing groups_items_propagate
       $queryInsertMissingPropagate = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, `sPropagateAccess`) ".

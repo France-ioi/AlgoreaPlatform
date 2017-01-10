@@ -208,6 +208,9 @@ angular.module('algorea')
           * The code computes left item before and after, and if it's the same,
           * it just sends a signal instead of reloading the views. Then the scopes
           * need to handle their reloading themselves by watching the signal.
+          *
+          * Note (2017-01-09): it may not be relevant anymore, as there is no more
+          * iframe in the left area, which is now a menu
           */
          if (fromState.name == 'contents' && toState.name == 'contents') {
             var toPath = toParams.path.split('/');

@@ -2,6 +2,9 @@
  * By John Resig http://ejohn.org/
  * MIT Licensed.
  */
+//
+// Used only by commonFramework/treeview/treeview.js
+//
 // Inspired by base2 and Prototype
 (function(){
   var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;

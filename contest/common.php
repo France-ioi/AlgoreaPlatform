@@ -1,5 +1,7 @@
 <?php
 
+// common function for contests (limitted time items)
+
 require_once __DIR__.'/../shared/connect.php';
 
 function getRemainingTime() {

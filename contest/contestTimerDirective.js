@@ -1,3 +1,5 @@
+// Basic directive to add a timer somewhere, for limitted time items
+
 angular.module('algorea')
   .directive('contestTimer', ['contestTimerService', function (contestTimerService) {
   	'use strict';

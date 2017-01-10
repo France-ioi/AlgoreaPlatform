@@ -43,3 +43,13 @@ php shared/initPlatform.php
 ```
 
 this will make a boilerplate for a platform. You can use this script again if you want to set up another platform on the same database, with different item IDs.
+
+
+## Documentation
+
+- [general documentation](https://docs.google.com/document/d/1QV9RhYjtPfiTLJAOBRYtBtrOeUSclCKGjvtvJmVEdX0)
+- [code structure](DOCCODE.md).
+
+## License
+
+The files in this repository are under MIT License, see [LICENSE](LICENSE).

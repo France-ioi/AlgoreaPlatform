@@ -5,8 +5,6 @@
 //
 // the idea is basically to modify the filter with bSelected=1, it will be automatically taken
 // into account by the sync ("forumIndex" requestSet) and change the displayed threads
-//
-// TODO: remove the $parent access
 
 angular.module('algorea')
    .controller('forumFilterController', ['$scope', 'itemService', 'loginService', function ($scope, itemService, loginService) {

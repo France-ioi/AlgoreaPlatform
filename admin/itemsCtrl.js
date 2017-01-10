@@ -1,5 +1,7 @@
 "use strict";
 
+// main controller of the admin interface
+
 var app = angular.module('algorea', ['ui.bootstrap', 'franceIOILogin', 'ngSanitize', 'ngAnimate', 'jm.i18next']);
 
 angular.module('algorea')

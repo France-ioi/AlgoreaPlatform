@@ -1,5 +1,10 @@
 <?php
 
+/* File called by commonFramework/modelsManager/triggers.php when triggers are created
+ * (at platform creation or important database structure update), it adds some triggers
+ * to maintain the *_ancestors tables and also groups_items.
+ */
+
 function addCustomTriggers(&$triggers) {
    $objectNames = array("items" => "Item", "groups" => "Group");
    foreach ($objectNames as $objectName => $upObjectName) {

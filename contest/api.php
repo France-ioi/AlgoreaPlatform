@@ -1,5 +1,8 @@
 <?php
 
+// file exposing a small API for some simple operations on contests
+// (limitted time items)
+
 require_once __DIR__.'/../shared/connect.php';
 require_once __DIR__.'/common.php';
 

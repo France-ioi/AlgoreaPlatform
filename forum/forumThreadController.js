@@ -1,5 +1,7 @@
 'use strict';
 
+// controller for a thread when displayed on its own
+
 angular.module('algorea')
    .controller('forumThreadController', ['$scope', '$state', 'itemService', 'loginService', '$http', '$timeout', '$rootScope', function ($scope, $state, itemService, loginService, $http, $timeout, $rootScope) {
    if (!$scope.inTask) {
@@ -384,6 +386,7 @@ angular.module('algorea')
    };
 }]).filter('eventsFilter', function() {
    return function(events, position, currentAnswer) {
+      // this filter just sorts events (users_answer + messages) according to their sSubmissionDate
       var res = [];
       var currentDate = currentAnswer ? currentAnswer.sSubmissionDate : null;
       var now = new Date();
