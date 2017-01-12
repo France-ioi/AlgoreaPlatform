@@ -140,14 +140,14 @@ function fetchItemsIfMissing($serverChanges, $db) {
          $users_items_ids[] = $values['data']->idItem;
       }
    }
-   foreach ($serverChanges['requestSets'] as $requestSetName => &$requestSetChanges) {
-      if (isset($requestSetChanges['users_items']) && isset($requestSetChanges['users_items']['inserted'])) {
-         foreach ((array) $requestSetChanges['users_items']['inserted'] as $id => $values) {
+   foreach ($serverChanges['requestSets'] as &$requestSet) {
+      if (isset($requestSet['users_items']) && isset($requestSet['users_items']['inserted'])) {
+         foreach ((array) $requestSet['users_items']['inserted'] as $id => $values) {
             $users_items_ids[] = $values['data']->idItem;
          }
       }
-      if (isset($requestSetChanges['users_items']) && isset($requestSetChanges['users_items']['updated'])) {
-         foreach ((array) $requestSetChanges['users_items']['updated'] as $id => $values) {
+      if (isset($requestSet['users_items']) && isset($requestSet['users_items']['updated'])) {
+         foreach ((array) $requestSet['users_items']['updated'] as $id => $values) {
             $users_items_ids[] = $values['data']->idItem;
          }
       }
@@ -218,25 +218,25 @@ function handleUserItems($db, $minServerVersion, &$serverChanges, &$serverCounts
    // then we generate tokens for the user items corresponding to tasks and courses
    require_once(dirname(__FILE__)."/TokenGenerator.php");
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
-   foreach ($serverChanges['requestSets'] as $requestSetName => &$requestSetChanges) {
-      if (isset($requestSetChanges['users_items']) && isset($requestSetChanges['users_items']['inserted'])) {
-         foreach ((array) $requestSetChanges['users_items']['inserted'] as $userItem) {
+   foreach ($serverChanges['requestSets'] as &$requestSet) {
+      if (isset($requestSet['users_items']) && isset($requestSet['users_items']['inserted'])) {
+         foreach ((array) $requestSet['users_items']['inserted'] as &$userItem) {
             generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
          }
       }
-      if (isset($requestSetChanges['users_items']) && isset($requestSetChanges['users_items']['updated'])) {
-         foreach ((array) $requestSetChanges['users_items']['updated'] as $userItem) {
+      if (isset($requestSet['users_items']) && isset($requestSet['users_items']['updated'])) {
+         foreach ((array) $requestSet['users_items']['updated'] as &$userItem) {
             generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
          }
       }
    }
    if (isset($serverChanges['users_items']) && isset($serverChanges['users_items']['updated'])) {
-      foreach ((array) $serverChanges['users_items']['updated'] as $userItem) {
+      foreach ((array) $serverChanges['users_items']['updated'] as &$userItem) {
          generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
       }
    }
    if (isset($serverChanges['users_items']) && isset($serverChanges['users_items']['inserted'])) {
-      foreach ((array) $serverChanges['users_items']['inserted'] as $userItem) {
+      foreach ((array) $serverChanges['users_items']['inserted'] as &$userItem) {
          generateUserItemToken($userItem, $tokenGenerator, $items[$userItem['data']->idItem]);
       }
    }
