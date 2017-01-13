@@ -24,11 +24,13 @@ Note that [shared/syncRequests-users_items.inc.php](shared/syncRequests-users_it
 - URL handling is in [states.js](states.js)
 - the [layout/ folder](layout/) contains everything related to the global layout (including some JavaScript)
 - the basis of the UI (displaying items, left panel, breadcrumbs, menu, etc.) is in the [navigation/ folder](navigation/)
-- the forum is in the [forum](forum/) folder
-- the right panel is in the [community](community/) folder, but almost only includes the files from the group user interface in the [groupRequests](groupRequests) folder
+- the forum is in the [forum](forum/) folder, the files in this folder are also used for in-task forum display and group admin interface popups
 - a complex administration interface lies in [admin/](admin/), it uses a different page accessed at the `admin/index.html` address
-- a more simple group administration interface lies in [groupAdmin](groupAdmin/)
+- a more simple group administration interface (for teachers) lies in the [groupAdmin/ folder](groupAdmin/)
+- user group management (joining a group, accepting an invitation, etc.) is made in the [groupRequests/ folder](groupRequests/) folder
+- the right panel is in the [community](community/) folder, but almost only includes the files from the group user interface in the [groupRequests](groupRequests) folder
 - the glue with the [login module](https://github.com/France-ioi/login-module) is in the [login/ folder](login/)
 - a deprecated mechanism to display a level as a map is present in [map/](map/)
 - all the task handling mechanism (using the [API](https://docs.google.com/document/d/1JMca_fGNyLtSPjsTuIv2owcnNt2lH4iHkZ1pTURIL6A/edit), etc.) is in the [task/ folder](task/)
-- a deprecated user info change interface is in the [userInfos/ folder](userInfos/)
+- when clicking on its user name, user gets to the [userInfos/ folder](userInfos/) files, mostly deprecated, they now mostly include groupRequests and groupAdmin
+- translation strings (used with [angular-18next](https://github.com/i18next/ng-i18next)) are in [i18n/](i18n/)

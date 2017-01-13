@@ -1,5 +1,7 @@
 // directive showing a few select to choose an item
-// always starts with the levels
+// always starts with the levels of the platform
+// handles item synchronisation to fetch everything it needs
+// used in forum thread creation and groupAdmin results display
 
 angular.module('algorea')
    .directive('itemSelector', ['itemService', '$rootScope', '$i18next', function (itemService, $rootScope, $i18next) {

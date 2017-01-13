@@ -3,7 +3,16 @@
 //error_reporting(E_ALL);
 //ini_set('display_errors', '1');
 
-// TODO: handle platform token (currently not implemented in task platform)
+// TODO: handle platform token (currently not implemented in task platform), see TokenParser
+
+// simple request handling for task events (ask submission, hint, receive submission result, etc.)
+// see API documentation for token fields and behavior:
+// https://docs.google.com/document/d/1JMca_fGNyLtSPjsTuIv2owcnNt2lH4iHkZ1pTURIL6A/edit
+
+// The code is sometimes not straightforward to understand due to the different ways a function can be called
+// the two main cases are when a task handles API tokens or not:
+//  * if the task handles API tokens, we require specific tokens for the grading result (encoding the score)
+//  * if it doesn't, then we just take the users_items.sToken, but all the checks are different
 
 // json request parsing
 $postdata = file_get_contents("php://input");

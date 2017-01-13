@@ -1,5 +1,7 @@
 'use strict';
 
+// entry point for task inclusion
+
 angular.module('algorea')
   .directive('includeTask', function () {
     return {
@@ -90,6 +92,10 @@ angular.module('algorea')
       scope.moveToNext = function() {
          scope.goRightLink();
       };
+      /*
+       * Platform definition, each iframe gets its own one
+       *
+       */
       scope.platform.askHint = function(hintToken, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
@@ -258,7 +264,9 @@ angular.module('algorea')
          scope.taskIframe = elem;
          function initTask(sameUrl) {
             scope.currentView = null;
-            // ID of the current instance, allows to avoid callbacks from old tasks
+            // ID of the current instance, we use it to differenciate all iframes on the same page
+            // and also to filter messages arriving from iframes we have deleted (happens sometimes,
+            // as browsers take time to actually kill iframes)
             scope.currentId = Math.random() * 1000000000;
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
@@ -321,6 +329,7 @@ angular.module('algorea')
                $timeout(function() {initTask(sameUrl);});
             }
          }
+         // these functions are used when integrating a task in the user interface
          scope.$on('admin.itemSelected', function() {
             reinit();
          });

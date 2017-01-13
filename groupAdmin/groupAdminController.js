@@ -77,6 +77,8 @@ angular.module('algorea').
     };
   });
 
+// very simple controller to make breadcrumbs show the group name
+
 angular.module('algorea')
    .controller('groupAdminBreadCrumbsController', ['$scope', '$stateParams', '$i18next', function ($scope, $stateParams, $i18next) {
    'use strict';
@@ -93,6 +95,10 @@ angular.module('algorea')
       }
    });
 }]);
+
+// controller used in the popups opened on groupAdmin, containing the user's answers history
+// this controller only controls the close button, the content is included by the inclusion of
+// forum/thread.html in the popup template
 
 angular.module('algorea')
    .controller('groupAdminPopupController', ['$scope', '$uibModalInstance', 'popupData', function ($scope, $uibModalInstance, popupData) {

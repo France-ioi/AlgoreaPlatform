@@ -1,5 +1,7 @@
 'use strict';
 
+// this controller is used in interfaces controling the groups the user is in
+
 angular.module('algorea')
    .controller('groupRequestsController', ['$scope', '$http', 'loginService', '$rootScope', 'itemService', '$filter', '$timeout', '$i18next', function ($scope, $http, loginService, $rootScope, itemService, $filter, $timeout, $i18next) {
    $scope.layout.isOnePage(true);

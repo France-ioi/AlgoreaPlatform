@@ -1,5 +1,10 @@
 'use strict';
 
+// Core directive displaying an item according to the context (attrs.from)
+// just provides a simple initialization of some variables and includes the
+// template of the task (in navigation/views/), through controllers' getTemplate function
+// so this directive must be used with the navigationController
+
 angular.module('algorea')
   .directive('displayItem', ['itemService', 'pathService', '$rootScope', function (itemService, pathService, $rootScope) {
     return {

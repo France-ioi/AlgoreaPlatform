@@ -1,8 +1,15 @@
+// This service is a core file of the platform, used by almost all services/controllers/directives
+
 angular.module('algorea')
    .service('itemService', ['$rootScope', '$timeout', 'loginService', '$i18next', '$stateParams', function($rootScope, $timeout, loginService, $i18next, $stateParams) {
       'use strict';
     /*
-     * Simple service providing items.
+     * First part: handling the general Synchronisation:
+     *   - handle login change
+     *   - first syncs all levels, then syncs descendants of current level (if relevant)
+     *   - broadcasts signals at end of sync ('syncFinished')
+     *   - provides way to register callbacks for when the first synchro is completed, or when
+     *        a synchro with a new login is completed ()
      */
       ModelsManager.init(models);
       SyncQueue.init(ModelsManager);
@@ -38,36 +45,6 @@ angular.module('algorea')
                loginService.setLocalLoginData();
             }
          }
-      }
-
-      function syncDescendants(idItem, callback, simple, justOnce) {
-         if (!idItem) {
-            console.error('syncDescendants called with empty idItem!');
-            callback();
-            return;
-         }
-         if (!SyncQueue.requestSets.itemsDescendants) {
-            SyncQueue.requestSets.itemsDescendants = {minVersion: 0, name: 'itemsDescendants'};
-         }
-         var set = SyncQueue.requestSets.itemsDescendants;
-         if (idItem == set.idItem) {
-            callback();
-            return;
-         }
-         set.justNames = simple ? 1 : 0;
-         set.idItem = idItem;
-         set.minVersion = 0;
-         var endListenerName = 'itemsDescendants'+idItem;
-         SyncQueue.addSyncEndListeners(endListenerName, function() {
-            SyncQueue.removeSyncEndListeners(endListenerName);
-            if (justOnce) {
-               delete(SyncQueue.requestSets['itemsDescendants']);
-            } else {
-               delete(SyncQueue.requestSets['itemsDescendants'].minVersion);
-            }
-            callback();
-         }, true);
-         SyncQueue.planToSend(0);
       }
 
       function syncEndListener () {
@@ -142,6 +119,38 @@ angular.module('algorea')
          }
          // TODO: build SyncQueue.cancelCurrentSync() with a StartSyncListener
       }
+      // synchronise the descendants of an item and call the callback function
+      // basically calls syncRequests/itemsDescendants.php
+      function syncDescendants(idItem, callback, simple, justOnce) {
+         if (!idItem) {
+            console.error('syncDescendants called with empty idItem!');
+            callback();
+            return;
+         }
+         if (!SyncQueue.requestSets.itemsDescendants) {
+            SyncQueue.requestSets.itemsDescendants = {minVersion: 0, name: 'itemsDescendants'};
+         }
+         var set = SyncQueue.requestSets.itemsDescendants;
+         if (idItem == set.idItem) {
+            callback();
+            return;
+         }
+         set.justNames = simple ? 1 : 0;
+         set.idItem = idItem;
+         set.minVersion = 0;
+         var endListenerName = 'itemsDescendants'+idItem;
+         SyncQueue.addSyncEndListeners(endListenerName, function() {
+            SyncQueue.removeSyncEndListeners(endListenerName);
+            if (justOnce) {
+               delete(SyncQueue.requestSets['itemsDescendants']);
+            } else {
+               delete(SyncQueue.requestSets['itemsDescendants'].minVersion);
+            }
+            callback();
+         }, true);
+         SyncQueue.planToSend(0);
+      }
+      // a few functions to get current user infos
       function getUserID() {
          return SyncQueue.requests.loginData.ID;
       }
@@ -158,6 +167,7 @@ angular.module('algorea')
          });
          return res;
       }
+      // code to get the current level
       var domainData = config.domains.current;
       var roots = {};
       roots[domainData.PlatformItemId] = true;
@@ -184,7 +194,7 @@ angular.module('algorea')
       }
       SyncQueue.addSyncEndListeners("ItemsService", syncEndListener);
       SyncQueue.addSyncStartListeners("ItemsService", syncStartListener);
-      // return a relevant name for the name of the listener in sync:
+      // helper functin returning a relevant name for the name of the listener in sync:
       function getThreadSyncName(idThread, idItem, idUser) {
          if (idThread) {
             return 'thread-'+idThread;
@@ -289,12 +299,12 @@ angular.module('algorea')
          getBrothersFromParent: function(parentID) {
             return this.getChildren(this.getItem(parentID));
          },
+         // returns an array containing the children in the correct order, removing duplicates (a strange requirement, can't remember the reason)
          getChildren: function(item) {
             var children = [];
             if (!item || !item.children) {
                return children;
             }
-//            console.error('getting children of '+item.ID);
             // a few convoluted checks for duplicated child items and child order
             var childrenz = [];
             var seenIDs = [];
@@ -321,9 +331,11 @@ angular.module('algorea')
             });
             return children;
          },
+         // all items have a text ID, shared/models.js creates an index on them
          getItemIdByTextId: function(sTextId) {
             return ModelsManager.indexes.sTextId[sTextId];
          },
+         // returns true if first argument is son of second argument
          isSonOf: function(sonItemId, parentItemId) {
             var parentItem = ModelsManager.getRecord('items', parentItemId);
             if (!parentItem) { return false; }
@@ -336,6 +348,7 @@ angular.module('algorea')
             });
             return result;
          },
+         // called when an item is on screen, sets sLastActivityDate
          onSeen: function(item) {
             var user_item = this.getUserItem(item);
             if (user_item) {
@@ -349,6 +362,7 @@ angular.module('algorea')
                $rootScope.$broadcast('algorea.itemTriggered', item.ID);
             }
          },
+         // a few string helpers
          normalizeItemType: function(type) {
             if (!type) return '';
             if (type.substring(type.length - 7, type.length) === 'Chapter') {
@@ -379,7 +393,7 @@ angular.module('algorea')
             }
             return typeStr;
          },
-         // not sure it's safe to call it several times in a row...
+         // Functions synchronizing forum
          syncForumIndex: function(callback) {
             if (!SyncQueue.requestSets.forumIndex) {
                SyncQueue.requestSets.forumIndex = {minVersion: 0, name: 'forumIndex'};

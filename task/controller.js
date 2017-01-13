@@ -1,5 +1,13 @@
 'use strict';
 
+// the task controller, should probably be merged with the directive
+// the entry point is $scope.setTabs, called by the directive
+//
+// The code is sometimes a bit convoluted because it used to handle two
+// different iframes in the same page, the statement in a (since gone) left panel
+// and the editor in the main panel. Since this mechanism disappeared, the code about
+// views could be more simple
+
 angular.module('algorea')
    .controller('taskController', ['$scope', '$rootScope', '$location', '$interval', '$injector', '$i18next', function ($scope, $rootScope, $location, $interval, $injector, $i18next) {
    var itemService, $state;
@@ -12,14 +20,27 @@ angular.module('algorea')
    $scope.resolutionViewName = 'editor';
    $scope.showForum = false;
    var defaultViewName = 'task';
+   // This part is a bit tricky. We use scope inheritance to understand the context
+   // in which this controller is used, it can be:
+   //   - the main task, on the page of a task
+   //   - in a forum thread (in which case it displays the answer), or groupAdmin popup including a thread
+   //   - in the forum tab of the task page (meaning there are two task iframes handled in two different ways on the same page)
+   //
+   // To spot the context, we set the $scop.inTask variable (a few lines below)
    if ($scope.inTask) {
-      // task inside forum inside task!
+      // here this means that we already have set the inTask variable in an ancestor scope, this
+      // can only mean that we are in the third case described above (form tab)
       $scope.taskInsideForumInsideTask = true;
-      defaultViewName = 'editor';
+      defaultViewName = 'editor'; // to display answers
    }
    $scope.inTask = true;
+   //
+   // Then we handle the view, this part is a bit complex because we must map the
+   // views available in the task with the views we want to display, and adapt the
+   // tabs accordingly
+   //
    // platformView = 1 view that the platform wants
-   // taskView = view avaible on the task
+   // taskView = view available on the task
    // 1 platformView can be several taskViews, for instance, platform wants
    // to show help + forum (2 taskViews) in one tab (1 platformView)
    var platformViews = {};
@@ -110,6 +131,10 @@ angular.module('algorea')
       }
       $scope.syncHeight();
    };
+   // This is supposed to unload the task, it seems to work most of the time
+   // but it would be useful to delay the $destroy thing until the task
+   // is really unloaded. It's certainly possible to do that by hooking in the
+   // (already complex) state management in states.js
    $scope.$on('$destroy', function() {
       if ($scope.task) {
          $scope.task.getState(function(state) {

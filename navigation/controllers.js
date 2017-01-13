@@ -1,5 +1,14 @@
 'use strict';
 
+/* Core file displaying an item in different contexts, selecting the correct template in views/ (and other things)
+ * The different contexts an item can be displayed in are:
+ *   - "right": the main panel (there used to be an important left panel, hence the name)
+ *   - "left": the left (folding) navigation menu
+ *   - "menu": the breadcrumbs
+ *
+ */
+
+// first generic functions used by all items
 angular.module('algorea')
    .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http) {
       $scope.domainTitle = config.domains.current.title;
@@ -39,6 +48,7 @@ angular.module('algorea')
             $state.go('forum');
          }
       }
+      // a core function: returns the path of the template to use to display the task
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
@@ -253,6 +263,7 @@ angular.module('algorea')
          });
          return res;
       };
+      // a funtion waiting for the initial synchro to end before calling callback on the asked item
       $scope.getItem = function(callback) {
          var that = this;
          itemService.getAsyncRecord('items', that.pathParams.currentItemID, function(item){
@@ -304,6 +315,8 @@ angular.module('algorea')
          return item.strings[0].sTitle;
       };
 }]);
+
+// additional functions specific to the main item
 
 angular.module('algorea')
    .controller('rightNavigationController', ['$scope', 'pathService', 'itemService', '$timeout', '$injector', function ($scope, pathService, itemService, $timeout, $injector) {
@@ -396,6 +409,8 @@ angular.module('algorea')
       });
 }]);
 
+// diplaying an item hierarchy in the left menu (we just consider the top item here)
+
 angular.module('algorea')
    .controller('leftNavigationController', ['$scope', 'pathService', 'itemService', '$rootScope', function ($scope, pathService, itemService, $rootScope) {
       $scope.panel = 'left';
@@ -447,6 +462,8 @@ angular.module('algorea')
       });
 }]);
 
+// handling individual items in the left controller menu (not the top one which children are displayed)
+
 angular.module('algorea')
    .controller('leftNavItemController', ['$scope', 'pathService', 'itemService', function ($scope, pathService, itemService) {
    function init() {
@@ -481,6 +498,8 @@ angular.module('algorea')
    });
 }]);
 
+// bread crumbs specific funtions
+
 angular.module('algorea')
    .controller('superBreadCrumbsController', ['$scope', 'itemService', 'pathService', function ($scope, itemService, pathService) {
       $scope.panel = 'menu';
@@ -512,6 +531,8 @@ angular.module('algorea')
          $scope.localInit();
       });
 }]);
+
+// a few functions for the top menus
 
 angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {

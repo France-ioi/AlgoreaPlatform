@@ -364,6 +364,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       $requests['users_items']['filters']['idUser'] = $_SESSION['login']['ID'];
       $requests['users_items']['writeOnly'] = true;
       unset($requests['groups_items']);
+      // users_answers are only modified by task/task.php
       unset($requests['users_answers']);
    } else {
       //unset($requests["users_items"]);

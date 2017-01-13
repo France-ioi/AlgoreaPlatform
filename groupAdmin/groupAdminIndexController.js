@@ -1,6 +1,7 @@
 'use strict';
 
-// index of groups
+// index of owned groups, historically used on its own page, but now used in
+// in groupRequests/groupRequests.html
 
 angular.module('algorea').
   filter('groupsgroupsChildrenNameSort', function() {
