@@ -31,6 +31,12 @@ orange : #F29200;
 .groupAdmin .block-context {
 	overflow: auto;
 }
+.groupAdmin h1 {
+	font-size: 28px;
+}
+.groupAdmin h1 .groupName {
+	font-weight: bold;
+}
 
 /*
 	Tabs
@@ -100,32 +106,7 @@ orange : #F29200;
 .groupAdmin .form-control + .form-control {
 	margin-top: 1em;
 }
-.groupAdmin .checkboxSwitch input.switch {
-	display: none;
-}
-.groupAdmin .checkboxSwitch input.switch + label {
-	background-color: #333;
-	width: 70px;
-	height: 30px;
-	border-radius: 15px;
-	position: relative;
-	vertical-align: middle;
-}
-.groupAdmin .checkboxSwitch input.switch + label span {
-	width: 20px;
-	height: 20px;
-	top: 5px;
-	left: 5px;
-	position: absolute;
-	border-radius: 50%;
-	background-color: #e42c20;
-	transition: all 250ms;
-}
 
-.groupAdmin .checkboxSwitch input.switch:checked + label span {
-	background-color: #82bf2b;
-	left: 45px;
-}
 
 /*
 	Users lists
@@ -266,6 +247,9 @@ orange : #F29200;
 }
 .groupAdmin .btn-icon.btn-add {
 	/*background: url(images/ajouter.png) center no-repeat;*/
+}
+.groupAdmin .btn-icon.btn-add i {
+	color: #2aa3ff;
 }
 .groupAdmin .btn-icon.btn-zoom-in {
 	background: url(images/vue-detaillee.png) center no-repeat;
@@ -804,11 +788,26 @@ orange : #F29200;
 	margin-right: 5px;
 	border: 7px solid;
 }
-.groupAdmin .legend-color.green {border-color: #0FAA8B;}
-.groupAdmin .legend-color.red {border-color: #e42c20;}
-.groupAdmin .legend-color.orange {border-color: #F29200;}
-.groupAdmin .legend-color.dark-grey {border-color: #707070;}
-.groupAdmin .legend-color.light-grey {border-color: #C6C6C6;}
+.groupAdmin .legend-color.green {
+	border-color: #0FAA8B;
+	background-color: #0FAA8B;
+}
+.groupAdmin .legend-color.red {
+	border-color: #e42c20;
+	background-color: #e42c20;
+}
+.groupAdmin .legend-color.orange {
+	border-color: #F29200;
+	background-color: #F29200;
+}
+.groupAdmin .legend-color.dark-grey {
+	border-color: #707070;
+	background-color: #707070;
+}
+.groupAdmin .legend-color.light-grey {
+	border-color: #C6C6C6;
+	background-color: #C6C6C6;
+}
 .groupAdmin .view-switcher .btn-icon {
 	vertical-align: bottom;
 }

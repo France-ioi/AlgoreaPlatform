@@ -1,11 +1,13 @@
-<form ng-if="group && group.sType != 'UserSelf'">
+<form ng-if="group && group.sType != 'UserSelf'" class="form-horizontal">
 <!--   {{group.ID}} -->
-   <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
-   <div class="col-xs-8">
-     <span ng-if="group && (group.sType == 'UserSelf' || group.sType == 'UserAdmin')">{{models.groups.fields.sType.values[group.sType].label}}</span>
-     <select ng-if="group && group.sType != 'UserSelf' && group.sType != 'UserAdmin'" ng-model="group.sType" class="form-control">
-       <option ng-value="key" ng-repeat="(key, value) in models.groups.fields.sType.values" ng-selected="group.sType == key" ng-if="key != 'Root' && key != 'RootAdmin' && key != 'UserSelf' && key != 'UserAdmin'">{{value.label}}</option>
-     </select>
+   <div class="form-group">
+      <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
+      <div class="col-xs-8">
+        <span ng-if="group && (group.sType == 'UserSelf' || group.sType == 'UserAdmin')">{{models.groups.fields.sType.values[group.sType].label}}</span>
+        <select ng-if="group && group.sType != 'UserSelf' && group.sType != 'UserAdmin'" ng-model="group.sType" class="form-control">
+          <option ng-value="key" ng-repeat="(key, value) in models.groups.fields.sType.values" ng-selected="group.sType == key" ng-if="key != 'Root' && key != 'RootAdmin' && key != 'UserSelf' && key != 'UserAdmin'">{{value.label}}</option>
+        </select>
+      </div>
    </div>
    <field model="group" field="groups.sName" />
    <field model="group" field="groups.sDescription" />

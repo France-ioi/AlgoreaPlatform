@@ -238,27 +238,15 @@ angular.module('algorea')
       },
       closeMenu: function() {
          $scope.layout.menuOpen = false;
-         if ($(window).width() < 1100) {
-            if ($('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
-         } else {
-            if (!$('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
-         }
+          if (!$('#headerContainer').hasClass('menu-toggled')) {
+             $scope.layout.toggleMenu();
+          }
          $scope.layout.syncBreadcrumbs();
       },
       openMenu: function() {
          $scope.layout.menuOpen = true;
-         if ($(window).width() < 1100) {
-            if (!$('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
-         } else {
-            if ($('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.toggleMenu();
-            }
+         if ($('#headerContainer').hasClass('menu-toggled')) {
+           $scope.layout.toggleMenu();
          }
          $scope.layout.syncBreadcrumbs();
       },
@@ -276,7 +264,7 @@ angular.module('algorea')
       },
       closeLeft: function() {
          $scope.layout.leftOpen = false;
-         if ($(window).width() < 1100) {
+         if ($(window).width() < 1130) {
             if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
                $scope.layout.toggleLeft();
             }
@@ -338,7 +326,7 @@ angular.module('algorea')
             $scope.layout.closeLeft();
             return;
          }
-         if ($(window).width() < 1100) {
+         if ($(window).width() < 1130) {
             if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
                $scope.layout.leftOpen = true;
                $scope.layout.toggleLeft();
@@ -387,7 +375,7 @@ angular.module('algorea')
          }
          $scope.layout.closeLeft();
          $scope.layout.closeRight();
-       } else if ($(window).width() > 1100) {
+       } else if ($(window).width() > 1130) {
          $scope.layout.leftOpen = false;
          $scope.layout.rightOpen = false;
          $scope.layout.menuOpen = false;

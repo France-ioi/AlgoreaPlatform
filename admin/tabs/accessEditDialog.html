@@ -4,8 +4,8 @@
       <span ng-i18next="groupAdmin_access_in_item"></span> <b>{{ item_item.parent.strings[0].sTitle }}</b>
    </div>
    <div class="modal-body">
-      <field model="item_item.child" field="items.sPreparationState" readonly="1" />
-      <form>
+      <form class="container-fluid">
+         <field model="item_item.child" field="items.sPreparationState" readonly="1" />
          <field model="item_item" field="items_items.bAccessRestricted" />
          <field model="item_item" field="items_items.bAlwaysVisible" />
       </form>

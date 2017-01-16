@@ -191,14 +191,16 @@ angular.module('algorea')
       }
       var scopeViews = [];
       var scopeViewsIndex = [];
+      $scope.askedView = $scope.currentView;
       angular.forEach(platformViews, function(platformView, platformViewName) {
-         if ($scope.isActive(platformViewName)) {
+         if (!$scope.currentView && $scope.isActive(platformViewName)) {
             $scope.askedView = platformViewName;
          }
          scopeViewsIndex[platformViewName] = scopeViews.push({
             string:    platformView.tabString,
             name:      platformViewName,
             id:        $scope.taskName+'-'+platformViewName,
+            active:    platformViewName == $scope.askedView,
             disabled:  $scope.isDisabled(platformViewName),
             taskViews: platformView.taskViews,
          });
@@ -208,6 +210,7 @@ angular.module('algorea')
       if (!$scope.askedView) {
          $scope.askedView = 'task';
       }
+      $scope.views[$scope.viewsIndex[$scope.askedView] -1].active = true;
       $scope.showView($scope.askedView);
    };
    $scope.isActive = function(view) {

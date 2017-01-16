@@ -8,7 +8,7 @@
    <span ng-if="itemType == 'Section'">folder</span>
 </div>
 <div class="main-titlebar-titles main-titlebar-logo" ng-click='gotoIndex();'></div>
-<div class="main-titlebar-titles main-titlebar-item"><span class="main-titlebar-title1">{{strings.sTitle}}</span><span class="contest-timer" contest-timer></span><br>{{strings.sSubtitle}}</div>
+<div class="main-titlebar-titles main-titlebar-item"><span class="main-titlebar-title1">{{strings.sTitle}}</span><span class="menubar-userinfos" ng-if="showUserInfos">{{userInfos}}</span><span class="contest-timer" contest-timer></span><br>{{strings.sSubtitle}}</div>
 <div ng-if="leftLink" id="leftLink" class="link-arrow main-left-arrow" ng-click="goLeftLink()"><span class="arrow-link-icon-left arrow-link-icon material-icons">forward</span></div>
 <div ng-if="rightLink" id="rightLink" class="link-arrow main-right-arrow" ng-click="goRightLink()"><span class="material-icons arrow-link-icon arrow-link-icon-right">forward</span></div>
 <div ng-if="hasMap" class="link-map" ng-click="layout.openMap();"></div>

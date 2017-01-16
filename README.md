@@ -1,5 +1,9 @@
 # AlgoreaPlatform
 
+## Documentation
+
+A [developer documentation](https://docs.google.com/document/d/1QV9RhYjtPfiTLJAOBRYtBtrOeUSclCKGjvtvJmVEdX0/edit?usp=sharing) of the architecture of this platform is available.
+
 ## Dependencies
 
 The Algorea Platform depends on:

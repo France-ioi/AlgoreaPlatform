@@ -93,6 +93,8 @@ angular.module('algorea')
          Validation: "Validation",
          Application: "Application"
       };
+      $scope.longCategoryNames = models.items_items.fields.sCategory.values;
+      $scope.longValidationTypesNames = models.items.fields.sValidationType.values;
       $scope.smallCategoryNames = { // TODO : should not be needed anymore
          Undefined: "I",
          Challenge: "Ch",
@@ -112,7 +114,10 @@ angular.module('algorea')
       $scope.test = function() {
          alert('test');
       };
-
+      $scope.selectedView = 'itemsEditable';
+      $scope.selectView = function(view) {
+         $scope.selectedView = view;
+      };
       $scope.itemIsExpanded = true;
       $scope.toggleItemExpanded = function() {
          this.itemIsExpanded = !this.itemIsExpanded;
@@ -655,7 +660,6 @@ angular.module('algorea')
             parentFieldName: "parent",
             childFieldName: "child",
             displayUnused: false,
-            staticData: true,
             isObjectRoot: function(object) {
                return (object.sType == "Root");
             },
@@ -744,10 +748,10 @@ angular.module('algorea')
       SyncQueue.requestSets = [
          {name: "groupsAncestors"},
          {name: "groupsDescendants"},
-         {name: "groupsDescendantsAncestors"},
-         {name: "groupsGroupsDescendantsAncestors"},
+         //{name: "groupsDescendantsAncestors"},
+         //{name: "groupsGroupsDescendantsAncestors"},
          {name: "groupsGroupsAncestors"},
-         {name: "groupsItemsDescendantsAncestors"},
+         //{name: "groupsItemsDescendantsAncestors"},
          {name: "groupsItemsAncestors"},
          //{name: "itemsOrphaned"},
          //{name: "itemsStringsOrphaned"},

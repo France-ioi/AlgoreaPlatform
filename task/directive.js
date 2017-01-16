@@ -43,10 +43,13 @@ angular.module('algorea')
          scope.taskLoaded = true;
          return;
       }
+      var currentId = scope.currentId;
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
+         if(scope.currentId != currentId) { return; }
          scope.task = task;
          configureTask(scope, elem, sameUrl);
       }, !sameUrl, function() {
+         if(scope.currentId != currentId) { return; }
          scope.taskLoaded = true;
          scope.loadingError = $i18next.t('task_communicate_error');
       });
@@ -55,7 +58,11 @@ angular.module('algorea')
       scope.loadedUserItemID = scope.user_item.ID;
       scope.task.unloaded = false;
       // not sure the following line is still necessary
-      TaskProxyManager.getGraderProxy(scope.taskName, function(grader) {scope.grader = grader;});
+      var currentId = scope.currentId;
+      TaskProxyManager.getGraderProxy(scope.taskName, function(grader) {
+         if(scope.currentId != currentId) { return; }
+         scope.grader = grader;
+      });
       scope.platform = new Platform(scope.task);
       TaskProxyManager.setPlatform(scope.task, scope.platform);
       scope.platform.showView = function(view, success, error) {
@@ -207,8 +214,10 @@ angular.module('algorea')
       };
       var views = {'task': true, 'solution': true, 'editor': true, 'hints': true, 'grader': true,'metadata':true};
       scope.taskLoaded = true;
+      var currentId = scope.currentId;
       scope.task.load(views, function() {
          //scope.taskLoaded = true;
+         if(scope.currentId != currentId) { return; }
          scope.task.getMetaData(function(metaData) {
             scope.metaData = metaData;
             if (metaData.minWidth) {
@@ -230,6 +239,7 @@ angular.module('algorea')
             scope.setTabs(views);
          });
       }, function() {
+         if(scope.currentId != currentId) { return; }
          scope.loadingError = $i18next.t('task_load_error');
       });
     }
@@ -248,6 +258,8 @@ angular.module('algorea')
          scope.taskIframe = elem;
          function initTask(sameUrl) {
             scope.currentView = null;
+            // ID of the current instance, allows to avoid callbacks from old tasks
+            scope.currentId = Math.random() * 1000000000;
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
                   var itemUrl = scope.item.sUrl;

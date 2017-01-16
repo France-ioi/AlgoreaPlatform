@@ -167,7 +167,7 @@ var models = {
          iValidationMin: {type: "int", label: "Minimum de fils à valider"},
          sPreparationState: {
             type: "enum",
-            widget: "radio",
+            widget: "radio-buttons",
             values: {
                NotReady: {label: "<span class='PreparationNotReady'>Pas encore prêt</span>"},
                Reviewing: {label: "<span class='PreparationReviewing'>À vérifier</span>"},
@@ -182,6 +182,7 @@ var models = {
          sAccessOpenDate: {type: "jsdate", label: "Date d'ouverture de l'accès"},
          sDuration: {type: "string", label: "Durée de l'épreuve"},
          sEndContestDate: {type: "jsdate", label: "Date de fermeture du concours"},
+         bShowUserInfos: {type: "boolean", label: "Afficher les infos utilisateur dans les barres de titre des descendants"},
          sContestPhase: {
             type: "enum",
             values: {
@@ -223,7 +224,7 @@ var models = {
             type: "enum",
             widget: "radio",
             values: {
-               Undefined: {label: "<span class='CategoryUndefined'>Indéfini</span> : cas où parent ne gère pas la validation par catégorie"},
+               Undefined: {label: "<span class='CategoryUndefined'>Indéfini</span> : cas où le parent ne gère pas la validation par catégorie"},
                Course: {label: "<span class='CategoryCourse'>Cours</span> : simple cours, pas de résolution"},
                Discovery: {label: "<span class='CategoryDiscovery'>Découverte</span> : permet de découvrir une nouvelle notion"},
                Application: {label: "<span class='CategoryApplication'>Application</span> : permet de mettre en application une notion"},
@@ -234,11 +235,11 @@ var models = {
             defaultValue : 'Undefined'
          },
          bAccessRestricted: {
-            type: "iny",
+            type: "int",
             widget: "radio",
             values: {
-               0: {label: "<a href='#' class='btn btn-mini btn-success'><i class='material-icons'>lock_open</i></a> Accessible directement si un parent est accessible"},
-               1: {label: "<a href='#' class='btn btn-mini btn-danger'><i class='material-icons'>lock</i></a> Déblocable par un entraîneur ou par la validation d'autres contenus"}
+               0: {label: "<span class='btn btn-mini btn-success'><i class='material-icons'>lock_open</i></span> Accessible directement si un parent est accessible"},
+               1: {label: "<span class='btn btn-mini btn-danger'><i class='material-icons'>lock</i></span> Déblocable par un entraîneur ou par la validation d'autres contenus"}
             },
             label: "Mode d'accès",
             defaultValue: 1
@@ -247,8 +248,8 @@ var models = {
             type: "int",
             widget: "radio",
             values: {
-               0: {label: "<a href='#' class='btn btn-mini btn-danger'><i class='material-icons'>visibility_off</i></a> Caché si inaccessible"},
-               1: {label: "<a href='#' class='btn btn-mini btn-success'><i class='material-icons'>visibility</i></a> Visible en grisé si inaccessible"}
+               0: {label: "<span class='btn btn-mini btn-danger'><i class='material-icons'>visibility_off</i></span> Caché si inaccessible"},
+               1: {label: "<span class='btn btn-mini btn-success'><i class='material-icons'>visibility</i></span> Visible en grisé si inaccessible"}
             },
             label: "Visibilité",
             defaultValue: 1

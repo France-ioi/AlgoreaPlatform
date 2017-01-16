@@ -1,12 +1,14 @@
-<div><p ng-hide="group_item.bCachedManagerAccess || group_item.bOwnerAccess"><strong ng-i18next="admin_warning"></strong> <span ng-i18next="admin_warning_readonly"></span></p></div>
-<form>
-  <!- {{items.ID}} -->
-   <label class="control-label col-xs-4">Type :</label>
-   <div class="col-xs-8">
-     <span ng-if="item && item.sType == 'Root'">{{models.items.fields.sType.values[item.sType].label}}</span>
-     <select ng-if="item && item.sType != 'Root'" ng-model="item.sType" class="form-control">
-       <option ng-value="key" ng-repeat="(key, value) in models.items.fields.sType.values" ng-selected="item.sType == key" ng-if="key != 'Root'">{{value.label}}</option>
-     </select>
+<p ng-hide="group_item.bCachedManagerAccess || group_item.bOwnerAccess"><strong ng-i18next="admin_warning"></strong> <span ng-i18next="admin_warning_readonly"></span></p>
+<form class="form-horizontal">
+  <!-- {{items.ID}} -->
+  <div class="form-group">
+    <label class="control-label col-xs-4">Type :</label>
+    <div class="col-xs-8">
+      <span ng-if="item && item.sType == 'Root'">{{models.items.fields.sType.values[item.sType].label}}</span>
+      <select ng-if="item && item.sType != 'Root'" ng-model="item.sType" class="form-control">
+        <option ng-value="key" ng-repeat="(key, value) in models.items.fields.sType.values" ng-selected="item.sType == key" ng-if="key != 'Root'">{{value.label}}</option>
+      </select>
+    </div>
    </div>
    <field model="item" field="items.sUrl" />
    <field model="item" field="items.bUsesAPI" />

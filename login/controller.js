@@ -49,20 +49,5 @@ angular.module('algorea')
          }
       };
       loginService.init();
-      $scope.openLoginPopup = function() {
-         var additionalArgs = '';
-         if (config.domains.current.additionalLoginArgs) {
-           additionalArgs = '&'+config.domains.current.additionalLoginArgs; 
-         } 
-         if ($scope.loggedIn && !$scope.tempUser) {
-            additionalArgs += '&autoLogout=1';
-         }
-         additionalArgs += '&fallbackReturnUrl='+encodeURIComponent(config.domains.current.baseUrl+'login/loginModule-fallback.php');
-         var popup = window.open($scope.loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
-         if (!$scope.loggedIn || $scope.tempUser) {
-            loginService.connectToPopup(popup);
-         } else {
-            loginService.onLogout();
-         }
-      };
+      $scope.openLoginPopup = loginService.openLoginPopup;
 }]);

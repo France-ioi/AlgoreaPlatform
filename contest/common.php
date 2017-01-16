@@ -106,17 +106,19 @@ function checkContestSubmissionRight($idItem) {
     JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items.ID
     WHERE (items_ancestors.idItemChild = :idItem or items.ID = :idItem) and items.sDuration is not null AND (`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) group by items.ID;');
     $stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
-    $contestItem = $stmt->fetch();
-    if (!$contestItem || $contestItem['fullAccess']) {
-            return ['submissionPossible' => true];
+    $contestItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!$contestItems || !count($contestItems)) {
+        return ['submissionPossible' => true];
     }
     $contestData = adjustContestAndGetData();
     if (!$contestData) {
-            return ['submissionPossible' => false, 'error' => 'vous ne pouvez pas soumettre de réponse à cet exercice car vous n\'avez pas commencé ou déjà terminé le concours'];
+        return ['submissionPossible' => false, 'error' => 'vous ne pouvez pas soumettre de réponse à cet exercice car vous n\'avez pas commencé ou déjà terminé le concours'];
     }
-    if ($contestData['idItem'] != $contestItem['idItem']) {
-            return ['submissionPossible' => false, 'error' => 'l\'exercice pour lequel vous souhaitez soumettre une réponse fait partie d\'un concours différent que celui en cours'];
+    foreach ($contestItems as $contestItem) {
+    	if ($contestItem['bFullAccess'] || $contestData['idItem'] == $contestItem['idItem']) {
+    		return ['submissionPossible' => true];
+    	}
     }
-    return ['submissionPossible' => true];
+    return ['submissionPossible' => false, 'error' => 'l\'exercice pour lequel vous souhaitez soumettre une réponse fait partie d\'un concours différent que celui en cours'];
 }
 
