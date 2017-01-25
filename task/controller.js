@@ -49,21 +49,13 @@ angular.module('algorea')
       $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
       var state = $scope.user_item.sState;
       if (!state) {state = '';} // default state is the empty string
-      if ($scope.user_answer) {
-         $scope.task.reloadAnswer($scope.user_answer.sAnswer, function() {
-            if ($scope.loadedUserItemID != $scope.user_item.ID) return;
-            if ($scope.taskName != 'task-answer') {
-               $scope.task.reloadState(state, $scope.sync);
-            } else {
-               $scope.sync();
-            }
+      var answer = $scope.user_answer ? $scope.user_answer.sAnswer : '';
+      if ($scope.loadedUserItemID == $scope.user_item.ID && $scope.taskName != 'task-answer') {
+         $scope.task.reloadState(state, function () {
+             $scope.task.reloadAnswer(answer, $scope.sync);
          });
       } else {
-         if ($scope.taskName != 'task-answer') {
-            $scope.task.reloadState(state, $scope.sync);
-         } else {
-            $scope.sync();
-         }
+         $scope.task.reloadAnswer(answer, $scope.sync);
       }
    };
    $scope.intervals = {};
