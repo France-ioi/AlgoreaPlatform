@@ -28,11 +28,9 @@ body {
    display:-webkit-flex;
    -webkit-flex-direction:row;
    -webkit-flex-wrap:wrap;
-   -webkit-justify-content:space-around;
    display:flex;
    flex-direction:row;
    flex-wrap:wrap;
-   justify-content:space-around;
 }
 
 .first-task {
@@ -46,7 +44,7 @@ body {
 }
 
 .task-tabs {
-   width:800px;
+   max-width:800px;
    margin:auto;
 }
 
@@ -97,8 +95,8 @@ body {
 }
 
 .main-titlebar-titles {
-   -webkit-flex: 1 0 auto;
-   flex: 1 0 auto;
+   -webkit-flex: 1 1 auto;
+   flex: 1 1 auto;
    font-size:20pt;
    padding-left:10px;
    padding-top:5px;
