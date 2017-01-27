@@ -65,6 +65,9 @@
                   </table>
                </div>
             </div>
+            <div ng-if="groupsLoading">
+              <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="groupRequests_loading"></strong></p></center>
+            </div>
             <div class="">
                <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_join"></h2>
                <div ng-if="!loading">

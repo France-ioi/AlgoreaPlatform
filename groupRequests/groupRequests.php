@@ -19,7 +19,10 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
    exit();
 }
 
+function syncDebug () {};
+
 require_once __DIR__."/../shared/connect.php";
+require_once __DIR__."/../shared/listeners.php";
 require_once __DIR__."/../commonFramework/modelsManager/modelsTools.inc.php"; // for getRandomID
 
 function getGroupsMathing($request, $db) {
@@ -88,6 +91,8 @@ function joinGroup($request, $db) {
    $values = array('ID' => $groupGroupID, 'idGroup' => $result['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'version' => $version, 'groupGroupType' => $groupGroupType);
    $stmt = $db->prepare($query);
    $stmt->execute($values);
+   unset($stmt);
+   Listeners::groupsGroupsAfter($db);
    $returnedObject = array('success' => true, 'type' => $groupGroupType, 'ID' => $groupGroupID, 'groupName' => $result['sName']);
    echo json_encode($returnedObject);
 }

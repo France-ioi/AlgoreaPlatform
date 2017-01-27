@@ -275,6 +275,7 @@ angular.module('algorea')
             });
             return children;
          },
+         getIdsToSync: getIdsToSync,
          getItemIdByTextId: function(sTextId) {
             return ModelsManager.indexes.sTextId[sTextId];
          },

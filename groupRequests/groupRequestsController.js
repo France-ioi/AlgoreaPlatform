@@ -5,6 +5,7 @@ angular.module('algorea')
    $scope.layout.isOnePage(true);
    $scope.layout.hasMap('never');
    $scope.loading = true;
+   $scope.groupsLoading = false;
    $scope.loginLoading = true;
    $scope.results = null;
    $scope.pageData = {lookupString: ''}; // prototypal inheritance
@@ -38,6 +39,26 @@ angular.module('algorea')
    $scope.updateGroups = function() {
       $scope.myGroupParents = $scope.getMyGroupParents();
       $scope.myUnreadGroupParents = $scope.getMyUnreadGroupParents();
+   }
+
+   $scope.fullResetSync = function() {
+      // TODO; this is a temporary solution until the sync system is redone
+      // fixes item access not updating properly after joining/leaving a group
+      // by doing a full resync...
+      SyncQueue.resetSync = true;
+      SyncQueue.sync(function () {
+
+      SyncQueue.sentVersion = 0;
+      ModelsManager.reinit();
+      SyncQueue.init(ModelsManager);
+
+      var otherReq = SyncQueue.requests.algorea;
+      SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: itemService.getIdsToSync(true)};
+      SyncQueue.sync(function () {
+         SyncQueue.requests.algorea = otherReq;
+         $scope.groupsLoading = false;
+         });
+      });
    }
 
    $scope.getMyGroupParents = function() {
@@ -106,10 +127,12 @@ angular.module('algorea')
       return false;
    };
    $scope.leaveGroup = function(group_group) {
+      $scope.groupsLoading = true;
       group_group.sType = 'left';
       group_group.sStatusDate = new Date();
       ModelsManager.updated('groups_groups', group_group.ID);
       $scope.updateResults(group_group);
+      $scope.fullResetSync();
    };
    $scope.groupGroups = ModelsManager.curData['groups_groups'];
    $scope.toggleExpanded = function() {
@@ -147,6 +170,7 @@ angular.module('algorea')
    };
 
    $scope.joinGroup = function(result) {
+      $scope.groupsLoading = true;
       result.joinLog = "chargement...";
       $scope.passwordInfo = null;
       $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
@@ -158,6 +182,7 @@ angular.module('algorea')
             } else {
                result.joinLog = error;
             }
+            $scope.groupsLoading = false;
          } else {
             if (result.password) {
                $scope.passwordInfo = $i18next.t('groupRequests_join_success')+postRes.groupName;
@@ -167,13 +192,14 @@ angular.module('algorea')
             if (record) {
                record.sType = postRes.type;
                result.joinLog = null;
-            } else {
-               SyncQueue.planToSend(0);
             }
+
+            $scope.fullResetSync();
          }
       })
       .error(function() {
          console.error("error calling groupRequests.php");
+         $scope.groupsLoading = false;
       });
    };
 
