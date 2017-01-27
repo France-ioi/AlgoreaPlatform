@@ -321,12 +321,12 @@ angular.module('algorea')
             }
          }
       },
-      openLeft: function() {
-         if ($scope.layout.leftOpen) {
+      openLeft: function(force) {
+         if (!force && $scope.layout.leftOpen) {
             $scope.layout.closeLeft();
             return;
          }
-         if ($(window).width() < 1130) {
+         if ($(window).width() >= 700 && $(window).width < 1130) {
             if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
                $scope.layout.leftOpen = true;
                $scope.layout.toggleLeft();
@@ -442,8 +442,25 @@ angular.module('algorea')
          $scope.layout.separateEditorOK = false;
        }
     };
+
+    var lastWindowWidth = $(window).width();
+    $scope.layout.onResize = function () {
+       // reset the opened/closed status of the left sidebar depending on the
+       // new window width
+       var newWindowWidth = $(window).width();
+       if(newWindowWidth < 700) {
+          $scope.layout.openLeft(true);
+       } else if(newWindowWidth < 1130 && lastWindowWidth >= 1130) {
+          $scope.layout.closeLeft();
+       } else if(newWindowWidth >= 1130 && lastWindowWidth < 1130) {
+          $scope.layout.openLeft(true);
+       }
+       lastWindowWidth = newWindowWidth;
+
+       $scope.layout.refreshSizes();
+    }
     // resizing on window resizing (tamed)
-    $window.onresize = debounce($scope.layout.refreshSizes, 200, false);
+    $window.onresize = debounce($scope.layout.onResize, 100, false);
     // function to be called at sync end by the service (it's alive. It's alive...)
     $rootScope.refreshSizes = $scope.layout.refreshSizes;
     // resizing on state change
