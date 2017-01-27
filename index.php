@@ -9,6 +9,7 @@
     <script type="text/javascript">
       <?php
         require_once "config.php";
+
         $assetsBaseUrl = '';
         $urlArgs = '';
         $compiledMode = false;
@@ -16,6 +17,8 @@
         $animationHtmlFile = null;
         $useMap = false;
         $usesForum = false;
+        $footerHtmlFile = "templatesPrefix+'footer.html'";
+
         $domainConfig = $config->shared->domains['current'];
         if (property_exists($domainConfig, 'compiledMode')) {
           $compiledMode = $domainConfig->compiledMode;
@@ -37,6 +40,9 @@
         }
         if (property_exists($domainConfig, 'usesForum')) {
           $usesForum = $domainConfig->usesForum;
+        }
+        if (property_exists($domainConfig, 'footerHtmlFile')) {
+          $footerHtmlFile = "'".$domainConfig->footerHtmlFile."'";
         }
         function includeFile($url) {
           global $assetsBaseUrl, $urlArgs;
@@ -107,7 +113,7 @@
 
 </div>
 
-<footer id="footer" ng-include="templatesPrefix+'footer.html'"></footer>
+<footer id="footer" ng-include="<?= $footerHtmlFile ?>"></footer>
 
 <?php if ($useMap): ?>
   <div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>
