@@ -252,7 +252,7 @@ var models = {
                1: {label: "<span class='btn btn-mini btn-success'><i class='material-icons'>visibility</i></span> Visible en grisé si inaccessible"}
             },
             label: "Visibilité",
-            defaultValue: 1
+            defaultValue: 0
          },
          iDifficulty: {type: "int", label: "Difficulté", defaultValue: 0}
       }
