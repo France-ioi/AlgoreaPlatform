@@ -25,12 +25,14 @@ git clone thisurl
 git submodule update --init
 bower install
 composer install
-cp config_local_template.php config_local.php
+cp -p config_local_template.php config_local.php
 ```
 
-then fill `config_local_template.php` with your configuration, including database and item IDs (you can choose them arbitrarily).
+then fill `config_local.php` with your configuration, including database and item IDs (you can choose them arbitrarily).
 
-To fill the database, visit `dbv/index.php` using the database login/password and follow the described steps. You must then run
+To install the database, check the last version in the `schema` folder, and from it, execute `full_schema.sql` and then each revision in order. (Check `schema/README.md` for more information.)
+
+You must then run
 
 ```
 php commonFramework/modelsManager/triggers.php
