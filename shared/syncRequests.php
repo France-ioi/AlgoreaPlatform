@@ -22,7 +22,7 @@ function checkExpandedItemResults(&$serverChanges) {
       if ($tables_to_check[$modelName]) {
          $deleted_records = array();
          foreach ($modelServerChanges["deleted"] as $recordID => $value) {
-            if (property_exists($value['data'], 'requestName') && $value['data']->requestName == $modelName) {
+            if ($value['data'] != [] && property_exists($value['data'], 'requestName') && $value['data']->requestName == $modelName) {
                if (isset($modelServerChanges["inserted"][$recordID]) && 
                      property_exists($modelServerChanges["inserted"][$recordID]['data'], 'requestName') &&
                      $modelServerChanges["inserted"][$recordID]['data']->requestName == $modelName.'_zero') {
