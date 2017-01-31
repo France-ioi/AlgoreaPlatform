@@ -19,11 +19,10 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
    exit();
 }
 
-function syncDebug () {};
-
 require_once __DIR__."/../shared/connect.php";
 require_once __DIR__."/../shared/listeners.php";
 require_once __DIR__."/../commonFramework/modelsManager/modelsTools.inc.php"; // for getRandomID
+require_once __DIR__."/../commonFramework/sync/syncCommon.php"; // for syncGetVersion
 
 function getGroupsMathing($request, $db) {
    if (!isset($request['lookupString']) || !$request['lookupString']) {
@@ -84,9 +83,7 @@ function joinGroup($request, $db) {
    if (!$groupGroupID) {
       $groupGroupID = getRandomID();
    }
-   $query = "SELECT iVersion FROM `synchro_version`";
-   $stmt = $db->query($query);
-   $version = $stmt->fetchColumn();
+   $version = syncGetVersion($db);
    $query = "lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0); insert into `groups_groups` (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion) values (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, :groupGroupType, NOW(), :version) on duplicate key update sType=VALUES(sType), sStatusDate=VALUES(sStatusDate); unlock tables;";
    $values = array('ID' => $groupGroupID, 'idGroup' => $result['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'version' => $version, 'groupGroupType' => $groupGroupType);
    $stmt = $db->prepare($query);

@@ -47,16 +47,15 @@ angular.module('algorea')
       // by doing a full resync...
       SyncQueue.resetSync = true;
       SyncQueue.sync(function () {
+         SyncQueue.sentVersion = 0;
+         ModelsManager.reinit();
+         SyncQueue.init(ModelsManager);
 
-      SyncQueue.sentVersion = 0;
-      ModelsManager.reinit();
-      SyncQueue.init(ModelsManager);
-
-      var otherReq = SyncQueue.requests.algorea;
-      SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: itemService.getIdsToSync(true)};
-      SyncQueue.sync(function () {
-         SyncQueue.requests.algorea = otherReq;
-         $scope.groupsLoading = false;
+         var otherReq = SyncQueue.requests.algorea;
+         SyncQueue.requests.algorea = {type: 'getItemsFromAncestors', ancestors: itemService.getIdsToSync(true)};
+         SyncQueue.sync(function () {
+            SyncQueue.requests.algorea = otherReq;
+            $scope.groupsLoading = false;
          });
       });
    }
