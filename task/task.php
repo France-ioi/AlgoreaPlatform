@@ -251,8 +251,9 @@ function getToken($request, $db) {
    $stmt->execute(array('idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']));
    $answers = $sth->fetchAll();
 
+   $bAccessSolutions = ($data['bAccessSolutions'] != '0' || $data['bValidated'] != '0') ? 1 : 0;
    $tokenArgs = array(
-      'bAccessSolutions' => $data['bAccessSolutions'],
+      'bAccessSolutions' => $bAccessSolutions,
       'bSubmissionPossible' => true,
       'bHintsAllowed' => $data['bHintsAllowed'],
       'nbHintsGiven' => $data['nbHintsCached'],
@@ -264,7 +265,6 @@ function getToken($request, $db) {
       'idItem' => $data['sTextId'],
       'itemUrl' => $data['sUrl'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],
-      'bHasSolvedTask' => $data['bValidated'],
    );
    $tokenArgs['id'+$data['sType']] = $tokenArgs['idItem']; // TODO: should disapear
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);

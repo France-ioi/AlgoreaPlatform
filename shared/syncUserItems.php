@@ -96,11 +96,13 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       $params['idUser'] = $userItem['data']->idUser;
       $params['nbHintsGiven'] = $userItem['data']->nbHintsCached;
       $params['bHintPossible'] = true;
-      $params['bHasSolvedTask'] = $userItem['data']->bValidated;
       // platform needs idTask:
       $params['id'.$item['data']->sType] = $params['idItem'];
-      $params['bHasAccessCorrection'] = $item['data']->bAccessSolutions;
       $params['bReadAnswers'] = true;
+
+      $bAccessSolutions = ($userItem['data']->bAccessSolutions != '0' || $userItem['data']->bValidated != '0') ? '1': '0';
+      $params['bAccessSolutions'] = $bAccessSolutions;
+
       $token = $tokenGenerator->encodeJWS($params);
       $userItem['data']->sToken = $token;
    } else {
