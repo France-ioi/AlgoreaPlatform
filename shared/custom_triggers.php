@@ -95,6 +95,11 @@ function addCustomTriggers(&$triggers) {
    //$triggers["groups_items"]["BEFORE UPDATE"][] = $queryResetCachedFullAccess;
    //$queryResetCachedPartialAccess = "IF NOT (NEW.`sPartialAccessDate` <=> OLD.`sPartialAccessDate`) THEN SET NEW.`bCachedPartialAccess` = 0; END IF";
    //$triggers["groups_items"]["BEFORE UPDATE"][] = $queryResetCachedPartialAccess;
+
+   // Automatically set platform
+   $querySetPlatform = "SELECT platforms.ID INTO @platformID FROM platforms WHERE NEW.sUrl REGEXP platforms.sRegexp ORDER BY platforms.iPriority DESC LIMIT 1 ; SET NEW.idPlatform=@platformID ";
+   $triggers["items"]["BEFORE INSERT"][] = $querySetPlatform;
+   $triggers["items"]["BEFORE UPDATE"][] = $querySetPlatform;
 }
 
 ?>
