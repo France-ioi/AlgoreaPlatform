@@ -21,7 +21,7 @@ angular.module('algorea')
    $scope.filterInfos = {filters: {}, currentFilter: null};
    // global filters are on the left
    $scope.globalFilters = {
-      all: {filter: null, description: 'Tous'},
+      all: {filter: null, description: 'Toutes'},
       favorites: {filter: {bStarred: true}, description: $i18next.t('forum_favorites')},
       unread: {filter: {bUnread: true}, description: $i18next.t('forum_unread')},
       participated: {filter: {bParticipated: true}, description: $i18next.t('forum_participated')}

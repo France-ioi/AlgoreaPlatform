@@ -125,13 +125,19 @@
 
 /* FILTERS */
 
-.filterContainer {
+.advancedFilters {
    margin: 10px;
-   padding: 10px;
    border: 1px solid #E1E1E8;
-   border-left-width: 8px;
    border-radius: 4px;
-   background-color: #F7F7F9;
+   box-shadow: none;
+   font-size: 16px;
+}
+.advancedFilters .panel-heading {
+   font-weight: bold;
+   background-color: #e8e8e8;
+}
+.advancedFilters .panel-heading i {
+   font-size: 12px;
 }
 .filterFormDatePickers {
    display: flex;
@@ -142,7 +148,7 @@
       margin-right: 2em;
    }
 }
-.filterContainer .saveFilter {
+.advancedFilters .saveFilter {
    border: 1px solid #ccc;
    padding: 10px;
    box-shadow: 0 0 6px #ccc;
