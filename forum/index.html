@@ -5,14 +5,8 @@
    <button ng-click="refresh()" class="btn btn-default" ng-if="!refreshing" style="position: absolute;right: 20px; top: 80px; height: 40px;"><i class="material-icons">refresh</i></button>
    <div class="threadsContainer">
       <div class="btn-group-vertical globalFilters">
-         <button type="button" ng-repeat="(globalFilterName,globalFilter) in globalFilters" ng-click="selectGlobalFilter(globalFilter, globalFilterName);" class="btn btn-default globalFilter" ng-class="{globalFilterSelected: globalFilter == currentGlobalFilter}">{{globalFilter.description}}</button>
-         <div class="btn-group" uib-dropdown>
-            <button type="button" class="btn btn-default globalFilter dropdown-toggle" uib-dropdown-toggle>Filtres enregistrés <span class="caret"></span></button>
-            <ul class="dropdown-menu" uib-dropdown-menu>
-               <li ng-repeat="filter in filterInfos.filters track by filter.ID" ng-click="selectFilter(filter);"><a href="">{{filter.sName}}</a></li>
-            </ul>
-         </div>
-         <button type="button" class="btn btn-default globalFilter" ng-click="formValues.showFilters = !formValues.showFilters"><span ng-if="!formValues.showFilters">Afficher les filtres avancés</span><span ng-if="formValues.showFilters">Masquer les filtres avancés</span></button>
+         <button type="button" ng-repeat="(globalFilterName,globalFilter) in globalFilters" ng-click="selectGlobalFilter(globalFilter, globalFilterName);" class="btn btn-default" ng-class="{globalFilterSelected: globalFilter == currentGlobalFilter}">{{globalFilter.description}}</button>
+         <button type="button" class="btn btn-default" ng-repeat="filter in filterInfos.filters track by filter.ID" ng-click="selectFilter(filter);">{{filter.sName}}</button>
       </div>
       <uib-tabset class="tabsContainer">
          <uib-tab select="selectTab('helpOthers')" active="tabs.helpOthers.active" heading="Aider les autres ({{helpOthersThreads.length}})">

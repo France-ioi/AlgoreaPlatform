@@ -112,17 +112,24 @@ angular.module('algorea')
       $scope.filterInfos.currentFilter.idItem = null;
       $scope.filterInfos.currentFilter.sItemTitle = 'Tous';
    }
+   /* TODO
+   Save user custom filter
+   */
    $scope.init = function() {
       $scope.loading = false;
       $scope.filterInfos.filters = ModelsManager.getRecords('filters');
-      if (!$scope.filterInfos.filters || isObjEmpty($scope.filterInfos.filters)) {
+      /* if (!$scope.filterInfos.filters || isObjEmpty($scope.filterInfos.filters)) {
          var filter = ModelsManager.createRecord('filters');
          filter.bSelected = true;
          filter.sName = "Filtre par défaut";
          filter.idUser = SyncQueue.requests.loginData.ID;
          $scope.filterInfos.currentFilter = filter;
          $scope.filterInfos.filters = [filter];
-      } else {
+      } */
+      if (!$scope.filterInfos.filters || isObjEmpty($scope.filterInfos.filters)) {
+         return;
+      }
+       else {
          $scope.filterInfos.currentFilter = getSelectedFilter($scope.filterInfos.filters);
       }
    };
