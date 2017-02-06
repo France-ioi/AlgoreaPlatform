@@ -5,6 +5,8 @@
 $config->db->database = "";
 $config->db->user = "";
 $config->db->password = "";
+// Whether this MySQL server supports fractionnal time (5.6.4+)
+$config->db->fractionalTime = false;
 
 // Local timezone
 $config->shared->timezone = "Europe/Paris";
