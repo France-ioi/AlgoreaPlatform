@@ -166,6 +166,16 @@
    position: relative;
 }
 
+.refresh {
+   height: 40px;
+}
+.refresh i {
+   vertical-align: bottom;
+}
+.refresh img {
+   max-height: 100%;
+   max-width: 100%;
+}
 /* THREAD CONTENT */
 .threadTitle {
    font-size: 36px;
