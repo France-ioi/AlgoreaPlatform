@@ -3,61 +3,61 @@
 var models = {
    filters: {
       fields: {
-         idUser: {type: "int", label: "id de l'utilisateur"},
-         sName: {type: "text", label: "Nom du filtre"},
-         bSelected: {type: "boolean", label: "Sélectionné"},
-         bStarred: {type: "boolean", label: "Dans les favoris"},
-         sStartDate: {type: "jsdate", label: "Date de départ"},
-         sEndDate: {type: "jsdate", label: "Date de fin"},
-         bArchived: {type: "boolean", label: "Inclure les archivés"},
-         bParticipated: {type: "boolean", label: "Ceux auxquels j'ai participé"},
-         bUnread: {type: "boolean", label: "Non-lus"},
-         idItem: {type: "key", label: "Liés à un item ou ses descendants"},
-         idGroup: {type: "key", label: "Liés à un groupe ou ses descendants"},
-         olderThan: {type: "int", label: "Ayant au moins X jours"},
-         newerThan: {type: "int", label: "Ayant moins de X jours"},
-         sUsersSearch: {type: "text", label: "Liés aux utilisateurs dans cette liste"},
-         sBodySearch: {type: "text", label: "Dont le contenu inclut cette chaîne"},
-         bImportant: {type: "boolean", label: "Dont le statut est classé comme important pour moi"}
+         idUser: {type: "int", label: "models_filters_fields_idUser_label"},
+         sName: {type: "text", label: "models_filters_fields_sName_label"},
+         bSelected: {type: "boolean", label: "models_filters_fields_bSelected_label"},
+         bStarred: {type: "boolean", label: "models_filters_fields_bStarred_label"},
+         sStartDate: {type: "jsdate", label: "models_filters_fields_sStartDate_label"},
+         sEndDate: {type: "jsdate", label: "models_filters_fields_sEndDate_label"},
+         bArchived: {type: "boolean", label: "models_filters_fields_bArchived_label"},
+         bParticipated: {type: "boolean", label: "models_filters_fields_bParticipated_label"},
+         bUnread: {type: "boolean", label: "models_filters_fields_bUnread_label"},
+         idItem: {type: "key", label: "models_filters_fields_idItem_label"},
+         idGroup: {type: "key", label: "models_filters_fields_idGroup_label"},
+         olderThan: {type: "int", label: "models_filters_fields_olderThan_label"},
+         newerThan: {type: "int", label: "models_filters_fields_newerThan_label"},
+         sUsersSearch: {type: "text", label: "models_filters_fields_sUsersSearch_label"},
+         sBodySearch: {type: "text", label: "models_filters_fields_sBodySearch_label"},
+         bImportant: {type: "boolean", label: "models_filters_fields_bImportant_label"}
       }
    },
    groups: {
       fields: {
-         sName: {type: "string", label: "Nom"},
-         iGrade: {type: "enum", label: "Niveau", defaultValue: -2, nullInvalid: true,
+         sName: {type: "string", label: "models_groups_fields_sName_label"},
+         iGrade: {type: "enum", label: "models_groups_fields_iGrade_label", defaultValue: -2, nullInvalid: true,
             values: {
-               "-4": {label: "Autre"},
-               "-2": {label: "Indéfini"},
-               "-1": {label: "Professeur", hidden: true},
-               "4": {label: "CM1"},
-               "5": {label: "CM2"},
-               "6": {label: "6ème"},
-               "7": {label: "5ème"},
-               "8": {label: "4ème"},
-               "9": {label: "3ème"},
-               "10": {label: "Seconde"},
-               "13": {label: "Seconde pro."},
-               "11": {label: "Première"},
-               "14": {label: "Première pro."},
-               "12": {label: "Terminale"},
-               "15": {label: "Terminale pro."}
+               "-4": {label: "models_groups_fields_iGrade_values_-4_label"},
+               "-2": {label: "models_groups_fields_iGrade_values_-2_label"},
+               "-1": {label: "models_groups_fields_iGrade_values_-1_label", hidden: true},
+               "4": {label: "models_groups_fields_iGrade_values_4_label"},
+               "5": {label: "models_groups_fields_iGrade_values_5_label"},
+               "6": {label: "models_groups_fields_iGrade_values_6_label"},
+               "7": {label: "models_groups_fields_iGrade_values_7_label"},
+               "8": {label: "models_groups_fields_iGrade_values_8_label"},
+               "9": {label: "models_groups_fields_iGrade_values_9_label"},
+               "10": {label: "models_groups_fields_iGrade_values_10_label"},
+               "13": {label: "models_groups_fields_iGrade_values_13_label"},
+               "11": {label: "models_groups_fields_iGrade_values_11_label"},
+               "14": {label: "models_groups_fields_iGrade_values_14_label"},
+               "12": {label: "models_groups_fields_iGrade_values_12_label"},
+               "15": {label: "models_groups_fields_iGrade_values_15_label"}
             }
          },
-         sGradeDetails: {type: "string", label: "Détail du niveau"},
-         idUser: {type: "key", label: "id de l'utilisateur"},
-         sDescription: {type: "text", label: "Description"},
-         sDateCreated: {type: "jsdate", label: "Date de création"},
-         bOpened: {type: "boolean", label: "Ouvert (les utilisateurs peuvent faire la requête de rejoindre le groupe)", defaultValue: true},
-         bFreeAccess: {type: "boolean", label: "Accès libre (pas de modération des requêtes)"},
-         sPassword: {type: "string", label: "Mot de passe (si vide, pas de mot de passe demandé)", defaultValue: ''},
+         sGradeDetails: {type: "string", label: "models_groups_fields_sGradeDetails_label"},
+         idUser: {type: "key", label: "models_groups_fields_idUser_label"},
+         sDescription: {type: "text", label: "models_groups_fields_sDescription_label"},
+         sDateCreated: {type: "jsdate", label: "models_groups_fields_sDateCreated_label"},
+         bOpened: {type: "boolean", label: "models_groups_fields_bOpened_label", defaultValue: true},
+         bFreeAccess: {type: "boolean", label: "models_groups_fields_bFreeAccess_label"},
+         sPassword: {type: "string", label: "models_groups_fields_sPassword_label", defaultValue: ''},
          sType: {
             type: "enum",
-            values: {Root: {label: "Racine", hidden: true}, Class: {label: "Classe"}, Club: {label: "Club"}, Friends: {label: "Amis"}, Other: {label:"Autre"}, UserSelf: {label:"Utilisateur", hidden: true}, UserAdmin: {label:"Utilisateur (groupes administrés)", hidden: true}, RootAdmin: {label:"Racine groupes administrés", hidden: true}, RootSelf: {label:"Racine groupes utilisateurs", hidden: true}},
-            label: "Type",
+            values: {Root: {label: "models_groups_fields_sType_values_Root_label", hidden: true}, Class: {label: "models_groups_fields_sType_values_Class_label"}, Club: {label: "models_groups_fields_sType_values_Club_label"}, Friends: {label: "models_groups_fields_sType_values_Friends_label"}, Other: {label:"models_groups_fields_sType_values_Other_label"}, UserSelf: {label:"models_groups_fields_sType_values_UserSelf_label", hidden: true}, UserAdmin: {label:"models_groups_fields_sType_values_UserAdmin_label", hidden: true}, RootAdmin: {label:"models_groups_fields_sType_values_RootAdmin_label", hidden: true}, RootSelf: {label:"models_groups_fields_sType_values_RootSelf_label", hidden: true}},
+            label: "models_groups_fields_sType_label",
             defaultValue: "Class",
             nullInvalid: true
          },
-         bSendEmails: {type: "boolean", label: "Envoi d'emails"}
+         bSendEmails: {type: "boolean", label: "models_groups_fields_bSendEmails_label"}
       },
       links: {
          children: {refModel: "groups_groups", key: "idGroupParent", type: "array"}, // array better ?
@@ -70,135 +70,135 @@ var models = {
 
    groups_groups: {
       fields: {
-         idGroupParent: {type: "key", label: "Groupe parent", refModel: "groups", link: "parent", invLink: "children"},
-         idGroupChild: {type: "key", label: "Groupe fils", refModel: "groups", link: "child", invLink: "parents"},
-         iChildOrder: {type: "int", label: "Rang", indexForLinks: [{refModel: "groups", key:"idGroupParent", invLink: "children"}]}, // Add automatically
-         sChildLogin: {type: "string", label: "login de l'utilisateur invité", readOnly: true},
+         idGroupParent: {type: "key", label: "models_groups_groups_fields_idGroupParent_label", refModel: "groups", link: "parent", invLink: "children"},
+         idGroupChild: {type: "key", label: "models_groups_groups_fields_idGroupChild_label", refModel: "groups", link: "child", invLink: "parents"},
+         iChildOrder: {type: "int", label: "models_groups_groups_fields_iChildOrder_label", indexForLinks: [{refModel: "groups", key:"idGroupParent", invLink: "children"}]}, // Add automatically
+         sChildLogin: {type: "string", label: "models_groups_groups_fields_sChildLogin_label", readOnly: true},
          sType: {
             type: 'enum',
             values: {
-               invitationSent: {label: "invitation envoyée"},
-               requestSent: {label: "requête envoyée"},
-               invitationAccepted: {label: "invitation acceptée"},
-               requestAccepted: {label: "requête acceptée"},
-               invitationRefused: {label: "invitation refusée"},
-               requestRefused: {label: "requête refusée"},
-               removed: {label: "renvoyé du groupe"},
-               left: {label: "parti du groupe"},
-               direct: {label: "membre direct"}
+               invitationSent: {label: "models_groups_groups_fields_sType_values_invitationSent_label"},
+               requestSent: {label: "models_groups_groups_fields_sType_values_requestSent_label"},
+               invitationAccepted: {label: "models_groups_groups_fields_sType_values_invitationAccepted_label"},
+               requestAccepted: {label: "models_groups_groups_fields_sType_values_requestAccepted_label"},
+               invitationRefused: {label: "models_groups_groups_fields_sType_values_invitationRefused_label"},
+               requestRefused: {label: "models_groups_groups_fields_sType_values_requestRefused_label"},
+               removed: {label: "models_groups_groups_fields_sType_values_removed_label"},
+               left: {label: "models_groups_groups_fields_sType_values_left_label"},
+               direct: {label: "models_groups_groups_fields_sType_values_direct_label"}
             },
             defaultValue: 'direct',
-            label: "Type",
+            label: "models_groups_groups_fields_sType_label",
             nullInvalid: true
          },
          sRole: {
             type: 'enum',
             values: {
-               owner: {label: "propriétaire", hidden: true},
-               manager: {label: "administrateur"},
-               observer: {label: "observateur"},
-               member: {label: "membre"},
+               owner: {label: "models_groups_groups_fields_sRole_values_owner_label", hidden: true},
+               manager: {label: "models_groups_groups_fields_sRole_values_manager_label"},
+               observer: {label: "models_groups_groups_fields_sRole_values_observer_label"},
+               member: {label: "models_groups_groups_fields_sRole_values_member_label"},
             },
             defaultValue: 'member',
-            label: "Rôle",
+            label: "models_groups_groups_fields_sRole_label",
             nullInvalid: true
          },
-         sStatusDate: {type: "jsdate", label: "date du dernier changement de statut"},
-         idUserInviting: {type: "key", label: "Utilisateur invitant", refModel: "users", link: "userInviting"},
-         sUserInvitingLogin: {type: "string", label: "login de l'invitant", readOnly: true},
+         sStatusDate: {type: "jsdate", label: "models_groups_groups_fields_sStatusDate_label"},
+         idUserInviting: {type: "key", label: "models_groups_groups_fields_idUserInviting_label", refModel: "users", link: "userInviting"},
+         sUserInvitingLogin: {type: "string", label: "models_groups_groups_fields_sUserInvitingLogin_label", readOnly: true},
       }
    },
 
    items: {
       fields: {
-         sUrl: {type: "string", label: "Url"},
-         idPlatform: {type: "int", label: "Plateforme", defaultValue: 0},
-         sTextId: {type: "string", label: "TextID", defaultValue: ''},
+         sUrl: {type: "string", label: "models_items_fields_sUrl_label"},
+         idPlatform: {type: "int", label: "models_items_fields_idPlatform_label", defaultValue: 0},
+         sTextId: {type: "string", label: "models_items_fields_sTextId_label", defaultValue: ''},
          sType: {
             type: "enum",
             values: {
-               Root: {label: "Racine"},
-               Category: {label: "Catégorie"},
-               Level: {label: "Niveau"},
-               GenericChapter: {label: "Chapitre générique"},
-               Chapter: {label: "Chapitre"},
-               StaticChapter: {label: "Chapitre statique"},
-               ContestChapter: {label: "Chapitre de concours"},
-               LimitedTimeChapter: {label: "Chapitre en temps limité"},
-               Section: {label: "Section"},
-               Task: {label: "Sujet"},
-               Course: {label: "Cours"},
-               Presentation: {label: "Présentation"}
+               Root: {label: "models_items_fields_sType_values_Root_label"},
+               Category: {label: "models_items_fields_sType_values_Category_label"},
+               Level: {label: "models_items_fields_sType_values_Level_label"},
+               GenericChapter: {label: "models_items_fields_sType_values_GenericChapter_label"},
+               Chapter: {label: "models_items_fields_sType_values_Chapter_label"},
+               StaticChapter: {label: "models_items_fields_sType_values_StaticChapter_label"},
+               ContestChapter: {label: "models_items_fields_sType_values_ContestChapter_label"},
+               LimitedTimeChapter: {label: "models_items_fields_sType_values_LimitedTimeChapter_label"},
+               Section: {label: "models_items_fields_sType_values_Section_label"},
+               Task: {label: "models_items_fields_sType_values_Task_label"},
+               Course: {label: "models_items_fields_sType_values_Course_label"},
+               Presentation: {label: "models_items_fields_sType_values_Presentation_label"}
             },
-            label: "Type",
+            label: "models_items_fields_sType_label",
             defaultValue: "Chapter",
             nullInvalid: true
          },
-         bUsesAPI: {type: "boolean", label: "Utilise l'API", defaultValue: true},
+         bUsesAPI: {type: "boolean", label: "models_items_fields_bUsesAPI_label", defaultValue: true},
          sFullScreen: {
             type: "enum",
             values: {
-               forceYes: {label: "forcé oui"},
-               forceNo: {label: "forcé non"},
-               default: {label: "suivant le type"}
+               forceYes: {label: "models_items_fields_sFullScreen_values_forceYes_label"},
+               forceNo: {label: "models_items_fields_sFullScreen_values_forceNo_label"},
+               default: {label: "models_items_fields_sFullScreen_values_default_label"}
             },
-            label: "Plein écran",
+            label: "models_items_fields_sFullScreen_label",
             defaultValue: "default",
             nullInvalid: true
          },
-         bShowDifficulty: {type: "boolean", label: "Afficher la difficulté", defaultValue: false},
-         bShowSource: {type: "boolean", label: "Afficher la source", defaultValue: false},
-         bHintsAllowed: {type: "boolean", label: "Autoriser les conseils", defaultValue: false},
+         bShowDifficulty: {type: "boolean", label: "models_items_fields_bShowDifficulty_label", defaultValue: false},
+         bShowSource: {type: "boolean", label: "models_items_fields_bShowSource_label", defaultValue: false},
+         bHintsAllowed: {type: "boolean", label: "models_items_fields_bHintsAllowed_label", defaultValue: false},
          sValidationType: {
             type: "enum",
             widget: "radio",
             values: {
-               None: {label: "Aucune : ses fils contribuent à la validation de son parent."},
-               Categories: {label: "Catégories : valider tous les fils marqués <span class='CategoryValidation'>Validation</span>."},
-               All: {label: "Tous : valider tous ses fils."},
-               AllButOne: {label: "Tous sauf un : valider tous ses fils sauf un."},
-               One: {label: "Au moins un : valider au moins un de ses fils."},
-               Manual: {label: "La validation se fait à la main uniquement."}
+               None: {label: "models_items_fields_sValidationType_values_None_label"},
+               Categories: {label: "models_items_fields_sValidationType_values_Categories_label"},
+               All: {label: "models_items_fields_sValidationType_values_All_label"},
+               AllButOne: {label: "models_items_fields_sValidationType_values_AllButOne_label"},
+               One: {label: "models_items_fields_sValidationType_values_One_label"},
+               Manual: {label: "models_items_fields_sValidationType_values_Manual_label"}
             },
-            label: "Condition pour valider cet item",
+            label: "models_items_fields_sValidationType_label",
             defaultValue : 'All',
             nullInvalid: true
          },
-         iValidationMin: {type: "int", label: "Minimum de fils à valider"},
+         iValidationMin: {type: "int", label: "models_items_fields_iValidationMin_label"},
          sPreparationState: {
             type: "enum",
             widget: "radio-buttons",
             values: {
-               NotReady: {label: "<span class='PreparationNotReady'>Pas encore prêt</span>"},
-               Reviewing: {label: "<span class='PreparationReviewing'>À vérifier</span>"},
-               Ready: {label: "<span class='PreparationReady'>Prêt</span>"}
+               NotReady: {label: "models_items_fields_sPreparationState_values_NotReady_label"},
+               Reviewing: {label: "models_items_fields_sPreparationState_values_Reviewing_label"},
+               Ready: {label: "models_items_fields_sPreparationState_values_Ready_label"}
             },
-            label: "État de la préparation",
+            label: "models_items_fields_sPreparationState_label",
             defaultValue : 'Ready',
             nullInvalid: true
          },
-         idItemUnlocked: {type: "key", label: "Item débloqué", refModel:"items"},
-         sSupportedLangProg: {type: "string", label: "Langages de programmation supportés", defaultValue: '*'},
-         sAccessOpenDate: {type: "jsdate", label: "Date d'ouverture de l'accès"},
-         sDuration: {type: "string", label: "Durée de l'épreuve"},
-         sEndContestDate: {type: "jsdate", label: "Date de fermeture du concours"},
-         bShowUserInfos: {type: "boolean", label: "Afficher les infos utilisateur dans les barres de titre des descendants"},
+         idItemUnlocked: {type: "key", label: "models_items_fields_idItemUnlocked_label", refModel:"items"},
+         sSupportedLangProg: {type: "string", label: "models_items_fields_sSupportedLangProg_label", defaultValue: '*'},
+         sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
+         sDuration: {type: "string", label: "models_items_fields_sDuration_label"},
+         sEndContestDate: {type: "jsdate", label: "models_items_fields_sEndContestDate_label"},
+         bShowUserInfos: {type: "boolean", label: "models_items_fields_bShowUserInfos_label"},
          sContestPhase: {
             type: "enum",
             values: {
-               Running: {label: "En cours"},
-               Analysis: {label: "Mode analyse (accès aux résultats, non finaux)"},
-               Closed: {label: "Concours terminé"}},
-            label: "Phase du concours",
+               Running: {label: "models_items_fields_sContestPhase_values_Running_label"},
+               Analysis: {label: "models_items_fields_sContestPhase_values_Analysis_label"},
+               Closed: {label: "models_items_fields_sContestPhase_values_Closed_label"}},
+            label: "models_items_fields_sContestPhase_label",
             defaultValue: "Running",
             nullInvalid: true
          },
-         iLevel: {type: "int", label: "Niveau sur le site"},
-         bNoScore: {type: "boolean", label: "Ne pas prendre en compte le score", defaultValue: false},
-         bGrayedAccess: {type: "boolean", label: "Grisé", defaultValue: false, readOnly: true},
-         bOwnerAccess: {type: "boolean", label: "Grisé", defaultValue: false, readOnly: true},
-         bManagerAccess: {type: "boolean", label: "Grisé", defaultValue: false, readOnly: true},
-         bAccessSolutions: {type: "boolean", label: "Accès possible aux solutions", defaultValue: false, readOnly: true}
+         iLevel: {type: "int", label: "models_items_fields_iLevel_label"},
+         bNoScore: {type: "boolean", label: "models_items_fields_bNoScore_label", defaultValue: false},
+         bGrayedAccess: {type: "boolean", label: "models_items_fields_bGrayedAccess_label", defaultValue: false, readOnly: true},
+         bOwnerAccess: {type: "boolean", label: "models_items_fields_bOwnerAccess_label", defaultValue: false, readOnly: true},
+         bManagerAccess: {type: "boolean", label: "models_items_fields_bManagerAccess_label", defaultValue: false, readOnly: true},
+         bAccessSolutions: {type: "boolean", label: "models_items_fields_bAccessSolutions_label", defaultValue: false, readOnly: true}
       },
       links: {
          children: {refModel: "items_items", key: "idItemParent", type: "array", orderBy: "iChildOrder"},
@@ -217,65 +217,65 @@ var models = {
 
    items_items: {
       fields: {
-         idItemParent: {type: "key", label: "Parent", refModel: "items", link: "parent", invLink: "children"},
-         idItemChild: {type: "key", label: "Fils", refModel: "items", link: "child", invLink: "parents"},
-         iChildOrder: {type: "int", label: "Rang", indexForLinks: [{refModel: "items", key:"idItemParent", invLink: "children"}]}, // Add automatically
+         idItemParent: {type: "key", label: "models_items_items_fields_idItemParent_label", refModel: "items", link: "parent", invLink: "children"},
+         idItemChild: {type: "key", label: "models_items_items_fields_idItemChild_label", refModel: "items", link: "child", invLink: "parents"},
+         iChildOrder: {type: "int", label: "models_items_items_fields_iChildOrder_label", indexForLinks: [{refModel: "items", key:"idItemParent", invLink: "children"}]}, // Add automatically
          sCategory: {
             type: "enum",
             widget: "radio",
             values: {
-               Undefined: {label: "<span class='CategoryUndefined'>Indéfini</span> : cas où le parent ne gère pas la validation par catégorie"},
-               Course: {label: "<span class='CategoryCourse'>Cours</span> : simple cours, pas de résolution"},
-               Discovery: {label: "<span class='CategoryDiscovery'>Découverte</span> : permet de découvrir une nouvelle notion"},
-               Application: {label: "<span class='CategoryApplication'>Application</span> : permet de mettre en application une notion"},
-               Validation: {label: "<span class='CategoryValidation'>Validation</span> : à résoudre pour valider le parent"},
-               Challenge: {label: "<span class='CategoryChallenge'>Challenge</span> : pour ceux qui aiment les défis"}
+               Undefined: {label: "models_items_items_fields_sCategory_values_Undefined_label"},
+               Course: {label: "models_items_items_fields_sCategory_values_Course_label"},
+               Discovery: {label: "models_items_items_fields_sCategory_values_Discovery_label"},
+               Application: {label: "models_items_items_fields_sCategory_values_Application_label"},
+               Validation: {label: "models_items_items_fields_sCategory_values_Validation_label"},
+               Challenge: {label: "models_items_items_fields_sCategory_values_Challenge_label"}
             },
-            label: "Mode de validation",
+            label: "models_items_items_fields_sCategory_label",
             defaultValue : 'Undefined'
          },
          bAccessRestricted: {
             type: "int",
             widget: "radio",
             values: {
-               0: {label: "<span class='btn btn-mini btn-success'><i class='material-icons'>lock_open</i></span> Accessible directement si un parent est accessible"},
-               1: {label: "<span class='btn btn-mini btn-danger'><i class='material-icons'>lock</i></span> Déblocable par un entraîneur ou par la validation d'autres contenus"}
+               0: {label: "models_items_items_fields_bAccessRestricted_values_0_label"},
+               1: {label: "models_items_items_fields_bAccessRestricted_values_1_label"}
             },
-            label: "Mode d'accès",
+            label: "models_items_items_fields_bAccessRestricted_label",
             defaultValue: 1
          },
          bAlwaysVisible: {
             type: "int",
             widget: "radio",
             values: {
-               0: {label: "<span class='btn btn-mini btn-danger'><i class='material-icons'>visibility_off</i></span> Caché si inaccessible"},
-               1: {label: "<span class='btn btn-mini btn-success'><i class='material-icons'>visibility</i></span> Visible en grisé si inaccessible"}
+               0: {label: "models_items_items_fields_bAlwaysVisible_values_0_label"},
+               1: {label: "models_items_items_fields_bAlwaysVisible_values_1_label"}
             },
-            label: "Visibilité",
+            label: "models_items_items_fields_bAlwaysVisible_label",
             defaultValue: 0
          },
-         iDifficulty: {type: "int", label: "Difficulté", defaultValue: 0}
+         iDifficulty: {type: "int", label: "models_items_items_fields_iDifficulty_label", defaultValue: 0}
       }
    },
 
    items_strings: {
       fields: {
-         idItem: {type: "key", label: "Item", refModel: "items", link: "item", invLink: "strings"},
-         idLanguage: {type: "key", label: "Langue", refModel: "languages", link: "language"},
-         sTranslator: {type: "string", label: "Traducteur", defaultValue: ''},
-         sTitle: {type: "string", label: "Titre", defaultValue: ''},
-         sImageUrl: {type: "string", label: "URL de l'image", defaultValue: null},
-         sSubtitle: {type: "string", label: "Sous-titre", defaultValue: ''},
-         sDescription: {type: "text", label: "Description", defaultValue: ''},
-         sEduComment: {type: "text", label: "Commentaire pédagogique", defaultValue: ''},
-         sRankingComment: {type: "text", label: "Commentaire classement", defaultValue: ''}
+         idItem: {type: "key", label: "models_items_strings_fields_idItem_label", refModel: "items", link: "item", invLink: "strings"},
+         idLanguage: {type: "key", label: "models_items_strings_fields_idLanguage_label", refModel: "languages", link: "language"},
+         sTranslator: {type: "string", label: "models_items_strings_fields_sTranslator_label", defaultValue: ''},
+         sTitle: {type: "string", label: "models_items_strings_fields_sTitle_label", defaultValue: ''},
+         sImageUrl: {type: "string", label: "models_items_strings_fields_sImageUrl_label", defaultValue: null},
+         sSubtitle: {type: "string", label: "models_items_strings_fields_sSubtitle_label", defaultValue: ''},
+         sDescription: {type: "text", label: "models_items_strings_fields_sDescription_label", defaultValue: ''},
+         sEduComment: {type: "text", label: "models_items_strings_fields_sEduComment_label", defaultValue: ''},
+         sRankingComment: {type: "text", label: "models_items_strings_fields_sRankingComment_label", defaultValue: ''}
       }
    },
 
    items_ancestors: {
       fields: {
-         idItemAncestor: {type: "key", label: "Item ancêtre", refModel: "items", link: "itemAncestor"/*, invLink: "descendants"*/},
-         idItemChild: {type: "key", label: "Item descendant", refModel: "items", link: "itemDescendant"},
+         idItemAncestor: {type: "key", label: "models_items_ancestors_fields_idItemAncestor_label", refModel: "items", link: "itemAncestor"/*, invLink: "descendants"*/},
+         idItemChild: {type: "key", label: "models_items_ancestors_fields_idItemChild_label", refModel: "items", link: "itemDescendant"},
       },
       indexes: [
          {name: "idItemAncestor", keys: ["idItemAncestor"], values: "idItemChild"}
@@ -284,24 +284,24 @@ var models = {
 
    groups_items: {
       fields: {
-         idGroup: {type: "key", label: "Groupe", refModel: "groups", link: "group"},
-         idItem: {type: "key", label: "Item", refModel: "items", link: "item", invLink: 'group_items'},
-         idUserCreated: {type: "key", label: "Créateur" /*, refModel: "users", link: "userCreated"*/},
-         sPartialAccessDate: {type: "jsdate", label: "Accès partiel donné à partir de :"},
-         sFullAccessDate: {type: "jsdate", label: "Accès complet donné à partir de :"},
-         sAccessReason: {type: "string", label: "Commentaire sur l'accès", defaultValue: ''},
-         sAccessSolutionsDate: {type: "jsdate", label: "Accès aux solutions"},
-         bOwnerAccess: {type: "boolean", label: "Accès propriétaire", defaultValue: false},
-         bManagerAccess: {type: "boolean", label: "Accès manager", defaultValue: false},
-         sCachedPartialAccessDate: {type: "jsdate", label: "Accès partiel ancêtres"},
-         sCachedFullAccessDate: {type: "jsdate", label: "Accès complet ancêtres"},
-         sCachedAccessSolutionsDate: {type: "jsdate", label: "Accès aux solutions ancêtres"},
-         sCachedGrayedAccessDate: {type: "jsdate", label: "Accès grisé"},
-         bCachedFullAccess: {type: "boolean", label: "Accès à tous les descendants", defaultValue: false},
-         bCachedPartialAccess: {type: "boolean", label: "Accès partiel", defaultValue: false},
-         bCachedAccessSolutions: {type: "boolean", label: "Accès aux solutions", defaultValue: false},
-         bCachedGrayedAccess: {type: "boolean", label: "Accès grisé", defaultValue: false},
-         bCachedManagerAccess: {type:"boolean", label: "Accès manager", defaultValue: false},
+         idGroup: {type: "key", label: "models_groups_items_fields_idGroup_label", refModel: "groups", link: "group"},
+         idItem: {type: "key", label: "models_groups_items_fields_idItem_label", refModel: "items", link: "item", invLink: 'group_items'},
+         idUserCreated: {type: "key", label: "models_groups_items_fields_idUserCreated_label" /*, refModel: "users", link: "userCreated"*/},
+         sPartialAccessDate: {type: "jsdate", label: "models_groups_items_fields_sPartialAccessDate_label"},
+         sFullAccessDate: {type: "jsdate", label: "models_groups_items_fields_sFullAccessDate_label"},
+         sAccessReason: {type: "string", label: "models_groups_items_fields_sAccessReason_label", defaultValue: ''},
+         sAccessSolutionsDate: {type: "jsdate", label: "models_groups_items_fields_sAccessSolutionsDate_label"},
+         bOwnerAccess: {type: "boolean", label: "models_groups_items_fields_bOwnerAccess_label", defaultValue: false},
+         bManagerAccess: {type: "boolean", label: "models_groups_items_fields_bManagerAccess_label", defaultValue: false},
+         sCachedPartialAccessDate: {type: "jsdate", label: "models_groups_items_fields_sCachedPartialAccessDate_label"},
+         sCachedFullAccessDate: {type: "jsdate", label: "models_groups_items_fields_sCachedFullAccessDate_label"},
+         sCachedAccessSolutionsDate: {type: "jsdate", label: "models_groups_items_fields_sCachedAccessSolutionsDate_label"},
+         sCachedGrayedAccessDate: {type: "jsdate", label: "models_groups_items_fields_sCachedGrayedAccessDate_label"},
+         bCachedFullAccess: {type: "boolean", label: "models_groups_items_fields_bCachedFullAccess_label", defaultValue: false},
+         bCachedPartialAccess: {type: "boolean", label: "models_groups_items_fields_bCachedPartialAccess_label", defaultValue: false},
+         bCachedAccessSolutions: {type: "boolean", label: "models_groups_items_fields_bCachedAccessSolutions_label", defaultValue: false},
+         bCachedGrayedAccess: {type: "boolean", label: "models_groups_items_fields_bCachedGrayedAccess_label", defaultValue: false},
+         bCachedManagerAccess: {type:"boolean", label: "models_groups_items_fields_bCachedManagerAccess_label", defaultValue: false},
          sPropagateAccess: {type: "string", label: "", defaultValue: 'self'}
       },
       indexes: [
@@ -311,14 +311,14 @@ var models = {
 
    languages: {
       fields: {
-          sName: {type: "string", label: "Nom"},
-          sCode: {type: "string", label: "Code"}
+          sName: {type: "string", label: "models_languages_fields_sName_label"},
+          sCode: {type: "string", label: "models_languages_fields_sCode_label"}
       }
    },
 
    messages: {
       fields: {
-          idThread: {type: "key", label: "Thread", refModel: "threads", link: "thread", invLink: "messages"},
+          idThread: {type: "key", label: "models_messages_fields_idThread_label", refModel: "threads", link: "thread", invLink: "messages"},
           idUser: {type: "key", label: ""},
           sLogin: {type: "string", label: "", readOnly: true},
           sSubmissionDate: {type: "jsdate", label: "", defaultValue : null},
@@ -335,15 +335,15 @@ var models = {
       fields: {
           sType: {
              type: "enum",
-             values: {Help: {label: "Demande d'aide"}, General: {label: "Sujet général"}, Bug: {label: "Rapport de bogue"}},
-             label: "Type de discussion"
+             values: {Help: {label: "models_threads_fields_sType_values_Help_label"}, General: {label: "models_threads_fields_sType_values_General_label"}, Bug: {label: "models_threads_fields_sType_values_Bug_label"}},
+             label: "models_threads_fields_sType_label"
           },
           sLastActivityDate: {type: "jsdate", label: ""},
           sSubmissionDate: {type: "jsdate", label: ""},
           idUserCreated: {type: "key", label: "", refModel: "users", link: "user", invLink: "threads"},
           sUserCreatedLogin: {type: "string", label: ""},
-          idItem: {type: "key", label: "Item", refModel: "items", link: "item", invLink: "threads"},
-          sTitle: {type: "text", label: "Titre"},
+          idItem: {type: "key", label: "models_threads_fields_idItem_label", refModel: "items", link: "item", invLink: "threads"},
+          sTitle: {type: "text", label: "models_threads_fields_sTitle_label"},
           bArchived: {type: "boolean", label: ""},
           bPersistant: {type: "boolean", label: ""}
       },
@@ -356,62 +356,62 @@ var models = {
 
    users: {
       fields: {
-          sLogin: {type: "string", label: "Login"},
-          sOpenIdIdentity: {type: "string", label: "OpenID"},
-          sPasswordMd5: {type: "string", label: "MD5 du mot de passe"},
-          sSalt: {type: "string", label: "Sel"},
-          sRecover: {type: "string", label: "Récupération de mot de passe"},
-          sRegistrationDate: {type: "jsdate", label: "Date d'inscription"},
-          sEmail: {type: "string", label: "Adresse email"},
-          bEmailVerified: {type: "boolean", label: "Email vérifié"},
-          sFirstName: {type: "string", label: "Prénom"},
-          sLastName: {type: "string", label: "Nom de famille"},
-          sCountryCode: {type: "string", label: "Code de pays"},
-          sTimeZone: {type: "string", label: "Fuseau horaire"},
-          sBirthDate: {type: "string", label: "Date de naissance"},
-          iGraduationYear: {type: "int", label: "Année du bac"},
+          sLogin: {type: "string", label: "models_users_fields_sLogin_label"},
+          sOpenIdIdentity: {type: "string", label: "models_users_fields_sOpenIdIdentity_label"},
+          sPasswordMd5: {type: "string", label: "models_users_fields_sPasswordMd5_label"},
+          sSalt: {type: "string", label: "models_users_fields_sSalt_label"},
+          sRecover: {type: "string", label: "models_users_fields_sRecover_label"},
+          sRegistrationDate: {type: "jsdate", label: "models_users_fields_sRegistrationDate_label"},
+          sEmail: {type: "string", label: "models_users_fields_sEmail_label"},
+          bEmailVerified: {type: "boolean", label: "models_users_fields_bEmailVerified_label"},
+          sFirstName: {type: "string", label: "models_users_fields_sFirstName_label"},
+          sLastName: {type: "string", label: "models_users_fields_sLastName_label"},
+          sCountryCode: {type: "string", label: "models_users_fields_sCountryCode_label"},
+          sTimeZone: {type: "string", label: "models_users_fields_sTimeZone_label"},
+          sBirthDate: {type: "string", label: "models_users_fields_sBirthDate_label"},
+          iGraduationYear: {type: "int", label: "models_users_fields_iGraduationYear_label"},
           sSex: {
              type: "enum",
-             values: {Male: {label: "Masculin"}, Female: {label: "Féminin"}},
-             label: "Genre"
+             values: {Male: {label: "models_users_fields_sSex_values_Male_label"}, Female: {label: "models_users_fields_sSex_values_Female_label"}},
+             label: "models_users_fields_sSex_label"
           },
-          sAddress: {type: "string", label: "Adresse"},
-          sZipcode: {type: "string", label: "Code postal"},
-          sCity: {type: "string", label: "Ville"},
-          sLandLineNumber: {type: "string", label: "Numéro de téléphone fixe"},
-          sCellPhoneNumber: {type: "string", label: "Numéro de téléphone portable"},
+          sAddress: {type: "string", label: "models_users_fields_sAddress_label"},
+          sZipcode: {type: "string", label: "models_users_fields_sZipcode_label"},
+          sCity: {type: "string", label: "models_users_fields_sCity_label"},
+          sLandLineNumber: {type: "string", label: "models_users_fields_sLandLineNumber_label"},
+          sCellPhoneNumber: {type: "string", label: "models_users_fields_sCellPhoneNumber_label"},
           sDefaultLanguage: {
              type: "enum",
-             values: {fr: {label: "Français"}, en: {label: "English"}},
-             label: "Langue par défaut"
+             values: {fr: {label: "models_users_fields_sDefaultLanguage_values_fr_label"}, en: {label: "models_users_fields_sDefaultLanguage_values_en_label"}},
+             label: "models_users_fields_sDefaultLanguage_label"
           },
-          bNotifyNews: {type: "boolean", label: "Réception des emails de news"},
+          bNotifyNews: {type: "boolean", label: "models_users_fields_bNotifyNews_label"},
           sNotify: {
              type: "enum",
-             values: {Never: {label: "Jamais"}, Answers: {label: "En cas de réponse"}, Concerned: {label: "Concerned (?)"}},
-             label: "Envoi d'emails depuis le forum"
+             values: {Never: {label: "models_users_fields_sNotify_values_Never_label"}, Answers: {label: "models_users_fields_sNotify_values_Answers_label"}, Concerned: {label: "models_users_fields_sNotify_values_Concerned_label"}},
+             label: "models_users_fields_sNotify_label"
           },
-          bPublicFirstName: {type: "boolean", label: "Publier son prénom sur le profil"},
-          bPublicLastName: {type: "boolean", label: "Publier son nom sur le profil"},
-          sFreeText: {type: "string", label: "Texte libre du profil"},
-          sWebSite: {type: "string", label: "Site web sur le profil"},
-          bPhotoAutoload: {type: "boolean", label: "Autoload de la photo (?)"},
-          sLangProg: {type: "string", label: "Langage de programmation"},
-          sLastLoginDate: {type: "jsdate", label: "Date de la dernière connexion"},
-          sLastActivityDate: {type: "jsdate", label: "Date de la dernière activité"},
-          sLastIP: {type: "string", label: "Dernière adresse IP"},
-          bBasicEditorMode: {type: "boolean", label: "Éditeur en mode basique"},
-          nbSpacesForTab: {type: "int", label: "Nombre d'espaces d'une tabulation"},
-          iMemberState: {type: "int", label: "Statut de membre"},
-          idUserGodfather: {type: "key", label: "Parrain"},
-          iStepLevelInSite: {type: "int", label: "Niveau sur le site"},
-          bIsAdmin: {type: "boolean", label: "Administrateur"},
-          bNoRanking: {type: "boolean", label: "Hors classement"},
-          nbHelpGiven: {type: "int", label: "Nombre d'aides données sur le forum"},
-          idGroupSelf: {type: "key", label: "Groupe (droits d'accès)", link: "groupSelf", refModel: "groups", invLink: "userSelf"},
-          idGroupOwned: {type: "key", label: "Groupe possédés (droits d'accès)", link: "groupOwned", refModel: "groups", invLink: "userOwned"},
-          idGroupAccess: {type: "key", label: "Groupe (droits d'accès)", link: "groupAccess", refModel: "groups", invLink: "userAccess"},
-          sNotificationReadDate: {type: "jsdate", label: "Date de dernière lecture des notifications"}
+          bPublicFirstName: {type: "boolean", label: "models_users_fields_bPublicFirstName_label"},
+          bPublicLastName: {type: "boolean", label: "models_users_fields_bPublicLastName_label"},
+          sFreeText: {type: "string", label: "models_users_fields_sFreeText_label"},
+          sWebSite: {type: "string", label: "models_users_fields_sWebSite_label"},
+          bPhotoAutoload: {type: "boolean", label: "models_users_fields_bPhotoAutoload_label"},
+          sLangProg: {type: "string", label: "models_users_fields_sLangProg_label"},
+          sLastLoginDate: {type: "jsdate", label: "models_users_fields_sLastLoginDate_label"},
+          sLastActivityDate: {type: "jsdate", label: "models_users_fields_sLastActivityDate_label"},
+          sLastIP: {type: "string", label: "models_users_fields_sLastIP_label"},
+          bBasicEditorMode: {type: "boolean", label: "models_users_fields_bBasicEditorMode_label"},
+          nbSpacesForTab: {type: "int", label: "models_users_fields_nbSpacesForTab_label"},
+          iMemberState: {type: "int", label: "models_users_fields_iMemberState_label"},
+          idUserGodfather: {type: "key", label: "models_users_fields_idUserGodfather_label"},
+          iStepLevelInSite: {type: "int", label: "models_users_fields_iStepLevelInSite_label"},
+          bIsAdmin: {type: "boolean", label: "models_users_fields_bIsAdmin_label"},
+          bNoRanking: {type: "boolean", label: "models_users_fields_bNoRanking_label"},
+          nbHelpGiven: {type: "int", label: "models_users_fields_nbHelpGiven_label"},
+          idGroupSelf: {type: "key", label: "models_users_fields_idGroupSelf_label", link: "groupSelf", refModel: "groups", invLink: "userSelf"},
+          idGroupOwned: {type: "key", label: "models_users_fields_idGroupOwned_label", link: "groupOwned", refModel: "groups", invLink: "userOwned"},
+          idGroupAccess: {type: "key", label: "models_users_fields_idGroupAccess_label", link: "groupAccess", refModel: "groups", invLink: "userAccess"},
+          sNotificationReadDate: {type: "jsdate", label: "models_users_fields_sNotificationReadDate_label"}
       },
       links: {
          threads: {refModel: "threads", key: "idUserCreated", type: "object"}
@@ -420,8 +420,8 @@ var models = {
 
    users_answers: {
       fields: {
-          idUser: {type: "key", label: "User"},
-          idItem: {type: "key", label: "Item", refModel: "items", link: "item", invLink: "user_answers"},
+          idUser: {type: "key", label: "models_users_answers_fields_idUser_label"},
+          idItem: {type: "key", label: "models_users_answers_fields_idItem_label", refModel: "items", link: "item", invLink: "user_answers"},
           sName: {type: "string", label: ""},
           sAnswer: {type: "string", label: ""},
           sSubmissionDate: {type: "jsdate", label: "", defaultValue: null},
@@ -434,8 +434,8 @@ var models = {
 
    users_items: {
       fields: {
-          idUser: {type: "key", label: "User", refModel: "users", link: "user"},
-          idItem: {type: "key", label: "Item", refModel: "items", link: "item", invLink: "user_item"},
+          idUser: {type: "key", label: "models_users_items_fields_idUser_label", refModel: "users", link: "user"},
+          idItem: {type: "key", label: "models_users_items_fields_idItem_label", refModel: "items", link: "item", invLink: "user_item"},
           iScore: {type: "float", label: "", readOnly: true},
           iScoreComputed: {type: "float", label: "", readOnly: true},
           iScoreDiffManual: {type: "float", label: "", readOnly: true},
@@ -470,11 +470,11 @@ var models = {
 
    users_threads: {
       fields: {
-          idUser: {type: "key", label: "User"},
-          idThread: {type: "key", label: "Thread", refModel: "threads", link: "thread", invLink: "user_thread"},
-          sLastReadDate: {type: "jsdate", label: "Date de la dernière lecture"},
-          sLastWriteDate: {type: "jsdate", label: "Date du dernier message"},
-          bStarred: {type: "int", label: "Favori"},
+          idUser: {type: "key", label: "models_users_threads_fields_idUser_label"},
+          idThread: {type: "key", label: "models_users_threads_fields_idThread_label", refModel: "threads", link: "thread", invLink: "user_thread"},
+          sLastReadDate: {type: "jsdate", label: "models_users_threads_fields_sLastReadDate_label"},
+          sLastWriteDate: {type: "jsdate", label: "models_users_threads_fields_sLastWriteDate_label"},
+          bStarred: {type: "int", label: "models_users_threads_fields_bStarred_label"},
       }
    }
 };

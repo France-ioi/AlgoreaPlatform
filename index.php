@@ -158,6 +158,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('commonFramework/modelsManager/modelsManager.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/sync/syncQueue.js') ?>"></script>
   <script src="<?= includeFile('shared/models.js') ?>"></script>
+  <script src="<?= includeFile('i18n/i18n-object.js') ?>"></script>
   <script src="<?= includeFile('shared/small-ui-confirm.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('bower_components/angu-fixed-header-table/angu-fixed-header-table.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('bower_components/lodash/dist/lodash.min.js') ?>" type="text/javascript"></script>
@@ -199,7 +200,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   window.i18next.use(window.i18nextXHRBackend);
   var i18nextOpts = <?= json_encode([
     'lng' => $config->shared->domains['current']->defaultLanguage,
-    'fallbackLng' => ['en'],
+    'fallbackLng' => ['en', 'fr'],
     'fallbackNS' => 'algorea',
     'debug' => true,
     'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea']
