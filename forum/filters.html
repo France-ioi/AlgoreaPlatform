@@ -3,10 +3,19 @@
 </div>
 <div ng-if="!loading">
    <div ng-form="filterForm" class="panel panel-default advancedFilters">
-      <!-- TODO : Use current filter name, global filter or custom filter
-      {{currentGlobalFilter.description}}
-      {{filterInfos.currentFilter.sName}}
+      <!--
+      TODO: display filter name and options in .panel-heading.
+       - If global filter selected, display filter name
+       - If custom filter selected, display:
+         * filter name (set by the user)
+         * filter options
+            - favortites / unread / etc),
+            - full task path,
+            - dates
+      -->
       <div class="panel-heading">Discussions affichées :  {{currentGlobalFilter.description}} <button class="btn btn-default pull-right" ng-click="isFiltersOpen = !isFiltersOpen"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button></div>
+      <!--
+      TODO: load selected filter options.
       -->
       <div class="panel-body collapse" uib-collapse="!isFiltersOpen">
          <div class="form-group">
@@ -22,6 +31,12 @@
             <label for="idItem">Exercices :</label>
             <div item-selector on-select="onSelectItem" allow-all="true" style="margin-bottom: 5px;"></div>
          </div>
+         <!--
+         <div class="form-group">
+            <label>Groupes :</label>
+            <div group-selector on-select="onSelectGroup" allow-all="true" style="margin-bottom: 5px;"></div>
+         </div>
+         -->
          <div class="form-group filterFormDatePickers">
             <div class="form-inline">
                <label for="sStartDate">Discussions à partir du :</label>
@@ -42,6 +57,12 @@
                </p>
             </div>
          </div>
+         <!--
+         TODO: save filter.
+         If global filter selected, save a new filter, the text field should be empty.
+         If custom filter selected, the text field should display the selected filter name.
+            If the name is unchanged, upgrade the filter, otherwise, create a new custom filter.
+         -->
          <div ng-if="formValues.saveFilter" class="saveFilter">
             <div class="form-group form-inline">
                <label for="sName">Nom du filtre :</label>
