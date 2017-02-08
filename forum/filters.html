@@ -6,13 +6,9 @@
       <!-- TODO : Use current filter name, global filter or custom filter
       {{currentGlobalFilter.description}}
       {{filterInfos.currentFilter.sName}}
+      <div class="panel-heading">Discussions affichées :  {{currentGlobalFilter.description}} <button class="btn btn-default pull-right" ng-click="isFiltersOpen = !isFiltersOpen"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button></div>
       -->
-      <div class="panel-heading" ng-click="isFiltersOpen = !isFiltersOpen">Discussions :  {{currentGlobalFilter.description}} <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></div>
       <div class="panel-body collapse" uib-collapse="!isFiltersOpen">
-         <div class="form-group" ng-if="editFilter">
-            <label for="sName">Nom du filtre</label>
-            <input type="text" name="sName" ng-model="filterInfos.currentFilter.sName" class="form-control">
-         </div>
          <div class="form-group">
             <div class="btn-group">
                <label class="btn btn-default" ng-model="filterInfos.currentFilter.bStarred" uib-btn-radio="true" uncheckable>Favorites</label>

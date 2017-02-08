@@ -136,6 +136,9 @@
    font-weight: bold;
    background-color: #e8e8e8;
 }
+.advancedFilters .panel-heading .btn {
+   padding: 1px 10px;
+}
 .advancedFilters .panel-heading i {
    font-size: 12px;
 }
