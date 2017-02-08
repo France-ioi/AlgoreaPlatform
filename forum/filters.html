@@ -42,19 +42,19 @@
                </p>
             </div>
          </div>
-         <div class="form-group">
-            <button ng-click="stopEdition()" class="btn btn-primary">Filtrer</button>
-            <button ng-click="formValues.saveFilter=true" class="btn btn-default">Enregistrer</button>
-            <button ng-show="formValues.editFilter" ng-click="deleteFilter(filterInfos.currentFilter.ID)">Supprimer le filtre<span class="glyphicon glyphicon-remove" aria-label="Remove filter"></span></button>
-         </div>
          <div ng-if="formValues.saveFilter" class="saveFilter">
-            <div class="form-group">
-               <label for="sName">Nom du filtre</label>
+            <div class="form-group form-inline">
+               <label for="sName">Nom du filtre :</label>
                <input type="text" name="sName" ng-model="filterInfos.currentFilter.sName" class="form-control" autofocus>
             </div>
             <button ng-click="submitForm(filterForm); formValues.saveFilter = !formValues.saveFilter" class="btn btn-default">Valider</button>
             <button ng-click="formValues.saveFilter=false" class="btn btn-default">Annuler</button>
             <div>Vous pourrez utiliser ce filtre en le sélectionnant parmi la liste des filtres</div>
+         </div>
+         <div class="form-group">
+            <button ng-click="stopEdition()" class="btn btn-primary">Filtrer</button>
+            <button ng-click="formValues.saveFilter=true" class="btn btn-default">Enregistrer</button>
+            <button ng-show="formValues.editFilter" ng-click="deleteFilter(filterInfos.currentFilter.ID)">Supprimer le filtre<span class="glyphicon glyphicon-remove" aria-label="Remove filter"></span></button>
          </div>
       </div>
    </div>
