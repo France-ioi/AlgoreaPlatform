@@ -1,10 +1,10 @@
 <div class="groupRequest">
    <uib-tabset active="active">
-      <uib-tab heading="Mon compte">
+      <uib-tab heading="{{'groupRequests_title_account'|i18next}}">
          <div class="groupRequest-tabContent" ng-i18next="groupRequests_myaccount_desc">
          </div>
       </uib-tab>
-      <uib-tab heading="Mes groupes">
+      <uib-tab heading="{{'groupRequests_title_groups'|i18next}}">
          <div class="groupRequest-tabContent">
             <div class="">
                <div ng-if="!loading && !showTable()">

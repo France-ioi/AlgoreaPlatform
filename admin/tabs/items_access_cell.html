@@ -22,25 +22,25 @@
          <div class="login">{{ group_group.child.sName }}</div>
          <div class="item">{{item_item.child.strings[0].sTitle}}</div>
          <ul>
-            <li><span class="itemAccessDetails_label">Mode de validation :</span> {{ categoryNames[item_item.sCategory] }}</li>
-            <li><span class="itemAccessDetails_label">Type de validation :</span> {{ longValidationTypesNames[item_item.child.sValidationType].label }}</li>
-            <li><span class="itemAccessDetails_label">Mode d'accès :</span>
+            <li><span class="itemAccessDetails_label" ng-i18next="admin_validation_mode"></span> {{ categoryNames[item_item.sCategory] }}</li>
+            <li><span class="itemAccessDetails_label" ng-i18next="admin_validation_type"></span> {{ longValidationTypesNames[item_item.child.sValidationType].label }}</li>
+            <li><span class="itemAccessDetails_label" ng-i18next="admin_access_mode"></span>
                <span ng-switch="item_item.bAccessRestricted">
-                  <span ng-switch-when=0 >Accessible</span>
-                  <span ng-switch-when=1 >Restreint</span>
+                  <span ng-switch-when=0 ng-i18next="reachable"></span>
+                  <span ng-switch-when=1 ng-i18next="restricted"></span>
                </span>
             </li>
-            <li><span class="itemAccessDetails_label">Visibilité : </span>
+            <li><span class="itemAccessDetails_label" ng-i18next="admin_visibility"></span>
                <span ng-switch="item_item.bAlwaysVisible">
-                  <span ng-switch-when=1 >Toujours visible</span>
-                  <span ng-switch-when=0 >Caché si inaccessible</span>
+                  <span ng-switch-when=1 ng-i18next="admin_always_visible"></span>
+                  <span ng-switch-when=0 ng-i18next="admin_hidden_if_unreachable"></span>
                </span>
             </li>
             <li ng-show="access != null"><span class="itemAccessDetails_label"></span>{{ group_item.sAccessTitle }}</li>
-            <li ng-show="group_item.sPartialAccessDate"><span class="itemAccessDetails_label">Accès partiel donné à partir de :</span> {{group_item.sPartialAccessDate | date}}</li>
-            <li ng-show="group_item.sFullAccessDate"><span class="itemAccessDetails_label">Accès complet donné à partir de :</span> {{group_item.sFullAccessDate | date}}</li>
-            <li ng-show="group_item.sAccessReason"><span class="itemAccessDetails_label">Commentaire sur l'accès :</span> {{group_item.sAccessReason}}</li>
-            <li ng-show="group_item.sAccessSolutionsDate"><span class="itemAccessDetails_label">Accès aux solutions :</span> {{group_item.sAccessSolutionsDate | date}}</li>
+            <li ng-show="group_item.sPartialAccessDate"><span class="itemAccessDetails_label" ng-i18next="admin_access_partial"></span> {{group_item.sPartialAccessDate | date}}</li>
+            <li ng-show="group_item.sFullAccessDate"><span class="itemAccessDetails_label" ng-i18next="admin_access_full"></span> {{group_item.sFullAccessDate | date}}</li>
+            <li ng-show="group_item.sAccessReason"><span class="itemAccessDetails_label" ng-i18next="admin_access_comment"></span> {{group_item.sAccessReason}}</li>
+            <li ng-show="group_item.sAccessSolutionsDate"><span class="itemAccessDetails_label" ng-i18next="admin_access_solutions"></span> {{group_item.sAccessSolutionsDate | date}}</li>
          </ul>
       </div>
    </script>

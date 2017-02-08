@@ -2,7 +2,7 @@
 <form class="form-horizontal">
   <!-- {{items.ID}} -->
   <div class="form-group">
-    <label class="control-label col-xs-4">Type :</label>
+    <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
     <div class="col-xs-8">
       <span ng-if="item && item.sType == 'Root'">{{models.items.fields.sType.values[item.sType].label}}</span>
       <select ng-if="item && item.sType != 'Root'" ng-model="item.sType" class="form-control">
@@ -26,7 +26,7 @@
    <field model="item" field="items.iLevel" />
    <field model="item" field="items.bNoScore" />
    <p  ng-show="group_item.bCachedManagerAccess || group_item.bOwnerAccess">
-      <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)">Reset</a>
-      <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)">Enregistrer</a>
+      <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="reset"></a>
+      <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="save"></a>
    </p>
 </form>

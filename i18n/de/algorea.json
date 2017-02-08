@@ -251,7 +251,6 @@
 
     "groupRequests_myaccount_desc": "In diesem Tab können Sie Ihre persölichen Daten und Einstellungen ändern.",
     "groupRequests_member_no_group": "Sie sind zur Zeit nicht Mitglied einer Gruppe.",
-    "groupRequests_title_invites": "Demandes en attente et invitations reçues",
     "groupRequests_leave_group": "Gruppe verlassen",
     "groupRequests_my_groups": "Groups I've joined",
     "groupRequests_leave_confirm": "Sind Sie sich sicher, dass Sie die Gruppe {{group_group.parent.sName}} verlassen möchten?",

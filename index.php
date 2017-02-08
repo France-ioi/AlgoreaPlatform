@@ -197,17 +197,24 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
 <?php endif; ?>
 <script>
   window.i18next.use(window.i18nextXHRBackend);
-  window.i18next.init(<?= json_encode([
+  var i18nextOpts = <?= json_encode([
     'lng' => $config->shared->domains['current']->defaultLanguage,
     'fallbackLng' => ['en'],
     'fallbackNS' => 'algorea',
     'debug' => true,
-    'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
-    'backend' => [
-      'allowMultiLoading' => false,
-      'loadPath' => '/i18n/{{lng}}/{{ns}}.json'
-    ]
-  ]); ?>);
+    'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea']
+    ]); ?>;
+  i18nextOpts['backend'] = {
+    'allowMultiLoading': false,
+    'loadPath': function (lng, ns) {
+                    if(ns == 'commonFramework') {
+                      return '/commonFramework/i18n/'+lng+'/'+ns+'.json';
+                    } else {
+                      return '/i18n/'+lng+'/'+ns+'.json';
+                    }
+                  }
+    };
+  window.i18next.init(i18nextOpts);
   window.i18next.on('initialized', function (options) {
     window.i18nextOptions = options;
   });
