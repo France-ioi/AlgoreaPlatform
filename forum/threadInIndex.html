@@ -1,22 +1,54 @@
-<div class="thread" ng-class="{threadInIndexSelected: thread.bIsInSelection, threadInIndexReadOnly: !accessible}" ng-controller="forumIndexThreadController"  ng-click="goToThread(thread.ID)" uib-tooltip="{{accessibiltyMessage}}" tooltip-placement="top-left">
-   <div class="threadInIndexCheckBox threadInIndexCell"><input type="checkbox" ng-model="thread.bIsInSelection" ng-click="$event.stopPropagation()"></div>
-   <div class="threadInIndexFavorite threadInIndexCell">
-      <button type="button" class="transparentButton" ng-model="user_thread.bStarred" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0" ng-click="saveUserThread($event);">
-         <i class="glyphicon glyphicon-star" ng-show="user_thread.bStarred"></i>
-         <i class="glyphicon " ng-class="{'glyphicon-star': hover, 'glyphicon-star-empty': !hover}" ng-mouseenter="hover=true" ng-mouseleave="hover=false" ng-hide="user_thread.bStarred"></i>
-      </button>
-      <!--<input type="checkbox" ng-model="user_thread.bStarred">-->
-   </div>
-   <div class="threadInIndexUser threadInIndexCell">
-      <span>{{thread.sUserCreatedLogin}}</span>
-   </div>
-   <div class="threadInIndexMessage threadInIndexCell">
-      <div class="threadInIndexDoNotOverflow">
-         <strong>{{thread.sTitle}}</strong>
-         <span ng-bind="thread.sMessage"></span>
+<div class="thread" ng-class="{threadInIndexReadOnly: !accessible}" ng-controller="forumIndexThreadController"  ng-click="goToThread(thread.ID)" uib-tooltip="{{accessibiltyMessage}}" tooltip-placement="top-left">
+   <div class="threadInIndexCol">
+      <div class="threadInIndexFavorite threadInIndexCell">
+         <button type="button" class="transparentButton" ng-model="user_thread.bStarred" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0" ng-click="saveUserThread($event);">
+            <i class="glyphicon glyphicon-star" ng-show="user_thread.bStarred"></i>
+            <i class="glyphicon " ng-class="{'glyphicon-star': hover, 'glyphicon-star-empty': !hover}" ng-mouseenter="hover=true" ng-mouseleave="hover=false" ng-hide="user_thread.bStarred"></i>
+         </button>
+      </div>
+      <div class="threadInIndexCell">
+         <!-- TODO: display only if topic closed -->
+         <i class="glyphicon glyphicon-lock"></i>
       </div>
    </div>
-   <div class="threadInIndexLastActivityDate threadInIndexCell">
-      <span>dernière activité le {{thread.sLastActivityDate | date:'dd-MM-yyyy à HH:mm'}}</span>
+   <div class="threadInIndexCol threadInIndexUsers">
+      <div class="threadInIndexUser threadInIndexCell">
+         <span>{{thread.sUserCreatedLogin}}</span>
+      </div>
+      <div class="threadInIndexCell">
+         <!-- TODO: list topic contributors -->
+         <span>Participants à la discussion{{thread.other_user_item}}</span>
+      </div>
+   </div>
+   <div class="threadInIndexCol threadInIndexActivity">
+      <div class="threadInIndexLastActivityDate threadInIndexCell">
+         <span>{{thread.sLastActivityDate | date:'dd-MM'}}</span>
+      </div>
+      <div class="threadInIndexCell">
+         <!-- TODO: display number of messages in topic -->
+         <div>4 <i class="material-icons">forum</i></div>
+      </div>
+   </div>
+   <div class="threadInIndexCol threadInIndexTopic">
+      <div class="threadInIndexTopicTitle threadInIndexCell">
+         <div class="threadInIndexDoNotOverflow">
+            <strong>{{thread.sTitle}}</strong>
+            <span ng-bind="thread.sMessage"></span>
+         </div>
+      </div>
+      <div class="threadInIndexCell" ng-if="currentTabName == 'helpOthers' || currentTabName == 'getHelp'">
+         <!-- TODO: Task full path name -->
+         <span>Chemin du sujet</span>
+      </div>
+   </div>
+   <div class="threadInIndexCol">
+      <div class="threadInIndexCell">
+         <span ng-if="currentTabName == 'helpOthers' || currentTabName == 'getHelp'">Langage</span>
+         <i class="glyphicon" ng-class="{'glyphicon-ok': hover, 'glyphicon-remove': !hover}"></i>
+      </div>
+      <div class="threadInIndexCell" ng-if="currentTabName == 'helpOthers' || currentTabName == 'getHelp'">
+         <!-- TODO: display hints quantity and submissions quantity -->
+         <div>NN <i class="material-icons">lightbulb_outline</i>, NN essais</div>
+      </div>
    </div>
 </div>

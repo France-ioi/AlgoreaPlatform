@@ -34,65 +34,65 @@
    cursor: pointer;
    border-bottom: 1px solid #ccc;
 }
-.threadInIndex:last-child {
-   border-bottom: none;
-}
 .threadInIndex:hover {
    background-color: #B0B0B0;
+}
+.threadInIndex:last-child {
+   border-bottom: none;
 }
 
 .threadInIndex .thread {
    padding: 3px 10px;
    display: flex;
+   justify-content: space-between;
    flex-wrap: wrap;
-}
-.threadInIndexSelected {
-   background-color: #B8B8B8;
 }
 .threadInIndexReadOnly {
    cursor:not-allowed;
    color: #808080;
 }
-
+.threadInIndexCol {
+   font-size: 16px;
+   margin-right: 10px;
+   display: inline-block;
+   vertical-align: top;
+   flex: 0 0 auto;
+}
+.threadInIndexCol:first-child .threadInIndexCell {
+   text-align: center;
+}
+.threadInIndexCol:last-child {
+   margin-right: 0;
+   text-align: right;
+}
 .threadInIndexCell {
    vertical-align: middle;
-   display: inline-block;
-   line-height: 2em;
+   display: block;
+   line-height: 26px;
 }
-
-.threadInIndexCheckBox {
+.threadInIndexCell i {
+   vertical-align: middle;
 }
-
 .threadInIndexFavorite {
-   flex: 0 0 40px;
    text-align: center;
 }
    .threadInIndexFavorite button {
       padding: 0;
    }
-.threadInIndexImportant {
-   width: 40px;
-}
+.threadInIndexUsers {
 
-.threadInIndexUser {
-   flex: 0 1 150px;
 }
-
-.threadInIndexUser span {
+.threadInIndexUser,
+.threadInIndexTopicTitle {
    font-weight: bold;
+   font-size: 1.125em;
+}
+.threadInIndexTopic {
+   flex: 2 1 auto;
+}
+.threadInIndexTopicTitle {
 }
 
-.threadInIndexMessage {
-   flex: 2 0 200px;
-}
-
-.threadInIndexMessage:hover {
-   cursor:pointer;
-}
-
-.threadInIndexReadOnly .threadInIndexMessage:hover {
-   cursor:not-allowed;
-}
 
 .threadInIndexDoNotOverflow {
    display: block;
@@ -101,10 +101,7 @@
    text-overflow: ellipsis;
 }
 .threadInIndexLastActivityDate {
-   font-size: 12px;
-   flex: 1 1 auto;
-   line-height: 18px;
-   text-align: right;
+   font-size: 14px;
 }
 .globalFilters {
    margin-bottom: 1em;

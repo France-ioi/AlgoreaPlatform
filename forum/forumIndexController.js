@@ -79,12 +79,14 @@ angular.module('algorea')
    $scope.$on('$destroy', function() {
       itemService.unsyncForumIndex();
    });
+   /*
+   Not sure this bit was usefull
    $scope.tabs = {
       'helpOthers': {active: true, length: 0},
       'getHelp': {active: false, length: 0},
       'general': {active: false, length: 0},
       'technicalSupport': {active: false, length: 0}
-   };
+   };*/
    $scope.setGlobalFilter = function(filterField) {
       $scope.globalFilter = {};
       if (!filterField) {
