@@ -61,7 +61,7 @@
 .threadInIndexCol:first-child .threadInIndexCell {
    text-align: center;
 }
-.threadInIndexCol:last-child {
+.threadInIndexCol.threadInIndexTaskState {
    margin-right: 0;
    text-align: right;
 }
@@ -92,8 +92,13 @@
 }
 .threadInIndexTopicTitle {
 }
-
-
+.threadInIndexTaskState .glyphicon-ok {
+   color: #29d329;
+   vertical-align: baseline;
+}
+.threadInIndexTaskState .glyphicon-remove {
+   color: #d32929;
+}
 .threadInIndexDoNotOverflow {
    display: block;
    white-space: nowrap;

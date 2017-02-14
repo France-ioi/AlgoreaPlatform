@@ -41,10 +41,11 @@
          <span>Chemin du sujet</span>
       </div>
    </div>
-   <div class="threadInIndexCol">
+   <div class="threadInIndexCol threadInIndexTaskState" ng-if="currentTabName == 'helpOthers' || currentTabName == 'getHelp'">
       <div class="threadInIndexCell">
          <span ng-if="currentTabName == 'helpOthers' || currentTabName == 'getHelp'">Langage</span>
-         <i class="glyphicon" ng-class="{'glyphicon-ok': hover, 'glyphicon-remove': !hover}"></i>
+         <span><!-- TODO: display Task partial result --></span>
+         <span><!-- TODO: class depending on Task result, completely solved: glyphicon-ok, partial or failed: glyphicon-remove --><i class="glyphicon" ng-class-odd="'glyphicon-ok'" ng-class-even="'glyphicon-remove'"></i></span>
       </div>
       <div class="threadInIndexCell" ng-if="currentTabName == 'helpOthers' || currentTabName == 'getHelp'">
          <!-- TODO: display hints quantity and submissions quantity -->
