@@ -45,12 +45,40 @@
          <label for="sBody" ng-i18next="forum_message"></label>
          <textarea name="sMessage" ng-model="newMessage.sBody" id="sBody" class="form-control"></textarea>
       </div>
+      <div class="threadVisibilitySelect">
+         <div class="bold">Visible par :</div>
+         <label ng-if="thread.sType == 'Help'" class="not-bold"><input type="radio"/> Ceux qui ont résolu le sujet</label>
+         <label ng-if="thread.sType == 'General' || thread.sType == 'Bug'" class="not-bold"><input type="radio"/> Tout le monde</label>
+         <label class="not-bold"><input type="radio"/> Uniquement les administrateurs du site</label><!--
+         <label class="not-bold"><input type="radio"/> Les responsables de ce groupe</label>
+         <label class="not-bold"><input type="radio"/> Les membres de ce groupe</label>-->
+      </div>
       <button class="btn btn-default" ng-click="submitForm(threadForm)" ng-i18next="save"></button>
    </div>
    <div ng-if="!newThread && !readOnly">
       <div><!-- Ajouter info sur type de message (ex: discussion générale) -->
          <h2 ng-hide="itemStr" class="threadTitle">{{thread.sTitle}}</h2>
          <h2 ng-show="itemStr" class="threadTitle">{{itemStr}}</h2>
+      <div class="threadVisibilitySelect">
+      <!--ng-if="!newThread && ownThread"-->
+         <div>
+            <div class="bold">Visible par :</div>
+            <label ng-if="thread.sType == 'Help'" class="not-bold"><input type="radio"/> Ceux qui ont résolu le sujet</label>
+            <label ng-if="thread.sType == 'General' || thread.sType == 'Bug'" class="not-bold"><input type="radio"/> Tout le monde</label>
+            <label class="not-bold"><input type="radio"/> Uniquement les administrateurs du site</label><!--
+            <label class="not-bold"><input type="radio"/> Les responsables de ce groupe</label>
+            <label class="not-bold"><input type="radio"/> Les membres de ce groupe</label>-->
+         </div>
+         <div>
+            <div class="bold">Statut de la demande :</div>
+            <div class="btn-group">
+               <button class="btn btn-default" uib-btn-radio="true">Ouverte</button>
+               <button class="btn btn-default" uib-btn-radio="true">Répondue</button>
+               <button class="btn btn-default" uib-btn-radio="true">Résolue</button>
+            </div>
+         </div>
+         <button class="btn btn-default">Enregistrer les paramètres</button>
+         <button ng-if="bTrainersOnly" class="btn btn-default">Supprimer la discussion</button>
       </div>
    </div>
    <div ng-if="taskLoadingError">

@@ -1,3 +1,9 @@
+.bold {
+   font-weight: bold;
+}
+.not-bold {
+   font-weight: normal;
+}
 .threadsContainer {
    margin: 20px 10px 10px;
    display:-webkit-flex;
@@ -21,8 +27,8 @@
    font-weight: bold;
    white-space: normal;
 }
-.threadsContainer .tab-content {
-   background-color: #F7F7F9;
+.threadsContainer .addThread {
+   margin: 10px 0;
 }
 .threadsInIndex {
    border: 1px solid #ccc;
@@ -128,7 +134,9 @@
    overflow: hidden;
    outline:none;
 }
-
+.threadVisibilitySelect label {
+   display: block;
+}
 /* FILTERS */
 
 .advancedFilters {
@@ -183,7 +191,14 @@
    max-height: 100%;
    max-width: 100%;
 }
+
 /* THREAD CONTENT */
+.backButton {
+   margin-right: 1em;
+}
+.backButton .btn i {
+   vertical-align: middle;
+}
 .threadTitle {
    font-size: 36px;
    background: #e8e8e8;
@@ -194,10 +209,21 @@
 .threadTitleLabel {
    font-size: 18px;
 }
-
+.threadVisibilitySelect {
+   margin-left: 2em;
+   font-size: 16px;
+}
+.threadVisibilitySelect .btn-group {
+   margin-bottom: 5px;
+}
 .inTaskThreadForm {}
 .threadInForum .threadMessages {
-   padding: 1em 2em 0;
+   padding: 1em 10px 0;
+}
+@media screen and (min-width: 700px) {
+   .threadInForum .threadMessages {
+      padding: 1em 2em 0;
+   }
 }
 .threadInTask .taskInThread,
 .threadInTask .threadEvent {
