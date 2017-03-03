@@ -11,18 +11,12 @@
    </div>
    <div ng-if="inPopup"><span ng-i18next="forum_activities_of"></span> {{user_item.user.sLogin}} <span ng-i18next="forum_on_exercise"></span> {{item.strings[0].sTitle}}
    </div>
-   <div ng-if="!inTask && !newThread" class="threadTypeTitle">
-      <h1 ng-show="thread.sType == 'Help'">Me faire aider</h1>
-      <h1 ng-show="thread.sType == 'General'">Discussion générale </h1>
-      <h1 ng-show="thread.sType == 'Bug'">Signaler une anomalie</h1>
-   </div>
+   <div ng-if="!inTask" class="threadTypeTitle">
+      <span ng-if="thread.sType == 'Help'" ng-i18next="forum_type_help"></span>
+      <span ng-if="thread.sType == 'General'" ng-i18next="forum_type_general"></span>
+      <span ng-if="thread.sType == 'Bug'" ng-i18next="forum_type_bug"></span>
    </div>
    <div ng-form="threadForm" ng-if="!readOnly && newThread" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
-      <div ng-if="!inTask" class="threadTypeTitle">
-         <h1 ng-show="thread.sType == 'Help'" ng-i18next="forum_type_help"></h1>
-         <h1 ng-show="thread.sType == 'General'" ng-i18next="forum_type_general"></h1>
-         <h1 ng-show="thread.sType == 'Bug'" ng-i18next="forum_type_bug"></h1>
-      </div>
       <div ng-if="inTask">
          <h4 ng-i18next="forum_title_welcome"></h4>
          <p ng-i18next="[html]forum_title_desc"></p>
@@ -51,9 +45,8 @@
       <button class="btn btn-default" ng-click="submitForm(threadForm)" ng-i18next="save"></button>
    </div>
    <div ng-if="!newThread && !readOnly">
-      <div><!-- Ajouter info sur type de message (ex: discussion générale) -->
-         <h2 ng-hide="itemStr" class="threadTitle">{{thread.sTitle}}</h2>
-         <h2 ng-show="itemStr" class="threadTitle">{{itemStr}}</h2>
+      <h2 ng-if="!itemStr" class="threadTitle">{{thread.sTitle}}</h2>
+      <h2 ng-if="itemStr" class="threadTitle">{{itemStr}}</h2>
       <div class="threadVisibilitySelect">
       <!--ng-if="!newThread && ownThread"-->
          <div>
