@@ -4,6 +4,11 @@
 <div ng-if="!loading && !thread && !fakeThread" ng-i18next="forum_not_found">
 </div>
 <div ng-if="!loading && (thread || fakeThread)" ng-class="{'threadInTask': inTask, 'threadInForum': !inTask}">
+   <div ng-if="!inTask" class="backButton">
+      <!-- TODO: go back to the forum right tab (help others, get help, etc) and filters still applied) -->
+      <button class="btn btn-default" ng-click="goToForum();"><i class="material-icons">arrow_back</i>
+      <span ng-i18next="forum_back"></span></button>
+   </div>
    <div ng-if="inPopup"><span ng-i18next="forum_activities_of"></span> {{user_item.user.sLogin}} <span ng-i18next="forum_on_exercise"></span> {{item.strings[0].sTitle}}
    </div>
    <div ng-if="!inTask && !newThread" class="threadTypeTitle">
@@ -11,8 +16,6 @@
       <h1 ng-show="thread.sType == 'General'">Discussion générale </h1>
       <h1 ng-show="thread.sType == 'Bug'">Signaler une anomalie</h1>
    </div>
-   <div ng-if="!inTask" class="backButton">
-      <button ng-click="goToForum();" ng-i18next="forum_back"></button>
    </div>
    <div ng-form="threadForm" ng-if="!readOnly && newThread" ng-class="{forumThreadForm: !inTask, inTaskThreadForm: inTask}">
       <div ng-if="!inTask" class="threadTypeTitle">
