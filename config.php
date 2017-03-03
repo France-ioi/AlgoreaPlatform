@@ -20,6 +20,7 @@ $config = (object) array(
    "login" => (object) array(
       "public_key" => ""
    ),
+   "login_module" => array(),
    "sync" => (object) array(
       "server" => "",
       "params" => (object) array(  ),

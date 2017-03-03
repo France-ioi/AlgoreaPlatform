@@ -84,4 +84,27 @@ foreach ($config->shared->domains as $domain => $domainData) {
 }
 
 $config->shared->domains['current'] = $config->shared->domains[$thisDomain];
+
+
+// Login module
+$client_host = 'http://algorea-platform.dev';
+$login_module_host =  'http://login-module.dev';
+$config->login_module = [
+        'oauth' => [
+                'clientId' => '3',
+                'clientSecret' => '1AtKfSc7KbgIo8GDCI31pA9laP7pFoBqSg3RtVHq',
+                'urlAuthorize' => $login_module_host.'/oauth/authorize',
+                'urlAccessToken' => $login_module_host.'/oauth/token',
+                'urlResourceOwnerDetails' => $login_module_host.'/api/account',
+                'redirectUri' => $client_host.'/login/callback_oauth.php'
+        ],
+        'logout' => [
+                'url' => $login_module_host.'/logout',
+                'redirectUri' => $client_host.'/login/callback_logout.php'
+        ],
+        'account' => [
+                'url' => $login_module_host.'/account',
+                'redirectUri' => $client_host.'/login/callback_account.php'
+        ],
+];
 ?>

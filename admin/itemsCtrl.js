@@ -46,7 +46,6 @@ angular.module('algorea')
       $scope.userLogged = false;
       $scope.loginReady = false;
       $scope.loginClass = 'loginCentered';
-      loginService.initEventListener();
       $scope.loginInnerHtml = '';
       $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl+'?'+config.domains.current.additionalLoginArgs);
       $scope.$on('login.login', function(event, data) {
@@ -207,9 +206,9 @@ angular.module('algorea')
             });
          });
          // we can give and remove access if parent is a root item
-         if (parent.ID === config.domains.current.OfficialProgressItemId || 
-               parent.ID === config.domains.current.CustomProgressItemId || 
-               parent.ID === config.domains.current.CustomContestRootItemId || 
+         if (parent.ID === config.domains.current.OfficialProgressItemId ||
+               parent.ID === config.domains.current.CustomProgressItemId ||
+               parent.ID === config.domains.current.CustomContestRootItemId ||
                parent.ID === config.domains.current.OfficialContestRootItemId ||
                parent.ID === config.domains.current.ProgressRootItemId ||
                parent.ID === config.domains.current.ContestRootItemId) {
@@ -620,7 +619,7 @@ angular.module('algorea')
             createRelations(data.idGroupOwned, data.idGroupSelf);
             $scope.loginData = data;
          });
-         
+
          function getGroupTitle(group, group_group) {
             var suffix = '';
             var preprefix = '';
@@ -991,7 +990,7 @@ var AccessManager = {
             access[cachedFieldName] = otherAccess[otherFieldName];
             if (fieldTextNames[fieldName]) {
                if (otherAccess.idItem) {
-                  access[fieldTextNames[fieldName]].push(otherAccess.idGroup);      
+                  access[fieldTextNames[fieldName]].push(otherAccess.idGroup);
                } else {
                   access[fieldTextNames[fieldName]] = access[fieldTextNames[fieldName]].concat(otherAccess[fieldTextNames[fieldName]]);
                }

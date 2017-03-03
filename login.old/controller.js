@@ -13,7 +13,7 @@ angular.module('algorea')
       $scope.$on('login.login', function(event, data) {
          $scope.innerHtml = $i18next.t('login_disconnect');
          if (data.tempUser) {
-            $scope.loginStr = null;
+            $scope.loginStr = null;   
          } else {
             $scope.loginStr = data.login;
          }
