@@ -31,15 +31,7 @@
       </div>
       <div class="form-group" ng-show="!inTask && thread.sType == 'Help'">
          <label for="idItem" ng-i18next="forum_item_associated"></label>
-         <p class="input-group">
-            <input type="text" name="idItem" ng-model="thread.idItem" id="idItem" class="form-control" item-text readonly/>
-            <span class="input-group-btn">
-               <button type="button" class="btn btn-default" ng-click="toggleTreePicker('items');"><i class="glyphicon glyphicon-chevron-down"></i></button>
-            </span>
-            <ul class="dropdown-menu" ng-style="{display: showTreePicker_items && 'block' || 'none'}" style="width:600px;height:400px;overflow:scroll;">
-               <li><div id="treeview_items" treeview model="items"></div></li>
-            </ul>
-         </p>
+         <div item-selector on-select="onSelectItem" allow-all="false" style="margin-bottom: 5px;"></div>
       </div>
       <div class="form-group">
          <label for="sBody" ng-i18next="forum_message"></label>
