@@ -62,6 +62,12 @@ angular.module('algorea')
             $scope.loginClass = 'loginCorner';
          }
       });
+      $scope.$on('login.update', function(event, data) {
+            $scope.userLogged = true;
+            $scope.loginReady = true;
+            $scope.loginInnerHtml = 'logged as ' + data.login;
+            $scope.loginClass = 'loginCorner';
+      });
       $scope.$on('login.notlogged', function(event, data) {
          $scope.userLogged = false;
          $scope.loginReady = true;

@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "db40bf835d3697fb337980f83488bc4b",
-    "content-hash": "817589c62e8b65a01c569ad4edd00717",
+    "hash": "6a6e8b1f0b92ce398d34b8b0ebed8fda",
+    "content-hash": "682bf200add7fc0f72c3658d4ff620d2",
     "packages": [
         {
             "name": "beberlei/assert",
-            "version": "v2.6.7",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/assert.git",
-                "reference": "2b4c9249a7ceef51402d39bd797aae16cfd8f36f"
+                "reference": "5972776d6a9eedfd3c55216341434e19cb50418f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/assert/zipball/2b4c9249a7ceef51402d39bd797aae16cfd8f36f",
-                "reference": "2b4c9249a7ceef51402d39bd797aae16cfd8f36f",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/5972776d6a9eedfd3c55216341434e19cb50418f",
+                "reference": "5972776d6a9eedfd3c55216341434e19cb50418f",
                 "shasum": ""
             },
             "require": {
@@ -26,13 +26,13 @@
                 "php": ">=5.3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "2.0.0-alpha",
+                "friendsofphp/php-cs-fixer": "^2.0",
                 "phpunit/phpunit": "@stable"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Assert": "lib/"
+                "psr-4": {
+                    "Assert\\": "lib/Assert"
                 },
                 "files": [
                     "lib/Assert/functions.php"
@@ -60,7 +60,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2016-11-14 16:46:13"
+            "time": "2017-01-24 15:14:39"
         },
         {
             "name": "fgrosse/phpasn1",
@@ -130,6 +130,30 @@
                 "x690"
             ],
             "time": "2016-10-29 15:46:46"
+        },
+        {
+            "name": "franceioi/login-module-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/France-ioi/login-module-client.git",
+                "reference": "958b5c1114f7db352095ac77fc226a2babd7cabb"
+            },
+            "require": {
+                "league/oauth2-client": "^2.0",
+                "php": "^5.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FranceIOI\\LoginModuleClient\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Login Module Client Library",
+            "time": "2017-03-07 00:28:57"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -378,16 +402,16 @@
         },
         {
             "name": "mdanter/ecc",
-            "version": "v0.4.1",
+            "version": "v0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpecc/phpecc.git",
-                "reference": "15b47485bc3f75014d1296526cfc94cbd5175329"
+                "reference": "fdd1fa9be8184c9f319433437cb1d9f9d4294164"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpecc/phpecc/zipball/15b47485bc3f75014d1296526cfc94cbd5175329",
-                "reference": "15b47485bc3f75014d1296526cfc94cbd5175329",
+                "url": "https://api.github.com/repos/phpecc/phpecc/zipball/fdd1fa9be8184c9f319433437cb1d9f9d4294164",
+                "reference": "fdd1fa9be8184c9f319433437cb1d9f9d4294164",
                 "shasum": ""
             },
             "require": {
@@ -440,20 +464,20 @@
                 "phpecc",
                 "secp256k1"
             ],
-            "time": "2016-11-22 09:30:44"
+            "time": "2017-01-04 12:13:24"
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.4",
+            "version": "v2.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "a9b97968bcde1c4de2a5ec6cbd06a0f6c919b46e"
+                "reference": "6968531206671f94377b01dc7888d5d1b858a01b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/a9b97968bcde1c4de2a5ec6cbd06a0f6c919b46e",
-                "reference": "a9b97968bcde1c4de2a5ec6cbd06a0f6c919b46e",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/6968531206671f94377b01dc7888d5d1b858a01b",
+                "reference": "6968531206671f94377b01dc7888d5d1b858a01b",
                 "shasum": ""
             },
             "require": {
@@ -488,7 +512,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2016-11-07 23:38:38"
+            "time": "2017-03-03 20:43:42"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -792,16 +816,16 @@
         },
         {
             "name": "spomky-labs/jose",
-            "version": "v6.1.2",
+            "version": "v6.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose.git",
-                "reference": "b3a41752e930196694c352a600708d4a83db32fc"
+                "reference": "fccd7e024b10ad05e9374d745893b13311c4d49a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/b3a41752e930196694c352a600708d4a83db32fc",
-                "reference": "b3a41752e930196694c352a600708d4a83db32fc",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/fccd7e024b10ad05e9374d745893b13311c4d49a",
+                "reference": "fccd7e024b10ad05e9374d745893b13311c4d49a",
                 "shasum": ""
             },
             "require": {
@@ -870,7 +894,7 @@
                 "jwa",
                 "jwt"
             ],
-            "time": "2016-11-22 22:31:17"
+            "time": "2017-02-06 18:22:51"
         },
         {
             "name": "spomky-labs/php-aes-gcm",
@@ -1056,7 +1080,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "franceioi/login-module-client": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

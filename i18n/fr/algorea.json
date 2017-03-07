@@ -335,7 +335,7 @@
     "task_solve": "Résolution",
     "task_hints": "Indices",
     "task_solution": "Solution",
-    "task_communicate_error": "Impossible de communiquer avec l'exercice !", 
+    "task_communicate_error": "Impossible de communiquer avec l'exercice !",
     "task_load_error": "Impossible de charger l'exercice !",
 
     "userInfos_not_logged": "Désolé, vous ne pouvez pas modifier vos données utilisateur. Merci de vous connecter (bouton en haut à droite de l'écran) pour pouvoir le faire.",
@@ -556,6 +556,7 @@
     "models_users_fields_sTimeZone_label": "Fuseau horaire",
     "models_users_fields_sBirthDate_label": "Date de naissance",
     "models_users_fields_iGraduationYear_label": "Année du bac",
+    "models_users_fields_sStudentId_label": "Étudiant ID",
     "models_users_fields_sSex_values_Male_label": "Masculin",
     "models_users_fields_sSex_values_Female_label": "Féminin",
     "models_users_fields_sSex_label": "Genre",

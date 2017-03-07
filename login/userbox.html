@@ -1,7 +1,7 @@
 <div class="userinfo">
-	<span class="userbox-text" ng-click="openLoginPopup()">{{innerHtml}} {{infoWord}}</span>
+	<span class="userbox-text" ng-click="openLoginPopup('login')">{{innerHtml}} {{infoWord}}</span>
 	<div ng-if="loginStr">
 		<span class="login-string"><span class="material-icons menu-item-icon">person</span> <a ui-sref="groupRequests()" class="userInfosLink">{{loginStr}}</a></span>
-		<span ng-click="openLoginPopup(true)" class="material-icons menu-item-icon logout-btn" title="{{innerHtml}} {{infoWord}}">close</span>
+		<span ng-click="openLoginPopup('logout')" class="material-icons menu-item-icon logout-btn" title="{{innerHtml}} {{infoWord}}">close</span>
 	</div>
 </div>

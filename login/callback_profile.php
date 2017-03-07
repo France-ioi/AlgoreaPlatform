@@ -14,7 +14,6 @@ ob_start();
 try {
     $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
     $authorization_helper = $client->getAuthorizationHelper();
-    $authorization_helper->handleRequestParams($_GET);
     $user = $authorization_helper->queryUser();
     $params = remapUserArray($user);
     createUpdateUser($db, $params);
@@ -33,8 +32,8 @@ ob_end_clean();
 <html>
 <body>
     <script type="text/javascript">
-        if(window.opener && window.opener['__LoginModuleOnLogin']) {
-            window.opener.__LoginModuleOnLogin(<?=$json_result?>);
+        if(window.opener && window.opener['__LoginModuleOnProfile']) {
+            window.opener.__LoginModuleOnProfile(<?=$json_result?>);
         } else {
             window.close();
         }

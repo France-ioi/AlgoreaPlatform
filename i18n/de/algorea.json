@@ -544,6 +544,7 @@
     "models_users_fields_sTimeZone_label": "Zeitzone",
     "models_users_fields_sBirthDate_label": "Geburtsdatum",
     "models_users_fields_iGraduationYear_label": "Abschlussjahrgang",
+    "models_users_fields_sStudentId_label": "Student ID",
     "models_users_fields_sSex_values_Male_label": "Männlich",
     "models_users_fields_sSex_values_Female_label": "Weiblich",
     "models_users_fields_sSex_label": "Geschlecht",

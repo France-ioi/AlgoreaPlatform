@@ -1,8 +1,40 @@
 <div class="groupRequest">
    <uib-tabset active="active">
       <uib-tab heading="{{'groupRequests_title_account'|i18next}}">
-         <div class="groupRequest-tabContent" ng-i18next="groupRequests_myaccount_desc">
-         </div>
+        <div ng-if="!loginLoading">
+            <div class="groupRequest-tabContent" ng-if="tempUser" ng-i18next="userInfos_not_logged"></div>
+            <div class="groupRequest-tabContent" ng-if="!tempUser">
+                <div>
+                    <button class="btn btn-default" ng-click="openPopup('profile')" ng-i18next="userInfos_btn_profile"></button>
+                    <button class="btn btn-default" ng-click="openPopup('password')" ng-i18next="userInfos_btn_password"></button>
+                    <button class="btn btn-default" ng-click="openPopup('auth_connections')" ng-i18next="userInfos_btn_auth_connections"></button>
+                </div>
+                <h2 class="groupRequest-title" ng-i18next="userInfos_title_infos"></h2>
+                <div>
+                    <table class="table">
+                        <tbody>
+                            <tr><td ng-i18next="models_users_fields_sLogin_label"></td><td>{{user.sLogin}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sEmail_label"></td><td>{{user.sEmail}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sFirstName_label"></td><td>{{user.sFirstName}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sLastName_label"></td><td>{{user.sLastName}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sStudentId_label"></td><td>{{user.sStudentId}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sCountryCode_label"></td><td>{{user.sCountryCode}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sSex_label"></td><td>{{user.sSex}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sBirthDate_label"></td><td>{{user.sBirthDate}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_iGraduationYear_label"></td><td>{{user.iGraduationYear}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sAddress_label"></td><td>{{user.sAddress}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sZipcode_label"></td><td>{{user.sZipcode}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sCity_label"></td><td>{{user.sCity}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sLandLineNumber_label"></td><td>{{user.sLandLineNumber}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sCellPhoneNumber_label"></td><td>{{user.sCellPhoneNumber}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sDefaultLanguage_label"></td><td>{{user.sDefaultLanguage}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sFreeText_label"></td><td>{{user.sFreeText}}</td></tr>
+                            <tr><td ng-i18next="models_users_fields_sWebSite_label"></td><td>{{user.sWebSite}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
       </uib-tab>
       <uib-tab heading="{{'groupRequests_title_groups'|i18next}}">
          <div class="groupRequest-tabContent">
@@ -182,12 +214,12 @@
                <button class="btn btn-standard" ng-click="addHistoryLimit()" ng-if="!loading && parentsLength && parentsLength > historyLimit" ng-i18next="groupRequests_ten_more"></button>
                <button class="btn btn-default" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength" ng-i18next="groupRequests_mark_read"></button>
             </div>
+            <div ng-if="groups_error">
+                {{groups_error}}
+            </div>
          </div>
       </uib-tab>
    </uib-tabset>
-   <div ng-if="error">
-      {{error}}
-   </div>
    <div ng-if="loading && !error">
       <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="groupRequests_loading"></strong></p></center>
    </div>

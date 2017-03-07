@@ -30,6 +30,11 @@ angular.module('algorea')
          $scope.hideFrame();
          $timeout(function(){$scope.$apply();});
       });
+      $scope.$on('login.update', function(event, data) {
+            $scope.loginStr = data.login;
+            $scope.hideFrame();
+            $timeout(function(){$scope.$apply();});
+      });
       $scope.$on('login.logout', function(event,data) {
          $scope.loginStr = null;
       });

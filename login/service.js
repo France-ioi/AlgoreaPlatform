@@ -12,6 +12,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
         var loginDone = false;
         var loggedOut = true;
         var loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl);
+        var popup = null;
         function getLoginData(callback) {
            if (loginDone) {
              callback({
@@ -135,27 +136,41 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
           triggerCallback();
         }
 
+        function handleProfile(user) {
+          userLogin = user.sLogin;
+          $rootScope.myLogin = user.sLogin;
+          $rootScope.$broadcast('login.update', {
+            login: user.sLogin,
+            tempUser: false,
+            loginData: user.loginData
+          });
+          var u = ModelsManager.curData.users[user.ID];
+          angular.forEach(u, function(value, key) {
+            if(key in user.loginData) {
+              u[key] = user.loginData[key];
+            }
+          });
+          triggerCallback();
+        }
 
-        function createHandler(handler, popup) {
+
+        function createHandler(handler) {
           return function(user) {
             if(user.result) {
               handler(user);
             } else {
               console.error(user.error);
             }
-            popup.close();
+            popup && popup.close();
           }
         }
 
 
-        function openLoginPopup(logout) {
-            var url = config.domains.current.baseUrl + '/login/' + (logout ? 'redirect_logout.php' : 'redirect_oauth.php');
-            var popup = window.open(url, "Login", "menubar=no, status=no, scrollbars=yes, menubar=no, width=500, height=600");
-            window.__IOIAuthOnLogin = createHandler(handleLogin, popup);
-            window.__IOIAuthOnLogout = createHandler(handleLogout, popup);
+        function openLoginPopup(action) {
+            var url = config.domains.current.baseUrl + '/login/popup_redirect.php?action=' + action;
+            popup = window.open(url, "LoginModule", "menubar=no, status=no, scrollbars=yes, menubar=no, width=500, height=600");
+            popup.focus();
         }
-
-
 
 
         return {
@@ -178,6 +193,9 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
            bindScope: function(newScope) {
            },
            init: function() {
+            window.__LoginModuleOnLogin = createHandler(handleLogin);
+            window.__LoginModuleOnLogout = createHandler(handleLogout);
+            window.__LoginModuleOnProfile = createHandler(handleProfile);
            }
         };
   }]);

@@ -21,8 +21,8 @@
 <html>
 <body>
     <script type="text/javascript">
-        if(window.opener && window.opener['__IOIAuthOnLogout']) {
-            window.opener.__IOIAuthOnLogout(<?=$json_result?>);
+        if(window.opener && window.opener['__LoginModuleOnLogout']) {
+            window.opener.__LoginModuleOnLogout(<?=$json_result?>);
         } else {
             window.close();
         }

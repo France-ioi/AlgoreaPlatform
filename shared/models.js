@@ -370,6 +370,7 @@ var models = {
           sTimeZone: {type: "string", label: "models_users_fields_sTimeZone_label"},
           sBirthDate: {type: "string", label: "models_users_fields_sBirthDate_label"},
           iGraduationYear: {type: "int", label: "models_users_fields_iGraduationYear_label"},
+          sStudentId: {type: "string", label: "models_users_fields_sStudentId_label"},
           sSex: {
              type: "enum",
              values: {Male: {label: "models_users_fields_sSex_values_Male_label"}, Female: {label: "models_users_fields_sSex_values_Female_label"}},

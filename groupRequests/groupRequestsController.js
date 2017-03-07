@@ -145,11 +145,11 @@ angular.module('algorea')
       });
    };
    $scope.lookup = function() {
-      $scope.error = null;
+      $scope.groups_error = null;
       $http.post('/groupRequests/groupRequests.php', {action: 'getGroupsMatching', lookupString: $scope.pageData.lookupString}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from groupRequests handler: "+postRes.error);
-            $scope.error = postRes.error;
+            $scope.groups_error = postRes.error;
          } else {
             if (!postRes.results.length) {
                $scope.resultError = $i18next.t('groupRequests_no_group_found');
@@ -202,14 +202,27 @@ angular.module('algorea')
       });
    };
 
+
+    // user profile
+
+    $scope.openPopup = function(action) {
+        loginService.openLoginPopup(action);
+    }
+
+    $scope.refreshUser = function() {
+    }
+
+
    $scope.init = function() {
       $scope.updateGroups();
       loginService.getLoginData(function(res) {
+         $scope.loginLoading = false;
          if (res.tempUser) {
-            $scope.error = $i18next.t('groupRequests_not_logged');
+            $scope.tempUser = true;
+            $scope.groups_error = $i18next.t('groupRequests_not_logged');
             return;
          }
-         $scope.loginLoading = false;
+         $scope.tempUser = false;
          SyncQueue.addSyncEndListeners('groupRequestsInit', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
                $scope.loading = false;
@@ -226,12 +239,20 @@ angular.module('algorea')
    $scope.$on('login.login', function(event, data) {
       $scope.loading = true;
       $scope.loginLoading = true;
-      $scope.error = null;
+      $scope.groups_error = null;
       $scope.myGroup = null;
       $scope.user = null;
       $scope.results = null;
       $scope.myGroupParents = [];
       $scope.init();
+   });
+
+   $scope.$on('login.update', function(event, data) {
+      $scope.loginLoading = true;
+      loginService.getLoginData(function(res) {
+        $scope.loginLoading = false;
+        $scope.user = ModelsManager.getRecord('users', res.ID);
+      });
    });
 
    $scope.stopSync = function() {
