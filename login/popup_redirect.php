@@ -27,7 +27,7 @@ switch($action) {
         $url = $redirect_helper->getPasswordUrl();
         break;
     case 'auth_connections':
-        $url = $redirect_helper->getAuthConnectionsUrl();
+        $url = $redirect_helper->getAuthMethodsUrl();
         break;
     default:
         die('Invalid action');

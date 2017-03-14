@@ -23,7 +23,7 @@ function checkExpandedItemResults(&$serverChanges) {
          $deleted_records = array();
          foreach ($modelServerChanges["deleted"] as $recordID => $value) {
             if ($value['data'] != [] && property_exists($value['data'], 'requestName') && $value['data']->requestName == $modelName) {
-               if (isset($modelServerChanges["inserted"][$recordID]) && 
+               if (isset($modelServerChanges["inserted"][$recordID]) &&
                      property_exists($modelServerChanges["inserted"][$recordID]['data'], 'requestName') &&
                      $modelServerChanges["inserted"][$recordID]['data']->requestName == $modelName.'_zero') {
                   unset($modelServerChanges["inserted"][$recordID]);
@@ -288,7 +288,7 @@ function getAllLevels ($params, &$requests){
    );
    $requests["items_strings"]["filters"]["accessible"] = array('values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));;
    $requests["items_strings"]["readOnly"] = true;
-   
+
    $requests["users_items"]["model"]["joins"]["items_items"] =  array("type" => "LEFT", "srcTable" => "users_items", "srcField" => "idItem", "dstField" => "idItemChild");
    $requests["users_items"]["model"]["filters"]["getAllLevels"] = array(
       "joins" => array("items_items"),
@@ -503,24 +503,24 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
          //getMyGroupsItems($params, $requests);
          // groups_items slows everything down here, no idea why
          $requests['messages']['filters']['accessibleWrite'] = array(
-            'modes' => array('insert' => true, 'update' => true, 'delete' => true), 
+            'modes' => array('insert' => true, 'update' => true, 'delete' => true),
             'values' => array('idUser' => $_SESSION['login']['ID']),
          );
          $requests['messages']['writeOnly'] = true;
          $requests['threads']['filters']['accessibleWrite'] = array(
-            'modes' => array('insert' => true, 'update' => true, 'delete' => true), 
+            'modes' => array('insert' => true, 'update' => true, 'delete' => true),
             'values' => array('idUser' => $_SESSION['login']['ID']),
          );
          $requests['threads_general'] = $requests['threads'];
          $requests['threads']['filters']['accessibleHelp'] = array(
-            'modes' => array('select' => true), 
+            'modes' => array('select' => true),
             'values' => array(
                'idGroupSelf' => $_SESSION['login']['idGroupSelf']
             ),
          );
          $requests['threads']["model"]["fields"]["sType"]["groupBy"] = "`threads`.`ID`";
          $requests['threads_general']['filters']['accessibleGeneralOrMineRead'] = array(
-            'modes' => array('select' => true), 
+            'modes' => array('select' => true),
             'values' => array(
                'idUser' => $_SESSION['login']['ID'],
             ),

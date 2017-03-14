@@ -340,11 +340,9 @@
 
     "userInfos_not_logged": "Sie können Ihren Benutzer leider nicht ändern. Loggen Sie sich ein, um das zu tun (rechts oben auf der Seite).",
     "userInfos_title_infos": "Die folgenden Informationen über Sie stehen uns zur Verfügung:",
-    "userInfos_info_first": "Vorname:",
-    "userInfos_info_last": "Nachname:",
-    "userInfos_info_birthdate": "Geburtsdatum:",
-    "userInfos_info_email": "E-Mail-Adresse:",
-    "userInfos_change_password": "Passwort ändern",
+    "userInfos_btn_profile": "Edit my profile",
+    "userInfos_btn_auth_connections": "Authentication methods",
+    "userInfos_btn_password": "Passwort ändern",
 
     "models_filters_fields_idUser_label": "Nutzer-ID",
     "models_filters_fields_sName_label": "Filtername",

@@ -137,7 +137,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/France-ioi/login-module-client.git",
-                "reference": "958b5c1114f7db352095ac77fc226a2babd7cabb"
+                "reference": "8d046d49b4e11709cd05279793b7ecabd9a55fca"
             },
             "require": {
                 "league/oauth2-client": "^2.0",
@@ -153,7 +153,7 @@
                 "MIT"
             ],
             "description": "Login Module Client Library",
-            "time": "2017-03-07 00:28:57"
+            "time": "2017-03-14 15:29:36"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -468,16 +468,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.9",
+            "version": "v2.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "6968531206671f94377b01dc7888d5d1b858a01b"
+                "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/6968531206671f94377b01dc7888d5d1b858a01b",
-                "reference": "6968531206671f94377b01dc7888d5d1b858a01b",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/634bae8e911eefa89c1abfbf1b66da679ac8f54d",
+                "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d",
                 "shasum": ""
             },
             "require": {
@@ -512,7 +512,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2017-03-03 20:43:42"
+            "time": "2017-03-13 16:27:32"
         },
         {
             "name": "phpseclib/phpseclib",

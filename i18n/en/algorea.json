@@ -341,7 +341,7 @@
     "userInfos_not_logged": "Sorry, you can't change your user information. Please log in (button at the top right of the screen) to access this feature.",
     "userInfos_title_infos": "Here are the informations about you that we have access to:",
     "userInfos_btn_profile": "Edit my profile",
-    "userInfos_btn_auth_connections": "Social accounts",
+    "userInfos_btn_auth_connections": "Authentication methods",
     "userInfos_btn_password": "Change my password",
 
     "models_filters_fields_idUser_label": "User ID",

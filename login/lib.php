@@ -137,7 +137,11 @@ function remapUserArray($user) {
 
     $res['sSex'] = null;
     if(!empty($user['gender'])) {
-        $res['sSex'] = $user['gender'] == 'm' ? 'Male' : 'Female';
+        if($user['gender'] == 'm') {
+            $res['sSex'] = 'Male';
+        } else if($user['gender'] == 'f') {
+            $res['sSex'] = 'Female';
+        }
     }
     $res['bEmailVerified'] = !empty($user['primary_email_verified']) ? 1 : 0;
 
@@ -168,9 +172,9 @@ function createUpdateUser($db, $params) {
 
         $stmt = $db->prepare("
             insert into `users`
-            (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`, `sStudentId`, `sCountryCode`, `sBirthDate`, `iGraduationYear`, `sAddress`, `sZipcode`, `sCity`, `sLandLineNumber`, `sCellPhoneNumber`, `sDefaultLanguage`, `sFreeText`, `sWebSite`, `sLastIP`)
+            (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`, `sStudentId`, `sCountryCode`, `sBirthDate`, `iGraduationYear`, `sAddress`, `sZipcode`, `sCity`, `sLandLineNumber`, `sCellPhoneNumber`, `sDefaultLanguage`, `sFreeText`, `sWebSite`, `sLastIP`, `sSex`)
             values
-            (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName, :sStudentId, :sCountryCode, :sBirthDate, :iGraduationYear, :sAddress, :sZipcode, :sCity, :sLandLineNumber, :sCellPhoneNumber, :sDefaultLanguage, :sFreeText, :sWebSite, :sLastIP);
+            (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName, :sStudentId, :sCountryCode, :sBirthDate, :iGraduationYear, :sAddress, :sZipcode, :sCity, :sLandLineNumber, :sCellPhoneNumber, :sDefaultLanguage, :sFreeText, :sWebSite, :sLastIP, :sSex);
         ");
         $stmt->execute([
             'ID' => $userId,
@@ -194,6 +198,7 @@ function createUpdateUser($db, $params) {
             'sFreeText' => $params['sFreeText'],
             'sWebSite' => $params['sWebSite'],
             'sLastIP' => $params['sLastIP'],
+            'sSex' => $params['sSex'],
         ]);
         $_SESSION['login']['ID'] = $userId;
         $_SESSION['login']['idGroupSelf'] = $userSelfGroupId;
@@ -220,7 +225,8 @@ function createUpdateUser($db, $params) {
                 `sDefaultLanguage` = :sDefaultLanguage,
                 `sFreeText` = :sFreeText,
                 `sWebSite` = :sWebSite,
-                `sLastIP` = :sLastIP
+                `sLastIP` = :sLastIP,
+                `sSex` = :sSex
             where ID = :ID;");
         $stmt->execute([
             'ID' => $res['ID'],
@@ -241,6 +247,7 @@ function createUpdateUser($db, $params) {
             'sFreeText' => $params['sFreeText'],
             'sWebSite' => $params['sWebSite'],
             'sLastIP' => $params['sLastIP'],
+            'sSex' => $params['sSex']
         ]);
 
         $_SESSION['login']['ID'] = $res['ID'];

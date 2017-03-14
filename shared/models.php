@@ -37,7 +37,7 @@ $tablesModels = array (
          "sPassword" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sType" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "bSendEmails" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")))
-         
+
       )
    ),
 
@@ -207,6 +207,7 @@ $tablesModels = array (
           "sBirthDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "iGraduationYear"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sSex"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
+          "sStudentId"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sAddress"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sZipcode"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sCity"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
@@ -726,6 +727,7 @@ $viewsModels = array(
           "sBirthDate"            => array(),
           "iGraduationYear"       => array(),
           "sSex"                  => array(),
+          "sStudentId"                  => array(),
           "sAddress"              => array(),
           "sZipcode"              => array(),
           "sCity"                 => array(),
