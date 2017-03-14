@@ -26,7 +26,7 @@ switch($action) {
     case 'password':
         $url = $redirect_helper->getPasswordUrl();
         break;
-    case 'auth_connections':
+    case 'auth_methods':
         $url = $redirect_helper->getAuthMethodsUrl();
         break;
     default:
