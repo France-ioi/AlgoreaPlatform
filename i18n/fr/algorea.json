@@ -341,7 +341,7 @@
     "userInfos_not_logged": "Désolé, vous ne pouvez pas modifier vos données utilisateur. Merci de vous connecter (bouton en haut à droite de l'écran) pour pouvoir le faire.",
     "userInfos_title_infos": "Voici les informations vous concernant auxquelles nous avons accès :",
     "userInfos_btn_profile": "Edit my profile",
-    "userInfos_btn_auth_connections": "Authentication methods",
+    "userInfos_btn_auth_methods": "Authentication methods",
     "userInfos_btn_password": "Changer mon mot de passe",
 
     "models_filters_fields_idUser_label": "id de l'utilisateur",
