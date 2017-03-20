@@ -144,7 +144,7 @@ function remapUserArray($user) {
         }
     }
     $res['bEmailVerified'] = !empty($user['primary_email_verified']) ? 1 : 0;
-
+    $res['sCountryCode'] = strtolower($res['sCountryCode']);
     return $res;
 }
 
