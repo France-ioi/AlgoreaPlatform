@@ -18,10 +18,10 @@ switch($action) {
         $url = $authorization_helper->getUrl();
         break;
     case 'logout':
-        $url = $redirect_helper->getLogoutUrl($config->shared->domains['default']->baseUrl.'/login/callback_logout.php');
+        $url = $redirect_helper->getLogoutUrl($config->shared->domains['current']->baseUrl.'/login/callback_logout.php');
         break;
     case 'profile':
-        $url = $redirect_helper->getProfileUrl($config->shared->domains['default']->baseUrl.'/login/callback_profile.php');
+        $url = $redirect_helper->getProfileUrl($config->shared->domains['current']->baseUrl.'/login/callback_profile.php');
         break;
     case 'password':
         $url = $redirect_helper->getPasswordUrl();

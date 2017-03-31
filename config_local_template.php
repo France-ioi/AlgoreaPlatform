@@ -92,6 +92,6 @@ $config->login_module_client = [
         'id' => '3',
         'secret' => '1AtKfSc7KbgIo8GDCI31pA9laP7pFoBqSg3RtVHq',
         'base_url' => 'http://login-module.dev',
-        'redirect_uri' => $config->shared->domains['default']->baseUrl.'/login/callback_oauth.php',
+        'redirect_uri' => $config->shared->domains['current']->baseUrl.'/login/callback_oauth.php',
 ];
 ?>
