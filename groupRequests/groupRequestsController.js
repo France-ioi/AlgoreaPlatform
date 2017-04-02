@@ -17,7 +17,6 @@ angular.module('algorea')
       $scope.user.sNotificationReadDate = new Date();
       ModelsManager.updated('users', $scope.user.ID);
    };
-   $scope.loading = true;
 
    // involved sync design pattern: call updateGroups if a group_group when necessary
    var needToUpdateAtEndOfSync = false;
@@ -217,12 +216,13 @@ angular.module('algorea')
       $scope.updateGroups();
       loginService.getLoginData(function(res) {
          $scope.loginLoading = false;
-         if (res.tempUser) {
-            $scope.tempUser = true;
+         //console.log('>>>>', res);
+         $scope.tempUser = res.tempUser;
+         if(res.tempUser) {
+            $scope.loading = false;
             $scope.groups_error = $i18next.t('groupRequests_not_logged');
             return;
          }
-         $scope.tempUser = false;
          SyncQueue.addSyncEndListeners('groupRequestsInit', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
                $scope.loading = false;
@@ -237,6 +237,7 @@ angular.module('algorea')
 
    itemService.onNewLoad($scope.init);
    $scope.$on('login.login', function(event, data) {
+      $scope.tempUser = data.tempUser;
       $scope.loading = true;
       $scope.loginLoading = true;
       $scope.groups_error = null;
@@ -248,6 +249,7 @@ angular.module('algorea')
    });
 
    $scope.$on('login.update', function(event, data) {
+      $scope.tempUser = data.tempUser;
       $scope.loginLoading = true;
       loginService.getLoginData(function(res) {
         $scope.loginLoading = false;
