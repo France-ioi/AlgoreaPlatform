@@ -9,16 +9,16 @@
     "packages": [
         {
             "name": "beberlei/assert",
-            "version": "v2.7.3",
+            "version": "v2.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/assert.git",
-                "reference": "5972776d6a9eedfd3c55216341434e19cb50418f"
+                "reference": "3ee3bc468a3ce4bbfc3d74f53c6cdb5242d39d1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/assert/zipball/5972776d6a9eedfd3c55216341434e19cb50418f",
-                "reference": "5972776d6a9eedfd3c55216341434e19cb50418f",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/3ee3bc468a3ce4bbfc3d74f53c6cdb5242d39d1a",
+                "reference": "3ee3bc468a3ce4bbfc3d74f53c6cdb5242d39d1a",
                 "shasum": ""
             },
             "require": {
@@ -26,8 +26,8 @@
                 "php": ">=5.3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.0",
-                "phpunit/phpunit": "@stable"
+                "friendsofphp/php-cs-fixer": "^2.1.1",
+                "phpunit/phpunit": "^4|^5"
             },
             "type": "library",
             "autoload": {
@@ -60,7 +60,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2017-01-24 15:14:39"
+            "time": "2017-03-14 18:06:52"
         },
         {
             "name": "fgrosse/phpasn1",
@@ -137,7 +137,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/France-ioi/login-module-client.git",
-                "reference": "8d046d49b4e11709cd05279793b7ecabd9a55fca"
+                "reference": "aac095420f9b26edbff19f3afe864641aa07ee1b"
             },
             "require": {
                 "league/oauth2-client": "^2.0",
@@ -153,7 +153,7 @@
                 "MIT"
             ],
             "description": "Login Module Client Library",
-            "time": "2017-03-14 15:29:36"
+            "time": "2017-03-31 03:31:57"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -270,16 +270,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.4.1",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "0d6c7ca039329247e4f0f8f8f6506810e8248855"
+                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/0d6c7ca039329247e4f0f8f8f6506810e8248855",
-                "reference": "0d6c7ca039329247e4f0f8f8f6506810e8248855",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
+                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
                 "shasum": ""
             },
             "require": {
@@ -331,7 +331,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-02-27 10:51:17"
+            "time": "2017-03-20 17:10:46"
         },
         {
             "name": "league/oauth2-client",
@@ -704,23 +704,23 @@
         },
         {
             "name": "spomky-labs/aes-key-wrap",
-            "version": "v3.0.2",
+            "version": "v3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/aes-key-wrap.git",
-                "reference": "416bb3b26609332fe9be8d425de3a293f5386683"
+                "reference": "072e312ea119c4cc33012edc5e7e8c3f3def0d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/416bb3b26609332fe9be8d425de3a293f5386683",
-                "reference": "416bb3b26609332fe9be8d425de3a293f5386683",
+                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/072e312ea119c4cc33012edc5e7e8c3f3def0d66",
+                "reference": "072e312ea119c4cc33012edc5e7e8c3f3def0d66",
                 "shasum": ""
             },
             "require": {
-                "beberlei/assert": "^2.0",
+                "beberlei/assert": "^2.4",
+                "ext-mbstring": "*",
                 "lib-openssl": "*",
-                "php": ">=5.4",
-                "symfony/polyfill-mbstring": "^1.1"
+                "php": "^5.4|^7.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.5|^5.0",
@@ -747,7 +747,7 @@
                     "homepage": "https://github.com/Spomky-Labs/aes-key-wrap/contributors"
                 }
             ],
-            "description": "AES Kew Wrap for PHP.",
+            "description": "AES Key Wrap for PHP.",
             "homepage": "https://github.com/Spomky-Labs/aes-key-wrap",
             "keywords": [
                 "A128KW",
@@ -760,7 +760,7 @@
                 "padding",
                 "wrap"
             ],
-            "time": "2016-03-31 11:02:58"
+            "time": "2017-03-25 21:07:11"
         },
         {
             "name": "spomky-labs/base64url",

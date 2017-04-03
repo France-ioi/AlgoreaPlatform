@@ -33,8 +33,9 @@ ob_end_clean();
 <html>
 <body>
     <script type="text/javascript">
-        if(window.opener && window.opener['__LoginModuleOnLogin']) {
-            window.opener.__LoginModuleOnLogin(<?=$json_result?>);
+        var platform = window.opener ? window.opener : parent;
+        if(platform && platform['__LoginModuleOnLogin']) {
+            platform.__LoginModuleOnLogin(<?=$json_result?>);
         } else {
             window.close();
         }

@@ -97,7 +97,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
 
 
         function handleLogin(user) {
-          if(user.login == userLogin) return
+          if(user.sLogin == userLogin) return
           loggedOut = false;
           state = 'login';
           tempUser = false;

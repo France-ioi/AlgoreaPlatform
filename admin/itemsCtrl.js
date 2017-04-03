@@ -44,10 +44,11 @@ app.directive('field', ['$rootScope', function($rootScope) {
 angular.module('algorea')
    .controller('adminCtrl', ['$scope', '$rootScope', 'loginService', '$sce', '$location', '$timeout', function($scope, $rootScope, loginService, $sce, $location, $timeout) {
       $scope.userLogged = false;
-      $scope.loginReady = false;
+      $scope.loginReady = true;
       $scope.loginClass = 'loginCentered';
       $scope.loginInnerHtml = '';
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl+'?'+config.domains.current.additionalLoginArgs);
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.domains.current.baseUrl + '/login/popup_redirect.php?action=login');
+      loginService.init();
       $scope.$on('login.login', function(event, data) {
          if (data.tempUser) {
             $scope.userLogged = false;
