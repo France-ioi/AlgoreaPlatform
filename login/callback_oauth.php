@@ -36,8 +36,11 @@ ob_end_clean();
         var platform = window.opener ? window.opener : parent;
         if(platform && platform['__LoginModuleOnLogin']) {
             platform.__LoginModuleOnLogin(<?=$json_result?>);
-        } else {
-            window.close();
+        } 
+        window.close();
+        if(!platform || platform === window) {
+            // If we get there, we weren't in a popup and we can redirect
+            window.location = '<?php echo $config->shared->domains['current']->baseUrl ?>';
         }
     </script>
 </body>
