@@ -28,6 +28,7 @@ function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
       $db->exec("lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = '$RootGroupId'),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values ($RootGroupId, '$userSelfGroupId', @maxIChildOrder+1); unlock tables;");
    }
    $db->exec('unlock tables;'); // why again?
+   $stm = null;
    Listeners::createNewAncestors($db, "groups", "Group");
    return array($userAdminGroupId, $userSelfGroupId);
 }
@@ -53,11 +54,13 @@ function createTempUser($db) {
    echo json_encode(array('result' => true, 'sLogin' => $sLogin, 'ID' => $userId, 'loginData' => $_SESSION['login']));
 }
 
-function addUserToGroupHierarchy($idGroupSelf, $groupHierarchy, $role) {
+function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $role) {
    global $db;
-   if ($role != 'member') return;
+   if ($role != 'member' && $role != 'manager') return;
    $previousGroupId = null;
    $launchTriggers = false;
+
+   // Find the group corresponding to the hierarchy
    foreach($groupHierarchy as $groupName) {
       $groupId = null;
       if (!$previousGroupId) {
@@ -82,27 +85,38 @@ function addUserToGroupHierarchy($idGroupSelf, $groupHierarchy, $role) {
       $previousGroupId = $groupId;
    }
    if (!$previousGroupId) return;
-   $stmt = $db->prepare('select groups_groups.ID from groups_groups where groups_groups.idGroupChild = :idGroupSelf and groups_groups.idGroupParent = :previousGroupId;');
-   $stmt->execute(['idGroupSelf' => $idGroupSelf, 'previousGroupId' => $previousGroupId]);
+
+   if($role == 'manager') {
+      $groupInfo = array('idGroupParent' => $idGroupOwned, 'idGroupChild' => $previousGroupId);
+   } else { // member role
+      $groupInfo = array('idGroupParent' => $previousGroupId, 'idGroupChild' => $idGroupSelf);
+   }
+
+   // Check the relation doesn't already exist
+   $stmt = $db->prepare('select groups_groups.ID from groups_groups where groups_groups.idGroupChild = :idGroupChild and groups_groups.idGroupParent = :idGroupParent;');
+   $stmt->execute($groupInfo);
    $groupGroupId = $stmt->fetchColumn();
    if (!$groupGroupId) {
       $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
-      $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $idGroupSelf]);
+      $stmt->execute($groupInfo);
       $launchTriggers = true;
    }
+
+   $stmt = null;
+   // Launch triggers only if something happened
    if ($launchTriggers) {
       Listeners::createNewAncestors($db, "groups", "Group");
    }
 
 }
 
-function handleBadges($idUser, $idGroupSelf, $aBadges) {
+function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
     foreach($aBadges as $badge_data) {
         $badge = $badge_data['url'];
         if (substr($badge, 0, 9) === 'groups://') {
             $splitGroups = explode('/', substr($badge, 9));
             $role = array_pop($splitGroups);
-            addUserToGroupHierarchy($idGroupSelf, $splitGroups, $role);
+            addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $splitGroups, $role);
         }
     }
 }
@@ -258,7 +272,7 @@ function createUpdateUser($db, $params) {
         $_SESSION['login']['sLastName'] = (isset($params['sLastName']) ? $params['sLastName'] : null);
     }
     if (isset($params['aBadges'])) {
-        handleBadges($_SESSION['login']['ID'], $_SESSION['login']['idGroupSelf'], $params['aBadges']);
+        handleBadges($_SESSION['login']['ID'], $_SESSION['login']['idGroupSelf'], $_SESSION['login']['idGroupOwned'], $params['aBadges']);
     }
     echo json_encode(array('result' => true, 'sLogin' => $params['sLogin'], 'ID' => $_SESSION['login']['ID'], 'loginData' => $_SESSION['login']));
 }
