@@ -167,6 +167,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
 
 
         function openLoginPopup(action) {
+            if(!action) { action = 'login'; }
             var url = config.domains.current.baseUrl + '/login/popup_redirect.php?action=' + action;
             popup = window.open(url, "LoginModule", "menubar=no, status=no, scrollbars=yes, menubar=no, width=500, height=600");
             popup.focus();
