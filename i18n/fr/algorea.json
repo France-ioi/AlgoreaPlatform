@@ -59,6 +59,10 @@
     "login_disconnect": "Se déconnecter",
     "login_connect": "Se connecter",
 
+    "contest_start": "Commencer le concours",
+    "contest_already_done": "Vous avez déjà effectué ce concours.",
+    "contest_ended": "Le concours est terminé !",
+
     "admin_retrieving_login": "Récupération des informations de connexion...",
     "admin_access_management": "Gestion des droits",
     "admin_select_item": "Sélectionnez un item :",

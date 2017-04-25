@@ -23,7 +23,7 @@ angular.module('algorea')
       	var contestOverCallback = function() {
       		scope.$applyAsync(function() {
       			scope.timerStr = '';
-      			alert('Le concours est terminé !');
+      			alert(i18next.t('contest_ended'));
             SyncQueue.planToSend(0);
             // brutal way of ensuring that items are not accessible afterwards
             location.reload();
