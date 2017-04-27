@@ -13,6 +13,7 @@
     "delete": "Löschen",
     "description": "Beschreibung",
     "edition": "Edition",
+    "error": "Fehler",
     "events": "Events",
     "exercise": "Übung",
     "group": "Gruppe",
@@ -55,11 +56,13 @@
     "menu_contest": "Contests",
     "menu_discover": "Entdecken",
 
+    "error_item_not_found": "Diese Seite ist leider nicht verfügbar.",
+
     "login_loading": "Laden …",
     "login_disconnect": "Ausloggen",
     "login_connect": "Einloggen",
 
-    "contest_start": "Starten Wettbewerb",
+    "contest_start": "Den Wettbewerb jetzt starten",
     "contest_already_done": "Du hast dieses Wettbewerb bereits abgeschlossen.",
     "contest_ended": "Die Wettbewerbszeit is abgelaufen!",
 
