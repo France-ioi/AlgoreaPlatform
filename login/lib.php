@@ -54,29 +54,43 @@ function createTempUser($db) {
    echo json_encode(array('result' => true, 'sLogin' => $sLogin, 'ID' => $userId, 'loginData' => $_SESSION['login']));
 }
 
-function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $role) {
+function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $role, $direct=true) {
+   // Add a user to a group represented by a hierarchy
+   // role: member or manager
+   // direct: true = search a direct child at each level
+   //        false = search any descendant
+
    global $db;
    if ($role != 'member' && $role != 'manager') return;
+
+   if(!$direct) { return; } // TODO :: implement non-direct mode
+
    $previousGroupId = null;
    $launchTriggers = false;
 
    // Find the group corresponding to the hierarchy
-   foreach($groupHierarchy as $groupName) {
+   foreach($groupHierarchy as $groupInfo) {
+      list($groupTextId, $groupName) = $groupInfo;
       $groupId = null;
       if (!$previousGroupId) {
-         $stmt = $db->prepare('select ID from groups where sName = :groupName;');
-         $stmt->execute(['groupName' => $groupName]);
+         $stmt = $db->prepare('select ID from groups where sTextId = :groupTextId;');
+         $stmt->execute(['groupTextId' => $groupTextId]);
          $groupId = $stmt->fetchColumn();
       } else {
-         $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sName = :groupName and groups_groups.idGroupParent = :previousGroupId;');
-         $stmt->execute(['groupName' => $groupName, 'previousGroupId' => $previousGroupId]);
+         $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sTextId = :groupTextId and groups_groups.idGroupParent = :previousGroupId;');
+         $stmt->execute(['groupTextId' => $groupTextId, 'previousGroupId' => $previousGroupId]);
          $groupId = $stmt->fetchColumn();
       }
-      if (!$groupId) {
+      if ($groupId) {
+         // Update name of old group
+         $stmt = $db->prepare('UPDATE groups SET sName=:groupName where ID=:id');
+         $stmt->execute(['groupName' => $groupName, 'id' => $groupId]);
+      } else {
+         // Create new group
          $launchTriggers = true;
          $groupId = getRandomID();
-         $stmt = $db->prepare('insert into groups (ID, sName, sDateCreated) values (:ID, :sName, NOW());');
-         $stmt->execute(['ID' => $groupId, 'sName' => $groupName]);
+         $stmt = $db->prepare('insert into groups (ID, sName, sTextId, sDateCreated) values (:ID, :sName, :sTextId, NOW());');
+         $stmt->execute(['ID' => $groupId, 'sName' => $groupName, 'sTextId' => $groupTextId]);
          if ($previousGroupId) {
             $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
             $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $groupId]);
@@ -111,14 +125,92 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
 }
 
 function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
-    foreach($aBadges as $badge_data) {
-        $badge = $badge_data['url'];
-        if (substr($badge, 0, 9) === 'groups://') {
-            $splitGroups = explode('/', substr($badge, 9));
-            $role = array_pop($splitGroups);
-            addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $splitGroups, $role);
-        }
-    }
+   // Handle badges sent by login module
+   // So far, only badges built from PMS info are supported
+
+   // Depth levels for each protocol
+   $protocolsArgs = array(
+      'teacher' => 1,
+      'school' => 1,
+      'grade' => 1,
+      'competition' => 2
+      );
+
+   // Member
+   $pmsMemberInfo = array(
+      'teacher' => array(array('teacher_none', 'Teacher unknown')),
+      'school' => null,
+      'grade' => array(array('grade_unknown', 'Grade unknown')),
+      'competitions' => array()
+      );
+
+   // Manager info (only teacher for now)
+   $pmsTeacherInfo = null;
+
+   foreach($aBadges as $badge_data) {
+      $badge = $badge_data['url'];
+      $splitProtocol = explode('://', $badge);
+      if(count($splitProtocol) != 2) { continue; } // unsupported
+      if(!isset($protocolsArgs[$protocol])) { continue; } // unsupported protocol
+
+      $protocol = $splitProtocol[0];
+      $path = explode('/', $splitProtocol[1], 2+$protocolsArgs[$protocol]*2);
+      if(count($path) < 4) { continue; } // unsupported
+
+      $domain = $path[0];
+      if($domain == 'pms.bwinf.de') { // no support yet for other domains
+         $role = $path[1];
+
+         // Consolidate path into tuples (sTextId, sName)
+         $pathWithNames = array();
+         for($i = 1; $i < count($path)/2; $i++) {
+            $pathWithNames[] = array($path[$i*2], $path[$i*2+1]);
+         }
+
+         if($role == 'member') {
+            if($protocol == 'teacher' || $protocol == 'school' || $protocol == 'grade') {
+               $pmsMemberInfo[$protocol] = $pathWithNames;
+            } elseif($protocol == 'competition') {
+               $pmsMemberInfo['competitions'][] = $pathWithNames;
+            }
+         } elseif($role == 'manager' && $protocol == 'teacher') {
+            $pmsTeacherInfo = $pathWithNames;
+         }
+      }
+   }
+
+   $basePms = array(array('PMS', 'PMS'));
+   $basePmsSchools = array(array('schools', 'Schulen'));
+   $basePmsCompetitions = array(array('competitions', 'Wettbewerbe'));
+
+   // Add member info
+   $schoolPath = null;
+   if($pmsMemberInfo['teacher'] && $pmsMemberInfo['school']) {
+      $schoolPath = array_merge($pmsMemberInfo['school'], $pmsMemberInfo['teacher']); // used later
+      // PMS/school/teacher/grade/
+      $fullPath = array_merge($basePms, $basePmsSchools, $schoolPath, $pmsMemberInfo['grade']);
+      addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $fullPath, 'member');
+   }
+
+   foreach($pmsMemberInfo['competitions'] as $competitionPath) {
+      if($schoolPath !== null) {
+         // PMS/competition/school/teacher/grade/
+         $compPath1 = array_merge($basePms, $basePmsCompetitions, array($competitionPath[0]), $schoolPath, array($competitionPath[1]));
+         addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $compPath1, 'member');
+         // PMS/schools/school_/teacher_/competition_/grade_/
+         $compPath2 = array_merge($basePms, $basePmsSchools, $schoolPath, $competitionPath);
+         addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $compPath2, 'member');
+      } else {
+         // PMS/competitions/competition_/grade_/
+         addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, array_merge($basePms, $basePmsCompetitions, $competitionPath), 'member');
+      }
+   }
+
+   // Add teacher info
+   if($pmsTeacherInfo) {
+      // direct=false which means it will look for all groups referencing that teacher
+      addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, array_merge($basePms, $pmsTeacherInfo), 'manager', false);
+   }
 }
 
 
