@@ -151,9 +151,10 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
       $badge = $badge_data['url'];
       $splitProtocol = explode('://', $badge);
       if(count($splitProtocol) != 2) { continue; } // unsupported
-      if(!isset($protocolsArgs[$protocol])) { continue; } // unsupported protocol
 
       $protocol = $splitProtocol[0];
+      if(!isset($protocolsArgs[$protocol])) { continue; } // unsupported protocol
+
       $path = explode('/', $splitProtocol[1], 2+$protocolsArgs[$protocol]*2);
       if(count($path) < 4) { continue; } // unsupported
 
