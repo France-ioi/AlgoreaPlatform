@@ -63,57 +63,83 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
    global $db;
    if ($role != 'member' && $role != 'manager') return;
 
-   if(!$direct) { return; } // TODO :: implement non-direct mode
-
    $previousGroupId = null;
    $launchTriggers = false;
 
    // Find the group corresponding to the hierarchy
    foreach($groupHierarchy as $groupInfo) {
       list($groupTextId, $groupName) = $groupInfo;
-      $groupId = null;
-      if (!$previousGroupId) {
-         $stmt = $db->prepare('select ID from groups where sTextId = :groupTextId;');
-         $stmt->execute(['groupTextId' => $groupTextId]);
-         $groupId = $stmt->fetchColumn();
-      } else {
-         $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sTextId = :groupTextId and groups_groups.idGroupParent = :previousGroupId;');
-         $stmt->execute(['groupTextId' => $groupTextId, 'previousGroupId' => $previousGroupId]);
-         $groupId = $stmt->fetchColumn();
-      }
-      if ($groupId) {
-         // Update name of old group
-         $stmt = $db->prepare('UPDATE groups SET sName=:groupName where ID=:id');
-         $stmt->execute(['groupName' => $groupName, 'id' => $groupId]);
-      } else {
-         // Create new group
-         $launchTriggers = true;
-         $groupId = getRandomID();
-         $stmt = $db->prepare('insert into groups (ID, sName, sTextId, sDateCreated) values (:ID, :sName, :sTextId, NOW());');
-         $stmt->execute(['ID' => $groupId, 'sName' => $groupName, 'sTextId' => $groupTextId]);
-         if ($previousGroupId) {
-            $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
-            $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $groupId]);
+
+      if($direct) {
+         // Search for a child group matching, create it if it doesn't exist
+         $groupId = null;
+         if (!$previousGroupId) {
+            $stmt = $db->prepare('select ID from groups where sTextId = :groupTextId;');
+            $stmt->execute(['groupTextId' => $groupTextId]);
+            $groupId = $stmt->fetchColumn();
+         } else {
+            $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sTextId = :groupTextId and groups_groups.idGroupParent = :previousGroupId;');
+            $stmt->execute(['groupTextId' => $groupTextId, 'previousGroupId' => $previousGroupId]);
+            $groupId = $stmt->fetchColumn();
          }
+         if ($groupId) {
+            // Update name of old group
+            $stmt = $db->prepare('UPDATE groups SET sName=:groupName where ID=:id');
+            $stmt->execute(['groupName' => $groupName, 'id' => $groupId]);
+         } else {
+            // Create new group
+            $launchTriggers = true;
+            $groupId = getRandomID();
+            $stmt = $db->prepare('insert into groups (ID, sName, sTextId, sDateCreated) values (:ID, :sName, :sTextId, NOW());');
+            $stmt->execute(['ID' => $groupId, 'sName' => $groupName, 'sTextId' => $groupTextId]);
+            if ($previousGroupId) {
+               $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+               $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $groupId]);
+            }
+         }
+         $previousGroupId = $groupId;
+      } else {
+         // Search for any descendant group matching; names are not updated
+         if (!$previousGroupId) {
+            $stmt = $db->prepare('select ID from groups where sTextId = :groupTextId;');
+            $stmt->execute(['groupTextId' => $groupTextId]);
+            $groupId = array($stmt->fetchColumn());
+         } else {
+            $groupId = array();
+            $condition = 'groups_ancestors.idGroupAncestor IN ('.implode(', ', $previousGroupId).')';
+            $stmt = $db->prepare('select groups.ID from groups join groups_ancestors on groups_ancestors.idGroupChild = groups.ID where groups.sTextId = :groupTextId and '.$condition.';');
+            $stmt->execute(['groupTextId' => $groupTextId]);
+            while(($newGroupId = $stmt->fetchColumn()) !== FALSE) {
+               $groupId[] = $newGroupId;
+            }
+         }
+         if(count($groupId) == 0) { return; }
+         $previousGroupId = $groupId;
       }
-      $previousGroupId = $groupId;
    }
-   if (!$previousGroupId) return;
+   if(!$previousGroupId) return;
 
-   if($role == 'manager') {
-      $groupInfo = array('idGroupParent' => $idGroupOwned, 'idGroupChild' => $previousGroupId);
-   } else { // member role
-      $groupInfo = array('idGroupParent' => $previousGroupId, 'idGroupChild' => $idGroupSelf);
+   if($direct) {
+      $previousGroupId = array($previousGroupId);
    }
 
-   // Check the relation doesn't already exist
-   $stmt = $db->prepare('select groups_groups.ID from groups_groups where groups_groups.idGroupChild = :idGroupChild and groups_groups.idGroupParent = :idGroupParent;');
-   $stmt->execute($groupInfo);
-   $groupGroupId = $stmt->fetchColumn();
-   if (!$groupGroupId) {
-      $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+   foreach($previousGroupId as $targetGroupId) {
+      // Add member/manager reights to each group
+      if($role == 'manager') {
+         $groupInfo = array('idGroupParent' => $idGroupOwned, 'idGroupChild' => $targetGroupId);
+      } else { // member role
+         $groupInfo = array('idGroupParent' => $targetGroupId, 'idGroupChild' => $idGroupSelf);
+      }
+   
+      // Check the relation doesn't already exist
+      $stmt = $db->prepare('select groups_groups.ID from groups_groups where groups_groups.idGroupChild = :idGroupChild and groups_groups.idGroupParent = :idGroupParent;');
       $stmt->execute($groupInfo);
-      $launchTriggers = true;
+      $groupGroupId = $stmt->fetchColumn();
+      if (!$groupGroupId) {
+         $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+         $stmt->execute($groupInfo);
+         $launchTriggers = true;
+      }
    }
 
    $stmt = null;
@@ -139,7 +165,7 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
    // Member
    $pmsMemberInfo = array(
       'teacher' => array(array('teacher_none', 'Teacher unknown')),
-      'school' => null,
+      'school' => array(),
       'grade' => array(array('grade_unknown', 'Grade unknown')),
       'competitions' => array()
       );
@@ -169,10 +195,10 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
          }
 
          if($role == 'member') {
-            if($protocol == 'teacher' || $protocol == 'school' || $protocol == 'grade') {
+            if($protocol == 'teacher' || $protocol == 'grade') {
                $pmsMemberInfo[$protocol] = $pathWithNames;
-            } elseif($protocol == 'competition') {
-               $pmsMemberInfo['competitions'][] = $pathWithNames;
+            } elseif($protocol == 'school' || $protocol == 'competition') {
+               $pmsMemberInfo[$protocol][] = $pathWithNames;
             }
          } elseif($role == 'manager' && $protocol == 'teacher') {
             $pmsTeacherInfo = $pathWithNames;
@@ -186,8 +212,8 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
 
    // Add member info
    $schoolPath = null;
-   if($pmsMemberInfo['teacher'] && $pmsMemberInfo['school']) {
-      $schoolPath = array_merge($pmsMemberInfo['school'], $pmsMemberInfo['teacher']); // used later
+   if($pmsMemberInfo['teacher'] && count($pmsMemberInfo['school']) > 0) {
+      $schoolPath = array_merge($pmsMemberInfo['school'][0], $pmsMemberInfo['teacher']); // used later
       // PMS/school/teacher/grade/
       $fullPath = array_merge($basePms, $basePmsSchools, $schoolPath, $pmsMemberInfo['grade']);
       addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $fullPath, 'member');
@@ -203,13 +229,19 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
          addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $compPath2, 'member');
       } else {
          // PMS/competitions/competition_/grade_/
-         addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, array_merge($basePms, $basePmsCompetitions, $competitionPath), 'member');
+         $compPath = array_merge($basePms, $basePmsCompetitions, $competitionPath);
+         addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $compPath, 'member');
       }
    }
 
    // Add teacher info
    if($pmsTeacherInfo) {
-      // direct=false which means it will look for all groups referencing that teacher
+      // Add groups for each school
+      foreach($pmsMemberInfo['school'] as $school) {
+         $schoolPath = array_merge($basePms, $school, $pmsTeacherInfo);
+         addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $schoolPath, 'manager');
+      }
+      // Look up for other groups corresponding to that teacher (subgroups of competitions for instance)
       addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, array_merge($basePms, $pmsTeacherInfo), 'manager', false);
    }
 }
