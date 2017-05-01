@@ -115,7 +115,7 @@ function checkContestSubmissionRight($idItem) {
         return ['submissionPossible' => false, 'error' => 'vous ne pouvez pas soumettre de réponse à cet exercice car vous n\'avez pas commencé ou déjà terminé le concours'];
     }
     foreach ($contestItems as $contestItem) {
-    	if ($contestItem['bFullAccess'] || $contestData['idItem'] == $contestItem['idItem']) {
+    	if ($contestItem['fullAccess'] || $contestData['idItem'] == $contestItem['idItem']) {
     		return ['submissionPossible' => true];
     	}
     }

@@ -167,7 +167,7 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
       'teacher' => array(array('teacher_none', 'Teacher unknown')),
       'school' => array(),
       'grade' => array(array('grade_unknown', 'Grade unknown')),
-      'competitions' => array()
+      'competition' => array()
       );
 
    // Manager info (only teacher for now)
@@ -219,7 +219,7 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
       addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $fullPath, 'member');
    }
 
-   foreach($pmsMemberInfo['competitions'] as $competitionPath) {
+   foreach($pmsMemberInfo['competition'] as $competitionPath) {
       if($schoolPath !== null) {
          // PMS/competition/school/teacher/grade/
          $compPath1 = array_merge($basePms, $basePmsCompetitions, array($competitionPath[0]), $schoolPath, array($competitionPath[1]));
