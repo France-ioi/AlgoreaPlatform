@@ -378,6 +378,10 @@ $viewsModels = array(
             "joins" => array("invited"),
             "condition"  => '`[PREFIX]invited`.`idGroupParent` = :[PREFIX_FIELD]idGroup',
          ),
+         "sTypeExclude" => array(
+            "joins" => array(),
+            "condition"  => "`[PREFIX]groups`.`sType` != :[PREFIX_FIELD]sType",
+         ),
       ),
    ),
    "groups_groups" => array(
@@ -391,6 +395,7 @@ $viewsModels = array(
          "userInviting" => array('type' => 'LEFT', "dstField" => "ID", "srcField" => "idUserInviting", "srcTable" => "groups_groups", "dstTable" => "users"),
          "usersLeft" => array("type" => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users"),
          "users" => array("dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users"),
+         "childGroups" => array("dstField" => "ID", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "groups"),
       ),
       "fields" => array(
          "idGroupParent" => array(),
@@ -435,6 +440,10 @@ $viewsModels = array(
          "addLogin" => array(
             "joins" => array("users", "userInviting"),
             "ignoreValue" => true,
+         ),
+         "sTypeExclude" => array(
+            "joins" => array("childGroups"),
+            "condition"  => "`[PREFIX]childGroups`.`sType` != :[PREFIX_FIELD]sType",
          ),
       ),
    ),
