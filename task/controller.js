@@ -156,11 +156,15 @@ angular.module('algorea')
    $scope.views= [{tabString: 'Énoncé'}];
    $scope.viewsIndex = {defaultViewName : 0};
    $scope.setViews = function(taskViews) {
+      // TODO :: better handling of task views
       if (!taskViews.hints || taskViews.hints.requires) {
          delete platformViews.hints;
       }
       if (!taskViews.editor || taskViews.editor.requires) {
          delete platformViews.editor;
+      }
+      if (!taskViews.solution || taskViews.solution.requires) {
+         delete platformViews.solution;
       }
    };
    $scope.setTabs = function (taskViews) {
