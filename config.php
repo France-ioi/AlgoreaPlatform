@@ -26,6 +26,8 @@ $config = (object) array(
       "params" => (object) array(  ),
       "useTransaction" => false,
       "maxChanges" => 20000,
+      "memLimit" => '',
+      "debug" => false
    ),
    "shared" => (object) array(
       "RootItemId" => "1",
