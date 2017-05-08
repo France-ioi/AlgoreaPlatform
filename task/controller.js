@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('taskController', ['$scope', '$rootScope', '$location', '$interval', '$injector', '$i18next', function ($scope, $rootScope, $location, $interval, $injector, $i18next) {
+   .controller('taskController', ['$scope', '$rootScope', '$window', '$location', '$interval', '$injector', '$i18next', function ($scope, $rootScope, $window, $location, $interval, $injector, $i18next) {
    var itemService, $state;
    if ($injector.has('itemService')) {
       itemService = $injector.get('itemService');
@@ -102,7 +102,16 @@ angular.module('algorea')
       }
       $scope.syncHeight();
    };
+
+   $scope.onResize = function() {
+      $scope.task.getViews(function(views) {
+         $scope.setTabs(views);
+      });
+   };
+   $window.addEventListener('resize', $scope.onResize);
+
    $scope.$on('$destroy', function() {
+      $window.removeEventListener('resize', $scope.onResize);
       if ($scope.task) {
          $scope.task.getState(function(state) {
             if ($scope.canGetState && state != $scope.user_item.sState) {
@@ -144,7 +153,7 @@ angular.module('algorea')
             this.showForum = true;
          } else {
             this.showForum = false;
-            if (!$scope.task.unloaded) {
+            if ($scope.task && !$scope.task.unloaded) {
                var callbackFun = $scope.firstViewLoaded ? function() {} : $scope.load_answer_and_sync;
                $scope.task.showViews(platformViews[platformView].taskViews, callbackFun, function(){});
             }
@@ -157,11 +166,22 @@ angular.module('algorea')
    $scope.viewsIndex = {defaultViewName : 0};
    $scope.setViews = function(taskViews) {
       // TODO :: better handling of task views
+      if (taskViews.task && taskViews.task.includes && taskViews.task.includes.indexOf['editor'] != -1) {
+         platformViews.task = {
+            tabString: $i18next.t('task_statement') + ' & ' + $i18next.t('task_solve'),
+            taskViews: {'task': true, 'editor': true}};
+         delete platformViews.editor;
+         if($scope.currentView == 'editor') { $scope.currentView = 'task'; }
+      } else {
+         platformViews.task = {tabString: $i18next.t('task_statement'), taskViews: {'task': true}};
+         if (taskViews.editor && !taskViews.editor.requires) {
+            platformViews.editor = {tabString: $i18next.t('task_solve'), taskViews: {'editor': true}};
+         } else {
+            delete platformViews.editor;
+         }
+      }
       if (!taskViews.hints || taskViews.hints.requires) {
          delete platformViews.hints;
-      }
-      if (!taskViews.editor || taskViews.editor.requires) {
-         delete platformViews.editor;
       }
       if (!taskViews.solution || taskViews.solution.requires) {
          delete platformViews.solution;
@@ -246,9 +266,11 @@ angular.module('algorea')
             if ($state) {
                $state.go('contents', params, {notify: false});
             }
-         } else {
-            $scope.views[$scope.viewsIndex[tabname] -1].active = true;
          }
+         if($scope.currentView && $scope.viewsIndex[$scope.currentView]) {
+            $scope.views[$scope.viewsIndex[$scope.currentView]-1].active = false;
+         }
+         $scope.views[$scope.viewsIndex[tabname] -1].active = true;
          $scope.showView(tabname);
       }
       if ($rootScope.refreshSizes) {

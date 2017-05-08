@@ -1,10 +1,13 @@
 <div class="main-titlebar task-titlebar" ng-if="item.sType != 'Presentation' || item.sFullScreen == 'forceYes'" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
 <div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
    <div class="first-task" style="position: relative;">
-       <div uib-tabset justified="true"  ng-if="itemType == 'Task'" ng-show="taskLoaded || showForum" id="task-tabs"  class="task-tabs">
-          <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active" class="task-tab" id="view.id" ng-hide="view.name === 'editor' && layout.separateEditorOK">
-          </li>
+     <div ng-if="itemType == 'Task'" ng-show="taskLoaded || showForum" id="task-tabs" class="task-tabs">
+       <div class="task-tabs-inner">
+         <div ng-repeat="view in views" ng-click="$parent.selectTab(view.name)" class="task-tab" ng-class="{true: 'task-tab-selected'}[view.active]" id="view.id" ng-hide="view.name === 'editor' && layout.separateEditorOK">
+           {{view.string}}
+         </div>
        </div>
+     </div>
 
      <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
      <div ng-show="!showForum" include-task class="task-container" style="position: relative;"></div>
