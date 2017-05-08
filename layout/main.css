@@ -44,20 +44,52 @@ body {
 }
 
 .task-tabs {
-   max-width:800px;
-   margin:auto;
+   max-width: 800px;
+   margin: auto;
 }
+.task-tabs-inner {
+   width: 100%;
+   display: table;
+   table-layout: fixed;
+}
+.task-tab {
+   display: table-cell;
+   width: 1%;
+   height: 40px;
+   border-top: 0px!important;
+   border-left: 0px!important;
+   border-right: 0px!important;
+   border-bottom: 3px solid grey;
+   background-color: white;
+   text-align: center;
+   vertical-align: middle;
+   color: #333;
+   font-size: 14px;
+   font-weight: bold;
+   letter-spacing: 0.08em;
+   text-transform: uppercase;
+   transition: all 250ms;
+   outline: 0;
+}
+.task-tab:hover {
+   background-color: lightgrey;
+}
+.task-tab.task-tab-selected {
+   border-bottom: 3px solid #2aa3ff !important;
+   color: #82bf2b;
+}
+.task-tab.task-tab-selected:hover {
+   background-color: white;
+}
+
 
 .nav-tabs.nav-justified>li>a {
    border-top:0px;
    border-left:0px;
    border-right:0px;
-   border-bottom:2px solid #f8f8f8!important;
+   border-bottom:4px solid #f8f8f8!important;
 }
 
-.task-tab {
-   border: 0px;
-}
 
 .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover {
    border-bottom: 4px solid #2aa3ff !important;

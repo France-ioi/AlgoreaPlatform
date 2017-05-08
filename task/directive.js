@@ -235,9 +235,12 @@ angular.module('algorea')
             }
             $rootScope.$broadcast('layout.taskLayoutChange');
          });
-         scope.task.getViews(function(views) {
-            scope.setTabs(views);
-         });
+         $timeout(function () {
+            // Need to let the DOM refresh properly first
+            scope.task.getViews(function(views) {
+               scope.setTabs(views);
+            });
+         }, 0);
       }, function() {
          if(scope.currentId != currentId) { return; }
          scope.loadingError = $i18next.t('task_load_error');
