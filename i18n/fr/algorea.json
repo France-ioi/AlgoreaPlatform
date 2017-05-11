@@ -61,6 +61,10 @@
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",
     "login_connect": "Se connecter",
+    "login_not_connected": "Non connecté",
+
+    "status_seen": "vu le",
+    "status_validated": "validé le",
 
     "contest_start": "Commencer le concours",
     "contest_already_done": "Vous avez déjà effectué ce concours.",

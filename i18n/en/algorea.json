@@ -61,6 +61,10 @@
     "login_loading": "Loading...",
     "login_disconnect": "Logout",
     "login_connect": "Login",
+    "login_not_connected": "Not connected",
+
+    "status_seen": "seen on",
+    "status_validated": "validated on",
 
     "contest_start": "Start contest",
     "contest_already_done": "You have already done this contest.",

@@ -52,8 +52,8 @@
     "years": "Jahre",
 
     "menu_forum": "Austauschen",
-    "menu_progress": "Loslegen",
-    "menu_contest": "Contests",
+    "menu_progress": "Trainieren",
+    "menu_contest": "Wettbewerb",
     "menu_discover": "Entdecken",
 
     "error_item_not_found": "Diese Seite ist leider nicht verfügbar.",
@@ -61,6 +61,9 @@
     "login_loading": "Laden …",
     "login_disconnect": "Ausloggen",
     "login_connect": "Einloggen",
+
+    "status_seen": "gesehen am",
+    "status_validated": "gelöst am",
 
     "contest_start": "Den Wettbewerb jetzt starten",
     "contest_already_done": "Du hast diesen Wettbewerb bereits abgeschlossen.",
