@@ -87,6 +87,10 @@ angular.module('algorea')
          if (success) { success(); }
       };
       // move to next item in same chapter
+      scope.moveToNextImmediate = function() {
+         scope.goRightImmediateLink();
+      };
+      // move to next item
       scope.moveToNext = function() {
          scope.goRightLink();
       };
@@ -114,7 +118,7 @@ angular.module('algorea')
          if (mode == 'cancel') {
             scope.task.reloadAnswer('', success, error);
          } else if (mode == 'nextImmediate') {
-            scope.moveToNext();
+            scope.moveToNextImmediate();
          } else {
             if (!scope.canGetState) {console.error('canGetState = false'); return};
             scope.task.getAnswer(function (answer) {

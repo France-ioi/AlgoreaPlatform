@@ -315,8 +315,10 @@ angular.module('algorea')
          }
          var basePath = $scope.pathParams.path.slice(0, $scope.pathParams.selr-1).join('/');
          if (nextID) {
-            $scope.rightLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
+            $scope.rightImmediateLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
+            $scope.rightLink = $scope.rightImmediateLink;
          } else {
+            $scope.rightImmediateLink = null;
             $scope.rightLink = null;
             if ($scope.pathParams.selr > 4) {
                var grandParentId = $scope.pathParams.path[$scope.pathParams.selr-3];
@@ -356,8 +358,15 @@ angular.module('algorea')
          }
       };
       $scope.goRightLink = function() {
+         // Next item, even if in another chapter
          if ($scope.rightLink) {
             $scope.rightLink.sref();
+         }
+      };
+      $scope.goRightImmediateLink = function() {
+         // Next item, only in same chapter
+         if ($scope.rightImmediateLink) {
+            $scope.rightImmediateLink.sref();
          }
       };
       $scope.localInit = function() {
