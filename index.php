@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html lang="fr" ng-app="algorea"  ng-controller="navigationController">
+<?php
+require_once "config.php";
+
+$defaultLanguage = $config->shared->domains['current']->defaultLanguage;
+?>
+<html lang="<?=$defaultLanguage ?>" ng-app="algorea"  ng-controller="navigationController">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="<?=$defaultLanguage ?>" />
     <title ng-bind="domainTitle"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
     <base href="/">
     <script type="text/javascript">
       <?php
-        require_once "config.php";
-
         $assetsBaseUrl = '';
         $urlArgs = '';
         $compiledMode = false;
@@ -199,7 +203,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
 <script>
   window.i18next.use(window.i18nextXHRBackend);
   var i18nextOpts = <?= json_encode([
-    'lng' => $config->shared->domains['current']->defaultLanguage,
+    'lng' => $defaultLanguage,
     'fallbackLng' => ['en', 'fr'],
     'fallbackNS' => 'algorea',
     'debug' => true,
