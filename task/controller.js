@@ -109,6 +109,7 @@ angular.module('algorea')
       });
    };
    $window.addEventListener('resize', $scope.onResize);
+   $scope.$on('algorea.taskViewResize', $scope.onResize);
 
    $scope.$on('$destroy', function() {
       $window.removeEventListener('resize', $scope.onResize);

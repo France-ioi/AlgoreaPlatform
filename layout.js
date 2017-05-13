@@ -193,11 +193,13 @@ angular.module('algorea')
         }
       },
       toggleLeft: function() {
+         $rootScope.$broadcast('algorea.taskViewResize');
          $('#sidebar-left').toggleClass('sidebar-left-toggled');
          $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
          $scope.layout.refreshSizes();
       },
       toggleRight: function() {
+         $rootScope.$broadcast('algorea.taskViewResize');
          $('#sidebar-right').toggleClass('sidebar-right-toggled');
          $('#main-titlebar-community').toggleClass('main-titlebar-community-toggled');
          $('.main-right-arrow').toggleClass('main-right-arrow-toggled');
@@ -209,6 +211,7 @@ angular.module('algorea')
          }
       },
       toggleMenu: function() {
+         $rootScope.$broadcast('algorea.taskViewResize');
          $('#headerContainer').toggleClass('menu-toggled');
          $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
          $('#footer').toggleClass('footer-toggled');
