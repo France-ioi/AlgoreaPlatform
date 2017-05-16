@@ -138,6 +138,13 @@ angular.module('algorea')
                      //ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
                      ModelsManager.insertRecord('users_answers', newAnswer, 'noSync');
                      scope.user_answer = newAnswer;
+
+                     // Save the last_answer for reload if we come back to the item
+                     // We could also push it to item.user_answers (which is
+                     // not reloaded from ModelsManager) but then we would need
+                     // to change the sSubmissionDate to ModelsManager.now()
+                     scope.item.last_answer = newAnswer;
+
                      scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
                         if (success) { success(); }
                         if (validated && mode == 'next') {

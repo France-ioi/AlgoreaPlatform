@@ -217,6 +217,9 @@ angular.module('algorea')
             return result_user_item;
          },
          getCurrentAnswer: function(item, idUser) {
+            if(item.last_answer) {
+               return item.last_answer;
+            }
             var result_user_answer = null;
             if (!idUser) {
                idUser = $rootScope.myUserID;
