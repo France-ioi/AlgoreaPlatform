@@ -85,7 +85,7 @@ function getScoreParams($request, $params, $otherPlatformToken, $db) {
       echo json_encode(array('result' => false, 'error' => 'platform token was ommited, please transmit it.', 'token' => $params));
       exit;
    }
-   $tokenParser = new TokenParser($platform['sPublicKey'], $platform['sUri']);
+   $tokenParser = new TokenParser($platform['sPublicKey'], $platform['sName']);
    try {
       $params = $tokenParser->decodeJWS($otherPlatformToken);
    } catch (Exception $e) {
