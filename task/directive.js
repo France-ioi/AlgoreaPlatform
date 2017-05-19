@@ -96,7 +96,7 @@ angular.module('algorea')
          $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken, hintToken: hintToken, userItemId: scope.user_item.ID}, {responseType: 'json'}).success(function(postRes) {
             if ( ! postRes.result) {
                error("got error from task.php: "+postRes.error);
-            } else if (!scope.canGetState || scope.user_item.ID != scope.askHintUserItemID) {
+            } else if (scope.user_item.ID != scope.askHintUserItemID) {
                error("got askHint return from another task");
             } else {
                scope.user_item.sToken = postRes.sToken;
@@ -116,7 +116,9 @@ angular.module('algorea')
          } else if (mode == 'nextImmediate') {
             scope.moveToNext();
          } else {
-            if (!scope.canGetState) {console.error('canGetState = false'); return};
+            if (!scope.canGetState) {
+               console.log('Warning: canGetState = false');
+            };
             scope.task.getAnswer(function (answer) {
                if (scope.loadedUserItemID != scope.user_item.ID) error('scope.loadedUserItemID != scope.user_item.ID');
                $http.post('/task/task.php', {action: 'askValidation', sToken: scope.user_item.sToken, sAnswer: answer, userItemId: scope.user_item.ID}, {responseType: 'json'}).success(function(postRes) {
@@ -126,7 +128,7 @@ angular.module('algorea')
                   }
                   if ( ! postRes.result) {
                      error("got error from task.php: "+postRes.error);
-                  } else if (!scope.canGetState || validateUserItemID != scope.user_item.ID) {
+                  } else if (validateUserItemID != scope.user_item.ID) {
                      error('got validate from another task');
                   } else if (scope.item.sValidationType != 'Manual') {
                      var newAnswer = ModelsManager.createRecord('users_answers');
