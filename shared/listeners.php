@@ -183,7 +183,7 @@ class Listeners {
                                     "SELECT `children`.`ID` as `ID`, 'self' as sPropagateAccess ".
                                     "FROM `items_items` ".
                                     "JOIN `groups_items` as `parents` on `parents`.`idItem` = `items_items`.`idItemParent` ".
-                                    "JOIN `groups_items` as `children` on `children`.`idItem` = `items_items`.`idItemChild` ".
+                                    "JOIN `groups_items` as `children` on `children`.`idItem` = `items_items`.`idItemChild` AND `parents`.`idGroup` = `children`.`idGroup` ".
                                     "JOIN `groups_items_propagate` as `parents_propagate` on `parents`.`ID` = `parents_propagate`.`ID` ".
                                     "WHERE `parents_propagate`.`sPropagateAccess` = 'children' ON DUPLICATE KEY UPDATE sPropagateAccess='self';";
 
@@ -231,24 +231,18 @@ class Listeners {
                 "SET `sPropagateAccess` = 'children' ".
                 "WHERE `sPropagateAccess` = 'self';";
 
-      //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', "\n".date(DATE_RFC822)."\n", FILE_APPEND);
       $hasChanges = true;
       while ($hasChanges) {
+         $res = $db->exec($queryInsertMissingChildren);
          $res = $db->exec($queryInsertMissingPropagate);
          $res = $db->exec($queryMarkDoNotPropagate);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryInsertMissingPropagate."\n".$res." rows updated\n", FILE_APPEND);
          $res = $db->exec($queryMarkExistingChildren);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryMarkExistingChildren."\n".$res." rows updated\n", FILE_APPEND);
-         $res = $db->exec($queryInsertMissingChildren);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryInsertMissingChildren."\n".$res." rows updated\n", FILE_APPEND);
          $res = $db->exec($queryMarkFinishedItems);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryMarkFinishedItems."\n".$res." rows updated\n", FILE_APPEND);
          $res = $db->exec($queryUpdateGroupItems);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryUpdateGroupItems."\n".$res." rows updated\n", FILE_APPEND);
          $hasChanges = $db->exec($queryMarkChildrenItems);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $queryMarkChildrenItems."\n".$hasChanges." rows updated (=hasChanges)\n", FILE_APPEND);
       }
       // remove default groups_items (veeeery slow)
+      // TODO :: maybe move to some cleaning cron
       $queryDeleteDefaultGI = "delete from `groups_items` where ".
                               "    `sCachedAccessSolutionsDate` is null ".
                               "and `sCachedPartialAccessDate` is null ".
