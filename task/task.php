@@ -147,7 +147,7 @@ function askValidation($request, $db) {
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
    $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'sAnswer' => $request['sAnswer']));
-   $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, nbTasksTried = 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
+   $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
    unset($stmt);
@@ -206,9 +206,9 @@ function graderResult($request, $db) {
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
-   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), sLastActivityDate = NOW(), sLastAnswerDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sLastActivityDate = NOW(), sLastAnswerDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    if ($bValidated) {
-      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = IFNULL(sValidationDate,NOW()), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sValidationDate = IFNULL(sValidationDate,NOW()), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    }
    $stmt = $db->prepare($query);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
