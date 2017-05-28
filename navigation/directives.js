@@ -36,6 +36,8 @@ angular.module('algorea')
             } else {
                if (from == "parent") {
                   scope.setItemIcon(scope.item);
+                  scope.setScore(scope.item);
+                  scope.setPercentDone(scope.item);
                   scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'/'+scope.item.ID;
                   scope.activityClass = (scope.pathParams.selr != 'r' && scope.item.ID == scope.pathParams.path[scope.pathParams.selr-1]) ? 'active' : 'inactive';
                } else {

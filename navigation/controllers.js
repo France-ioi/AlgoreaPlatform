@@ -10,6 +10,7 @@ angular.module('algorea')
          mapService = $injector.get('mapService');
       }
       $scope.getChildren = function() {
+         this.setPercentDone(this.item);
          return itemService.getChildren(this.item);
       };
       if (config.domains.current.additionalCssUrl) {
@@ -98,6 +99,9 @@ angular.module('algorea')
          if (user_item.bValidated == true) {
             return 'validated';
          }
+         if (user_item.iScore > 0) {
+            return 'partial';
+         }
          if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
             return 'failed';
          }
@@ -146,6 +150,10 @@ angular.module('algorea')
                this.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";
                this.mainIconName = 'check_circle';
+            } else if (user_item.iScore > 0) {
+               this.mainIconTitle = $i18next.t('status_partial')+' '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconClass = "partial-item-icon";
+               this.mainIconName = 'timelapse';
             } else if (user_item.nbTasksTried) {
                this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
                this.mainIconClass = "failed-item-icon";
@@ -175,6 +183,14 @@ angular.module('algorea')
          }
       };
       $scope.setItemIcon($scope.item);
+
+      $scope.setScore = function (item) {
+         var user_item = itemService.getUserItem(item);
+         if (user_item) {
+            this.iScore = user_item.iScore;
+         }
+      };
+      $scope.setScore($scope.item);
 
       $scope.setUserInfos = function() {
          $scope.userInfos = '';
@@ -217,30 +233,40 @@ angular.module('algorea')
          });
       };
 
-      $scope.item_percent_done = function(user_item) {
+      $scope.setPercentDone = function(item) {
+         var user_item = itemService.getUserItem(item);
          if (!user_item) {
-            return 0;
+            this.percentDone = '';
+            return;
          }
          var children = itemService.getChildren(this.item);
          var total = 0;
+         var totalScore = 0;
          angular.forEach(children, function(child) {
             if (child.sType != 'Course' && child.bNoScore == 0) {
+               var childUserItem = itemService.getUserItem(child);
+               if(childUserItem) {
+                  totalScore += childUserItem.iScore;
+               }
                total = total + 1;
             }
          });
-         if (total == 0) {
-            return 100;
-         } else {
-            return Math.floor(user_item.nbChildrenValidated / total);
+         if (total > 0) {
+            this.percentDone = Math.floor(totalScore / total) + '%';
+            return;
          }
-         if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
+         this.percentDone = '';
+         return;
+/*         if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
             return 'failed';
          }
          if (user_item.nbTaskWithHelp && this.item.sType == 'task') {
             return 'hint asked';
          }
-         return 'visited';
+         return 'visited';*/
       };
+      $scope.setPercentDone($scope.item);
+
       $scope.get_formatted_date = function(date) {
          return $filter('date')(date, 'fullDate');
       };

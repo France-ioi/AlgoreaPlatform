@@ -58,6 +58,15 @@
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",
     "login_connect": "Se connecter",
+    "login_not_connected": "Non connecté",
+
+    "status_seen": "vu le",
+    "status_partial": "réponse partielle le",
+    "status_validated": "validé le",
+
+    "contest_start": "Commencer le concours",
+    "contest_already_done": "Vous avez déjà effectué ce concours.",
+    "contest_ended": "Le concours est terminé !",
 
     "admin_retrieving_login": "Récupération des informations de connexion...",
     "admin_access_management": "Gestion des droits",

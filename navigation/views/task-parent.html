@@ -1,3 +1,5 @@
+<div ng-if="iScore > 0" style="float: right;">{{ iScore }}%</div>
 <span class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
 <span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>
 <span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span>
+<div class="clear: both;"></div>
