@@ -236,7 +236,7 @@ angular.module('algorea')
       $scope.setPercentDone = function(item) {
          var user_item = itemService.getUserItem(item);
          if (!user_item) {
-            this.percentDone = '';
+            this.percentDone = 0;
             return;
          }
          var children = itemService.getChildren(this.item);
@@ -256,11 +256,10 @@ angular.module('algorea')
             }
          });
          if (total > 0) {
-            this.percentDone = Math.floor(totalScore / total) + '%';
+            this.percentDone = Math.floor(totalScore / total);
             return;
          }
-         this.percentDone = '';
-         return;
+         this.percentDone = 0;
 /*         if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
             return 'failed';
          }
