@@ -246,7 +246,11 @@ angular.module('algorea')
             if (child.sType != 'Course' && child.bNoScore == 0) {
                var childUserItem = itemService.getUserItem(child);
                if(childUserItem) {
-                  totalScore += childUserItem.iScore;
+                  if(childUserItem.bValidated) {
+                     totalScore += 100;
+                  } else {
+                     totalScore += childUserItem.iScore;
+                  }
                }
                total = total + 1;
             }
