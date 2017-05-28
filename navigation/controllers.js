@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http) {
+   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', '$i18next', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http, $i18next) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
       $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
@@ -147,7 +147,7 @@ angular.module('algorea')
                this.mainIconClass = "unvisited-item-icon";
                this.mainIconName = 'keyboard';
             } else if (user_item.bValidated) {
-               this.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
+               this.mainIconTitle = $i18next.t('status_validated')+' '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";
                this.mainIconName = 'check_circle';
             } else if (user_item.iScore > 0) {
@@ -155,11 +155,11 @@ angular.module('algorea')
                this.mainIconClass = "partial-item-icon";
                this.mainIconName = 'timelapse';
             } else if (user_item.nbTasksTried) {
-               this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconTitle = $i18next.t('status_seen')+' '+$scope.get_formatted_date(user_item.sLastActivityDate);
                this.mainIconClass = "failed-item-icon";
                this.mainIconName = 'cancel';
             } else if (user_item.sLastActivityDate) {
-               this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconTitle = $i18next.t('status_seen')+' '+$scope.get_formatted_date(user_item.sLastActivityDate);
                this.mainIconClass = "visited-item-icon";
                this.mainIconName = 'keyboard';
             } else {
@@ -170,11 +170,11 @@ angular.module('algorea')
          } else {
             this.mainIconName = type_iconName[itemService.normalizeItemType(item.sType)];
             if (user_item && user_item.bValidated) {
-               this.mainIconTitle = 'validé le '+$scope.get_formatted_date(user_item.sValidationDate);
+               this.mainIconTitle = $i18next.t('status_validated')+' '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";
                this.mainIconName = 'check_circle';
             } else if (user_item && user_item.sLastActivityDate) {
-               this.mainIconTitle = 'vu le '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconTitle = $i18next.t('status_seen')+' '+$scope.get_formatted_date(user_item.sLastActivityDate);
                this.mainIconClass = "visited-item-icon";
             } else {
                this.mainIconTitle = '';
@@ -198,7 +198,7 @@ angular.module('algorea')
             var loginData = SyncQueue.requests.loginData;
             if (loginData) {
                if (loginData.tempUser) {
-                  $scope.userInfos = 'Non connecté';
+                  $scope.userInfos = $i18next.t('login_not_connected');
                   return;
                }
                if (loginData.sFirstName && loginData.sLastName) {
@@ -341,8 +341,10 @@ angular.module('algorea')
          }
          var basePath = $scope.pathParams.path.slice(0, $scope.pathParams.selr-1).join('/');
          if (nextID) {
-            $scope.rightLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
+            $scope.rightImmediateLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
+            $scope.rightLink = $scope.rightImmediateLink;
          } else {
+            $scope.rightImmediateLink = null;
             $scope.rightLink = null;
             if ($scope.pathParams.selr > 4) {
                var grandParentId = $scope.pathParams.path[$scope.pathParams.selr-3];
@@ -382,8 +384,15 @@ angular.module('algorea')
          }
       };
       $scope.goRightLink = function() {
+         // Next item, even if in another chapter
          if ($scope.rightLink) {
             $scope.rightLink.sref();
+         }
+      };
+      $scope.goRightImmediateLink = function() {
+         // Next item, only in same chapter
+         if ($scope.rightImmediateLink) {
+            $scope.rightImmediateLink.sref();
          }
       };
       $scope.localInit = function() {
