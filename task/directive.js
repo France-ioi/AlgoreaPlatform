@@ -197,7 +197,7 @@ angular.module('algorea')
                scope.user_item.nbTasksTried = scope.user_item.nbTasksTried+1;
 
                // We just unlocked some items
-               if (!scope.user_item.bKeyObtained && postRes.bKeyObtained) {
+               if (!scope.user_item.bKeyObtained && postRes.bKeyObtained && scope.item.idItemUnlocked) {
                   scope.user_item.bKeyObtained = true;
                   if(!postRes.bValidated) {
                      ModelsManager.updated('users_items', scope.user_item.ID, false, true);
