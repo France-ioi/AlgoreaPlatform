@@ -206,7 +206,7 @@ angular.module('algorea')
                   SyncQueue.serverVersion = 0;
                   SyncQueue.resetSync = true;
                   SyncQueue.planToSend(0);
-                  alert("Félicitations ! Vous avez débloqué un ou plusieurs items.");
+                  alert("Félicitations ! Vous avez débloqué un ou plusieurs contenus.");
                }
 
                // We validated the task for the first time
