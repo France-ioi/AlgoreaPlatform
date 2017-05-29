@@ -6,6 +6,7 @@ class Listeners {
       $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
       $db->exec($query);
       $hasChanges = true;
+      $groupsitemsChanged = false;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
          $query = "UPDATE `users_items` as `parent`
@@ -74,9 +75,40 @@ class Listeners {
          foreach ($rows as $row) {
             $stmtUpdate->execute(array('ID' => $row['ID'], 'idUser' => $row['idUser'], 'idItem' => $row['idItem'], 'sValidationType' => $row['sValidationType']));
          }
+
+         // Unlock items depending on bKeyObtained
+         $querySelectUnlocks = "
+            SELECT users.idGroupSelf as idGroup,
+                   items.idItemUnlocked as idsItems
+            FROM users_items
+            JOIN items ON users_items.idItem = items.ID
+            JOIN users ON users_items.idUser = users.ID
+            WHERE     users_items.sAncestorsComputationState = 'processing'
+                  AND users_items.bKeyObtained = 1
+                  AND items.idItemUnlocked IS NOT NULL;";
+         $queryInsertUnlocks = "
+            INSERT INTO groups_items (idGroup, idItem, sPartialAccessDate, sCachedPartialAccessDate, bCachedPartialAccess)
+            VALUES(:idGroup, :idItem, NOW(), NOW(), 1)
+            ON DUPLICATE KEY UPDATE sPartialAccessDate = NOW(), sCachedPartialAccessDate = NOW(), bCachedPartialAccess = 1;";
+         $stmt = $db->query($querySelectUnlocks);
+         $unlocks = $stmt->fetchAll();
+         foreach($unlocks as $unlock) {
+            $groupsItemsChanged = true;
+            $idsItems = explode(',', $unlock['idsItems']);
+            foreach($idsItems as $idItem) {
+               $stmt = $db->prepare($queryInsertUnlocks);
+               $stmt->execute(['idGroup' => $unlock['idGroup'], 'idItem' => $idItem]);
+            }
+         }
+
          // Objects marked as 'processing' are now marked as 'done'
          $query = "UPDATE `users_items` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
          $hasChanges = ($db->exec($query) > 0);
+      }
+
+      // If items have been unlocked, need to recompute access
+      if($groupsItemsChanged) {
+         Listeners::groupsItemsAfter($db);
       }
    }
 
@@ -288,4 +320,4 @@ class Listeners {
 }
 
 
-?>
+1?>

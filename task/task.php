@@ -202,17 +202,33 @@ function graderResult($request, $db) {
    }
    // TODO: handle validation in a proper way
    $bValidated = ($score > 99);
+   $bKeyObtained = false;
 
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
-   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sLastActivityDate = NOW(), sLastAnswerDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+
+   // Build query to update users_items
+   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sLastActivityDate = NOW(), sLastAnswerDate = NOW()";
    if ($bValidated) {
-      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sValidationDate = IFNULL(sValidationDate,NOW()), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+      // Item was validated
+      $query .= ", sAncestorsComputationState = 'todo', bValidated = 1, bKeyObtained = 1, sValidationDate = IFNULL(sValidationDate,NOW())";
+      $bKeyObtained = true;
+   } else {
+      // Item wasn't validated, check if we unlocked something
+      $stmt = $db->prepare("SELECT idItemUnlocked, iScoreMinUnlock FROM items WHERE ID = :idItem;");
+      $stmt->execute(['idItem' => $params['idItemLocal']]);
+      $item = $stmt->fetch();
+      if($item['idItemUnlocked'] && $score >= intval($item['iScoreMinUnlock'])) {
+         $bKeyObtained = true;
+         // Update sAncestorsComputationState only if we hadn't obtained the key before
+         $query .= ", sAncestorsComputationState = IF(bKeyObtained = 0, 'todo', sAncestorsComputationState), bKeyObtained = 1";
+      }
    }
+   $query .= " WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
-   if ($bValidated) {
+   if ($bValidated || $bKeyObtained) {
       Listeners::computeAllUserItems($db);
    }
    $token = $request['sToken'];
@@ -221,7 +237,7 @@ function graderResult($request, $db) {
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
       $token = $tokenGenerator->encodeJWS($params);
    }
-   echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'sToken' => $token));
+   echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'bKeyObtained' => $bKeyObtained, 'sToken' => $token));
 }
 
 function getToken($request, $db) {

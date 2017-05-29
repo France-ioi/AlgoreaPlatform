@@ -177,7 +177,8 @@ var models = {
             defaultValue : 'Ready',
             nullInvalid: true
          },
-         idItemUnlocked: {type: "key", label: "models_items_fields_idItemUnlocked_label", refModel:"items"},
+         idItemUnlocked: {type: "string", label: "models_items_fields_idItemUnlocked_label"},
+         iScoreMinUnlock: {type: "int", label: "models_items_fields_iScoreMinUnlock_label"},
          sSupportedLangProg: {type: "string", label: "models_items_fields_sSupportedLangProg_label", defaultValue: '*'},
          sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
          sDuration: {type: "string", label: "models_items_fields_sDuration_label"},
@@ -445,6 +446,7 @@ var models = {
           nbChildrenValidated: {type: "int", label: "", readOnly: true},
           bValidated: {type: "boolean", label: "", readOnly: true},
           bFinished: {type: "boolean", label: "", readOnly: true},
+          bKeyObtained: {type: "boolean", label: "", readOnly: true},
           nbTasksWithHelp: {type: "int", label: "", readOnly: true},
           nbHintsCached: {type: "int", label: "", readOnly: true},
           nbCorrectionsRead: {type: "int", label: "", readOnly: true},
