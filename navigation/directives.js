@@ -36,6 +36,7 @@ angular.module('algorea')
             } else {
                if (from == "parent") {
                   scope.setItemIcon(scope.item);
+                  scope.setItemAccessIcon(scope.item);
                   scope.setScore(scope.item);
                   scope.setPercentDone(scope.item);
                   scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'/'+scope.item.ID;

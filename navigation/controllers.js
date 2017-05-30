@@ -140,6 +140,7 @@ angular.module('algorea')
          'Section': 'folder',
       };
       $scope.setItemIcon = function (item) {
+         // Set the main icon (visited, validated, ...)
          var user_item = itemService.getUserItem(item);
          if (item.sType == 'Task') {
             if (!user_item) {
@@ -183,6 +184,28 @@ angular.module('algorea')
          }
       };
       $scope.setItemIcon($scope.item);
+
+      $scope.setItemAccessIcon = function (item, item_item) {
+         // Set the access icon on the right (locked, unlocker, ...)
+         // TODO :: have it used in the template (so far there are issues on
+         // item reload)
+         this.accessIconClass = '';
+         this.accessIcon = '';
+         if(item.sDuration) {
+            this.accessIcon = 'alarm';
+         } else if(item.bGrayedAccess) {
+            this.accessIcon = 'lock';
+         } else if(item_item && item_item.sCategory == 'Challenge') {
+            this.accessIcon = 'star';
+         } else if(item.idItemUnlocked) {
+            this.accessIcon = 'vpn_key';
+            var user_item = itemService.getUserItem(item);
+            if(user_item && user_item.bKeyObtained) {
+               this.accessIconClass = 'validated-item-icon';
+            }
+         }
+      };
+      $scope.setItemAccessIcon($scope.item, $scope.item_item);
 
       $scope.setScore = function (item) {
          var user_item = itemService.getUserItem(item);
@@ -313,6 +336,7 @@ angular.module('algorea')
             }
             itemService.onSeen(item);
             that.setItemIcon(item);
+            that.setItemAccessIcon(item);
             that.setShowUserInfos(item, that.pathParams);
             if(callback) {
                callback(item);
@@ -486,6 +510,7 @@ angular.module('algorea')
       $scope.item_item = $scope.selectItemItem(item, $scope.leftParentItemId);
       var user_item = itemService.getUserItem(item);
       $scope.setItemIcon(item);
+      $scope.setItemAccessIcon(item, $scope.item_item);
       if (item.ID == $scope.currentActiveId) {
          $scope.mainIconClass = "active-item-icon";
          $scope.linkClass = "active-item-link";
