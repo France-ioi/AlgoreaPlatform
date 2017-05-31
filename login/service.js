@@ -158,10 +158,13 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
         function openLoginPopup(logout) {
             var additionalArgs = '';
             if (config.domains.current.additionalLoginArgs) {
-              additionalArgs = '&'+config.domains.current.additionalLoginArgs; 
+               additionalArgs += '&'+config.domains.current.additionalLoginArgs; 
             }
             if (config.domains.current.loginMandatoryFields) {
                additionalArgs += '&requiredFields='+encodeURIComponent(config.domains.current.loginMandatoryFields.join());
+            }
+            if (config.domains.current.beInsistentWithBadge) {
+               additionalArgs += '&beInsistentWithBadge=1';
             }
             if (logout) {
                additionalArgs += '&autoLogout=1';
