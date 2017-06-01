@@ -1,0 +1,2 @@
+ALTER TABLE `items` ADD `bReadOnly` TINYINT(1) NOT NULL DEFAULT '0' AFTER `bUsesAPI`;
+ALTER TABLE `history_items` ADD `bReadOnly` TINYINT(1) NOT NULL DEFAULT '0' AFTER `bUsesAPI`;

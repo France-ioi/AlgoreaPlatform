@@ -15,7 +15,7 @@ angular.module('algorea')
          if (attrs.userItemVar) {
             scope.user_item = scope[attrs.userItemVar];
          }
-         if (attrs.readOnly) {
+         if (attrs.readOnly && attrs.readOnly != 'false') {
             scope.readOnly = true;
          }
          if (attrs.taskName) {

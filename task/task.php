@@ -134,12 +134,34 @@ function createUserItemIfMissing($userItemId, $params) {
    $stmt->execute(['ID' => $userItemId,'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']]);
 }
 
+function checkSubmissionRight($idItem) {
+   // Checks if submission for that item is allowed: checks if we're in a
+   // contest and allowed, and whether the item is read-only
+   global $db;
+   // Check contest
+   $canValidate = checkContestSubmissionRight($idItem);
+   if (!$canValidate['submissionPossible']) {
+      return ['result' => false, 'error' => $canValidate['error']];
+   }
+
+   // Check whether item is read-only
+   $stmt = $db->prepare("SELECT bReadOnly FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $idItem]);
+   $readOnly = $stmt->fetchColumn();
+   if($readOnly === false) {
+      return ['result' => false, 'error' => 'Item not found'];
+   } elseif($readOnly == 1) {
+      return ['result' => false, 'error' => 'Item is read-only'];
+   }
+   return ['result' => true]; 
+}
+
 function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
-   if (!$canValidate['submissionPossible']) {
-      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['result']) {
+      echo json_encode($canValidate);
       return;
    }
    createUserItemIfMissing($request['userItemId'], $params);
@@ -168,9 +190,9 @@ function askValidation($request, $db) {
 function askHint($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
-   if (!$canValidate['submissionPossible']) {
-      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['result']) {
+      echo json_encode($canValidate);
       return;
    }
    createUserItemIfMissing($request['userItemId'], $params);
@@ -188,9 +210,9 @@ function askHint($request, $db) {
 function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
-   if (!$canValidate['submissionPossible']) {
-      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['result']) {
+      echo json_encode($canValidate);
       return;
    }
    $scoreParams = getScoreParams($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);

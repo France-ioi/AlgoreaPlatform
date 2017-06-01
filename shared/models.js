@@ -135,6 +135,7 @@ var models = {
             nullInvalid: true
          },
          bUsesAPI: {type: "boolean", label: "models_items_fields_bUsesAPI_label", defaultValue: true},
+         bReadOnly: {type: "boolean", label: "models_items_fields_bReadOnly_label", defaultValue: false},
          sFullScreen: {
             type: "enum",
             values: {

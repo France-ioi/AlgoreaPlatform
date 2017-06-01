@@ -436,6 +436,7 @@
     "models_items_fields_sType_values_Presentation_label": "Presentation",
     "models_items_fields_sType_label": "Type",
     "models_items_fields_bUsesAPI_label": "Uses API",
+    "models_items_fields_bReadOnly_label": "Read-only (no submission allowed)",
     "models_items_fields_sFullScreen_values_forceYes_label": "force yes",
     "models_items_fields_sFullScreen_values_forceNo_label": "force no",
     "models_items_fields_sFullScreen_values_default_label": "depending on type",

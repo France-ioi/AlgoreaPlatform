@@ -445,6 +445,7 @@
     "models_items_fields_sType_values_Presentation_label": "Présentation",
     "models_items_fields_sType_label": "Type",
     "models_items_fields_bUsesAPI_label": "Utilise l'API",
+    "models_items_fields_bReadOnly_label": "En lecture seule (pas de soumission possible)",
     "models_items_fields_sFullScreen_values_forceYes_label": "forcé oui",
     "models_items_fields_sFullScreen_values_forceNo_label": "forcé non",
     "models_items_fields_sFullScreen_values_default_label": "suivant le type",
