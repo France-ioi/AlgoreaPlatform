@@ -439,6 +439,7 @@ var models = {
           idItem: {type: "key", label: "models_users_items_fields_idItem_label", refModel: "items", link: "item", invLink: "user_item"},
           iScore: {type: "float", label: "", readOnly: true},
           iScoreComputed: {type: "float", label: "", readOnly: true},
+          iScoreReeval: {type: "float", label: "", readOnly: true},
           iScoreDiffManual: {type: "float", label: "", readOnly: true},
           sScoreDiffComment: {type: "string", label: "", readOnly: true},
           nbSubmissionsAttempts: {type: "int", label: "", readOnly: true},
