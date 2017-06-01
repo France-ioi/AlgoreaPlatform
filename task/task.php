@@ -134,12 +134,34 @@ function createUserItemIfMissing($userItemId, $params) {
    $stmt->execute(['ID' => $userItemId,'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']]);
 }
 
+function checkSubmissionRight($idItem) {
+   // Checks if submission for that item is allowed: checks if we're in a
+   // contest and allowed, and whether the item is read-only
+   global $db;
+   // Check contest
+   $canValidate = checkContestSubmissionRight($idItem);
+   if (!$canValidate['submissionPossible']) {
+      return ['result' => false, 'error' => $canValidate['error']];
+   }
+
+   // Check whether item is read-only
+   $stmt = $db->prepare("SELECT bReadOnly FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $idItem]);
+   $readOnly = $stmt->fetchColumn();
+   if($readOnly === false) {
+      return ['result' => false, 'error' => 'Item not found'];
+   } elseif($readOnly == 1) {
+      return ['result' => false, 'error' => 'Item is read-only'];
+   }
+   return ['result' => true]; 
+}
+
 function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
-   if (!$canValidate['submissionPossible']) {
-      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['result']) {
+      echo json_encode($canValidate);
       return;
    }
    createUserItemIfMissing($request['userItemId'], $params);
@@ -147,7 +169,7 @@ function askValidation($request, $db) {
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
    $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'sAnswer' => $request['sAnswer']));
-   $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, nbTasksTried = 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
+   $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
    unset($stmt);
@@ -168,9 +190,9 @@ function askValidation($request, $db) {
 function askHint($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
-   if (!$canValidate['submissionPossible']) {
-      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['result']) {
+      echo json_encode($canValidate);
       return;
    }
    createUserItemIfMissing($request['userItemId'], $params);
@@ -188,9 +210,9 @@ function askHint($request, $db) {
 function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkContestSubmissionRight($params['idItemLocal']);
-   if (!$canValidate['submissionPossible']) {
-      echo json_encode(array('result' => false, 'error' => $canValidate['error']));
+   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   if (!$canValidate['result']) {
+      echo json_encode($canValidate);
       return;
    }
    $scoreParams = getScoreParams($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
@@ -202,17 +224,33 @@ function graderResult($request, $db) {
    }
    // TODO: handle validation in a proper way
    $bValidated = ($score > 99);
+   $bKeyObtained = false;
 
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
-   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), sLastActivityDate = NOW(), sLastAnswerDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+
+   // Build query to update users_items
+   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sLastActivityDate = NOW(), sLastAnswerDate = NOW()";
    if ($bValidated) {
-      $query = "UPDATE `users_items` SET sAncestorsComputationState = 'todo', bValidated = 1, iScore = GREATEST(:iScore, `iScore`), sValidationDate = IFNULL(sValidationDate,NOW()), sLastAnswerDate = NOW(), sLastActivityDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+      // Item was validated
+      $query .= ", sAncestorsComputationState = 'todo', bValidated = 1, bKeyObtained = 1, sValidationDate = IFNULL(sValidationDate,NOW())";
+      $bKeyObtained = true;
+   } else {
+      // Item wasn't validated, check if we unlocked something
+      $stmt = $db->prepare("SELECT idItemUnlocked, iScoreMinUnlock FROM items WHERE ID = :idItem;");
+      $stmt->execute(['idItem' => $params['idItemLocal']]);
+      $item = $stmt->fetch();
+      if($item['idItemUnlocked'] && $score >= intval($item['iScoreMinUnlock'])) {
+         $bKeyObtained = true;
+         // Update sAncestorsComputationState only if we hadn't obtained the key before
+         $query .= ", sAncestorsComputationState = IF(bKeyObtained = 0, 'todo', sAncestorsComputationState), bKeyObtained = 1";
+      }
    }
+   $query .= " WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
-   if ($bValidated) {
+   if ($bValidated || $bKeyObtained) {
       Listeners::computeAllUserItems($db);
    }
    $token = $request['sToken'];
@@ -221,7 +259,7 @@ function graderResult($request, $db) {
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
       $token = $tokenGenerator->encodeJWS($params);
    }
-   echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'sToken' => $token));
+   echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'bKeyObtained' => $bKeyObtained, 'sToken' => $token));
 }
 
 function getToken($request, $db) {

@@ -10,6 +10,7 @@ angular.module('algorea')
          mapService = $injector.get('mapService');
       }
       $scope.getChildren = function() {
+         this.setPercentDone(this.item);
          return itemService.getChildren(this.item);
       };
       if (config.domains.current.additionalCssUrl) {
@@ -98,6 +99,9 @@ angular.module('algorea')
          if (user_item.bValidated == true) {
             return 'validated';
          }
+         if (user_item.iScore > 0) {
+            return 'partial';
+         }
          if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
             return 'failed';
          }
@@ -136,6 +140,7 @@ angular.module('algorea')
          'Section': 'folder',
       };
       $scope.setItemIcon = function (item) {
+         // Set the main icon (visited, validated, ...)
          var user_item = itemService.getUserItem(item);
          if (item.sType == 'Task') {
             if (!user_item) {
@@ -146,6 +151,10 @@ angular.module('algorea')
                this.mainIconTitle = $i18next.t('status_validated')+' '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";
                this.mainIconName = 'check_circle';
+            } else if (user_item.iScore > 0) {
+               this.mainIconTitle = $i18next.t('status_partial')+' '+$scope.get_formatted_date(user_item.sLastActivityDate);
+               this.mainIconClass = "partial-item-icon";
+               this.mainIconName = 'timelapse';
             } else if (user_item.nbTasksTried) {
                this.mainIconTitle = $i18next.t('status_seen')+' '+$scope.get_formatted_date(user_item.sLastActivityDate);
                this.mainIconClass = "failed-item-icon";
@@ -175,6 +184,36 @@ angular.module('algorea')
          }
       };
       $scope.setItemIcon($scope.item);
+
+      $scope.setItemAccessIcon = function (item, item_item) {
+         // Set the access icon on the right (locked, unlocker, ...)
+         // TODO :: have it used in the template (so far there are issues on
+         // item reload)
+         this.accessIconClass = '';
+         this.accessIcon = '';
+         if(item.sDuration) {
+            this.accessIcon = 'alarm';
+         } else if(item.bGrayedAccess) {
+            this.accessIcon = 'lock';
+         } else if(item_item && item_item.sCategory == 'Challenge') {
+            this.accessIcon = 'star';
+         } else if(item.idItemUnlocked) {
+            this.accessIcon = 'vpn_key';
+            var user_item = itemService.getUserItem(item);
+            if(user_item && user_item.bKeyObtained) {
+               this.accessIconClass = 'validated-item-icon';
+            }
+         }
+      };
+      $scope.setItemAccessIcon($scope.item, $scope.item_item);
+
+      $scope.setScore = function (item) {
+         var user_item = itemService.getUserItem(item);
+         if (user_item) {
+            this.iScore = user_item.iScore;
+         }
+      };
+      $scope.setScore($scope.item);
 
       $scope.setUserInfos = function() {
          $scope.userInfos = '';
@@ -217,30 +256,43 @@ angular.module('algorea')
          });
       };
 
-      $scope.item_percent_done = function(user_item) {
+      $scope.setPercentDone = function(item) {
+         var user_item = itemService.getUserItem(item);
          if (!user_item) {
-            return 0;
+            this.percentDone = 0;
+            return;
          }
          var children = itemService.getChildren(this.item);
          var total = 0;
+         var totalScore = 0;
          angular.forEach(children, function(child) {
             if (child.sType != 'Course' && child.bNoScore == 0) {
+               var childUserItem = itemService.getUserItem(child);
+               if(childUserItem) {
+                  if(childUserItem.bValidated) {
+                     totalScore += 100;
+                  } else {
+                     totalScore += childUserItem.iScore;
+                  }
+               }
                total = total + 1;
             }
          });
-         if (total == 0) {
-            return 100;
-         } else {
-            return Math.floor(user_item.nbChildrenValidated / total);
+         if (total > 0) {
+            this.percentDone = Math.floor(totalScore / total);
+            return;
          }
-         if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
+         this.percentDone = 0;
+/*         if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
             return 'failed';
          }
          if (user_item.nbTaskWithHelp && this.item.sType == 'task') {
             return 'hint asked';
          }
-         return 'visited';
+         return 'visited';*/
       };
+      $scope.setPercentDone($scope.item);
+
       $scope.get_formatted_date = function(date) {
          return $filter('date')(date, 'fullDate');
       };
@@ -284,6 +336,7 @@ angular.module('algorea')
             }
             itemService.onSeen(item);
             that.setItemIcon(item);
+            that.setItemAccessIcon(item);
             that.setShowUserInfos(item, that.pathParams);
             if(callback) {
                callback(item);
@@ -416,7 +469,12 @@ angular.module('algorea')
          var children = itemService.getChildren(item);
          angular.forEach(children, function(child) {
             child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '/'+child.ID);
-            child.private_go = pathService.getStateGo($scope.panel, 1, $scope.pathParams, '/'+child.ID);
+            child.private_go_func = pathService.getStateGo($scope.panel, 1, $scope.pathParams, '/'+child.ID);
+            child.private_go = function () {
+               if(!child.bGrayedAccess) {
+                  child.private_go_func();
+               }
+            };
             $scope.itemsList.push(child);
          });
          $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
@@ -452,6 +510,7 @@ angular.module('algorea')
       $scope.item_item = $scope.selectItemItem(item, $scope.leftParentItemId);
       var user_item = itemService.getUserItem(item);
       $scope.setItemIcon(item);
+      $scope.setItemAccessIcon(item, $scope.item_item);
       if (item.ID == $scope.currentActiveId) {
          $scope.mainIconClass = "active-item-icon";
          $scope.linkClass = "active-item-link";

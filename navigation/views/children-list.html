@@ -2,6 +2,7 @@
    <div class="children-list-left-margin"></div>
    <div class="children-list">
       <div ng-repeat="item in getChildren() track by item.ID" display-item from="parent" class="children-item"></div>
+      <div ng-if="percentDone > 0">Votre score sur cette séquence : {{ percentDone }}%</div>
    </div>
    <div class="children-list-right-margin"></div>
 </div>

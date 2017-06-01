@@ -15,7 +15,7 @@ angular.module('algorea')
          if (attrs.userItemVar) {
             scope.user_item = scope[attrs.userItemVar];
          }
-         if (attrs.readOnly) {
+         if (attrs.readOnly && attrs.readOnly != 'false') {
             scope.readOnly = true;
          }
          if (attrs.taskName) {
@@ -199,9 +199,25 @@ angular.module('algorea')
                   return;
                }
                scope.user_item.nbTasksTried = scope.user_item.nbTasksTried+1;
+
+               // We just unlocked some items
+               if (!scope.user_item.bKeyObtained && postRes.bKeyObtained && scope.item.idItemUnlocked) {
+                  scope.user_item.bKeyObtained = true;
+                  if(!postRes.bValidated) {
+                     ModelsManager.updated('users_items', scope.user_item.ID, false, true);
+                  }
+                  SyncQueue.sentVersion = 0;
+                  SyncQueue.serverVersion = 0;
+                  SyncQueue.resetSync = true;
+                  SyncQueue.planToSend(0);
+                  alert("Félicitations ! Vous avez débloqué un ou plusieurs contenus.");
+               }
+
+               // We validated the task for the first time
                if (!scope.user_item.bValidated && postRes.bValidated) {
                   scope.user_item.sToken = postRes.sToken;
                   scope.user_item.bValidated = true;
+                  scope.user_item.bKeyObtained = true;
                   scope.user_item.sValidationDate = new Date();
                   scope.user_answer.sGradingDate = new Date();
                   if (config.domains.current.useMap) {
@@ -214,6 +230,9 @@ angular.module('algorea')
                         scope.setTabs(views);
                      });
                   });
+
+                  // An item has been unlocked, need to reset sync as for some
+                  // reason it doesn't get the changes
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
                $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);

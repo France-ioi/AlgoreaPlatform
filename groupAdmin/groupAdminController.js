@@ -759,14 +759,20 @@ angular.module('algorea')
    }
 
    $scope.initItems = function() {
-      var officialRootItem = ModelsManager.getRecord('items', config.domains.current.OfficialProgressItemId);
-      var customRootItem = ModelsManager.getRecord('items', config.domains.current.CustomProgressItemId);
+      var rootItemsIds = [
+         config.domains.current.OfficialProgressItemId,
+         config.domains.current.CustomProgressItemId,
+         config.domains.current.ContestRootItemId,
+         config.domains.current.CustomContestRootItemId];
       $scope.levels = [];
-      angular.forEach(officialRootItem.children, function(child) {
-         $scope.levels.push(child.child);
-      });
-      angular.forEach(customRootItem.children, function(child) {
-         $scope.levels.push(child.child);
+      rootItemsIds.forEach(function (itemId) {
+         if(!itemId) { return; }
+         var rootItem = ModelsManager.getRecord('items', itemId);
+         if(rootItem) {
+            angular.forEach(rootItem.children, function(child) {
+               $scope.levels.push(child.child);
+            });
+         }
       });
       if (!$scope.formValues.selectedLevel) {
          $scope.formValues.selectedLevel = $scope.levels[0];

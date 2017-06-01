@@ -111,7 +111,7 @@
                   </div>
                </div>
                <div class="adminContainerTabContent" ng-show="selectedView == 'itemsEditable'">
-                  <h2>Item : {{ item.strings[0].sTitle }}</h2>
+                  <h2>Item : {{ item.strings[0].sTitle }} <small>(ID: {{ item.ID }})</small></h2>
                   <uib-tabset class="adminTabs">
                      <uib-tab heading="{{'settings'|i18next}}"><div ng-include="templatesPrefix+'/admin/tabs/items_params.html'"></div></uib-tab>
                      <uib-tab heading="{{'texts'|i18next}}" ng-show="group_item.bOwnerAccess || group_item.bCachedMangerAccess"><div ng-include="templatesPrefix+'/admin/tabs/items_texts.html'"></div></uib-tab>

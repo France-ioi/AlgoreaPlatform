@@ -135,6 +135,7 @@ var models = {
             nullInvalid: true
          },
          bUsesAPI: {type: "boolean", label: "models_items_fields_bUsesAPI_label", defaultValue: true},
+         bReadOnly: {type: "boolean", label: "models_items_fields_bReadOnly_label", defaultValue: false},
          sFullScreen: {
             type: "enum",
             values: {
@@ -177,7 +178,8 @@ var models = {
             defaultValue : 'Ready',
             nullInvalid: true
          },
-         idItemUnlocked: {type: "key", label: "models_items_fields_idItemUnlocked_label", refModel:"items"},
+         idItemUnlocked: {type: "string", label: "models_items_fields_idItemUnlocked_label"},
+         iScoreMinUnlock: {type: "int", label: "models_items_fields_iScoreMinUnlock_label"},
          sSupportedLangProg: {type: "string", label: "models_items_fields_sSupportedLangProg_label", defaultValue: '*'},
          sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
          sDuration: {type: "string", label: "models_items_fields_sDuration_label"},
@@ -439,6 +441,7 @@ var models = {
           idItem: {type: "key", label: "models_users_items_fields_idItem_label", refModel: "items", link: "item", invLink: "user_item"},
           iScore: {type: "float", label: "", readOnly: true},
           iScoreComputed: {type: "float", label: "", readOnly: true},
+          iScoreReeval: {type: "float", label: "", readOnly: true},
           iScoreDiffManual: {type: "float", label: "", readOnly: true},
           sScoreDiffComment: {type: "string", label: "", readOnly: true},
           nbSubmissionsAttempts: {type: "int", label: "", readOnly: true},
@@ -446,6 +449,7 @@ var models = {
           nbChildrenValidated: {type: "int", label: "", readOnly: true},
           bValidated: {type: "boolean", label: "", readOnly: true},
           bFinished: {type: "boolean", label: "", readOnly: true},
+          bKeyObtained: {type: "boolean", label: "", readOnly: true},
           nbTasksWithHelp: {type: "int", label: "", readOnly: true},
           nbHintsCached: {type: "int", label: "", readOnly: true},
           nbCorrectionsRead: {type: "int", label: "", readOnly: true},
