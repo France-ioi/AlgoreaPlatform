@@ -9,6 +9,10 @@
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 
+if(empty($request)) {
+  $request = $_POST;
+}
+
 require_once __DIR__.'/../config.php';
 
 if (session_status() === PHP_SESSION_NONE){session_start();}
@@ -18,7 +22,7 @@ if (!isset($request['action'])) {
    echo json_encode(array('result' => false, 'error' => 'missing action'));
    exit();
 }
-if (!isset($_SESSION['login'])) {
+if (!isset($_SESSION['login']) && $request['action'] != 'graderReturn') {
    echo json_encode(array('result' => false, 'error' => 'only identified users can use this file'));
    exit();
 }
@@ -253,7 +257,7 @@ function graderResult($request, $db) {
    if ($bValidated || $bKeyObtained) {
       Listeners::computeAllUserItems($db);
    }
-   $token = $request['sToken'];
+   $token = isset($request['sToken']) ? $request['sToken'] : $request['scoreToken'];
    if ($bValidated && isset($params['bAccessSolutions']) && !$params['bAccessSolutions']) {
       $params['bAccessSolutions'] = true;
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
