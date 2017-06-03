@@ -346,6 +346,7 @@
     "task_solution": "Solution",
     "task_communicate_error": "Impossible de communiquer avec l'exercice !", 
     "task_load_error": "Impossible de charger l'exercice !",
+    "task_slow_load": "L'exercice prend plus de temps que prévu à se charger...",
 
     "userInfos_not_logged": "Désolé, vous ne pouvez pas modifier vos données utilisateur. Merci de vous connecter (bouton en haut à droite de l'écran) pour pouvoir le faire.",
     "userInfos_title_infos": "Voici les informations vous concernant auxquelles nous avons accès :",

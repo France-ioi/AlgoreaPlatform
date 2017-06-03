@@ -337,6 +337,7 @@
     "task_solution": "Solution",
     "task_communicate_error": "Impossible to communicate with the task!", 
     "task_load_error": "Impossible to load the task!",
+    "task_slow_load": "The task is taking an unexpected long time to load...",
 
     "userInfos_not_logged": "Sorry, you can't change your user information. Please log in (button at the top right of the screen) to access this feature.",
     "userInfos_title_infos": "Here is the information about you that we have access to:",
