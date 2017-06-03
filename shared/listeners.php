@@ -6,7 +6,7 @@ class Listeners {
       $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
       $db->exec($query);
       $hasChanges = true;
-      $groupsitemsChanged = false;
+      $groupsItemsChanged = false;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
          $query = "UPDATE `users_items` as `parent`
