@@ -44,14 +44,21 @@ angular.module('algorea')
          return;
       }
       var currentId = scope.currentId;
+      scope.loadOpacity = 1;
+      var loadMsgTimeout = setTimeout(function () {
+         scope.slowLoading = true;
+         scope.$apply();
+      }, 5000);
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          if(scope.currentId != currentId) { return; }
+         clearTimeout(loadMsgTimeout);
          scope.task = task;
          configureTask(scope, elem, sameUrl);
       }, !sameUrl, function() {
          if(scope.currentId != currentId) { return; }
          scope.taskLoaded = true;
          scope.loadingError = $i18next.t('task_communicate_error');
+         scope.$apply();
       });
    }
    function configureTask(scope, elem, sameUrl) {
@@ -245,11 +252,17 @@ angular.module('algorea')
          });
       };
       var views = {'task': true, 'solution': true, 'editor': true, 'hints': true, 'grader': true,'metadata':true};
-      scope.taskLoaded = true;
       var currentId = scope.currentId;
+      scope.loadOpacity = 0.6;
+      scope.$apply();
+      var loadMsgTimeout = setTimeout(function () {
+         scope.slowLoading = true;
+         scope.$apply();
+      }, 5000);
       scope.task.load(views, function() {
-         //scope.taskLoaded = true;
          if(scope.currentId != currentId) { return; }
+         scope.taskLoaded = true;
+         clearTimeout(loadMsgTimeout);
          scope.task.getMetaData(function(metaData) {
             scope.metaData = metaData;
             if (metaData.minWidth) {
@@ -276,6 +289,7 @@ angular.module('algorea')
       }, function() {
          if(scope.currentId != currentId) { return; }
          scope.loadingError = $i18next.t('task_load_error');
+         scope.$apply();
       });
     }
     return {

@@ -69,6 +69,8 @@
     "contest_already_done": "Du hast diesen Wettbewerb bereits abgeschlossen.",
     "contest_ended": "Die Wettbewerbszeit is abgelaufen!",
 
+    "list_total_score": "Gesamtergebnis für diese Aufgaben:",
+
     "admin_retrieving_login": "Stelle die Verbindungsinformation wieder her …",
     "admin_access_management": "Zugriffsverwaltung",
     "admin_select_item": "Item auswählen:",

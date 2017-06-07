@@ -9,6 +9,10 @@
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 
+if(empty($request)) {
+  $request = $_POST;
+}
+
 require_once __DIR__.'/../config.php';
 
 if (session_status() === PHP_SESSION_NONE){session_start();}
@@ -18,7 +22,7 @@ if (!isset($request['action'])) {
    echo json_encode(array('result' => false, 'error' => 'missing action'));
    exit();
 }
-if (!isset($_SESSION['login'])) {
+if (!isset($_SESSION['login']) && $request['action'] != 'graderReturn') {
    echo json_encode(array('result' => false, 'error' => 'only identified users can use this file'));
    exit();
 }
@@ -47,9 +51,9 @@ function getTokenParams($request) {
       echo json_encode(array('result' => false, 'error' => 'missing idUser or itemUrl in token'));
       exit;
    }
-   if (!$params['idItemLocal']) {
-      $stmt = $db->prepare('select ID from items where sUrl = :itemUrl;');
-      $stmt->execute(['itemUrl' => $params['itemUrl']]);
+   if (!isset($params['idItemLocal'])) {
+      $stmt = $db->prepare('select idItem from users_answers where ID = :idUserAnswer;');
+      $stmt->execute(['idUserAnswer' => $params['idUserAnswer']]);
       $params['idItemLocal'] = $stmt->fetchColumn();
       if (!$params['idItemLocal']) {
          echo json_encode(array('result' => false, 'error' => 'cannot find item with url '.$params['itemUrl']));
@@ -134,16 +138,17 @@ function createUserItemIfMissing($userItemId, $params) {
    $stmt->execute(['ID' => $userItemId,'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']]);
 }
 
-function checkSubmissionRight($idItem) {
+function checkSubmissionRight($idItem, $idUser=false) {
    // Checks if submission for that item is allowed: checks if we're in a
    // contest and allowed, and whether the item is read-only
    global $db;
    // Check contest
-   $canValidate = checkContestSubmissionRight($idItem);
-   if (!$canValidate['submissionPossible']) {
-      return ['result' => false, 'error' => $canValidate['error']];
+   if(isset($_SESSION)) {
+      $canValidate = checkContestSubmissionRight($idItem, $idUser);
+      if (!$canValidate['submissionPossible']) {
+         return ['result' => false, 'error' => $canValidate['error']];
+      }
    }
-
    // Check whether item is read-only
    $stmt = $db->prepare("SELECT bReadOnly FROM items WHERE ID = :idItem;");
    $stmt->execute(['idItem' => $idItem]);
@@ -159,7 +164,7 @@ function checkSubmissionRight($idItem) {
 function askValidation($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   $canValidate = checkSubmissionRight($params['idItemLocal'], $params['idUser']);
    if (!$canValidate['result']) {
       echo json_encode($canValidate);
       return;
@@ -190,7 +195,7 @@ function askValidation($request, $db) {
 function askHint($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   $canValidate = checkSubmissionRight($params['idItemLocal'], $params['idUser']);
    if (!$canValidate['result']) {
       echo json_encode($canValidate);
       return;
@@ -210,7 +215,7 @@ function askHint($request, $db) {
 function graderResult($request, $db) {
    global $config;
    $params = getTokenParams($request);
-   $canValidate = checkSubmissionRight($params['idItemLocal']);
+   $canValidate = checkSubmissionRight($params['idItemLocal'], $params['idUser']);
    if (!$canValidate['result']) {
       echo json_encode($canValidate);
       return;
@@ -253,7 +258,7 @@ function graderResult($request, $db) {
    if ($bValidated || $bKeyObtained) {
       Listeners::computeAllUserItems($db);
    }
-   $token = $request['sToken'];
+   $token = isset($request['sToken']) ? $request['sToken'] : $request['scoreToken'];
    if ($bValidated && isset($params['bAccessSolutions']) && !$params['bAccessSolutions']) {
       $params['bAccessSolutions'] = true;
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);

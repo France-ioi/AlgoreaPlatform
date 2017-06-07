@@ -97,28 +97,40 @@ function closeContest($idItem) {
 	Listeners::groupsItemsAfter($db);
 }
 
-function checkContestSubmissionRight($idItem) {
+function checkContestSubmissionRight($idItem, $idUser=false) {
     global $db;
+    $idGroupSelf = false;
+    if(isset($_SESSION['login']['idGroupSelf'])) {
+       $idGroupSelf = $_SESSION['login']['idGroupSelf'];
+    } elseif($idUser) {
+       $stmt = $db->prepare('SELECT idGroupSelf FROM users WHERE ID = :idUser;');
+       $stmt->execute(['idUser' => $idUser]);
+       $idGroupSelf = $stmt->fetchColumn();
+    }
+    if(!$idGroupSelf) {
+        return ['submissionPossible' => false, 'error' => "Vous n'êtes pas connecté."];
+    }
+
     // TODO: handle case where the item is both in a contest and in a non-contest chapter the user has access to
     $stmt = $db->prepare('select items.ID as idItem, max(groups_items.bCachedFullAccess) as fullAccess from items
             JOIN items_ancestors on items_ancestors.idItemAncestor = items.ID
             JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
     JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items.ID
     WHERE (items_ancestors.idItemChild = :idItem or items.ID = :idItem) and items.sDuration is not null AND (`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) group by items.ID;');
-    $stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+    $stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $idGroupSelf]);
     $contestItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (!$contestItems || !count($contestItems)) {
         return ['submissionPossible' => true];
     }
     $contestData = adjustContestAndGetData();
     if (!$contestData) {
-        return ['submissionPossible' => false, 'error' => 'vous ne pouvez pas soumettre de réponse à cet exercice car vous n\'avez pas commencé ou déjà terminé le concours'];
+        return ['submissionPossible' => false, 'error' => 'Vous ne pouvez pas soumettre de réponse à cet exercice car vous n\'avez pas commencé ou avez déjà terminé le concours.'];
     }
     foreach ($contestItems as $contestItem) {
     	if ($contestItem['fullAccess'] || $contestData['idItem'] == $contestItem['idItem']) {
     		return ['submissionPossible' => true];
     	}
     }
-    return ['submissionPossible' => false, 'error' => 'l\'exercice pour lequel vous souhaitez soumettre une réponse fait partie d\'un concours différent que celui en cours'];
+    return ['submissionPossible' => false, 'error' => 'L\'exercice pour lequel vous souhaitez soumettre une réponse fait partie d\'un concours différent que celui en cours.'];
 }
 

@@ -6,7 +6,7 @@ class Listeners {
       $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
       $db->exec($query);
       $hasChanges = true;
-      $groupsitemsChanged = false;
+      $groupsItemsChanged = false;
       while ($hasChanges) {
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
          $query = "UPDATE `users_items` as `parent`
@@ -188,6 +188,22 @@ class Listeners {
    }
 
    public static function computeAllAccess($db) {
+      // Lock all tables during computation to avoid issues
+      $queryLockTables = "LOCK TABLES
+         groups_items WRITE,
+         groups_items AS parents READ,
+         groups_items AS children READ,
+         groups_items AS parent READ,
+         groups_items AS child READ,
+         groups_items AS new_data READ,
+         history_groups_items WRITE,
+         groups_items_propagate WRITE,
+         groups_items_propagate AS parents_propagate READ,
+         items READ,
+         items_items READ;";
+
+      $queryUnlockTables = "UNLOCK TABLES;";
+
       // inserting missing groups_items_propagate
       $queryInsertMissingPropagate = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, `sPropagateAccess`) ".
                                     "SELECT `groups_items`.`ID`, 'self' as `sPropagateAccess` ".
@@ -265,6 +281,7 @@ class Listeners {
 
       $hasChanges = true;
       while ($hasChanges) {
+         $db->exec($queryLockTables);
          $res = $db->exec($queryInsertMissingChildren);
          $res = $db->exec($queryInsertMissingPropagate);
          $res = $db->exec($queryMarkDoNotPropagate);
@@ -272,6 +289,7 @@ class Listeners {
          $res = $db->exec($queryMarkFinishedItems);
          $res = $db->exec($queryUpdateGroupItems);
          $hasChanges = $db->exec($queryMarkChildrenItems);
+         $db->exec($queryUnlockTables);
       }
       // remove default groups_items (veeeery slow)
       // TODO :: maybe move to some cleaning cron

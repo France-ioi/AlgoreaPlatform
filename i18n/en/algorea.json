@@ -64,16 +64,19 @@
     "login_not_connected": "Not connected",
 
     "status_seen": "seen on",
+    "status_partial": "partial answer on",
     "status_validated": "validated on",
 
     "contest_start": "Start contest",
-    "contest_already_done": "You have already done this contest.",
+    "contest_already_done": "You already participated in this contest.",
     "contest_ended": "The contest is finished!",
+
+    "list_total_score": "Your score on that sequence:",
 
     "admin_retrieving_login": "Retreiving login information...",
     "admin_access_management": "Access management",
-    "admin_select_item": "Select an item :",
-    "admin_select_group": "Select a group :",
+    "admin_select_item": "Select an item:",
+    "admin_select_group": "Select a group:",
     "admin_two_trees_items_desc": "Show two trees to transfer items",
     "admin_two_trees_groups_desc": "Show two trees to transfer groups",
     "admin_items": "Items:",
@@ -348,6 +351,7 @@
     "task_solution": "Solution",
     "task_communicate_error": "Impossible to communicate with the task!",
     "task_load_error": "Impossible to load the task!",
+    "task_slow_load": "The task is taking an unexpected long time to load...",
 
     "userInfos_not_logged": "Sorry, you can't change your user information. Please log in (button at the top right of the screen) to access this feature.",
     "userInfos_title_infos": "Here are the informations about you that we have access to:",
