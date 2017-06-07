@@ -68,6 +68,8 @@
     "contest_already_done": "Vous avez déjà effectué ce concours.",
     "contest_ended": "Le concours est terminé !",
 
+    "list_total_score": "Votre score sur cette séquence :",
+
     "admin_retrieving_login": "Récupération des informations de connexion...",
     "admin_access_management": "Gestion des droits",
     "admin_select_item": "Sélectionnez un item :",

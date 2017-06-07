@@ -59,6 +59,8 @@
     "login_disconnect": "Ausloggen",
     "login_connect": "Einloggen",
 
+    "list_total_score": "Gesamtergebnis für diese Aufgaben:",
+
     "admin_retrieving_login": "Stelle die Verbindungsinformation wieder her …",
     "admin_access_management": "Zugriffsverwaltung",
     "admin_select_item": "Item auswählen:",

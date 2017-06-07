@@ -104,9 +104,11 @@ angular.module('algorea')
    };
 
    $scope.onResize = function() {
-      $scope.task.getViews(function(views) {
-         $scope.setTabs(views);
-      });
+      if($scope.task) {
+         $scope.task.getViews(function(views) {
+            $scope.setTabs(views);
+         });
+      }
    };
    $window.addEventListener('resize', $scope.onResize);
 
