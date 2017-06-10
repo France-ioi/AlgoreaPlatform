@@ -243,6 +243,8 @@ function handleBadges($idUser, $idGroupSelf, $idGroupOwned, $aBadges) {
       }
       // Look up for other groups corresponding to that teacher (subgroups of competitions for instance)
       addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, array_merge($basePms, $pmsTeacherInfo), 'manager', false);
+      // Add all teachers to a special group
+      addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, array(array('PMS', 'PMS'), array('teachers', 'Lehrer')), 'member');
    }
 }
 
