@@ -1,44 +1,90 @@
-.menu {
+/*
+//////
+HEADER
+//////
+*/
+
+header {
+   z-index: 3;
+   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+}
+#headerContainer {
    display: -webkit-flex;
    display: flex;
-   flex-flow: row wrap;
-   min-height: 45px;
-   font-family: 'Roboto', sans-serif;
-   font-size:17.5pt;
-   justify-content: center;
-   width:100%;
+   -webkit-flex-flow: column;
+   flex-direction: column;
 }
+
+
+/*
+////////
+BRANDING
+////////
+*/
+
+#menu-logo {
+   -webkit-flex: 1 0 100%;
+   flex: 1 0 100%;
+   background-color:#82bf2b;
+   color:white;
+   border:0px;
+   padding-left: 10px;
+   font-size: 22px;
+}
+
+
+/*
+///////////////
+MAIN NAVIGATION
+///////////////
+*/
 
 .menu-toggled > #menu {
    display: none;
 }
-
-.affix {
-   position: fixed;
-   top: 0;
-   width: 100%;
+#menu {
+   display: -webkit-flex;
+   display: flex;
+   flex-flow: row wrap;
+   font-family: 'Roboto', sans-serif;
+   justify-content: center;
+   width:100%;
 }
-#navOverlay {
-   position: fixed;
-   top: 0;
-   right: 0;
-   bottom: 0;
-   left: 0;
-   z-index: 3;
-   background-color: #ccc;
-   background-color: rgba(0,0,0,0.3);
+@media all and (max-width: 1100px)  and (min-width: 1041px) {
+   #menu {
+      align-items: stretch;
+   }
 }
-
-/*@media all and (max-width: 1100px) {*/
-/*   .menu {*/
-/*      display: none;*/
-/*   }*/
-/*   .menu-toggled {*/
-/*      display:flex !important;*/
-/*   }*/
-/*}*/
-
-
+@media all and (max-width: 480px) {
+   #menu {
+      -webkit-flex-direction:column;
+      flex-direction:column;
+   }
+}
+#menu-main {
+   -webkit-flex: 3 1 auto;
+   flex: 3 1 auto;
+   display: -webkit-flex;
+   display:flex;
+   flex-direction:row;
+   justify-content:space-between;
+   margin-bottom: -1px;
+   min-height: 45px;
+}
+@media all and (max-width: 1040px) {
+   #menu-main {
+      -webkit-flex-basis: 100%;
+      flex-basis: 100%;
+      flex-wrap: wrap;
+   }
+}
+@media all and (max-width: 480px) {
+   #menu-main {
+      flex-wrap: nowrap;
+      flex-basis: auto;
+      flex-direction: column;
+   }
+}
 .menu-item {
    display: -webkit-flex;
    display:flex;
@@ -48,9 +94,18 @@
    -webkit-flex: 1 1 150px;
    flex: 1 1 150px;
    justify-content:space-around;
+   font-size: 22px;
    color: #5d5d5d;
    cursor:pointer;
    white-space: nowrap;
+   border-bottom: 1px solid #d9d9d9;
+   border-right: 1px solid #d9d9d9;
+}
+@media all and (max-width: 480px) {
+   .menu-item {
+      flex-basis: 40px;
+      border-bottom: 1px solid #d9d9d9;
+   }
 }
 .menu-item-active {
    background: #2aa3ff !important;
@@ -63,179 +118,41 @@
    position:relative;
    top:4px;
 }
-/*
-*
-   MAIN NAVIGATION
-*
-*/
-#menu-logo {
-   -webkit-flex: 0 1 325px;
-   flex: 0 1 325px;
-   background-color:#82bf2b;
-   color:white;
-   border:0px;
-}
 
-#menu-main {
-   -webkit-flex: 3 1 auto;
-   flex: 3 1 auto;
-   display: -webkit-flex;
-   display:flex;
-   flex-direction:row;
-   justify-content:space-between;
-}
-#menu-main .menu-item {
-   border-left: 1px solid #d9d9d9;
-   border-right: 1px solid #d9d9d9;
-}
 #userinfocontainer {
    -webkit-flex: 1 1 auto;
    flex: 1 1 auto;
-   order: 3;
-}
-/*@media all and (max-width: 700px) {
-   .menu {
-      -webkit-flex-direction:column;
-      flex-direction:column;
-   }
-}*/
-@media all and (max-width: 1040px) {
-   #menu-logo {
-      -webkit-flex-basis: 50%;
-      flex-basis: 50%;
-   }
-   #userinfocontainer {
-      -webkit-flex-basis: 50%;
-      flex-basis: 50%;
-      order: 2;
-   }
-   #menu-main {
-      -webkit-flex-basis: 100%;
-      flex-basis: 100%;
-      flex-wrap: wrap;
-      order: 3;
-   }
-   #loginFrame {
-      width:160px;
-      top:32px;
-   }
-}
-@media all and (max-width: 1100px)  and (min-width: 1041px) {
-   .menu {
-      align-items: stretch;
-   }
-   #menu-logo {
-      -webkit-flex-basis: 150px;
-      flex-basis: 150px;
-   }
-}
-@media all and (max-width: 480px) {
-   .menu {
-      -webkit-flex-direction:column;
-      flex-direction:column;
-   }
-   #menu-logo {
-      -webkit-flex-basis: auto;
-      flex-basis: auto;
-   }
-   #userinfocontainer {
-      -webkit-flex-basis: auto;
-      flex-basis: auto;
-      order: 2;
-   }
-   #menu-main {
-      flex-wrap: nowrap;
-      flex-basis: auto;
-      flex-direction: column;
-   }
-   .menu-item {
-      flex-basis: 40px;
-      border-bottom: 1px solid #d9d9d9;
-   }
-}
-.menu-item-login {
-   background-color: #878787;
-   color: #fff;
-}
-.menu-item-login-logged .userbox-text {
-   display: none;
 }
 .userInfosLink,
 .userInfosLink:focus,
 .userInfosLink:hover {
-   color: #fff;
-}
-.userInfosLink:hover {
    color: inherit;
 }
-.userInfosLink .menu-item-icon {
-   margin-right: 7px;
-}
 .userinfo .logout-btn {
-   color: #fff;
    transition: all 250ms;
 }
 .userinfo .logout-btn:active,
 .userinfo .logout-btn:hover,
 .userinfo .logout-btn:focus {
-   color: #d9d9d9;
+   color: #000;
 }
-#userinfocontainer-breadcrumbs {
-   display:none;
-}
-
-.userinfocontainer-breadcrumbs-toggled {
-   display:block !important;
+.menu-item-login-logged .userbox-text {
+   display: none;
 }
 
-@media all and (max-width: 1100px)  and (min-width: 701px) {
-   #loginFrame {
-      width:160px;
-      top:32px;
-   }
-   #userinfocontainer-breadcrumbs {
-      display:block;
-   }
-   .userinfocontainer-breadcrumbs-toggled {
-      display:none;
-   }
-}
 
 /*
-*
-   LOGIN FRAME
-*
+///////////////////
+BREADCRUMBS TOOLBAR
+///////////////////
 */
-.loginFrame {
-   z-index:5;
-   position: absolute;
-   margin-left:auto;
-   margin-right:auto;
-   top:50px;
-   right:0px;
-   background-color:#878787;
-   width:260px;
-   overflow: hidden;
-   border: 0px solid;
-   box-shadow: 0px 0px 0px;
-}
-.loginFrame-login {
-   height:175px;
-}
-.loginFrame-logout {
-   height:105px;
-}
 
-/*
-*
-   BREADCRUMBS
-*
-*/
 #toolbar {
    background-color: #2aa3ff;
-   font-size: 12pt;
-   min-height: 25px;
-   padding: 0 20px;
+   font-size: 16px;
+   line-height: 26px;
+   min-height: 26px;
+   padding: 0 10px;
    display: -webkit-flex;
    display: flex;
    justify-content: -webkit-space-between;
@@ -243,6 +160,9 @@
 }
 #toolbar.affix {
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+   position: fixed;
+   top: 0;
+   width: 100%;
 }
 #breadcrumbs {
    display: -webkit-flex;
@@ -256,9 +176,6 @@
    -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
    padding-right:10px;
-}
-
-.breadcrumbs-toggled {
 }
 #breadcrumbs a {
    color: #000;
@@ -277,10 +194,59 @@
   padding-left: 5px;
 }
 
+/* Exercise mode menu display*/
 .menu-more {
    color: #fff;
    cursor: pointer;
 }
+#navOverlay {
+   position: fixed;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   z-index: 3;
+   background-color: #ccc;
+   background-color: rgba(0,0,0,0.3);
+}
+
+
+/*
+///////////
+LOGIN FRAME
+///////////
+*/
+
+.loginFrame {
+   z-index:5;
+   position: absolute;
+   margin-left:auto;
+   margin-right:auto;
+   top:50px;
+   right:0px;
+   background-color:#878787;
+   width:260px;
+   overflow: hidden;
+   border: 0px solid;
+   box-shadow: 0px 0px 0px;
+}
+@media all and (max-width: 1100px)  and (min-width: 701px) {
+   #loginFrame {
+      width:160px;
+      top:32px;
+   }
+}
+.loginFrame-login {
+   height:175px;
+}
+.loginFrame-logout {
+   height:105px;
+}
+
+
+/*
+THINGS THAT SHOULD BE IN ANOTHER FILE
+*/
 
 .arrow-link-icon {
    font-size:27pt !important;
@@ -380,12 +346,24 @@
       right:260px !important;
    }
 }
-
-.login-in-breadcrumbs {
-   flex: 0 0 auto;
-   margin-left: auto;
+/*
+THINGS THAT DON'T APPEAR TO BE USEFULL ANYMORE
+*/
+#userinfocontainer-breadcrumbs {
+   display:none;
 }
 
+.userinfocontainer-breadcrumbs-toggled {
+   display:block !important;
+}
+@media all and (max-width: 1100px)  and (min-width: 701px) {
+   #userinfocontainer-breadcrumbs {
+      display:block;
+   }
+   .userinfocontainer-breadcrumbs-toggled {
+      display:none;
+   }
+}
 .breadcrumbs-loginbox > .userinfo {
    background:transparent;
    font-size: 12pt;
@@ -398,4 +376,8 @@
 .breadcrumbs-loginbox > .userinfo > .loginFrame {
    top:25px;
    right:-20px;
+}
+.login-in-breadcrumbs {
+   flex: 0 0 auto;
+   margin-left: auto;
 }

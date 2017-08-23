@@ -1,15 +1,15 @@
 <div affix-me="affix==='header'">
 <div id="headerContainer">
    <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
-      <div id="menu-logo" class="menu-item" ng-click="gotoIndex()">
+      <div id="menu-logo" ng-click="gotoIndex()">
          <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
-      </div>
-      <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
-         <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
       </div>
       <div id="menu-main" >
          <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated == i}" ng-click="gotoMenuItem(i, tab.path)">
             <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
+         </div>
+         <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
+            <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
          </div>
       </div>
    </div>
