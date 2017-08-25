@@ -21,7 +21,8 @@ This repository contains the source code for the Algorea Platform.
 To set up:
 
 ```
-git clone thisurl
+git clone [repository url]
+cd AlgoreaPlatform
 git submodule update --init
 bower install
 composer install
