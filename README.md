@@ -46,3 +46,54 @@ php shared/initPlatform.php
 ```
 
 this will make a boilerplate for a platform. You can use this script again if you want to set up another platform on the same database, with different item IDs.
+
+## Webserver configuration
+
+Example webserver configurations.
+
+### On Apache2
+
+```
+<VirtualHost *:80>
+    [your other config]
+
+    DocumentRoot /path/to/algorea/
+
+    # Redirect all requests to index.php, except for existing files
+    RewriteEngine on
+    RewriteCond /path/to/algorea/%{REQUEST_FILENAME} !-d
+    RewriteCond /path/to/algorea/%{REQUEST_FILENAME} !-f
+    RewriteRule . /index.php [L,QSA]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</VirtualHost>
+```
+
+### On Nginx
+
+```
+server {
+  [your other config]
+
+  root /path/to/algorea;
+
+  location / {
+    try_files $uri /index.php;
+    include /etc/nginx/mime.types;
+  }
+  location ~* \.php {
+     try_files $uri =404;
+     fastcgi_pass unix:/var/run/php5-fpm.sock;
+     include fastcgi.conf;
+     include fastcgi_params;
+     fastcgi_read_timeout 120;
+     fastcgi_cache off;
+     fastcgi_buffer_size 256k;
+     fastcgi_buffers 4 256k;
+     fastcgi_busy_buffers_size 256k;
+     fastcgi_param HTTP_AUTHORIZATION $http_authorization;
+  }
+}
+```
