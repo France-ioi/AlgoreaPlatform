@@ -108,6 +108,7 @@ body {
    -webkit-flex-wrap:wrap;
    display:flex;
    flex-wrap:wrap;
+   align-items: center;
    background-color: #e8e8e8;
 }
 
@@ -119,9 +120,9 @@ body {
 .main-titlebar-icon {
    -webkit-flex: 0 0 75px;
    flex: 0 0 75px;
-   background-color:#2aa3ff;
+   background-color:#82bf2b;
    color:white;
-   font-size:63px !important;
+   font-size: 63px;
    padding-top:4px;
    padding-left:5px;
 }
@@ -129,16 +130,34 @@ body {
 .main-titlebar-titles {
    -webkit-flex: 1 1 auto;
    flex: 1 1 auto;
-   font-size:20pt;
-   padding-left:10px;
-   padding-top:5px;
+   font-size: 26px;
+   text-align: center;
 }
 
 .main-titlebar-title1 {
    font-weight:bold;
-   font-size:25pt;
+   font-size: 34px;
 }
-
+@media screen and (max-width: 700px) {
+   .main-titlebar-icon {
+      font-size: 42px;
+      -webkit-flex: 0 1 52px;
+      flex: 0 1 52px;
+   }
+   .main-titlebar-titles {
+      font-size: 18px;
+      padding-right: 32px;
+   }
+   .main-titlebar-title1 {
+      font-size: 24px;
+   }
+   .main-titlebar .menu-toggle {
+      flex-basis: 32px;
+      position: absolute;
+      right: 10px;
+      top: 10px;
+   }
+}
 .contest-timer {
    font-weight:bold;
    font-size:40pt; 
@@ -148,7 +167,7 @@ body {
 
 .menubar-userinfos {
    font-weight:bold;
-   font-size:20pt; 
+   font-size:20pt;
    float:right;
    margin-right:20px;
    margin-top:10px;
