@@ -69,6 +69,7 @@
    font-size: 36px;
    display: flex;
    align-items: center;
+   align-self: stretch;
 }
 .sidebar-left-content {
    -webkit-flex: 0 0 auto;
