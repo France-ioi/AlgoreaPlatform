@@ -102,12 +102,13 @@
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
 <div id="navOverlay" ng-if="navOverlay" ng-click="layout.closeNavOverlay()"></div>
+<div id="sidebarLeftOverlay" ng-if="showSidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
 <div id="fixed-header-room" class="fixed-header-room"></div>
 <header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
 </header>
 <div id='main'>
 
-<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-hide="layout.isMenuClosed()"></nav>
+<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-show="hasSidebarLeft"></nav>
 
 <article id="view-right" ui-view="right" autoscroll="false" ng-click="layout.closeIfOpen();"></article>
 

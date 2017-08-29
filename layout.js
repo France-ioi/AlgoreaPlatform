@@ -85,6 +85,11 @@ angular.module('algorea')
          },
          closeNavOverlay: function () {
             $rootScope.navOverlay = false;
+         openSidebarLeftOverlay: function () {
+            $rootScope.showSidebarLeftOverlay = true;
+         },
+         closeSidebarLeftOverlay: function () {
+            $rootScope.showSidebarLeftOverlay = false;
          },
          affixToolbar: function () {
             $rootScope.affix = 'toolbar';
@@ -187,13 +192,20 @@ angular.module('algorea')
             $scope.mapInfos.mapMode = false;
          }
       },
-      hasLeftMenu: function(hasLeftMenu) {
-        if ($('#sidebar-left').hasClass('sidebar-left-hidden') == hasLeftMenu) {
-          $('#sidebar-left').toggleClass('sidebar-left-hidden')
-        }
+      openSidebarLeft: function() {
+        $rootScope.sidebarLeftIsOpen = true;
+        layoutService.openSidebarLeftOverlay(); // is hidden in CSS for viewports wider than 700px
+      },
+      closeSidebarLeft: function() {
+        $rootScope.sidebarLeftIsOpen = false;
+        layoutService.closeSidebarLeftOverlay();
+      },
+      closeSidebarLeftOverlay: function() {
+        $scope.layout.closeSidebarLeft();
+        layoutService.closeSidebarLeftOverlay();
       },
       toggleLeft: function() {
-         $('#sidebar-left').toggleClass('sidebar-left-toggled');
+         //$('#sidebar-left').toggleClass('sidebar-left-toggled');
          $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
          $scope.layout.refreshSizes();
       },
@@ -469,4 +481,7 @@ angular.module('algorea')
     });
     $interval($scope.layout.refreshSizes, 1000);
     $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
+    $rootScope.hasSidebarLeft = false;
+    $rootScope.sidebarLeftIsOpen = false;
+    $rootScope.showSidebarLeftOverlay = false;
 }]);

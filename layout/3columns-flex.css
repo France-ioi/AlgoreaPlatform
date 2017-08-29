@@ -71,17 +71,12 @@ footer {
 
 /* Too narrow to support three columns */
 @media all and (max-width: 700px) {
-   #sidebar-left {
-      -webkit-flex-basis:auto!important;
-      flex-basis:auto!important;
-   }
-
    #main, #page {
       -webkit-flex-flow: column;
       flex-direction: column;
    }
 
-   #main > article, #main > nav, #main > aside {
+   #main > article, #main > aside {
       /* Return them to document order */
       -webkit-order: 0;
        order: 0;

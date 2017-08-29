@@ -1,4 +1,10 @@
 <div class="main-titlebar-icon main-titlebar-item main-titlebar-icon material-icons">
+<div ng-click="layout.openSidebarLeft();" ng-if="hasSidebarLeft && !sidebarLeftIsOpen" class="sidebar-left-control main-titlebar-item material-icons">
+  <span>chevron_right</span>
+</div>
+<div ng-click="layout.closeSidebarLeft();" ng-if="hasSidebarLeft && sidebarLeftIsOpen" class="sidebar-left-control main-titlebar-item material-icons">
+  <span>chevron_left</span>
+</div>
    <span ng-if="itemType == 'Root'">list</span>
    <span ng-if="itemType == 'Task'">keyboard</span>
    <span ng-if="itemType == 'Chapter'">folder</span>
