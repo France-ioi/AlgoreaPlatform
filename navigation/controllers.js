@@ -60,10 +60,12 @@ angular.module('algorea')
                this.layout.hasMap('never');
             }
             $scope.setItemOnMap();
-            if (this.item.sFullScreen != 'forceNo' && (type == 'task' || type == 'course' || this.item.sFullScreen == 'forceYes')) {
-               if (this.panel == 'right') { this.layout.rightIsFullScreen(true); }   
-            } else {
-               if (this.panel == 'right') { this.layout.rightIsFullScreen(false); }
+            if (this.panel == 'right') {
+               if (this.item.sFullScreen != 'forceNo' && (type == 'task' || type == 'course' || this.item.sFullScreen == 'forceYes')) {
+                  this.layout.rightIsFullScreen(true);
+               } else {
+                  this.layout.rightIsFullScreen(false);
+               }
             }
          }
          if (this.pathParams.currentItemID == -2 || (this.pathParams.sell == 0 && this.panel == 'left')) {
@@ -583,7 +585,7 @@ angular.module('algorea')
                $state.go('contents', {path: tabPath,sell:1,selr:2});
             } else {
                $state.go('contents', {path: tabPath,sell:0,selr:1});
-            } 
+            }
          }
       };
       $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {

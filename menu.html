@@ -1,24 +1,50 @@
-<div affix-me="affix==='header'">
-<div id="headerContainer">
-   <div id="menu" class="menu"  ng-controller="navbarController"  role="navigation">
-      <div id="menu-logo" ng-click="gotoIndex()">
-         <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
-      </div>
-      <div id="menu-main" >
-         <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated == i}" ng-click="gotoMenuItem(i, tab.path)">
-            <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
+<div ng-controller="navbarController">
+   <div affix-me="affix==='header'" ng-if='!isMobileLayout'>
+      <div id="headerContainer">
+         <div ng-show='layout.navTopIsOpen' id="menu" class="menu" role="navigation">
+            <div id="menu-logo" ng-click="gotoIndex()">
+               <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
+            </div>
+            <div id="menu-main" >
+               <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item activated{{activated}}" ng-class="{'menu-item-active': activated === i}" ng-click="gotoMenuItem(i, tab.path)">
+                  <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
+               </div>
+               <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
+                  <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
+               </div>
+            </div>
          </div>
-         <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
-            <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
+         <div affix-me="affix==='toolbar'">
+            <div id="toolbar">
+               <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
+               <span ng-if="!layout.navTopIsOpen" class="material-icons menu-more" ng-click="layout.openTaskMenu()">menu</span>
+               <!--<div class="notifications"><span class="badge">2</span></div>-->
+            </div>
          </div>
       </div>
    </div>
-   <div affix-me="affix==='toolbar'">
-      <div id="toolbar">
-         <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
-         <span ng-if="!layout.menuOpen" class="material-icons menu-more" ng-click="layout.openTaskMenu()">menu</span>
-         <!--<div class="notifications"><span class="badge">2</span></div>-->
+   <div ng-if='isMobileLayout && layout.navTopIsOpen' id="headerContainer" class="mobile-layout">
+      <div id="menu-logo">
+         <div class="menu-logo-content" id="menu-logo-content" ng-click="gotoIndex()">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
+         <span ng-if="!mobileNavTopIsOpen" class="material-icons menu-more" ng-click="layout.openMobileNavTop()">menu</span>
+         <span ng-if="mobileNavTopIsOpen && !rightIsFullScreen" class="material-icons menu-more" ng-click="layout.closeMobileNavTop()">menu</span>
+         <span ng-if="mobileNavTopIsOpen && layout.navTopIsOpen && rightIsFullScreen" class="material-icons menu-more" ng-click="layout.closeMobileTaskMenu()">menu</span>
+      </div>
+      <div ng-show='mobileNavTopIsOpen'>
+         <div id="menu" class="menu" role="navigation">
+            <div id="menu-main" >
+               <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item activated{{activated}}" ng-class="{'menu-item-active': activated === i}" ng-click="gotoMenuItem(i, tab.path)">
+                  <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
+               </div>
+               <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
+                  <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
+               </div>
+            </div>
+         </div>
+         <div id="toolbar">
+            <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
+            <!--<div class="notifications"><span class="badge">2</span></div>-->
+         </div>
       </div>
    </div>
-</div>
 </div>

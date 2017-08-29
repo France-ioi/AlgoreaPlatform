@@ -101,7 +101,7 @@
 <?php if ($animationHtmlFile): ?>
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
-<div id="navOverlay" ng-if="navOverlay" ng-click="layout.closeNavOverlay()"></div>
+<div id="navTopOverlay" ng-if="showNavTopOverlay" ng-click="layout.closeNavTopOverlay()"></div>
 <div id="sidebarLeftOverlay" ng-if="showSidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
 <div id="fixed-header-room" class="fixed-header-room"></div>
 <header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">

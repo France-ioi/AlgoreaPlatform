@@ -68,28 +68,35 @@ function affixMeDirective ($window, $timeout) {
 }
 angular.module('algorea').directive('affixMe', affixMeDirective);
 
-// More global menu
+// Menu
 angular.module('algorea')
    .factory('layoutService', ['$rootScope', function ($rootScope) {
       function reset () {
         $rootScope.affix = 'toolbar';
-        $rootScope.navOverlay = false;
+        $rootScope.showNavTopOverlay = false;
       }
       $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
         reset();
       });
       reset();
       return {
-         openNavOverlay: function () {
-            $rootScope.navOverlay = true;
+         openNavTopOverlay: function () {
+            $rootScope.showNavTopOverlay = true;
          },
-         closeNavOverlay: function () {
-            $rootScope.navOverlay = false;
+         closeNavTopOverlay: function () {
+            $rootScope.showNavTopOverlay = false;
+         },
          openSidebarLeftOverlay: function () {
             $rootScope.showSidebarLeftOverlay = true;
          },
          closeSidebarLeftOverlay: function () {
             $rootScope.showSidebarLeftOverlay = false;
+         },
+         openMobileTopMenu: function () {
+            $rootScope.mobileNavTopIsOpen = true;
+         },
+         closeMobileTopMenu: function () {
+            $rootScope.mobileNavTopIsOpen = false;
          },
          affixToolbar: function () {
             $rootScope.affix = 'toolbar';
@@ -152,6 +159,7 @@ angular.module('algorea')
       buttonClass: "fullscreen",
       state: "normal",
       menuOpen: true,
+      navTopIsOpen: true,
       goFullscreen: function() {
 
       },
@@ -204,6 +212,12 @@ angular.module('algorea')
         $scope.layout.closeSidebarLeft();
         layoutService.closeSidebarLeftOverlay();
       },
+      openMobileNavTop: function() {
+        layoutService.openMobileTopMenu();
+      },
+      closeMobileNavTop: function() {
+        layoutService.closeMobileTopMenu();
+      },
       toggleLeft: function() {
          //$('#sidebar-left').toggleClass('sidebar-left-toggled');
          $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
@@ -229,11 +243,23 @@ angular.module('algorea')
       openTaskMenu: function() {
          $scope.layout.toggleMenu();
          layoutService.affixHeader();
-         layoutService.openNavOverlay();
+         layoutService.openNavTopOverlay();
          $scope.layout.openMenu();
       },
-      closeNavOverlay: function() {
-        layoutService.closeNavOverlay();
+      openMobileTaskMenu: function() {
+        layoutService.openNavTopOverlay();
+        $scope.layout.navTopIsOpen = true;
+        layoutService.openMobileTopMenu();
+        $scope.layout.openMenu();
+      },
+      closeMobileTaskMenu: function() {
+        layoutService.closeNavTopOverlay();
+        $scope.layout.navTopIsOpen = false;
+        layoutService.closeMobileTopMenu();
+        $scope.layout.closeMenu();
+      },
+      closeNavTopOverlay: function() {
+        layoutService.closeNavTopOverlay();
         layoutService.affixToolbar();
         $scope.layout.closeMenu();
       },
@@ -241,6 +267,7 @@ angular.module('algorea')
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
          // the class is not always in sync with the menu. A true fix would be to rewrite the layout
          // algorithm entirely
+         // TODO: clean this, #userinfocontainer-breadcrumbs doesn't exist
          if ($('#breadcrumbs').hasClass('breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
             $('#breadcrumbs').toggleClass('breadcrumbs-toggled');
          }
@@ -249,14 +276,16 @@ angular.module('algorea')
          }
       },
       closeMenu: function() {
-         $scope.layout.menuOpen = false;
-          if (!$('#headerContainer').hasClass('menu-toggled')) {
-             $scope.layout.toggleMenu();
-          }
-         $scope.layout.syncBreadcrumbs();
+        $scope.layout.navTopIsOpen = false;
+        $scope.layout.menuOpen = false;
+        if (!$('#headerContainer').hasClass('menu-toggled')) {
+            $scope.layout.toggleMenu();
+        }
+        $scope.layout.syncBreadcrumbs();
       },
       openMenu: function() {
-         $scope.layout.menuOpen = true;
+        $scope.layout.navTopIsOpen = true;
+        $scope.layout.menuOpen = true;
          if ($('#headerContainer').hasClass('menu-toggled')) {
            $scope.layout.toggleMenu();
          }
@@ -374,13 +403,12 @@ angular.module('algorea')
          $('.main-right-arrow').toggleClass('main-right-arrow-toggled')
       }
    }
-   var lastRightIsFullScreen;
    $scope.layout.rightIsFullScreen = function(rightIsFullScreen) {
-      if (rightIsFullScreen == lastRightIsFullScreen) {
+      if (rightIsFullScreen == $rootScope.rightIsFullScreen) {
          fixArrowPositions();
          return;
       }
-      lastRightIsFullScreen = rightIsFullScreen;
+      $rootScope.rightIsFullScreen = rightIsFullScreen;
        if (rightIsFullScreen) {
          if (!$scope.mapInfos.mapMode) {
             $scope.layout.closeMenu();
@@ -435,7 +463,7 @@ angular.module('algorea')
     $scope.layout.separateEditorOK = false;
     var lastSeparateEditorOK = false;
     $scope.layout.refreshSizes = function() {
-       if (lastRightIsFullScreen) { // things are handled automatically for everything but the task layout
+       if ($rootScope.rightIsFullScreen) { // things are handled automatically for everything but the task layout
           var availableMainWidth = $('#main-area').width();
           var minWidth = $('#task-right').css('min-width');
           if (!minWidth) {minWidth = '0px';}
@@ -470,6 +498,7 @@ angular.module('algorea')
        lastWindowWidth = newWindowWidth;
 
        $scope.layout.refreshSizes();
+       $rootScope.isMobileLayout = newWindowWidth < 700 ? true : false;
     }
     // resizing on window resizing (tamed)
     $window.onresize = debounce($scope.layout.onResize, 100, false);
@@ -484,4 +513,6 @@ angular.module('algorea')
     $rootScope.hasSidebarLeft = false;
     $rootScope.sidebarLeftIsOpen = false;
     $rootScope.showSidebarLeftOverlay = false;
+    $rootScope.mobileNavTopIsOpen = false;
+    $rootScope.isMobileLayout = $(window).width() < 700 ? true : false;
 }]);
