@@ -9,7 +9,7 @@ html, body {
    position:relative;
 }
 body {
-   overflow-y: scroll;
+   /*overflow-y: scroll;*/
    overflow-x: auto;
 }
 .iframe-task {
