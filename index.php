@@ -51,6 +51,7 @@
         echo 'var config = '.json_encode($config->shared).';';
       ?>
     </script>
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <?php if (!$compiledMode): ?>
       <link rel="stylesheet" href="<?= includeFile('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>">
       <link href="<?= includeFile('layout/3columns-flex.css') ?>" rel="stylesheet" type="text/css" />
@@ -74,7 +75,6 @@
     <?php endif; ?>
     <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
-    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     #animation-debut {
       position:absolute;
