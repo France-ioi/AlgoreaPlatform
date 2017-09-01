@@ -476,6 +476,11 @@ angular.module('algorea')
                if(!child.bGrayedAccess) {
                   child.private_go_func();
                }
+               if ($rootScope.isMobileLayout) {
+                  $scope.layout.closeSidebarLeft();
+                  $scope.layout.closeSidebarLeftOverlay();
+                  $scope.layout.closeMobileNavTop();
+               }
             };
             $scope.itemsList.push(child);
          });
