@@ -595,6 +595,9 @@ angular.module('algorea')
                $state.go('contents', {path: tabPath,sell:0,selr:1});
             }
          }
+         if ($rootScope.isMobileLayout) {
+            $scope.layout.closeMobileNavTop();
+         }
       };
       $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
          $scope.activated = null;
