@@ -68,7 +68,7 @@ function affixMeDirective ($window, $timeout) {
 }
 angular.module('algorea').directive('affixMe', affixMeDirective);
 
-// Menu
+// Menus states
 angular.module('algorea')
    .factory('layoutService', ['$rootScope', function ($rootScope) {
       function reset () {
@@ -203,6 +203,9 @@ angular.module('algorea')
       openSidebarLeft: function() {
         $rootScope.sidebarLeftIsOpen = true;
         layoutService.openSidebarLeftOverlay(); // is hidden in CSS for viewports wider than 700px
+        if ($rootScope.isMobileLayout) {
+          $scope.layout.closeMobileNavTop();
+        }
       },
       closeSidebarLeft: function() {
         $rootScope.sidebarLeftIsOpen = false;
