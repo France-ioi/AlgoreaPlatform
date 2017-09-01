@@ -9,9 +9,7 @@
                <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated === i}" ng-click="gotoMenuItem(i, tab.path)">
                   <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
                </div>
-               <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
-                  <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
-               </div>
+               <div ng-include="'login/userbox.html'" class="menu-item" ng-controller="userController" id="userinfocontainer"></div>
             </div>
          </div>
          <div affix-me="affix==='toolbar'">
@@ -36,9 +34,7 @@
                <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated === i}" ng-click="gotoMenuItem(i, tab.path)">
                   <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
                </div>
-               <div id="userinfocontainer" class="menu-item menu-item-login" ng-controller="userController">
-                  <div class="menu-item-content" ng-class="{'menu-item-login-logged': loginStr }" ng-include="'login/userbox.html'"></div>
-               </div>
+               <div ng-include="'login/userbox.html'" class="menu-item" ng-controller="userController" id="userinfocontainer"></div>
             </div>
          </div>
          <div id="toolbar">

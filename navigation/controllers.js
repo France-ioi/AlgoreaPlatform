@@ -585,6 +585,9 @@ angular.module('algorea')
          $scope.activated = i;
          if (tabPath == 'forum'){
             $state.go('forum');
+         }
+         else if (tabPath == 'groupRequests'){
+            $state.go('groupRequests');
          } else {
             if (tabPath.indexOf('/') !== -1) {
                $state.go('contents', {path: tabPath,sell:1,selr:2});
