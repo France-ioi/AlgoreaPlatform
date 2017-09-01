@@ -6,10 +6,10 @@
                <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
             </div>
             <div id="menu-main" >
-               <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated === i}" ng-click="gotoMenuItem(i, tab.path)">
-                  <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
+               <div ng-repeat="tab in siteTabs" id="menu-item{{ $index }}" class="menu-item" ng-class="{'menu-item-active': activated === $index}" ng-click="gotoMenuItem($index, tab.path, tab.special)">
+                  <div ng-if="tab.special == 'login'" ng-include="'login/userbox.html'" ng-controller="userController" id="userinfocontainer"></div>
+                  <div ng-if="!tab.special" class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
                </div>
-               <div ng-include="'login/userbox.html'" class="menu-item" ng-controller="userController" id="userinfocontainer"></div>
             </div>
          </div>
          <div affix-me="affix==='toolbar'">
@@ -31,10 +31,10 @@
       <div ng-show='mobileNavTopIsOpen'>
          <div id="menu" class="menu" role="navigation">
             <div id="menu-main" >
-               <div ng-repeat="(i, tab) in config.domains.current.tabs" id="menu-item{{i}}" class="menu-item" ng-class="{'menu-item-active': activated === i}" ng-click="gotoMenuItem(i, tab.path)">
-                  <div class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
+               <div ng-repeat="tab in siteTabs" id="menu-item{{ $index }}" class="menu-item" ng-class="{'menu-item-active': activated === $index}" ng-click="gotoMenuItem($index, tab.path, tab.special)">
+                  <div ng-if="tab.special == 'login'" ng-include="'login/userbox.html'" ng-controller="userController" id="userinfocontainer"></div>
+                  <div ng-if="!tab.special" class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
                </div>
-               <div ng-include="'login/userbox.html'" class="menu-item" ng-controller="userController" id="userinfocontainer"></div>
             </div>
          </div>
          <div id="toolbar">

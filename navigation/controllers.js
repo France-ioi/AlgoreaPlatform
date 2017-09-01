@@ -580,8 +580,28 @@ angular.module('algorea')
 angular.module('algorea')
    .controller('navbarController', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
       $scope.siteTitle = config.domains.current.title;
+
+      function initTabs() {
+         // Initialize tabs at the top, adding special tabs not specified in
+         // config (only login so far)
+         var tabs = [];
+         var specials = [];
+         for(var i in config.domains.current.tabs) {
+            tabs.push(config.domains.current.tabs[i]);
+            if(config.domains.current.tabs[i].special) {
+               specials.push(config.domains.current.tabs[i].special);
+            }
+         }
+         if(specials.indexOf('login') == -1) {
+            tabs.push({special: 'login', path: 'groupRequests'});
+         }
+         return tabs;
+      };
+      $scope.siteTabs = initTabs();
+
       $scope.tagline = config.domains.current.taglineHtml;
-      $scope.gotoMenuItem = function(i, tabPath) {
+      $scope.gotoMenuItem = function(i, tabPath, special) {
+         if(special) { return; }
          $scope.activated = i;
          if (tabPath == 'forum'){
             $state.go('forum');
@@ -607,7 +627,7 @@ angular.module('algorea')
          } else if (toState.name == 'contents') {
             toSearch = toParams.path
          }
-         angular.forEach(config.domains.current.tabs, function(tab, i) {
+         angular.forEach($scope.siteTabs, function(tab, i) {
             if (toSearch.indexOf(tab.path) !== -1) {
                $scope.activated = i;
             }
