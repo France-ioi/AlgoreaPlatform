@@ -81,4 +81,16 @@ footer {
       -webkit-order: 0;
        order: 0;
    }
+   footer {
+    font-size: 14px;
+   }
+   .footer-left {
+   padding: 0 10px;
+  }
+  .footer-center {
+     padding: 0 10px;
+  }
+  .footer-right {
+     padding: 0 10px;
+  }
 }
