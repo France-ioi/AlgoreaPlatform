@@ -1,9 +1,21 @@
 <?php
+/*
+it can be used in 3 ways:
+1. fresh install
+    run full_schema.sql then run migrate.php
+
+2. if some revisions already installed, for example "1.1/revison-001" and "1.1/revision-002" installed and you want to use migration script from "1.1/revision-003"
+    migrate.php start "1.1/revision-003"
+
+3. all revisions installed:
+schema/migrate.php start
+
+Note: 2 and 3 just setting current revision pointer, without executing sql
+*/
 require_once("../shared/connect.php");
 
-$revision = '1.1';
 
-$migrator = new Migrator($db, $revision);
+$migrator = new Migrator($db);
 if(isset($argv[1]) && $argv[1] == 'start') {
     $migrator->init(isset($argv[2]) ? $argv[2] : null);
 } else {
@@ -20,10 +32,10 @@ class Migrator {
     protected $files;
     protected $sql_executer;
 
-    public function __construct($db, $revision) {
+    public function __construct($db) {
         $this->output = new ConsoleOutput();
         $this->logger = new Logger($db);
-        $this->files = new Files($revision);
+        $this->files = new Files();
         $this->sql_executer = new SqlExecuter($db, $this->output);
     }
 
@@ -50,12 +62,13 @@ class Migrator {
     public function init($rev) {
         if(!$this->files->revExists($rev)) {
             $this->output->error('Revision '.$rev.' does not exists');
-            exit;
+            return;
         }
         $this->logger->truncate();
         $files = $this->files->scan();
         foreach($files as $file) {
-            list($file_rev, $tmp) = explode('/', $file);
+            list($version, $revision, $name) = explode('/', $file);
+            $file_rev = $version.'/'.$revision;
             if(!$rev || $file_rev !== $rev) {
                 $this->logger->append($file);
             } else break;
@@ -129,20 +142,25 @@ class Files {
 
     protected $path;
 
-    public function __construct($revision) {
-        $this->path = __DIR__.'/'.$revision.'/';
+    public function __construct() {
+        $this->path = __DIR__.'/';
     }
 
     public function scan() {
         $res = [];
-        $folders = array_diff(scandir($this->path), ['..', '.']);
-        foreach($folders as $folder) {
-            $subfolder = $this->path.'/'.$folder;
-            if(!is_dir($subfolder)) continue;
-            $files = array_diff(scandir($subfolder), ['..', '.']);
-            foreach($files as $file) {
-                if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'sql') {
-                    $res[] = $folder.'/'.$file;
+        $versions = $this->scanDir($this->path);
+        foreach($versions as $version) {
+            $version_path = $this->path.$version;
+            if(!is_dir($version_path)) continue;
+            $revisions = $this->scanDir($version_path);
+            foreach($revisions as $revision) {
+                $revision_path = $this->path.$version.'/'.$revision;
+                if(!is_dir($revision_path)) continue;
+                $files = $this->scanDir($revision_path);
+                foreach($files as $file) {
+                    if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'sql') {
+                        $res[] = $version.'/'.$revision.'/'.$file;
+                    }
                 }
             }
         }
@@ -157,6 +175,11 @@ class Files {
 
     public function revExists($rev) {
         return is_dir($this->path.$rev);
+    }
+
+
+    private function scanDir($path) {
+        return array_diff(scandir($path), ['..', '.']);
     }
 
 }
