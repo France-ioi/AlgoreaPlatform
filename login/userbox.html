@@ -3,7 +3,7 @@
      <div class="userinfo">
        <span class="userbox-text" ng-click="$event.stopPropagation(); $event.preventDefault(); openLoginPopup();" ng-i18next="{{ innerHtml }}"></span>
        <span class="login-string"><span class="material-icons menu-item-icon">person</span> {{loginStr}}</span>
-       <span ng-click="$event.stopPropagation(); $event.preventDefault(); openLoginPopup(true);" class="material-icons menu-item-icon logout-btn" ng-i18next="[title]{{innerHtml}}">close</span>
+       <span ng-click="$event.stopPropagation(); $event.preventDefault(); openLoginPopup(true); layout.closeNavTopOverlay();" class="material-icons menu-item-icon logout-btn" ng-i18next="[title]{{innerHtml}}">close</span>
      </div>
    </div>
  </div>
