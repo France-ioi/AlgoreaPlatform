@@ -102,7 +102,7 @@ $thisDomain = 'default';
 
 // Example domain selection system (match $_SERVER['HTTP_HOST'])
 foreach ($config->shared->domains as $domain => $domainData) {
-   if ($domain != 'default' && strpos($_SERVER['HTTP_HOST'], $domainData->domain) !== FALSE) {
+   if ($domain != 'default' && isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], $domainData->domain) !== FALSE) {
       $thisDomain = $domain;
    }
 }
