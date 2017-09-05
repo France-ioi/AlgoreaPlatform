@@ -22,15 +22,17 @@ body {
    display: -webkit-flex;
    display: flex;
 }
-
 #main > article {
-   -webkit-flex: 1 0 600px;
-   flex: 1 0 600px;
    order: 2;
    -webkit-order: 2;
+   -webkit-flex: 1 1 auto;
+   flex: 1 1 auto;
+}
+body:not(.mobile-layout) #main > article {
+   -webkit-flex: 1 0 600px;
+   flex: 1 0 600px;
    min-width:600px;
 }
-
 
 footer {
    padding: 4px 0;
@@ -71,16 +73,11 @@ footer {
 
 /* Too narrow to support three columns */
 @media all and (max-width: 700px) {
-   #main, #page {
+   #page {
       -webkit-flex-flow: column;
       flex-direction: column;
    }
 
-   #main > article, #main > aside {
-      /* Return them to document order */
-      -webkit-order: 0;
-       order: 0;
-   }
    footer {
     font-size: 14px;
    }

@@ -24,7 +24,7 @@ body {
 }
 
 .main-area-task {
-   padding:10px!important;
+   padding:10px;
    display:-webkit-flex;
    -webkit-flex-direction:row;
    -webkit-flex-wrap:wrap;
@@ -306,9 +306,6 @@ body {
 }
 
 .loading {
-   display:block;
-   position:relative;
-   width:100px;
    margin-left:auto;
    margin-right:auto;
 }
