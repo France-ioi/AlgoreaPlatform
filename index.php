@@ -99,7 +99,7 @@
     }
     </style>
 </head>
-<body ng-controller="layoutController" id="body" ng-cloak>
+<body ng-controller="layoutController" id="body" ng-cloak ng-class="{'mobile-layout': isMobileLayout}">
 <?php if ($animationHtmlFile): ?>
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
