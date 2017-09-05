@@ -158,7 +158,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
         function openLoginPopup(logout) {
             var additionalArgs = '';
             if (config.domains.current.additionalLoginArgs) {
-               additionalArgs += '&'+config.domains.current.additionalLoginArgs; 
+               additionalArgs += '&'+config.domains.current.additionalLoginArgs;
             }
             if (config.domains.current.loginMandatoryFields) {
                additionalArgs += '&requiredFields='+encodeURIComponent(config.domains.current.loginMandatoryFields.join());
@@ -180,7 +180,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
         function createSession(data, callback) {
            data.action = 'login';
            var postRes;
-           $http.post('/login/platform_user.php', data, {responseType: 'json'}).success(function(postRes) {
+           $http.post(config.domains.current.baseUrl + 'login/platform_user.php', data, {responseType: 'json'}).success(function(postRes) {
               if ( ! postRes.result) {
                  if (postRes.missingFields) {
                     requireMoreLoginFields(postRes.missingFields);
@@ -196,7 +196,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
            });
         }
         function createTempUser(action, callback) {
-           $http.post('/login/platform_user.php', {'action': action}, {responseType: 'json'}).success(function(postRes) {
+           $http.post(config.domains.current.baseUrl + 'login/platform_user.php', {'action': action}, {responseType: 'json'}).success(function(postRes) {
               if ( ! postRes.result) {
                  console.error("got error from login token decoder: "+postRes.error);
               } else {

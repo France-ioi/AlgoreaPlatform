@@ -1,3 +1,6 @@
+<?php
+        require_once "config.php";
+?>
 <!DOCTYPE html>
 <html lang="fr" ng-app="algorea"  ng-controller="navigationController">
   <head>
@@ -5,11 +8,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title ng-bind="domainTitle"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
-    <base href="/">
-    <script type="text/javascript">
+    <base href="<?=$config->shared->domains['current']->assetsBaseUrl?>">
+      <script type="text/javascript">
       <?php
-        require_once "config.php";
-
         $assetsBaseUrl = '';
         $urlArgs = '';
         $compiledMode = false;
@@ -210,9 +211,9 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     'allowMultiLoading': false,
     'loadPath': function (lng, ns) {
                     if(ns == 'commonFramework') {
-                      return '/commonFramework/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/commonFramework/i18n/'+lng+'/'+ns+'.json';
                     } else {
-                      return '/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/i18n/'+lng+'/'+ns+'.json';
                     }
                   }
     };

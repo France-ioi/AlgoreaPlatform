@@ -152,9 +152,9 @@
       'allowMultiLoading' : false,
       'loadPath': function (lng, ns) {
                     if(ns == 'commonFramework') {
-                      return '/commonFramework/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/commonFramework/i18n/'+lng+'/'+ns+'.json';
                     } else {
-                      return '/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/i18n/'+lng+'/'+ns+'.json';
                     }
                   }
     }
