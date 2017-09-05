@@ -180,7 +180,12 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
         function createSession(data, callback) {
            data.action = 'login';
            var postRes;
-           $http.post(config.domains.current.baseUrl + 'login/platform_user.php', data, {responseType: 'json'}).success(function(postRes) {
+           var url = config.domains.current.baseUrl;
+           if(url[url.length-1] != '/') {
+             url += '/';
+           }
+           url += 'login/platform_user.php';
+           $http.post(url, data, {responseType: 'json'}).success(function(postRes) {
               if ( ! postRes.result) {
                  if (postRes.missingFields) {
                     requireMoreLoginFields(postRes.missingFields);
@@ -196,7 +201,12 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
            });
         }
         function createTempUser(action, callback) {
-           $http.post(config.domains.current.baseUrl + 'login/platform_user.php', {'action': action}, {responseType: 'json'}).success(function(postRes) {
+          var url = config.domains.current.baseUrl;
+          if(url[url.length-1] != '/') {
+            url += '/';
+          }
+          url += 'login/platform_user.php';
+           $http.post(url, {'action': action}, {responseType: 'json'}).success(function(postRes) {
               if ( ! postRes.result) {
                  console.error("got error from login token decoder: "+postRes.error);
               } else {
