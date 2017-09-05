@@ -569,13 +569,22 @@ angular.module('algorea')
             window.location = res.file;
       }
       $scope.zip_btn_disabled = false;
+      $scope.zip_message = false;
       $scope.zipExport = function(itemId, groupId) {
             $scope.zip_btn_disabled = true;
-            $.getJSON('zip_export.php', {
+            $scope.zip_message = 'Please wait...';
+            $.get('zip_export.php', {
                   itemId: itemId,
                   groupId: groupId
             }).done(function(res) {
-                  res && res.file && downloadFile(res.file);
+                  $scope.zip_btn_disabled = false;
+                  var data = false;
+                  try {
+                        data = JSON.parse(res)
+                  } catch (e) {
+                        $scope.zip_message = res;
+                  }
+                  data && data.file && downloadFile(res.file);
             }).always(function() {
                   $scope.zip_btn_disabled = false;
             });
