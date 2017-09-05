@@ -98,6 +98,12 @@ angular.module('algorea')
          closeMobileTopMenu: function () {
             $rootScope.mobileNavTopIsOpen = false;
          },
+         openMobileTopMenuOverlay: function () {
+            $rootScope.showMobileNavTopOverlay = true;
+         },
+         closeMobileTopMenuOverlay: function () {
+            $rootScope.showMobileNavTopOverlay = false;
+         },
          affixToolbar: function () {
             $rootScope.affix = 'toolbar';
          },
@@ -215,12 +221,6 @@ angular.module('algorea')
         $scope.layout.closeSidebarLeft();
         layoutService.closeSidebarLeftOverlay();
       },
-      openMobileNavTop: function() {
-        layoutService.openMobileTopMenu();
-      },
-      closeMobileNavTop: function() {
-        layoutService.closeMobileTopMenu();
-      },
       toggleLeft: function() {
          //$('#sidebar-left').toggleClass('sidebar-left-toggled');
          $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
@@ -265,6 +265,14 @@ angular.module('algorea')
         layoutService.closeNavTopOverlay();
         layoutService.affixToolbar();
         $scope.layout.closeMenu();
+      },
+      openMobileNavTop: function() {
+        layoutService.openMobileTopMenuOverlay();
+        layoutService.openMobileTopMenu();
+      },
+      closeMobileNavTop: function() {
+        layoutService.closeMobileTopMenuOverlay();
+        layoutService.closeMobileTopMenu();
       },
       syncBreadcrumbs: function() {
          // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so

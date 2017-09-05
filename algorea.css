@@ -12,6 +12,11 @@ body {
    /*overflow-y: scroll;*/
    overflow-x: auto;
 }
+
+
+#toolbar .sidebar-left-control > * {
+  color: #fff;
+}
 .iframe-task {
    width:800px;
    margin: auto;

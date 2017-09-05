@@ -14,6 +14,10 @@
          </div>
          <div affix-me="affix==='toolbar'">
             <div id="toolbar">
+               <div ng-if="hasSidebarLeft" class="sidebar-left-control main-titlebar-item">
+                 <span ng-click="layout.openSidebarLeft();" ng-if="!sidebarLeftIsOpen" class="material-icons">keyboard_arrow_down</span>
+                 <span ng-click="layout.closeSidebarLeft();" ng-if="sidebarLeftIsOpen" class="material-icons">keyboard_arrow_up</span>
+               </div>
                <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
                <span ng-if="!layout.navTopIsOpen" class="material-icons menu-more" ng-click="layout.openTaskMenu()">menu</span>
                <!--<div class="notifications"><span class="badge">2</span></div>-->
@@ -23,6 +27,10 @@
    </div>
    <div ng-if='isMobileLayout && layout.navTopIsOpen' id="headerContainer" class="mobile-layout">
       <div id="menu-logo">
+         <div ng-if="hasSidebarLeft" class="sidebar-left-control main-titlebar-item">
+           <span ng-click="layout.openSidebarLeft();" ng-if="!sidebarLeftIsOpen" class="material-icons">keyboard_arrow_down</span>
+           <span ng-click="layout.closeSidebarLeft();" ng-if="sidebarLeftIsOpen" class="material-icons">keyboard_arrow_up</span>
+         </div>
          <div class="menu-logo-content" id="menu-logo-content" ng-click="gotoIndex()">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
          <span ng-if="!mobileNavTopIsOpen" class="material-icons menu-more" ng-click="layout.openMobileNavTop()">menu</span>
          <span ng-if="mobileNavTopIsOpen && !rightIsFullScreen" class="material-icons menu-more" ng-click="layout.closeMobileNavTop()">menu</span>
@@ -38,7 +46,7 @@
             </div>
          </div>
          <div id="toolbar">
-            <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
+            <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event); layout.closeMobileNavTop()"></div>
             <!--<div class="notifications"><span class="badge">2</span></div>-->
          </div>
       </div>

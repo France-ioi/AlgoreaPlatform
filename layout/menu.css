@@ -53,11 +53,9 @@ MAIN NAVIGATION
       align-items: stretch;
    }
 }
-@media all and (max-width: 480px) {
-   #menu {
-      -webkit-flex-direction:column;
-      flex-direction:column;
-   }
+.mobile-layout #menu {
+   -webkit-flex-direction:column;
+   flex-direction:column;
 }
 #menu-main {
    display: -webkit-flex;
@@ -66,13 +64,12 @@ MAIN NAVIGATION
    justify-content:space-between;
    margin-bottom: -1px;
 }
-@media all and (max-width: 480px) {
-   #menu-main {
-      flex-wrap: nowrap;
-      flex-basis: auto;
-      flex-direction: column;
-   }
+.mobile-layout #menu-main {
+   flex-wrap: nowrap;
+   flex-basis: auto;
+   flex-direction: column;
 }
+
 .menu-item {
    display: -webkit-flex;
    display:flex;
@@ -90,11 +87,9 @@ MAIN NAVIGATION
    border-right: 1px solid #d9d9d9;
    line-height: 45px;
 }
-@media all and (max-width: 480px) {
-   .menu-item {
-      flex-basis: 40px;
-      border-bottom: 1px solid #d9d9d9;
-   }
+.mobile-layout .menu-item {
+   flex-basis: 40px;
+   border-bottom: 1px solid #d9d9d9;
 }
 .menu-item-active {
    background: #2aa3ff !important;
@@ -141,11 +136,8 @@ BREADCRUMBS TOOLBAR
    font-size: 16px;
    line-height: 26px;
    min-height: 26px;
-   padding: 0 10px;
    display: -webkit-flex;
    display: flex;
-   justify-content: -webkit-space-between;
-   justify-content: space-between;
    position: relative;
 }
 #toolbar.affix {
@@ -154,13 +146,24 @@ BREADCRUMBS TOOLBAR
    top: 0;
    width: 100%;
 }
+#toolbar .sidebar-left-control {
+   flex: 0 0 32px;
+}
+#toolbar .sidebar-left-control > * {
+  margin-left: 5px;
+}
 #breadcrumbs {
+   padding: 0 10px;
    display: -webkit-flex;
    display: flex;
    justify-content: -webkit-flex-start;
    justify-content: flex-start;
    -webkit-flex-wrap: wrap;
    flex-wrap: wrap;
+   flex: 1 1 auto;
+}
+.mobile-layout #breadcrumbs {
+   flex: 0 1 auto;
 }
 .breadcrumbs-item {
    -webkit-flex: 0 1 auto;
@@ -189,7 +192,8 @@ BREADCRUMBS TOOLBAR
    color: #fff;
    cursor: pointer;
 }
-#navTopOverlay {
+#navTopOverlay,
+#mobileNavTopOverlay {
    position: fixed;
    top: 0;
    right: 0;

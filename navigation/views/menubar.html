@@ -1,8 +1,6 @@
-<div ng-click="layout.openSidebarLeft();" ng-if="hasSidebarLeft && !sidebarLeftIsOpen" class="sidebar-left-control main-titlebar-item material-icons">
-  <span>chevron_right</span>
-</div>
-<div ng-click="layout.closeSidebarLeft();" ng-if="hasSidebarLeft && sidebarLeftIsOpen" class="sidebar-left-control main-titlebar-item material-icons">
-  <span>chevron_left</span>
+<div ng-if="isMobileLayout && hasSidebarLeft && !layout.navTopIsOpen" class="sidebar-left-control main-titlebar-item">
+  <span ng-click="layout.openSidebarLeft();" ng-if="!sidebarLeftIsOpen" class="material-icons">keyboard_arrow_down</span>
+  <span ng-click="layout.closeSidebarLeft();" ng-if="sidebarLeftIsOpen" class="material-icons">keyboard_arrow_up</span>
 </div>
 <div class="main-titlebar-icon main-titlebar-item material-icons">
    <span ng-if="itemType == 'Root'">list</span>
