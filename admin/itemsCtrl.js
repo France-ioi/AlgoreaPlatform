@@ -525,6 +525,7 @@ angular.module('algorea')
             iChildOrderFieldName: "iChildOrder",
             parentsFieldName: "parents",
             childrenFieldName: "children",
+            childrenFixedRanksName: "bFixedRanks",
             parentFieldName: "parent",
             childFieldName: "child",
             displayUnused: false,

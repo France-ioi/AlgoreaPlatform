@@ -246,12 +246,11 @@ angular.module('algorea')
          getBrothersFromParent: function(parentID) {
             return this.getChildren(this.getItem(parentID));
          },
-         getChildren: function(item) {
+         getChildren: function(item, idUser) {
             var children = [];
             if (!item || !item.children) {
                return children;
             }
-//            console.error('getting children of '+item.ID);
             // a few convoluted checks for duplicated child items and child order
             var childrenz = [];
             var seenIDs = [];
@@ -264,13 +263,33 @@ angular.module('algorea')
 //               } else
                if (!(child.idItemChild in seenIDs) ){
                   var lang = child.child.sSupportedLangProg;
-                  if (typeof lang !== 'undefined' && (!lang || lang == '*' || lang.indexOf('Python') != -1)) {
+//                  if (typeof lang !== 'undefined' && (!lang || lang == '*' || lang.indexOf('Python') != -1)) {
+                  if(typeof lang !== 'undefined') { // TODO :: why? (eliminates base platform items)
                      childrenz.push(child);
                   }
                   seenIDs.push(child.idItemChild);
                }
             });
-            childrenz = childrenz.sort(function(a,b) {
+
+            // Randomize order of children when they have the same iChildOrder
+            var randomize = item.bFixedRanks;
+            if(randomize && !idUser) {
+               if(SyncQueue.requests.loginData) {
+                  idUser = SyncQueue.requests.loginData.ID;
+               } else {
+                  console.error('Tried to randomize items without idUser.');
+                  randomize = false;
+               }
+            }
+
+            childrenz = childrenz.sort(function(a, b) {
+               if(randomize && a.iChildOrder == b.iChildOrder) {
+                  // If randomized, compare using the MD5 of
+                  // idUser - idItemParent - idItemChild
+                  var md5a = md5(idUser + '-' + item.ID + '-' + a.ID);
+                  var md5b = md5(idUser + '-' + item.ID + '-' + b.ID);
+                  return md5a.localeCompare(md5b);
+               }
                return a.iChildOrder - b.iChildOrder;
             });
             angular.forEach(childrenz, function (child) {

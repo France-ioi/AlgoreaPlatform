@@ -150,6 +150,7 @@ var models = {
          bShowDifficulty: {type: "boolean", label: "models_items_fields_bShowDifficulty_label", defaultValue: false},
          bShowSource: {type: "boolean", label: "models_items_fields_bShowSource_label", defaultValue: false},
          bHintsAllowed: {type: "boolean", label: "models_items_fields_bHintsAllowed_label", defaultValue: false},
+         bFixedRanks: {type: "boolean", label: "models_items_fields_bFixedRanks_label", defaultValue: false},
          sValidationType: {
             type: "enum",
             widget: "radio",

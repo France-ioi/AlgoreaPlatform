@@ -8,6 +8,7 @@
          <field model="item_item.child" field="items.sPreparationState" readonly="1" />
          <field model="item_item" field="items_items.bAccessRestricted" />
          <field model="item_item" field="items_items.bAlwaysVisible" />
+         <field ng-if="item_item.parent.bFixedRanks" model="item_item" field="items_items.iChildOrder" />
       </form>
    </div>
    <div class="modal-footer">
