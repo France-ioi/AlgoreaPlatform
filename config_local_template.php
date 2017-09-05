@@ -51,9 +51,13 @@ $config->shared->domains['default']->taglineHtml = "";
 // Domain
 $config->shared->domains['default']->domain = "algorea.example.com";
 // Base URL of the platform
+// To install platform in subfolder you must specify path:
+// $config->shared->domains['default']->baseUrl = "http://algorea.example.com/test/";
 $config->shared->domains['default']->baseUrl = "http://algorea.example.com";
 // Assets base URL, by default the same base URL of the platform, except if you
 // want to serve assets from another URL
+// To install platform in subfolder you must specify path:
+// $config->shared->domains['default']->assetsBaseUrl = "http://algorea.example.com/test/";
 $config->shared->domains['default']->assetsBaseUrl = "http://algorea.example.com";
 // Intro animation
 $config->shared->domains['default']->animationHtmlFile = null;

@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title ng-bind="domainTitle"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
-    <base href="<?=$config->shared->domains['current']->assetsBaseUrl?>">
+    <base href="<?=parse_url($config->shared->domains['current']->assetsBaseUrl, PHP_URL_PATH)?>">
       <script type="text/javascript">
       <?php
         $assetsBaseUrl = '';
