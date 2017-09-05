@@ -382,6 +382,7 @@ angular.module('algorea')
          $scope.item_item = itemItem;
          $scope.group_item = itemItem ? getGroupItem($scope.loginData.idGroupSelf, itemItem.child.ID) : null;
          $scope.itemSelected(itemItem ? itemItem.idItemChild : null, true);
+         $scope.zip_message = false;
       };
 
       $scope.groupSelected = function(groupID, withGroupGroup) {
@@ -420,6 +421,7 @@ angular.module('algorea')
          if (groupGroup) { // Happens when we click on "Unused objects"
             $scope.groupSelected(groupGroup.idGroupChild, true);
          }
+         $scope.zip_message = false;
       };
 
       $scope.checkFields = function(item, fields, searchParams) {
@@ -564,29 +566,31 @@ angular.module('algorea')
       };
 
 
-      function downloadFile(file) {
-            //TODO
-            window.location = res.file;
-      }
       $scope.zip_btn_disabled = false;
       $scope.zip_message = false;
       $scope.zipExport = function(itemId, groupId) {
             $scope.zip_btn_disabled = true;
             $scope.zip_message = 'Please wait...';
-            $.get('zip_export.php', {
-                  itemId: itemId,
-                  groupId: groupId
-            }).done(function(res) {
-                  $scope.zip_btn_disabled = false;
-                  var data = false;
-                  try {
-                        data = JSON.parse(res)
-                  } catch (e) {
-                        $scope.zip_message = res;
+            $.ajax({
+                  type: 'GET',
+                  url: 'zip_export.php',
+                  data: {
+                        itemId: itemId,
+                        groupId: groupId
+                  },
+                  success: function(res) {
+                        $scope.zip_btn_disabled = false;
+                        if(res && res.file) {
+                              $scope.zip_message = false;
+                              window.location = res.file;
+                        } else {
+                              $scope.zip_message = res;
+                        }
+                  },
+                  error: function(request, status, err) {
+                        $scope.zip_btn_disabled = false;
+                        $scope.zip_message = err;
                   }
-                  data && data.file && downloadFile(res.file);
-            }).always(function() {
-                  $scope.zip_btn_disabled = false;
             });
       }
 
