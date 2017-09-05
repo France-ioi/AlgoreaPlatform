@@ -582,7 +582,8 @@ angular.module('algorea')
                         $scope.zip_btn_disabled = false;
                         if(res && res.file) {
                               $scope.zip_message = false;
-                              window.location = res.file;
+                              window.open(res.file, 'zip_download_window', 'toolbar=0,location=no,directories=0,status=0,scrollbars=0,resizeable=0,width=1,height=1,top=0,left=0');
+                              window.focus();
                         } else {
                               $scope.zip_message = res;
                         }
