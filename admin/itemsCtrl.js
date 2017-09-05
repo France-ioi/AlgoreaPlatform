@@ -563,6 +563,24 @@ angular.module('algorea')
          $scope.itemsTreeView2.fillTree();
       };
 
+
+      function downloadFile(file) {
+            //TODO
+            window.location = res.file;
+      }
+      $scope.zip_btn_disabled = false;
+      $scope.zipExport = function(itemId, groupId) {
+            $scope.zip_btn_disabled = true;
+            $.getJSON('zip_export.php', {
+                  itemId: itemId,
+                  groupId: groupId
+            }).done(function(res) {
+                  res && res.file && downloadFile(res.file);
+            }).always(function() {
+                  $scope.zip_btn_disabled = false;
+            });
+      }
+
       $scope.initGroups = function() {
          $scope.initGroupsDone = true;
          var rootGroupID;
@@ -1248,4 +1266,6 @@ angular.module('algorea')
          $uibModalInstance.close();
          AccessManager.resetAccess();
       };
+
+
    }]);
