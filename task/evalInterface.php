@@ -13,15 +13,15 @@ require_once '../shared/connect.php';
 <head>
   <title>Task reevaluation</title>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+
   <script type="text/javascript">
     <?php
-      $assetsBaseUrl = '/';
-      $urlArgs = '';
-
       $domainConfig = $config->shared->domains['current'];
+      $baseUrl = parse_url($domainConfig->baseUrl, PHP_URL_PATH) ?: '/';
+      $assetsBaseUrl = $baseUrl;
+      $urlArgs = '';
       if (property_exists($domainConfig, 'assetsBaseUrl')) {
-        $assetsBaseUrl = $domainConfig->assetsBaseUrl;
+        $assetsBaseUrl = parse_url($domainConfig->assetsBaseUrl, PHP_URL_PATH) ?: '/';
       }
       if (property_exists($domainConfig, 'urlArgs')) {
         $urlArgs = $domainConfig->urlArgs;
@@ -33,6 +33,7 @@ require_once '../shared/connect.php';
       echo 'var config = '.json_encode($config->shared).';';
     ?>
   </script>
+  <link rel="stylesheet" href="<?= includeFile('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>">
   <script src="<?= includeFile('errors/error_logger.js') ?>"></script>
   <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>" type="text/javascript"></script>
