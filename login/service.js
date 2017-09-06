@@ -291,9 +291,4 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
               return {'login': onLogin, 'logout': onLogout, 'notlogged': onNotLogged};
            }
         };
-  }]).factory('$exceptionHandler', ['$log', function($log) {
-    return function (exception, cause) {
-      $log.error(exception, cause);
-      ErrorLogger.log(exception.message, exception.fileName, exception.lineNumber, exception.columnNumber, exception);
-    }
-}]);
+  }])
