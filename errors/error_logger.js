@@ -16,6 +16,16 @@ window.ErrorLogger = {
     }
   },
 
+  logTaskError: function(url) {
+    this.send({
+      url: url,
+      browser: this.getBrowser(),
+      details: this.formatDetails({
+        details: Array.prototype.slice.call(arguments)
+      })
+    })
+  },
+
   getErrorKey: function() {
     return Array.prototype.slice.call(arguments).join(':');
   },

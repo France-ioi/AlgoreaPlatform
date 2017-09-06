@@ -165,6 +165,8 @@ angular.module('algorea')
                .error(function() {
                   error("error calling task.php");
                });
+            }, function() {
+              ErrorLogger.logTaskError(scope.item.sUrl);
             });
          }
       };
