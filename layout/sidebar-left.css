@@ -8,10 +8,8 @@
    background-color: #ccc;
    background-color: rgba(0,0,0,0.3);
 }
-@media all and (min-width: 700px) {
-   #sidebarLeftOverlay {
-      display: none;
-   }
+body:not(.mobile-layout) #sidebarLeftOverlay {
+   display: none;
 }
 .sidebar-left {
    background: #f8f8f8;
@@ -24,25 +22,19 @@
    z-index:2;
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
    transition: all 250ms;
-}
-@media screen and (max-width: 700px) {
-   .sidebar-left {
-      position: fixed;
-      top: 0;
-      z-index: 5;
-      height: 100%;
-      overflow-x: auto;
-   }
+   z-index: 5;
 }
 .sidebar-left-open {
    -webkit-flex: 0 0 325px;
    flex: 0 0 325px;
    width: 325px;
 }
-@media screen and (max-width: 700px) {
-   .sidebar-left-open {
-      width: 80%;
-   }
+.mobile-layout .sidebar-left-open {
+   -webkit-flex: 0 0 auto;
+   flex: 0 0 auto;
+}
+.mobile-layout .sidebar-left {
+   max-width: 80%;
 }
 .sidebar-left-closed {
    -webkit-flex: 0 1 0;
@@ -51,6 +43,7 @@
    height: 0;
    overflow: hidden;
    box-shadow: none;
+   transition: all 250ms;
 }
 .sidebar-left-hidden {
    display:none;

@@ -456,6 +456,7 @@
     "models_items_fields_bShowDifficulty_label": "Afficher la difficulté",
     "models_items_fields_bShowSource_label": "Afficher la source",
     "models_items_fields_bHintsAllowed_label": "Autoriser les conseils",
+    "models_items_fields_bFixedRanks_label": "Bloquer la modification automatique de l'ordre des items enfants",
     "models_items_fields_sValidationType_values_None_label": "Aucune : ses fils contribuent à la validation de son parent.",
     "models_items_fields_sValidationType_values_Categories_label": "Catégories : valider tous les fils marqués <span class='CategoryValidation'>Validation</span>.",
     "models_items_fields_sValidationType_values_All_label": "Tous : valider tous ses fils.",

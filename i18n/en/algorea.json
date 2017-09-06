@@ -456,6 +456,7 @@
     "models_items_fields_bShowDifficulty_label": "Show difficulty",
     "models_items_fields_bShowSource_label": "Show source",
     "models_items_fields_bHintsAllowed_label": "Allow hints",
+    "models_items_fields_bFixedRanks_label": "Prevent automatic modification of children order ranks",
     "models_items_fields_sValidationType_values_None_label": "None : children contribute to validating the parent.",
     "models_items_fields_sValidationType_values_Categories_label": "Categories : validate all children marked <span class='CategoryValidation'>Validation</span>.",
     "models_items_fields_sValidationType_values_All_label": "All : validate all children.",
