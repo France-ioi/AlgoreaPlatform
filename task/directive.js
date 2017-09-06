@@ -177,7 +177,7 @@ angular.module('algorea')
             } else if (res.options && key in res.options) {
                res = res.options[key];
             } else {
-               res = (typeof defaultValue !== 'undefined') ? defaultValue : null; 
+               res = (typeof defaultValue !== 'undefined') ? defaultValue : null;
             }
          }
          if (success) {
@@ -330,7 +330,7 @@ angular.module('algorea')
          function isSameBaseUrl(oldItemUrl, newItemUrl) {
             if (!oldItemUrl || !newItemUrl) {return false;}
             var baseOldItemUrl = oldItemUrl.indexOf('#') == -1 ? oldItemUrl : oldItemUrl.substr(0, oldItemUrl.indexOf('#'));
-            var baseNewItemUrl = newItemUrl.indexOf('#') == -1 ? newItemUrl : newItemUrl.substr(0, newItemUrl.indexOf('#'));  
+            var baseNewItemUrl = newItemUrl.indexOf('#') == -1 ? newItemUrl : newItemUrl.substr(0, newItemUrl.indexOf('#'));
             return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
@@ -380,4 +380,12 @@ angular.module('algorea')
          });
       },
     };
+}]);
+
+
+angular.module('algorea').factory('$exceptionHandler', ['$log', function($log) {
+  return function (exception, cause) {
+    $log.error(exception, cause);
+    ErrorLogger.log(exception.message, exception.fileName, exception.lineNumber, exception.columnNumber, exception);
+  }
 }]);
