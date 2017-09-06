@@ -29,7 +29,7 @@ angular.module('algorea')
             },
             views: {
                'left': {
-                   template: '<div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
+                   template: '<div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList track by $index"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {
@@ -73,7 +73,7 @@ angular.module('algorea')
             url: "/forum/",
             views: {
                'left': {
-                   template: '<div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
+                   template: '<div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList track by $index"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {
@@ -161,7 +161,7 @@ angular.module('algorea')
 angular.module('algorea')
    .service('pathService', ['$stateParams', '$state', '$rootScope', '$timeout', 'itemService','$view','$window','$location', function($stateParams, $state, $rootScope, $timeout, itemService,$view, $window,$location) {
      /* Warning: tricks at work here!
-      * 
+      *
       * As of today (2014-03-18), none of the available routers handle the possibility
       * to have query params reload the views and others not. But we have to
       * do that here, and we do it with the following code.
@@ -221,7 +221,7 @@ angular.module('algorea')
             }
          }
       });
-    /* 
+    /*
      * Simple service for path parsing and analysis and url factoring
      */
       return {
@@ -304,7 +304,7 @@ angular.module('algorea')
         },
         goToResolution: function(pathParams) {
            $state.go('contents', {
-              path:   pathParams.pathStr, 
+              path:   pathParams.pathStr,
               sell:   pathParams.selr,
               selr:   pathParams.selr,
               viewl:  pathParams.viewl,
@@ -314,13 +314,13 @@ angular.module('algorea')
         openItemFromLink: function(itemId, pathParams, pane) {
            if (itemService.isSonOf(itemId, pathParams.currentItemID)) {
               $state.go('contents', {
-                 path:   pathParams.basePathStr+'/'+itemId, 
+                 path:   pathParams.basePathStr+'/'+itemId,
                  sell:   pane == 'right' ? pathParams.selr : pathParams.sell,
                  selr:   pane == 'right' ? parseInt(pathParams.selr)+1 : parseInt(pathParams.sell)+1,
               });
            } else {
               $state.go('contents', {
-                 path:   itemId, 
+                 path:   itemId,
                  sell:   -1,
                  selr:   1,
               });
