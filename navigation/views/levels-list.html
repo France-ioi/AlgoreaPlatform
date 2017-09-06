@@ -1,6 +1,7 @@
 <div class="children-list-container">
    <div class="children-list">
-      <div ng-repeat="item in getChildren() track by item.ID" display-item from="parent" class="children-level"></div>
+      <div ng-repeat="item in getChildren() track by $index" display-item from="parent" class="children-level"></div>
+      <!-- track by item.ID replaced with track by $index-->
       <hr />
       <div ng-if="percentDone > 0"><span ng-i18next="list_total_score"></span> {{ percentDone }}%</div>
    </div>
