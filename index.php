@@ -140,6 +140,7 @@ function startAnimation() {
 }
 if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAnimation();
 </script>
+<script src="<?= includeFile('errors/error_logger.js') ?>"></script>
 <?php if (!$compiledMode): ?>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
   <?php if ($usesForum): ?>
@@ -149,6 +150,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     <script src="<?= includeFile('ext/inheritance.js') ?>" type="text/javascript"></script>
     <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <?php endif; ?>
+  <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_'.$config->shared->domains['current']->defaultAngularLocale.'.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-sanitize/angular-sanitize.min.js') ?>"></script>
