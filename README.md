@@ -31,7 +31,7 @@ cp -p config_local_template.php config_local.php
 
 then fill `config_local.php` with your configuration, including database and item IDs (you can choose them arbitrarily).
 
-To install the database, check the last version in the `schema` folder, and from it, execute `full_schema.sql` and then each revision in order. (Check `schema/README.md` for more information.)
+To install the database, check the last version in the `schema` folder, and from it, execute `full_schema.sql` and then each revision in order or use commonFramework/schema-migrate.php script. (Check `schema/README.md` for more information.)
 
 You must then run
 
@@ -39,7 +39,7 @@ You must then run
 php commonFramework/modelsManager/triggers.php
 ```
 
-Finally, run 
+Finally, run
 
 ```
 php shared/initPlatform.php
