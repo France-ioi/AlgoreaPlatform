@@ -69,14 +69,14 @@ function main() {
 
     // Create items for the current domain
     $domainConfig = $config->shared->domains['current'];
-    createItem($domainConfig->PlatformItemId, 'Accueil', 'DomainRoot');
-    createItem($domainConfig->CustomProgressItemId, 'Parcours personnalisés', 'CustomProgressRoot', 1);
-    createItem($domainConfig->OfficialProgressItemId, 'Parcours officiels', 'OfficialProgressRoot');
+    createItem($domainConfig->PlatformItemId, 'Accueil', 'Chapter');
+    createItem($domainConfig->CustomProgressItemId, 'Parcours personnalisés', 'Chapter', 1);
+    createItem($domainConfig->OfficialProgressItemId, 'Parcours officiels', 'Chapter');
     createItem($domainConfig->DiscoverRootItemId, 'Bienvenue', 'Course');
     createItem($domainConfig->ContestRootItemId, 'Concours', 'Root');
-    createItem($domainConfig->CustomContestRootItemId, 'Concours personnalisés', 'CustomContestRoot', 1);
+    createItem($domainConfig->CustomContestRootItemId, 'Concours personnalisés', 'Chapter', 1);
     createItem($domainConfig->ProgressRootItemId, 'Parcours', 'Root');
-    createItem($domainConfig->OfficialContestRootItemId, 'Concours officiels', 'OfficialContestRoot');
+    createItem($domainConfig->OfficialContestRootItemId, 'Concours officiels', 'Chapter');
     createItemItem($config->shared->RootItemId, $domainConfig->PlatformItemId);
     createItemItem($domainConfig->PlatformItemId, $domainConfig->ProgressRootItemId, 0);
     createItemItem($domainConfig->PlatformItemId, $domainConfig->DiscoverRootItemId, 2);
