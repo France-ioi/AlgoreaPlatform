@@ -118,17 +118,9 @@ var models = {
             type: "enum",
             values: {
                Root: {label: "models_items_fields_sType_values_Root_label"},
-               Category: {label: "models_items_fields_sType_values_Category_label"},
-               Level: {label: "models_items_fields_sType_values_Level_label"},
-               GenericChapter: {label: "models_items_fields_sType_values_GenericChapter_label"},
                Chapter: {label: "models_items_fields_sType_values_Chapter_label"},
-               StaticChapter: {label: "models_items_fields_sType_values_StaticChapter_label"},
-               ContestChapter: {label: "models_items_fields_sType_values_ContestChapter_label"},
-               LimitedTimeChapter: {label: "models_items_fields_sType_values_LimitedTimeChapter_label"},
-               Section: {label: "models_items_fields_sType_values_Section_label"},
                Task: {label: "models_items_fields_sType_values_Task_label"},
                Course: {label: "models_items_fields_sType_values_Course_label"},
-               Presentation: {label: "models_items_fields_sType_values_Presentation_label"}
             },
             label: "models_items_fields_sType_label",
             defaultValue: "Chapter",
@@ -201,7 +193,10 @@ var models = {
          bGrayedAccess: {type: "boolean", label: "models_items_fields_bGrayedAccess_label", defaultValue: false, readOnly: true},
          bOwnerAccess: {type: "boolean", label: "models_items_fields_bOwnerAccess_label", defaultValue: false, readOnly: true},
          bManagerAccess: {type: "boolean", label: "models_items_fields_bManagerAccess_label", defaultValue: false, readOnly: true},
-         bAccessSolutions: {type: "boolean", label: "models_items_fields_bAccessSolutions_label", defaultValue: false, readOnly: true}
+         bAccessSolutions: {type: "boolean", label: "models_items_fields_bAccessSolutions_label", defaultValue: false, readOnly: true},
+         bTitleBarVisible: {type: "boolean", label: "models_items_fields_bTitleBarVisible_label", defaultValue: 1},
+         bTransparentFolder: {type: "boolean", label: "models_items_fields_bTransparentFolder_label", defaultValue: 0},
+         bDisplayDetailsInParent: {type: "boolean", label: "models_items_fields_bDisplayDetailsInParent_label", defaultValue: 0},
       },
       links: {
          children: {refModel: "items_items", key: "idItemParent", type: "array", orderBy: "iChildOrder"},

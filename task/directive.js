@@ -324,7 +324,7 @@ angular.module('algorea')
             elem[0].src = scope.taskUrl;
             $timeout(function() { loadTask(scope, elem, sameUrl);});
          }
-         if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Presentation' || scope.item.sType == 'Course')) {
+         if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Course')) {
             initTask(false);
          }
          // function comparing two url, returning true if the iframe won't be reloaded
@@ -336,7 +336,7 @@ angular.module('algorea')
             return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
-            if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Presentation' && scope.item.sType !== 'Course')) {
+            if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Course')) {
                return;
             }
             scope.taskLoaded = false;

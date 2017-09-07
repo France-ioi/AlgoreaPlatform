@@ -125,7 +125,7 @@ angular.module('algorea')
     if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
       mapService.setClickedCallback(function(path, lastItem) {
-        if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
+        if (lastItem.sType == 'Task' || lastItem.sType == 'Course') {
            var pathArray = path.split('/');
            var selr = pathArray.length;
            var sell = selr -1;

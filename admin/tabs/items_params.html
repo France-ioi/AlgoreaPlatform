@@ -28,6 +28,9 @@
    <field model="item" field="items.sContestPhase" />
    <field model="item" field="items.iLevel" />
    <field model="item" field="items.bNoScore" />
+   <field model="item" field="items.bTitleBarVisible" />
+   <field model="item" field="items.bTransparentFolder" />
+   <field model="item" field="items.bDisplayDetailsInParent" />
    <p  ng-show="group_item.bCachedManagerAccess || group_item.bOwnerAccess">
       <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="reset"></a>
       <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="save"></a>

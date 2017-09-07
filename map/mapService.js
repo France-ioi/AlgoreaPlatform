@@ -129,7 +129,7 @@ angular.module('algorea')
          $.each(pathParams.path, function(i, itemId) {
             if (rootItem) return;
             var item = ModelsManager.getRecord('items', itemId);
-            if (item && item.sType == 'Level') {
+            if(item && item.sType == 'Chapter' && item.bTransparentFolder) {
                rootItem = item;
             } else {
                if (newBasePath) {

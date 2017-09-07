@@ -45,11 +45,11 @@ angular.module('algorea')
          var suffix = from ? '-'+from : '';
          $scope.itemType = this.item && this.item.sType ? itemService.normalizeItemType(this.item.sType) : 'error';
          var type = $scope.itemType.toLowerCase();
-         // exception: DiscoverRootItemId has type Root but should be displayed as a Presentation
-         if (this.item && this.item.ID == config.domains.current.DiscoverRootItemId && !from) {type = 'presentation';}
+         // exception: DiscoverRootItemId has type Root but should be displayed as a Course
+         if (this.item && this.item.ID == config.domains.current.DiscoverRootItemId && !from) {type = 'course';}
          if (this.item && this.item.ID == config.domains.current.ProgressRootItemId && !from) {type = 'progressroot';}
          if ( ! from) {
-            if (type == 'chapter' || type == 'section' || type == 'level') {
+            if (type == 'chapter') {
                if (config.domains.current.useMap) {
                   type = 'blank';
                }
@@ -78,7 +78,7 @@ angular.module('algorea')
          }
          this.firstApply = false;
          // haaaaaaack
-         if (type+suffix == 'task' || type+suffix=='course' ||  type+suffix=='presentation') {
+         if (type+suffix == 'task' || type+suffix=='course') {
             return this.viewsBaseUrl+'taskcourse.html';
          }
          return this.viewsBaseUrl+type+suffix+'.html';
@@ -136,10 +136,7 @@ angular.module('algorea')
          'Root': 'list',
          'Task': 'keyboard',
          'Chapter': 'folder',
-         'Course': 'assignment',
-         'Presentation': 'speaker_notes',
-         'Level': 'folder',
-         'Section': 'folder',
+         'Course': 'assignment'
       };
       $scope.setItemIcon = function (item) {
          // Set the main icon (visited, validated, ...)
@@ -232,7 +229,7 @@ angular.module('algorea')
                   $scope.userInfos = loginData.sLogin;
                }
             }
-         });   
+         });
       }
       $scope.$on('syncResetted', function() {
          $scope.setUserInfos();
@@ -464,10 +461,12 @@ angular.module('algorea')
          }
          $scope.leftParentItemId = item.ID;
          $scope.itemsList = [];
+         /*
          if (item.sType == 'Presentation') {
             $scope.itemsList = [item];
             return;
          }
+         */
          var children = itemService.getChildren(item);
          angular.forEach(children, function(child) {
             child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '/'+child.ID);

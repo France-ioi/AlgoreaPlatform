@@ -37,7 +37,7 @@ $tablesModels = array (
          "sPassword" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sType" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "bSendEmails" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")))
-         
+
       )
    ),
 
@@ -92,6 +92,10 @@ $tablesModels = array (
          "sContestPhase" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "iLevel" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bNoScore" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bTitleBarVisible" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bTransparentFolder" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bDisplayDetailsInParent" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bCustomChapter" => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
       )
    ),
    "items_items" => array(
@@ -158,7 +162,7 @@ $tablesModels = array (
          "bCachedAccessSolutions" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bCachedGrayedAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bCachedManagerAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
-         "sPropagateAccess" => array("skipHistory" => true, "type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
+         "sPropagateAccess" => array("skipHistory" => true, "type" => "string", "access" => array("write" => array("admin"), "read" => array("user"))),
       ),
       "listeners" => array(
          "before" => "Listeners::groupsItemsBefore",
@@ -476,6 +480,10 @@ $viewsModels = array(
          "sContestPhase" => array(),
          "iLevel" => array(),
          "bNoScore" => array(),
+         "bTitleBarVisible" =>  array(),
+         "bTransparentFolder" => array(),
+         "bDisplayDetailsInParent" => array(),
+         "bCustomChapter" => array()
       ),
       "filters" => array(
          "accessible" => array(
