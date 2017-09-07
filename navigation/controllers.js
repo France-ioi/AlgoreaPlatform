@@ -45,9 +45,6 @@ angular.module('algorea')
          var suffix = from ? '-'+from : '';
          $scope.itemType = this.item && this.item.sType ? itemService.normalizeItemType(this.item.sType) : 'error';
          var type = $scope.itemType.toLowerCase();
-         // exception: DiscoverRootItemId has type Root but should be displayed as a Course
-         if (this.item && this.item.ID == config.domains.current.DiscoverRootItemId && !from) {type = 'course';}
-         if (this.item && this.item.ID == config.domains.current.ProgressRootItemId && !from) {type = 'progressroot';}
          if ( ! from) {
             if (type == 'chapter') {
                if (config.domains.current.useMap) {
