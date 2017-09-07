@@ -43,7 +43,7 @@ angular.module('algorea')
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
-         $scope.itemType = this.item && this.item.sType ? itemService.normalizeItemType(this.item.sType) : 'error';
+         $scope.itemType = this.item && this.item.sType ? this.item.sType : 'error';
          var type = $scope.itemType.toLowerCase();
          if ( ! from) {
             if (type == 'chapter') {
@@ -165,7 +165,7 @@ angular.module('algorea')
                this.mainIconName = 'keyboard';
             }
          } else {
-            this.mainIconName = type_iconName[itemService.normalizeItemType(item.sType)];
+            this.mainIconName = type_iconName[item.sType];
             if (user_item && user_item.bValidated) {
                this.mainIconTitle = $i18next.t('status_validated')+' '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";

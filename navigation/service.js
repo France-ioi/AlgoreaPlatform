@@ -326,23 +326,15 @@ angular.module('algorea')
                $rootScope.$broadcast('algorea.itemTriggered', item.ID);
             }
          },
-         normalizeItemType: function(type) {
-            if (!type) return '';
-            if (type.substring(type.length - 4, type.length) === 'Root') {
-               type = 'Root';
-            }
-            return type;
-         },
          getItemTypeStr: function(item) {
             if (!item) return '';
-            var type = this.normalizeItemType(item.sType);
-            if (type == 'Root') return '';
+            if (item.sType == 'Root') return '';
             var typeStr;
-            if(type == 'Chapter') {
+            if(item.sType == 'Chapter') {
                typeStr = $i18next.t('navigation_chapter');
-            } else if (type == 'Task') {
+            } else if (item.sType == 'Task') {
                typeStr = $i18next.t('navigation_task');
-            } else if (type == 'Course') {
+            } else if (item.sType == 'Course') {
                typeStr = $i18next.t('navigation_course');
             }
             return typeStr;
