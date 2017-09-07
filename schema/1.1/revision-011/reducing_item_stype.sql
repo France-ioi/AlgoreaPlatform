@@ -3,9 +3,12 @@ update `items` set bTitleBarVisible = 0, sType = 'Course' where sType = 'Present
 
 ALTER TABLE `items`
 ADD `bTransparentFolder` tinyint unsigned NOT NULL DEFAULT '0' AFTER `bTitleBarVisible`;
+update `items` set bTransparentFolder =1 where sType = 'Section';
+
 ALTER TABLE `items`
 ADD `bDisplayDetailsInParent` tinyint unsigned NOT NULL DEFAULT '0' COMMENT 'when true, display a large icon, the subtitle, and more within the parent chapter' AFTER `bTransparentFolder`;
-update `items` set bTransparentFolder =1, bDisplayDetailsInParent = 1 where sType = 'Level';
+update `items` set bDisplayDetailsInParent = 1 where sType = 'Level';
+
 
 update `items` set sType = 'Chapter'
 where
@@ -27,7 +30,7 @@ where
     sType = 'CustomProgressRoot' OR
     sType = 'CustomContestRoot';
 
-update `items` set sType = 'Root'
+update `items` set sType = 'Chapter'
 where
     sType = 'CustomProgressRoot' OR
     sType = 'OfficialProgressRoot' OR
