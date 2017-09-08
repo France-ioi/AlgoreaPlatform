@@ -8,7 +8,7 @@ angular.module('algorea')
       template: function(element, attrs) {
         if (attrs.from == 'menu') {
            return '<span ng-if="visible" class="breadcrumbs-item-{{activityClass}} breadcrumbs-{{activityClass}}-{{lastClass}} breadcrumbs-{{distanceClass}}">' +
-                  '{{ user_item.bTransparentFolder }}  <span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
+                  '<span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
                   '  <a ng-if="!active" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a></span>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,
