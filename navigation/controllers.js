@@ -595,6 +595,7 @@ angular.module('algorea')
          $scope.curLocale = newLocale;
          $rootScope.sLocale = $scope.curLocale.id;
          $i18next.changeLanguage($scope.curLocale.id);
+         $rootScope.$broadcast('algorea.languageChanged');
       };
       $scope.curLocale = $scope.locales[0];
       for(var i = $scope.locales.length - 1; i > -1; i--) {

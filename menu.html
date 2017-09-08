@@ -2,9 +2,11 @@
    <div affix-me="affix==='header'" ng-if='!isMobileLayout'>
       <div id="headerContainer">
          <div ng-show='layout.navTopIsOpen' id="menu" class="menu" role="navigation">
-            <div id="menu-logo" ng-click="gotoIndex()">
+            <div id="menu-logo">
                <div class="language-selector"><select ng-model="curLocale" ng-change="updateLocale(curLocale);" ng-options="lang as lang.label for lang in locales"></select></div>
-               <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
+               <div ng-click="gotoIndex()">
+                  <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
+               </div>
             </div>
             <div id="menu-main" >
                <div ng-repeat="tab in siteTabs" id="menu-item{{ $index }}" class="menu-item" ng-class="{'menu-item-active': activated === $index}" ng-click="gotoMenuItem($index, tab.path, tab.special)">

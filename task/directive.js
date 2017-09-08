@@ -379,6 +379,12 @@ angular.module('algorea')
                reinit();
             }
          });
+         scope.$on('algorea.languageChanged', function(event) {
+            if (scope.itemUrl) {
+               scope.itemUrl = null; // Avoid considering it's the same URL as we just changed language
+               reinit();
+            }
+         });
       },
     };
 }]);
