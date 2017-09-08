@@ -44,6 +44,8 @@ $config->shared->domains['default']->title = "Algorea Platform";
 // Platform default language
 $config->shared->domains['default']->defaultLanguage = 'fr';
 $config->shared->domains['default']->defaultAngularLocale = 'fr-fr';
+// Optional: available languages
+//$config->shared->domains['default']->availableLanguages = 'fr,en';
 // Custom i18n strings to inclulde
 $config->shared->domains['default']->customStringsName = null;
 // Tagline for the platform

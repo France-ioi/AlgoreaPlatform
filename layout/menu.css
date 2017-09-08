@@ -40,6 +40,17 @@ BRANDING
 }
 
 /*
+/////////////////
+LANGUAGE SELECTOR
+/////////////////
+*/
+
+.language-selector {
+    float: right;
+    color: black;
+}
+
+/*
 ///////////////
 MAIN NAVIGATION
 ///////////////

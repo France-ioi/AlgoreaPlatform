@@ -209,7 +209,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     'lng' => $config->shared->domains['current']->defaultLanguage,
     'fallbackLng' => ['en', 'fr'],
     'fallbackNS' => 'algorea',
-    'debug' => true,
+//    'debug' => true,
     'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea']
     ]); ?>;
   i18nextOpts['backend'] = {

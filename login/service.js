@@ -169,7 +169,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
             if (logout) {
                additionalArgs += '&autoLogout=1';
             }
-            additionalArgs += '&fallbackReturnUrl='+encodeURIComponent(config.domains.current.baseUrl+'login/loginModule-fallback.php');
+            additionalArgs += '&lang='+$rootScope.sLocale+'&fallbackReturnUrl='+encodeURIComponent(config.domains.current.baseUrl+'login/loginModule-fallback.php');
             var popup = window.open(loginModuleUrl+'?mode=popup'+additionalArgs,"Login","menubar=no, status=no, scrollbars=no, menubar=no, width=500, height=600");
             if (!logout) {
                connectToPopup(popup);

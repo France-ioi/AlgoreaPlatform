@@ -3,6 +3,7 @@
       <div id="headerContainer">
          <div ng-show='layout.navTopIsOpen' id="menu" class="menu" role="navigation">
             <div id="menu-logo" ng-click="gotoIndex()">
+               <div class="language-selector"><select ng-model="curLocale" ng-change="updateLocale(curLocale);" ng-options="lang as lang.label for lang in locales"></select></div>
                <div class="menu-logo-content" id="menu-logo-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
             </div>
             <div id="menu-main" >
@@ -31,6 +32,7 @@
            <span ng-click="layout.openSidebarLeft();" ng-if="!sidebarLeftIsOpen" class="material-icons">keyboard_arrow_down</span>
            <span ng-click="layout.closeSidebarLeft();" ng-if="sidebarLeftIsOpen" class="material-icons">keyboard_arrow_up</span>
          </div>
+         <div class="language-selector"><select ng-model="curLocale" ng-change="updateLocale(curLocale);" ng-options="lang as lang.label for lang in locales"></select></div>
          <div class="menu-logo-content" id="menu-logo-content" ng-click="gotoIndex()">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
          <span ng-if="!mobileNavTopIsOpen" class="material-icons menu-more" ng-click="layout.openMobileNavTop()">menu</span>
          <span ng-if="mobileNavTopIsOpen && !rightIsFullScreen" class="material-icons menu-more" ng-click="layout.closeMobileNavTop()">menu</span>
