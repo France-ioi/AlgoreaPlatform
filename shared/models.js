@@ -197,6 +197,7 @@ var models = {
          bAccessSolutions: {type: "boolean", label: "models_items_fields_bAccessSolutions_label", defaultValue: false, readOnly: true},
          bTitleBarVisible: {type: "boolean", label: "models_items_fields_bTitleBarVisible_label", defaultValue: 1},
          bTransparentFolder: {type: "boolean", label: "models_items_fields_bTransparentFolder_label", defaultValue: 0},
+         bCustomChapter: {type: "boolean", label: null, defaultValue: 0, readOnly: true},
          bDisplayDetailsInParent: {type: "boolean", label: "models_items_fields_bDisplayDetailsInParent_label", defaultValue: 0}
       },
       links: {

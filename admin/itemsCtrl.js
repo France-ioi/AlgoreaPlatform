@@ -473,11 +473,11 @@ angular.module('algorea')
          var group_item;
          if (!record) return false;
          if (recordModel == 'items_items') {
-            if (action == 'delete' && (record.parent.ID == config.domains.current.CustomProgressItemId || record.parent.ID == config.domains.current.CustomContestRootItemId)) {
+            if (action == 'delete' && record.parent.bCustomChapter) {
                return true;
             }
-            if (action == 'insert' && record.child.bCustomChapter ==1) {
-               return true;
+            if (action == 'insert' && record.child.bCustomChapter) {
+                  return true;
             }
             if (action == 'delete') {
                group_item = getGroupItem($scope.loginData.idGroupSelf, record.parent.ID);
