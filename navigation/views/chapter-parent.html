@@ -1,3 +1,19 @@
-<span class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
-<span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>
-<span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span>
+<span ng-if="!item.bDisplayDetailsInParent">
+    <span class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
+    <span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>
+    <span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span>
+</span>
+
+<div ng-click="" class="level-container" ng-if="item.bDisplayDetailsInParent">
+	<div class="level-image"><img ng-src="{{imageUrl}}"/></div>
+	<div class="level-notimage">
+		<div class="level-title" ng-class="{grayed: item_status() == 'grayed'}"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></div>
+		<div class="level-subtitle">{{strings.sSubtitle}}</div>
+		<span class="level-moreInfos" ng-if="strings.sDescription && strings.sEduComment">
+			<span ng-hide="formValues.moreInfosOpened" ng-click="formValues.moreInfosOpened = true;"><i class="glyphicon glyphicon-triangle-right"></i>plus d'infos</span>
+			<i ng-show="formValues.moreInfosOpened" ng-click="formValues.moreInfosOpened = false;" class="glyphicon glyphicon-triangle-bottom"></i>
+		</span>
+		<span class="level-educomment" ng-show="strings.sEduComment && (!strings.sDescription || formValues.moreInfosOpened)">{{strings.sEduComment}}</span>
+		<div class="level-description" ng-show="formValues.moreInfosOpened">{{strings.sDescription}}</div>
+	</div>
+</div>

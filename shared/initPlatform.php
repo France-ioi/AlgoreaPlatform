@@ -23,10 +23,10 @@ function createGroupGroup($idGroupParent, $idGroupChild, $iChildOrder) {
     $stmt->execute(['idGroupParent' => $idGroupParent, 'idGroupChild' => $idGroupChild, 'iChildOrder' => $iChildOrder]);
 }
 
-function createItem($ID, $title, $type) {
+function createItem($ID, $title, $type, $bCustomChapter = 0) {
     global $db, $config;
-    $stmt = $db->prepare('insert ignore into items (ID, sType) values (:ID, :sType);');
-    $stmt->execute(['ID' => $ID, 'sType' => $type]);
+    $stmt = $db->prepare('insert ignore into items (ID, sType, bCustomChapter, bDisplayChildrenAsTabs) values (:ID, :sType, :bCustomChapter, 1);');
+    $stmt->execute(['ID' => $ID, 'sType' => $type, 'bCustomChapter' => $bCustomChapter]);
     $stmt = $db->prepare('insert ignore into items_strings (idItem, sTitle) values (:idItem, :sTitle);');
     $stmt->execute(['idItem' => $ID, 'sTitle' => $title]);
     $rootGroup = $config->shared->RootGroupId;
@@ -69,14 +69,14 @@ function main() {
 
     // Create items for the current domain
     $domainConfig = $config->shared->domains['current'];
-    createItem($domainConfig->PlatformItemId, 'Accueil', 'DomainRoot');
-    createItem($domainConfig->CustomProgressItemId, 'Parcours personnalisés', 'CustomProgressRoot');
-    createItem($domainConfig->OfficialProgressItemId, 'Parcours officiels', 'OfficialProgressRoot');
-    createItem($domainConfig->DiscoverRootItemId, 'Bienvenue', 'Presentation');
+    createItem($domainConfig->PlatformItemId, 'Accueil', 'Chapter');
+    createItem($domainConfig->CustomProgressItemId, 'Parcours personnalisés', 'Chapter', 1);
+    createItem($domainConfig->OfficialProgressItemId, 'Parcours officiels', 'Chapter');
+    createItem($domainConfig->DiscoverRootItemId, 'Bienvenue', 'Course');
     createItem($domainConfig->ContestRootItemId, 'Concours', 'Root');
-    createItem($domainConfig->CustomContestRootItemId, 'Concours personnalisés', 'CustomContestRoot');
+    createItem($domainConfig->CustomContestRootItemId, 'Concours personnalisés', 'Chapter', 1);
     createItem($domainConfig->ProgressRootItemId, 'Parcours', 'Root');
-    createItem($domainConfig->OfficialContestRootItemId, 'Concours officiels', 'OfficialContestRoot');
+    createItem($domainConfig->OfficialContestRootItemId, 'Concours officiels', 'Chapter');
     createItemItem($config->shared->RootItemId, $domainConfig->PlatformItemId);
     createItemItem($domainConfig->PlatformItemId, $domainConfig->ProgressRootItemId, 0);
     createItemItem($domainConfig->PlatformItemId, $domainConfig->DiscoverRootItemId, 2);

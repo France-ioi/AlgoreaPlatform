@@ -44,7 +44,7 @@ class Listeners {
                               left join users_items as task_children on items_items.idItemChild = task_children.idItem and task_children.idUser = :idUser
                               join items on items.ID = items_items.idItemChild
                               where items_items.idItemParent = :idItem
-                                 and items.sType != \'Course\' and items.sType != \'Presentation\' and items.bNoScore = 0) as task_children_data
+                                 and items.sType != \'Course\' and items.bNoScore = 0) as task_children_data
                          set users_items.sLastActivityDate = children_data.sLastActivityDate,
                              users_items.nbTasksTried = children_data.nbTasksTried,
                              users_items.nbTasksWithHelp = children_data.nbTasksWithHelp,
@@ -224,7 +224,7 @@ class Listeners {
       $queryMarkDoNotPropagate = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, sPropagateAccess) ".
                                     "SELECT `groups_items`.`ID` as `ID`, 'done' as sPropagateAccess FROM groups_items ".
                                     "JOIN `items` on `groups_items`.`idItem` = `items`.`ID` ".
-                                    "WHERE `items`.`sType` = 'CustomContestRoot' OR `items`.`sType` = 'CustomProgressRoot' ON DUPLICATE KEY UPDATE sPropagateAccess='done';";
+                                    "WHERE `items`.`bCustomChapter` = 1 ON DUPLICATE KEY UPDATE sPropagateAccess='done';";
 
       // marking 'self' groups_items sons of groups_items marked as 'children'
       $queryMarkExistingChildren = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, sPropagateAccess) ".

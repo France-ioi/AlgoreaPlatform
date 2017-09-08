@@ -42,7 +42,7 @@ angular.module('algorea')
       }
 //      $rootScope.$on('$stateChangeSuccess', function() {
 //         var oldIds = idsToSync;
-//         var newIds = 
+//         var newIds =
 //      });
       function syncEndListener () {
          if (firstSyncFailed) { return; }
@@ -103,7 +103,7 @@ angular.module('algorea')
          // TODO: build SyncQueue.cancelCurrentSync() with a StartSyncListener
       }
       function getUserID() {
-         
+
          return SyncQueue.requests.loginData.ID;
       }
       function getLoginData() {
@@ -326,32 +326,15 @@ angular.module('algorea')
                $rootScope.$broadcast('algorea.itemTriggered', item.ID);
             }
          },
-         normalizeItemType: function(type) {
-            if (!type) return '';
-            if (type.substring(type.length - 7, type.length) === 'Chapter') {
-               type = 'Chapter';
-            }
-            if (type.substring(type.length - 4, type.length) === 'Root') {
-               type = 'Root';
-            }
-            return type;
-         },
          getItemTypeStr: function(item) {
             if (!item) return '';
-            var type = this.normalizeItemType(item.sType);
-            if (type == 'Root') return '';
+            if (item.sType == 'Root') return '';
             var typeStr;
-            if (type == 'Level') {
-               typeStr = $i18next.t('navigation_level') + (item.iLevel ? ' '+item.iLevel : '');
-            } else if(type == 'Chapter') {
+            if(item.sType == 'Chapter') {
                typeStr = $i18next.t('navigation_chapter');
-            } else if (type == 'Category') {
-               typeStr = $i18next.t('navigation_category');
-            } else if (type == 'Section') {
-               typeStr = $i18next.t('navigation_section');
-            } else if (type == 'Task') {
+            } else if (item.sType == 'Task') {
                typeStr = $i18next.t('navigation_task');
-            } else if (type == 'Course') {
+            } else if (item.sType == 'Course') {
                typeStr = $i18next.t('navigation_course');
             }
             return typeStr;

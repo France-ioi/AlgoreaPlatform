@@ -43,13 +43,10 @@ angular.module('algorea')
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
-         $scope.itemType = this.item && this.item.sType ? itemService.normalizeItemType(this.item.sType) : 'error';
+         $scope.itemType = this.item && this.item.sType ? this.item.sType : 'error';
          var type = $scope.itemType.toLowerCase();
-         // exception: DiscoverRootItemId has type Root but should be displayed as a Presentation
-         if (this.item && this.item.ID == config.domains.current.DiscoverRootItemId && !from) {type = 'presentation';}
-         if (this.item && this.item.ID == config.domains.current.ProgressRootItemId && !from) {type = 'progressroot';}
          if ( ! from) {
-            if (type == 'chapter' || type == 'section' || type == 'level') {
+            if (type == 'chapter') {
                if (config.domains.current.useMap) {
                   type = 'blank';
                }
@@ -78,7 +75,7 @@ angular.module('algorea')
          }
          this.firstApply = false;
          // haaaaaaack
-         if (type+suffix == 'task' || type+suffix=='course' ||  type+suffix=='presentation') {
+         if (type+suffix == 'task' || type+suffix=='course') {
             return this.viewsBaseUrl+'taskcourse.html';
          }
          return this.viewsBaseUrl+type+suffix+'.html';
@@ -136,10 +133,7 @@ angular.module('algorea')
          'Root': 'list',
          'Task': 'keyboard',
          'Chapter': 'folder',
-         'Course': 'assignment',
-         'Presentation': 'speaker_notes',
-         'Level': 'folder',
-         'Section': 'folder',
+         'Course': 'assignment'
       };
       $scope.setItemIcon = function (item) {
          // Set the main icon (visited, validated, ...)
@@ -171,7 +165,7 @@ angular.module('algorea')
                this.mainIconName = 'keyboard';
             }
          } else {
-            this.mainIconName = type_iconName[itemService.normalizeItemType(item.sType)];
+            this.mainIconName = type_iconName[item.sType];
             if (user_item && user_item.bValidated) {
                this.mainIconTitle = $i18next.t('status_validated')+' '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";
@@ -232,7 +226,7 @@ angular.module('algorea')
                   $scope.userInfos = loginData.sLogin;
                }
             }
-         });   
+         });
       }
       $scope.$on('syncResetted', function() {
          $scope.setUserInfos();
@@ -464,10 +458,12 @@ angular.module('algorea')
          }
          $scope.leftParentItemId = item.ID;
          $scope.itemsList = [];
+         /*
          if (item.sType == 'Presentation') {
             $scope.itemsList = [item];
             return;
          }
+         */
          var children = itemService.getChildren(item);
          angular.forEach(children, function(child) {
             child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '/'+child.ID);
@@ -549,16 +545,10 @@ angular.module('algorea')
    .controller('superBreadCrumbsController', ['$scope', 'itemService', 'pathService', function ($scope, itemService, pathService) {
       $scope.panel = 'menu';
       $scope.getItems = function() {
-         var indexShift = 0;
          angular.forEach($scope.pathParams.path, function(ID, index) {
-            if (ID == config.domains.current.CustomProgressItemId || ID == config.domains.current.OfficialProgressItemId) {
-               indexShift = indexShift + 1;
-               return;
-            }
-            var newIndex = index - indexShift;
             $scope.items.push({ID: 0});
             itemService.getAsyncRecord('items', ID, function(item) {
-               $scope.items[newIndex] = item;
+               $scope.items[index] = item;
                if (item) {
                   item.breadCrumbsDepth = index;
                }

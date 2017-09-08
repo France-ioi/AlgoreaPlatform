@@ -97,7 +97,7 @@ var models = {
                owner: {label: "models_groups_groups_fields_sRole_values_owner_label", hidden: true},
                manager: {label: "models_groups_groups_fields_sRole_values_manager_label"},
                observer: {label: "models_groups_groups_fields_sRole_values_observer_label"},
-               member: {label: "models_groups_groups_fields_sRole_values_member_label"},
+               member: {label: "models_groups_groups_fields_sRole_values_member_label"}
             },
             defaultValue: 'member',
             label: "models_groups_groups_fields_sRole_label",
@@ -105,7 +105,7 @@ var models = {
          },
          sStatusDate: {type: "jsdate", label: "models_groups_groups_fields_sStatusDate_label"},
          idUserInviting: {type: "key", label: "models_groups_groups_fields_idUserInviting_label", refModel: "users", link: "userInviting"},
-         sUserInvitingLogin: {type: "string", label: "models_groups_groups_fields_sUserInvitingLogin_label", readOnly: true},
+         sUserInvitingLogin: {type: "string", label: "models_groups_groups_fields_sUserInvitingLogin_label", readOnly: true}
       }
    },
 
@@ -118,17 +118,9 @@ var models = {
             type: "enum",
             values: {
                Root: {label: "models_items_fields_sType_values_Root_label"},
-               Category: {label: "models_items_fields_sType_values_Category_label"},
-               Level: {label: "models_items_fields_sType_values_Level_label"},
-               GenericChapter: {label: "models_items_fields_sType_values_GenericChapter_label"},
                Chapter: {label: "models_items_fields_sType_values_Chapter_label"},
-               StaticChapter: {label: "models_items_fields_sType_values_StaticChapter_label"},
-               ContestChapter: {label: "models_items_fields_sType_values_ContestChapter_label"},
-               LimitedTimeChapter: {label: "models_items_fields_sType_values_LimitedTimeChapter_label"},
-               Section: {label: "models_items_fields_sType_values_Section_label"},
                Task: {label: "models_items_fields_sType_values_Task_label"},
-               Course: {label: "models_items_fields_sType_values_Course_label"},
-               Presentation: {label: "models_items_fields_sType_values_Presentation_label"}
+               Course: {label: "models_items_fields_sType_values_Course_label"}
             },
             label: "models_items_fields_sType_label",
             defaultValue: "Chapter",
@@ -191,7 +183,8 @@ var models = {
             values: {
                Running: {label: "models_items_fields_sContestPhase_values_Running_label"},
                Analysis: {label: "models_items_fields_sContestPhase_values_Analysis_label"},
-               Closed: {label: "models_items_fields_sContestPhase_values_Closed_label"}},
+               Closed: {label: "models_items_fields_sContestPhase_values_Closed_label"}
+            },
             label: "models_items_fields_sContestPhase_label",
             defaultValue: "Running",
             nullInvalid: true
@@ -201,7 +194,12 @@ var models = {
          bGrayedAccess: {type: "boolean", label: "models_items_fields_bGrayedAccess_label", defaultValue: false, readOnly: true},
          bOwnerAccess: {type: "boolean", label: "models_items_fields_bOwnerAccess_label", defaultValue: false, readOnly: true},
          bManagerAccess: {type: "boolean", label: "models_items_fields_bManagerAccess_label", defaultValue: false, readOnly: true},
-         bAccessSolutions: {type: "boolean", label: "models_items_fields_bAccessSolutions_label", defaultValue: false, readOnly: true}
+         bAccessSolutions: {type: "boolean", label: "models_items_fields_bAccessSolutions_label", defaultValue: false, readOnly: true},
+         bTitleBarVisible: {type: "boolean", label: "models_items_fields_bTitleBarVisible_label", defaultValue: 1},
+         bTransparentFolder: {type: "boolean", label: "models_items_fields_bTransparentFolder_label", defaultValue: 0},
+         bDisplayChildrenAsTabs: {type: "boolean", label: "models_items_fields_bDisplayChildrenAsTabs_label", defaultValue: 0},
+         bCustomChapter: {type: "boolean", label: null, defaultValue: 0, readOnly: true},
+         bDisplayDetailsInParent: {type: "boolean", label: "models_items_fields_bDisplayDetailsInParent_label", defaultValue: 0}
       },
       links: {
          children: {refModel: "items_items", key: "idItemParent", type: "array", orderBy: "iChildOrder"},
@@ -210,7 +208,7 @@ var models = {
          user_answers: {refModel: "users_answers", key: "idItem", type: "array"},
          user_item: {refModel: "users_items", key: "idItem", type: "object"},
          threads: {refModel: "threads", key: "idItem", type: "object"},
-         group_items: {refModel: "groups_items", key: "idItem", type: "array"}, // array better ?
+         group_items: {refModel: "groups_items", key: "idItem", type: "array"} // array better ?
          //descendants: {refModel: "items_ancestors", key: "idItemAncestor", type: "object"}, // array better ?
       },
       indexes: [
@@ -278,7 +276,7 @@ var models = {
    items_ancestors: {
       fields: {
          idItemAncestor: {type: "key", label: "models_items_ancestors_fields_idItemAncestor_label", refModel: "items", link: "itemAncestor"/*, invLink: "descendants"*/},
-         idItemChild: {type: "key", label: "models_items_ancestors_fields_idItemChild_label", refModel: "items", link: "itemDescendant"},
+         idItemChild: {type: "key", label: "models_items_ancestors_fields_idItemChild_label", refModel: "items", link: "itemDescendant"}
       },
       indexes: [
          {name: "idItemAncestor", keys: ["idItemAncestor"], values: "idItemChild"}
@@ -479,7 +477,7 @@ var models = {
           idThread: {type: "key", label: "models_users_threads_fields_idThread_label", refModel: "threads", link: "thread", invLink: "user_thread"},
           sLastReadDate: {type: "jsdate", label: "models_users_threads_fields_sLastReadDate_label"},
           sLastWriteDate: {type: "jsdate", label: "models_users_threads_fields_sLastWriteDate_label"},
-          bStarred: {type: "int", label: "models_users_threads_fields_bStarred_label"},
+          bStarred: {type: "int", label: "models_users_threads_fields_bStarred_label"}
       }
    }
 };
