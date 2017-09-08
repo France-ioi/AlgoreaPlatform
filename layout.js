@@ -262,9 +262,11 @@ angular.module('algorea')
         $scope.layout.closeMenu();
       },
       closeNavTopOverlay: function() {
-        layoutService.closeNavTopOverlay();
-        layoutService.affixToolbar();
-        $scope.layout.closeMenu();
+        if ($rootScope.showNavTopOverlay) {
+          layoutService.closeNavTopOverlay();
+          layoutService.affixToolbar();
+          $scope.layout.closeMenu();
+        }
       },
       openMobileNavTop: function() {
         layoutService.openMobileTopMenuOverlay();
