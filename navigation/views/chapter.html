@@ -1,11 +1,8 @@
 <div class="main-titlebar chapter-titlebar" ng-if="item.bTitleBarVisible" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
-
 <div class="main-area main-area-normal">
-   <div ng-if="item.sDuration && !user_item.sContestStartDate"><button ng-click="openContest();">Commencer le concours</button></div>
-   <div ng-if="item.sDuration && user_item.sFinishDate">Vous avez déjà effectué ce concours</div>
-   <div ng-bind-html="strings.sDescription"></div>
-   <div ng-if="item.bDisplayChildrenAsTabs == 0" ng-include="templatesPrefix+'navigation/views/children-list.html'">
-    <uib-tabset active="active" ng-if="item.bDisplayChildrenAsTabs==1">
-	    <uib-tab ng-repeat="item in children track by item.ID" heading="{{getTitle(item)}}"><div display-item from="parent"></div></uib-tab>
-  	</uib-tabset>
+    <div ng-if="item.sDuration && !user_item.sContestStartDate"><button ng-click="openContest();">Commencer le concours</button></div>
+    <div ng-if="item.sDuration && user_item.sFinishDate">Vous avez déjà effectué ce concours</div>
+    <div ng-bind-html="strings.sDescription"></div>
+    <div ng-if="item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-tabs.html'"></div>
+    <div ng-if="!item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-list.html'"></div>
 </div>

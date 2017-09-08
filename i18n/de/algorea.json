@@ -423,6 +423,7 @@
     "models_items_fields_idPlatform_label": "Plattform",
     "models_items_fields_bTitleBarVisible_label": "Title bar visible",
     "models_items_fields_bTransparentFolder_label": "Transparent folder",
+    "models_items_fields_bDisplayChildrenAsTabs_label": "Display children as tabs",
     "models_items_fields_bDisplayDetailsInParent_label":"Display details in parent",
     "models_items_fields_sTextId_label": "Text-ID",
     "models_items_fields_sType_values_Root_label": "Wurzel",

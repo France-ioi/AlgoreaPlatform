@@ -95,6 +95,7 @@ $tablesModels = array (
          "bTitleBarVisible" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bTransparentFolder" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bDisplayDetailsInParent" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bDisplayChildrenAsTabs" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bCustomChapter" => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
       )
    ),
@@ -483,6 +484,7 @@ $viewsModels = array(
          "bTitleBarVisible" =>  array(),
          "bTransparentFolder" => array(),
          "bDisplayDetailsInParent" => array(),
+         "bDisplayChildrenAsTabs" => array(),
          "bCustomChapter" => array()
       ),
       "filters" => array(

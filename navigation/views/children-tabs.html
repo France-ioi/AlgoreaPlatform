@@ -1,0 +1,3 @@
+<uib-tabset active="active">
+    <uib-tab ng-repeat="item in getChildren() track by $index" heading="{{getTitle(item)}}"><div display-item from="parent"></div></uib-tab>
+</uib-tabset>

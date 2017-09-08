@@ -25,12 +25,16 @@ where
 ALTER TABLE `items`
 ADD `bCustomChapter` tinyint unsigned NOT NULL DEFAULT '0' COMMENT 'true if this is a chapter where users can add their own content. access to this chapter will not be propagated to its children' AFTER `bDisplayDetailsInParent`;
 
+ALTER TABLE `items`
+ADD `bDisplayChildrenAsTabs` tinyint unsigned NOT NULL DEFAULT '0'  AFTER `bCustomChapter`;
+
+
 update `items` set bCustomChapter =1
 where
     sType = 'CustomProgressRoot' OR
     sType = 'CustomContestRoot';
 
-update `items` set sType = 'Chapter'
+update `items` set sType = 'Chapter', bDisplayChildrenAsTabs = 1
 where
     sType = 'CustomProgressRoot' OR
     sType = 'OfficialProgressRoot' OR

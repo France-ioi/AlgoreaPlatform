@@ -25,7 +25,7 @@ function createGroupGroup($idGroupParent, $idGroupChild, $iChildOrder) {
 
 function createItem($ID, $title, $type, $bCustomChapter = 0) {
     global $db, $config;
-    $stmt = $db->prepare('insert ignore into items (ID, sType, bCustomChapter) values (:ID, :sType, :bCustomChapter);');
+    $stmt = $db->prepare('insert ignore into items (ID, sType, bCustomChapter, bDisplayChildrenAsTabs) values (:ID, :sType, :bCustomChapter, 1);');
     $stmt->execute(['ID' => $ID, 'sType' => $type, 'bCustomChapter' => $bCustomChapter]);
     $stmt = $db->prepare('insert ignore into items_strings (idItem, sTitle) values (:idItem, :sTitle);');
     $stmt->execute(['idItem' => $ID, 'sTitle' => $title]);
