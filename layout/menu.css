@@ -203,6 +203,9 @@ BREADCRUMBS TOOLBAR
    color: #fff;
    cursor: pointer;
 }
+#toolbar .menu-more {
+   padding-right: 10px;
+}
 #navTopOverlay,
 #mobileNavTopOverlay {
    position: fixed;
