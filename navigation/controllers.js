@@ -545,16 +545,10 @@ angular.module('algorea')
    .controller('superBreadCrumbsController', ['$scope', 'itemService', 'pathService', function ($scope, itemService, pathService) {
       $scope.panel = 'menu';
       $scope.getItems = function() {
-         var indexShift = 0;
          angular.forEach($scope.pathParams.path, function(ID, index) {
-            if (ID == config.domains.current.CustomProgressItemId || ID == config.domains.current.OfficialProgressItemId) {
-               indexShift = indexShift + 1;
-               return;
-            }
-            var newIndex = index - indexShift;
             $scope.items.push({ID: 0});
             itemService.getAsyncRecord('items', ID, function(item) {
-               $scope.items[newIndex] = item;
+               $scope.items[index] = item;
                if (item) {
                   item.breadCrumbsDepth = index;
                }
