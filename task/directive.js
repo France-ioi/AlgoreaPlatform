@@ -239,7 +239,7 @@ angular.module('algorea')
                   // An item has been unlocked, need to reset sync as for some
                   // reason it doesn't get the changes
                }
-               scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
+               scope.user_item.iScore = Math.max(scope.user_item.iScore, score);
                $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                scope.$applyAsync();
                if (success) { success(postRes.bValidated); } else { return postRes.bValidated; };
