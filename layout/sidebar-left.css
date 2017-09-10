@@ -22,7 +22,6 @@ body:not(.mobile-layout) #sidebarLeftOverlay {
    z-index:2;
    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
    transition: all 250ms;
-   z-index: 5;
 }
 .sidebar-left-open {
    -webkit-flex: 0 0 325px;
