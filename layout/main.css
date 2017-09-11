@@ -63,24 +63,6 @@ body {
 .task-tab.task-tab-selected {
    cursor: default;
 }
-.nav-tabs.nav-justified>li>a {
-   border-top:0px;
-   border-left:0px;
-   border-right:0px;
-   border-bottom:4px solid #f8f8f8!important;
-}
-
-
-.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover {
-   border-bottom: 4px solid #2aa3ff !important;
-   border-left:0px;
-   border-right:0px;
-   border-top:0px;
-}
-
-.nav-tabs>li>a:hover {
-   background-color: none!important;
-}
 
 .main-titlebar {
    display:-webkit-flex;

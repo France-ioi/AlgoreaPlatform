@@ -257,20 +257,6 @@ header {
   flex: 0 1 auto;
 }
 
-/* Tab sections */
-.nav-tabs>li>a {
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: all 250ms;
-  outline: 0;
-}
-.nav-tabs>li.active>a,
-.nav-tabs>li.active>a:focus,
-.nav-tabs>li.active>a:hover  {
-  color: #82bf2b;
-}
 
 /* Generic elements */
 .checkboxSwitch input.switch {
