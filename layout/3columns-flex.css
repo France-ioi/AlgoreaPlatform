@@ -28,11 +28,6 @@ body {
    -webkit-flex: 1 1 auto;
    flex: 1 1 auto;
 }
-body:not(.mobile-layout) #main > article {
-   -webkit-flex: 1 0 600px;
-   flex: 1 0 600px;
-   min-width:600px;
-}
 
 footer {
    padding: 4px 0;
