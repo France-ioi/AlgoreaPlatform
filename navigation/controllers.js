@@ -77,7 +77,10 @@ angular.module('algorea')
             type = 'loading';
          }
          this.firstApply = false;
-         // haaaaaaack
+         // haaaaaaacks
+         if(suffix == '-children-list') {
+            return this.viewsBaseUrl+'children-list.html';
+         }
          if (type+suffix == 'task' || type+suffix=='course') {
             return this.viewsBaseUrl+'taskcourse.html';
          }
