@@ -6,7 +6,6 @@ HEADER
 
 header {
    z-index: 3;
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
 #headerContainer {
 }
@@ -21,9 +20,6 @@ BRANDING
 ////////
 */
 
-#menu-logo {
-   background-color:#82bf2b;
-   color:white;
    border:0px;
    padding-left: 10px;
    font-size: 22px;
@@ -86,25 +82,16 @@ MAIN NAVIGATION
    display:flex;
    -webkit-flex-direction:column;
    flex-direction:column;
-   background: #e8e8e8;
    -webkit-flex: 1 1 150px;
    flex: 1 1 150px;
    justify-content:space-around;
    font-size: 22px;
-   color: #5d5d5d;
    cursor:pointer;
    white-space: nowrap;
-   border-bottom: 1px solid #d9d9d9;
-   border-right: 1px solid #d9d9d9;
    line-height: 45px;
 }
 .mobile-layout .menu-item {
    flex-basis: 40px;
-   border-bottom: 1px solid #d9d9d9;
-}
-.menu-item-active {
-   background: #2aa3ff !important;
-   color:white !important;
 }
 .menu-item-content {
    text-align: center;
@@ -126,11 +113,6 @@ MAIN NAVIGATION
 .userinfo .logout-btn {
    transition: all 250ms;
 }
-.userinfo .logout-btn:active,
-.userinfo .logout-btn:hover,
-.userinfo .logout-btn:focus {
-   color: #000;
-}
 .menu-item-login-logged .userbox-text {
    display: none;
 }
@@ -143,7 +125,6 @@ BREADCRUMBS TOOLBAR
 */
 
 #toolbar {
-   background-color: #2aa3ff;
    font-size: 16px;
    line-height: 26px;
    min-height: 26px;
@@ -152,7 +133,6 @@ BREADCRUMBS TOOLBAR
    position: relative;
 }
 #toolbar.affix {
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
    position: fixed;
    top: 0;
    width: 100%;
@@ -181,16 +161,6 @@ BREADCRUMBS TOOLBAR
    flex: 0 1 auto;
    padding-right:10px;
 }
-#breadcrumbs a {
-   color: #000;
-}
-#breadcrumbs .breadcrumbs-item-active {
-   color: #fff;
-}
-#breadcrumbs .breadcrumbs-after-selected,
-#breadcrumbs .breadcrumbs-after-selected a {
-   color: #ccc;
-}
 #breadcrumbs .breadcrumbs-item-inactive-not-last::after,
 #breadcrumbs .breadcrumbs-inactive-not-last::after,
 #breadcrumbs .breadcrumbs-active-not-last::after {
@@ -200,7 +170,6 @@ BREADCRUMBS TOOLBAR
 
 /* Exercise mode menu display*/
 .menu-more {
-   color: #fff;
    cursor: pointer;
 }
 #toolbar .menu-more {
@@ -214,8 +183,6 @@ BREADCRUMBS TOOLBAR
    bottom: 0;
    left: 0;
    z-index: 3;
-   background-color: #ccc;
-   background-color: rgba(0,0,0,0.3);
 }
 
 
@@ -232,7 +199,6 @@ LOGIN FRAME
    margin-right:auto;
    top:50px;
    right:0px;
-   background-color:#878787;
    width:260px;
    overflow: hidden;
    border: 0px solid;

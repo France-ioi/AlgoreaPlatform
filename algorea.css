@@ -13,10 +13,115 @@ body {
    overflow-x: auto;
 }
 
+/*
+ * Header colors
+ */
+header {
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.menu-item {
+  background: #e8e8e8;
+  color: #5d5d5d;
+  border-bottom: 1px solid #d9d9d9;
+  border-right: 1px solid #d9d9d9;
+}
+.mobile-layout .menu-item {
+  border-bottom: 1px solid #d9d9d9;
+}
+.menu-item-active {
+  background: #2aa3ff !important;
+  color: #fff !important;
+}
+
+.userinfo .logout-btn:active,
+.userinfo .logout-btn:hover,
+.userinfo .logout-btn:focus {
+  color: #000;
+}
+
+#toolbar {
+  background-color: #2aa3ff;
+}
+#toolbar.affix {
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+}
 
 #toolbar .sidebar-left-control > * {
   color: #fff;
 }
+
+#breadcrumbs a {
+  color: #000;
+}
+#breadcrumbs .breadcrumbs-item-active {
+  color: #fff;
+}
+#breadcrumbs .breadcrumbs-after-selected,
+#breadcrumbs .breadcrumbs-after-selected a {
+  color: #ccc;
+}
+
+/* Exercise mode menu display*/
+.menu-more {
+  color: #fff;
+}
+#navTopOverlay,
+#mobileNavTopOverlay {
+  background-color: #ccc;
+  background-color: rgba(0,0,0,0.3);
+}
+
+/*
+ * Login Frame
+ */
+.loginFrame {
+  background-color:#878787;
+}
+
+/*
+ * Main title bar colors
+ */
+.main-titlebar {
+  color: #0f4a6d;
+  background-color: #e8e8e8;
+}
+.main-titlebar-icon {
+  background-color:#82bf2b;
+  color: #fff;
+}
+.main-titlebar-community {
+  background: #878787;
+  color: #fff;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+/*
+ * Tabs colors
+ */
+.task-tab {
+  color: #337ab7;
+  border: 1px solid transparent;
+}
+.task-tab:hover {
+  border-color: #eee #eee #ddd;
+  background-color: #eee;
+}
+.task-tabs-inner {
+  border-bottom: 1px solid #ddd;
+}
+.task-tab.task-tab-selected {
+  color: #82bf2b;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}
+
+
+.children-item {
+  border-bottom: 1px solid #e7e6e6;
+}
+
 .iframe-task {
    width:800px;
    margin: auto;
@@ -109,6 +214,7 @@ body {
 .bs-callout-info h4 {
     color: #5bc0de;
 }
+
 
 .level-title {
   font-weight:bold;
