@@ -254,6 +254,7 @@ angular.module('algorea')
             // a few convoluted checks for duplicated child items and child order
             var childrenz = [];
             var seenIDs = [];
+
             angular.forEach(item.children, function(child) {
 //               if (item.sType == 'Root') {
 //                  if (child.child.iLevel != 0 && child.child.iLevel != 127 && !(child.idItemChild in seenIDs)) {
@@ -292,8 +293,10 @@ angular.module('algorea')
                }
                return a.iChildOrder - b.iChildOrder;
             });
+
             angular.forEach(childrenz, function (child) {
                children.push(child.child);
+               children[children.length-1].item_item_ID = child.ID;
             });
             return children;
          },

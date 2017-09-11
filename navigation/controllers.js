@@ -424,17 +424,12 @@ angular.module('algorea')
             $scope.rightImmediateLink.sref();
          }
       };
-      $scope.safeApply = function() {
-            var phase = this.$root.$$phase;
-            if(phase !== '$apply' && phase !== '$digest') {
-                  this.$apply();
-            }
-      };
+
       $scope.localInit = function() {
          $scope.getPathParams();
          $scope.firstApply = true;
          $scope.item = {ID: 0};
-         //$scope.children = [];
+         $scope.children = [];
          $scope.getItem(function() {
             $scope.setArrowLinks();
             $scope.setItemOnMap();
@@ -442,7 +437,6 @@ angular.module('algorea')
                mapService.updateSteps();
             }
             $scope.children = $scope.getChildren();
-            $scope.safeApply();
          });
       };
       $scope.localInit();
