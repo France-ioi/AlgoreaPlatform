@@ -45,6 +45,9 @@ angular.module('algorea')
          var suffix = from ? '-'+from : '';
          $scope.itemType = this.item && this.item.sType ? this.item.sType : 'error';
          var type = $scope.itemType.toLowerCase();
+         if(type == 'root') {
+            type = 'chapter';
+         }
          if ( ! from) {
             if (type == 'chapter') {
                if (config.domains.current.useMap) {
