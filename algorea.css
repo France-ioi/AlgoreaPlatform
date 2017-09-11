@@ -228,9 +228,11 @@ header {
 
 .level-container {
   border: 2px solid #e7e6e6;
+  border-bottom-width: 1px;
   margin-top:20px;
   display:flex;
   flex-direction:row;
+  align-items: center;
 }
 
 .level-description {
@@ -248,8 +250,11 @@ header {
 
 .level-image {
   padding-left:20px;
-  width:150px;
-  flex: 0 0 auto;
+  flex: 0 1 150px;
+}
+
+.level-image img {
+  max-width: 100%;
 }
 
 .level-notimage {
