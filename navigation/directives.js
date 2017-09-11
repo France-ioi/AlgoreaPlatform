@@ -46,7 +46,6 @@ angular.module('algorea')
                   scope.relativePath = '';
                }
                scope.depth = (scope.depth === undefined) ? 0 : scope.depth + 1;
-               scope.children = scope.getChildren();
             }
          };
          scope.init(attrs.from);

@@ -319,7 +319,7 @@ angular.module('algorea')
             that.parentItemID = item.ID;
             that.strings = itemService.getStrings(item);
             that.imageUrl = (that.strings && that.strings.sImageUrl) ? that.strings.sImageUrl : 'images/default-level.png';
-            that.children = itemService.getChildren(item);
+            //that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
                console.error('cannot find user item for item '+item.ID);
@@ -424,16 +424,25 @@ angular.module('algorea')
             $scope.rightImmediateLink.sref();
          }
       };
+      $scope.safeApply = function() {
+            var phase = this.$root.$$phase;
+            if(phase !== '$apply' && phase !== '$digest') {
+                  this.$apply();
+            }
+      };
       $scope.localInit = function() {
          $scope.getPathParams();
          $scope.firstApply = true;
          $scope.item = {ID: 0};
+         //$scope.children = [];
          $scope.getItem(function() {
             $scope.setArrowLinks();
             $scope.setItemOnMap();
             if (config.domains.current.useMap) {
                mapService.updateSteps();
             }
+            $scope.children = $scope.getChildren();
+            $scope.safeApply();
          });
       };
       $scope.localInit();
