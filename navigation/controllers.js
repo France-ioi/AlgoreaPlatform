@@ -429,14 +429,12 @@ angular.module('algorea')
          $scope.getPathParams();
          $scope.firstApply = true;
          $scope.item = {ID: 0};
-         $scope.children = [];
          $scope.getItem(function() {
             $scope.setArrowLinks();
             $scope.setItemOnMap();
             if (config.domains.current.useMap) {
                mapService.updateSteps();
             }
-            $scope.children = $scope.getChildren();
          });
       };
       $scope.localInit();

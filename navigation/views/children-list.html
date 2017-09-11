@@ -1,7 +1,7 @@
 <div class="children-list-container">
    <div class="children-list-left-margin"></div>
    <div class="children-list">
-      <div ng-repeat="item in children track by item.item_item_ID" display-item from="parent" class="children-item"></div>
+      <div ng-repeat="item in getChildren() track by item.item_item_ID" display-item from="parent" class="children-item"></div>
       <div ng-if="percentDone > 0"><span ng-i18next="list_total_score"></span> {{ percentDone }}%</div>
    </div>
    <div class="children-list-right-margin"></div>
