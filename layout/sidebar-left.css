@@ -27,13 +27,11 @@ body:not(.mobile-layout) #sidebarLeftOverlay {
    -webkit-flex: 0 0 325px;
    flex: 0 0 325px;
    width: 325px;
+   max-width: calc(100vw - 40px);
 }
 .mobile-layout .sidebar-left-open {
    -webkit-flex: 0 0 auto;
    flex: 0 0 auto;
-}
-.mobile-layout .sidebar-left {
-   max-width: 80%;
 }
 .sidebar-left-closed {
    -webkit-flex: 0 1 0;
