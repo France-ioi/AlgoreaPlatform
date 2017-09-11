@@ -71,6 +71,9 @@ body {
    flex-wrap: nowrap;
    align-items: stretch;
 }
+.mobile-layout .main-titlebar {
+   min-width: 100vw;
+}
 
 .main-titlebar-item {
    line-height:1;
