@@ -98,12 +98,14 @@ body {
    align-items: center;
    justify-content: center;
    text-align: center;
-   font-size: 26px;
+   font-size: 24px;
+   padding-top: 10px;
+   padding-bottom: 10px;
 }
 
 .main-titlebar-title1 {
    font-weight:bold;
-   font-size: 34px;
+   font-size: 28px;
 }
 .mobile-layout .main-titlebar-icon {
    font-size: 32px;
@@ -124,7 +126,7 @@ body {
 }
 .mobile-layout .main-titlebar .menu-toggle {
    margin-right: 9px;
-   margin-top: 5px;
+   align-self: center;
 }
 .contest-timer {
    font-weight:bold;

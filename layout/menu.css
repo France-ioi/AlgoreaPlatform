@@ -171,6 +171,7 @@ BREADCRUMBS TOOLBAR
 /* Exercise mode menu display*/
 .menu-more {
    cursor: pointer;
+   align-self: center;
 }
 #toolbar .menu-more {
    padding-right: 10px;
