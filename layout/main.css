@@ -103,10 +103,10 @@ body {
    font-size: 34px;
 }
 .mobile-layout .main-titlebar-icon {
-      font-size: 32px;
-      -webkit-flex: 0 0 42px;
-      flex: 0 0 42px;
-   }
+   font-size: 32px;
+   -webkit-flex: 0 0 42px;
+   flex: 0 0 42px;
+}
 .main-titlebar-icon {
    font-size: 32px;
    -webkit-flex: 0 0 42px;
