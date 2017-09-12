@@ -20,18 +20,20 @@ BRANDING
 ////////
 */
 
+#branding-toolbar {
    border:0px;
    padding-left: 10px;
    font-size: 22px;
-}
-.mobile-layout #menu-logo {
    display: -webkit-flex;
    display: flex;
    flex-direction:row;
    justify-content:space-between;
    align-items: center;
 }
-.mobile-layout #menu-logo .menu-more {
+.branding-toolbar-content {
+   cursor: pointer;
+}
+.mobile-layout #branding-toolbar .menu-more {
    flex: 0 0 32px;
 }
 

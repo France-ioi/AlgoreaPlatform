@@ -20,6 +20,11 @@ header {
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
 
+#branding-toolbar {
+  background-color:#82bf2b;
+  color: #fff;
+}
+
 .language-selector {
   color: #fff;
 }
