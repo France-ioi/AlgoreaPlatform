@@ -109,6 +109,7 @@
     "admin_access_solutions": "Zugriff auf Lösungen",
     "admin_manage_access": "Zugriff verwalten",
     "admin_manage_access_desc": "Verwenden Sie das Mausrad oder eine Bewegung mit zwei Fingern um vertikal in der Tabelle zu scrollen",
+    "admin_item_sDuration_empty_label": "Use time limit",
 
     "groupAdmin_logins_not_found": "Die folgenden Logins wurden nicht gefunden: ",
     "groupAdmin_logins_already_members": "Die folgenden Logins haben bereits eine Einladung erhalten oder sind der Gruppe schon beigetreten:",
