@@ -90,8 +90,20 @@ angular.module('algorea')
          }
       };
       scope.platform.updateHeight = function(height, success, error) {
+         // TODO :: remove once we are sure it's not used anymore
+         console.log("updateHeight is deprecated and shouldn't be called");
          scope.updateHeight(height);
          if (success) { success(); }
+      };
+      scope.platform.updateDisplay = function(data, success, error) {
+         // Task asked the platform to update display
+         if(data.height) {
+            scope.updateHeight(data.height);
+         }
+         if(data.views) {
+            scope.setTabs(data.views);
+         }
+         if(success) { success(); }
       };
       // move to next item in same chapter
       scope.moveToNext = function() {

@@ -103,17 +103,7 @@ angular.module('algorea')
       $scope.syncHeight();
    };
 
-   $scope.onResize = function() {
-      if($scope.task) {
-         $scope.task.getViews(function(views) {
-            $scope.setTabs(views);
-         });
-      }
-   };
-   $window.addEventListener('resize', $scope.onResize);
-
    $scope.$on('$destroy', function() {
-      $window.removeEventListener('resize', $scope.onResize);
       if ($scope.task) {
          $scope.task.getState(function(state) {
             if ($scope.canGetState && state != $scope.user_item.sState) {
