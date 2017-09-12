@@ -42,10 +42,25 @@ LANGUAGE SELECTOR
 */
 
 .language-selector {
-    float: right;
-    color: black;
+    margin-right: 10px;
+    font-size: 12px;
 }
-
+.language-selector .language-selector-label {
+   cursor: pointer;
+}
+.language-selector .language-selector-label i {
+   vertical-align: middle;
+}
+.language-selector .dropdown-menu {
+   min-width: auto;
+   width: auto;
+   left: initial;
+   right: 0;
+}
+.language-selector .dropdown-menu li {
+   padding: 0 20px;
+   cursor: pointer;
+}
 /*
 ///////////////
 MAIN NAVIGATION
