@@ -246,6 +246,8 @@ angular.module('algorea')
          getBrothersFromParent: function(parentID) {
             return this.getChildren(this.getItem(parentID));
          },
+
+
          getChildren: function(item, idUser) {
             var children = [];
             if (!item || !item.children) {
@@ -256,19 +258,12 @@ angular.module('algorea')
             var seenIDs = [];
 
             angular.forEach(item.children, function(child) {
-//               if (item.sType == 'Root') {
-//                  if (child.child.iLevel != 0 && child.child.iLevel != 127 && !(child.idItemChild in seenIDs)) {
-//                     childrenz.push(child);
-//                     seenIDs.push(child.idItemChild);
-//                  }
-//               } else
-               if (!(child.idItemChild in seenIDs) ){
+               if(seenIDs.indexOf(child.child.ID) === -1) {
                   var lang = child.child.sSupportedLangProg;
-//                  if (typeof lang !== 'undefined' && (!lang || lang == '*' || lang.indexOf('Python') != -1)) {
                   if(typeof lang !== 'undefined') { // TODO :: why? (eliminates base platform items)
                      childrenz.push(child);
                   }
-                  seenIDs.push(child.idItemChild);
+                  seenIDs.push(child.child.ID);
                }
             });
 
@@ -300,10 +295,16 @@ angular.module('algorea')
             });
             return children;
          },
+
+
          getIdsToSync: getIdsToSync,
+
+
          getItemIdByTextId: function(sTextId) {
             return ModelsManager.indexes.sTextId[sTextId];
          },
+
+
          isSonOf: function(sonItemId, parentItemId) {
             var parentItem = ModelsManager.getRecord('items', parentItemId);
             if (!parentItem) { return false; }
