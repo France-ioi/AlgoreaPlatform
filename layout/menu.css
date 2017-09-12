@@ -153,6 +153,7 @@ BREADCRUMBS TOOLBAR
    display: -webkit-flex;
    display: flex;
    position: relative;
+   align-items: center;
 }
 #toolbar.affix {
    position: fixed;
@@ -182,6 +183,7 @@ BREADCRUMBS TOOLBAR
    -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
    padding-right:10px;
+   align-self: center;
 }
 #breadcrumbs .breadcrumbs-item-inactive-not-last::after,
 #breadcrumbs .breadcrumbs-inactive-not-last::after,
