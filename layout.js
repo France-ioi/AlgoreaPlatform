@@ -272,6 +272,9 @@ angular.module('algorea')
       openMobileNavTop: function() {
         layoutService.openMobileTopMenuOverlay();
         layoutService.openMobileTopMenu();
+        if ($rootScope.isMobileLayout) {
+          $scope.layout.closeSidebarLeft();
+        }
       },
       closeMobileNavTop: function() {
         layoutService.closeMobileTopMenuOverlay();
