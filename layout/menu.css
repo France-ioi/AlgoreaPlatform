@@ -68,8 +68,10 @@ MAIN NAVIGATION
    display: -webkit-flex;
    display:flex;
    flex-direction:row;
-   justify-content:space-between;
+   justify-content: center;
    margin-bottom: -1px;
+   flex-wrap: wrap;
+   background-color: #e8e8e8;
 }
 .mobile-layout #menu-main {
    flex-wrap: nowrap;
@@ -82,13 +84,16 @@ MAIN NAVIGATION
    display:flex;
    -webkit-flex-direction:column;
    flex-direction:column;
-   -webkit-flex: 1 1 150px;
-   flex: 1 1 150px;
+   -webkit-flex: 1 0 150px;
+   flex: 1 0 150px;
    justify-content:space-around;
    font-size: 22px;
    cursor:pointer;
    white-space: nowrap;
    line-height: 45px;
+}
+body:not(.mobile-layout) .menu-item {
+   max-width: 300px;
 }
 .mobile-layout .menu-item {
    flex-basis: 40px;
