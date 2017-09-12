@@ -46,9 +46,19 @@ header {
 #toolbar.affix {
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
+.sidebar-left-control > * {
+  color: #fbfbfb;
+  border-radius: 20%;
+  border: 2px solid #fbfbfb;
+}
 
 #toolbar .sidebar-left-control > * {
-  color: #fff;
+  margin: 5px 0 5px 10px;
+}
+.mobile-layout .sidebar-left-control > * {
+  font-size: 18px;
+}
+.main-titlebar .sidebar-left-control > * {
 }
 
 #breadcrumbs a {

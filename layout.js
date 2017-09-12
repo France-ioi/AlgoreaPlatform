@@ -212,6 +212,7 @@ angular.module('algorea')
         if ($rootScope.isMobileLayout) {
           $scope.layout.closeMobileNavTop();
         }
+        $scope.layout.closeNavTopOverlay();
       },
       closeSidebarLeft: function() {
         $rootScope.sidebarLeftIsOpen = false;

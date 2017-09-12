@@ -1,7 +1,4 @@
-<div ng-if="isMobileLayout && hasSidebarLeft && !layout.navTopIsOpen" class="sidebar-left-control main-titlebar-item">
-  <span ng-click="layout.openSidebarLeft();" ng-if="!sidebarLeftIsOpen" class="material-icons">keyboard_arrow_down</span>
-  <span ng-click="layout.closeSidebarLeft();" ng-if="sidebarLeftIsOpen" class="material-icons">keyboard_arrow_up</span>
-</div>
+<div ng-if="isMobileLayout && hasSidebarLeft && !layout.navTopIsOpen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control main-titlebar-item' />
 <div class="main-titlebar-icon main-titlebar-item material-icons">
    <span ng-if="itemType == 'Root'">list</span>
    <span ng-if="itemType == 'Task'">keyboard</span>
