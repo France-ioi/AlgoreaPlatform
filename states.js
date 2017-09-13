@@ -269,6 +269,7 @@ angular.module('algorea')
            }
            var sell = panel=='left' ? pathParams.sell : pathParams.selr;
            var path = pathParams.basePathStr + relativePath;
+           sell = '' + (parseInt(sell) + Math.max(relativePath.split('/').length - 2, 0)); // If we're going much deeper, jump
            var selr = null;
            if (pathParams.pathStr.substring(0, path.length) == path && (pathParams.path[path.length+1] || pathParams.pathStr[path.length+1]=='/')) {
               selr = pathParams.baseDepth + depth;
