@@ -363,12 +363,29 @@ angular.module('algorea')
             previousID = brothers[i].ID;
          }
          var basePath = $scope.pathParams.path.slice(0, $scope.pathParams.selr-1).join('/');
+
+         // Top link - find first non-transparent parent
+         var newSelr = $scope.pathParams.selr-1;
+         while(newSelr > 0) {
+            var curParentItem = itemService.getItem($scope.pathParams.path[newSelr-1]);
+            if(!curParentItem.bTransparentFolder) { break; }
+            newSelr -= 1;
+         }
+         if(newSelr > 0) {
+            var topPath = $scope.pathParams.path.slice(0, newSelr).join('/');
+            $scope.topLink = {sref: pathService.getSrefFunction(topPath, newSelr-1, null, null, null), stateName: 'contents', stateParams: {path: topPath, sell: newSelr-1, selr: null, viewr: null}};
+         } else {
+            $scope.topLink = null;
+         }
+
+         // Right link
          if (nextID) {
             $scope.rightImmediateLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
             $scope.rightLink = $scope.rightImmediateLink;
          } else {
             $scope.rightImmediateLink = null;
             $scope.rightLink = null;
+/* Old code to go to the next cousin
             if ($scope.pathParams.selr > 4) {
                var grandParentId = $scope.pathParams.path[$scope.pathParams.selr-3];
                if (grandParentId) {
@@ -384,15 +401,14 @@ angular.module('algorea')
                      $scope.rightLink = {sref: pathService.getSrefFunction(grandParentPath+'/'+nextID, $scope.pathParams.path.length-2, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: $scope.pathParams.path.length-2, selr: null, viewr: null}};
                   }
                }
-            }
+            }*/
          }
+
+         // Left link
          if (previousID) {
             $scope.leftLink = {sref: pathService.getSrefFunction(basePath+'/'+previousID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+previousID, selr: null, viewr: null}};
          } else {
             $scope.leftLink = null;
-            if(basePath) {
-               $scope.leftLink = {sref: pathService.getSrefFunction(basePath, $scope.pathParams.path.length-1, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: $scope.pathParams.path.length-1, selr: null, viewr: null}};
-            }
          }
          // setting map link. Some additional logic could be added here
          if (this.pathParams.parentItemID > 0) {// for some forgotten logic, value is -2 when there is no parent item
@@ -410,6 +426,11 @@ angular.module('algorea')
          // Next item, even if in another chapter
          if ($scope.rightLink) {
             $scope.rightLink.sref();
+         }
+      };
+      $scope.goTopLink = function() {
+         if ($scope.topLink) {
+            $scope.topLink.sref();
          }
       };
       $scope.goRightImmediateLink = function() {
