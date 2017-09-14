@@ -31,9 +31,15 @@ header {
 #menu-main .language-selector {
   color: #5d5d5d;
   text-align: right;
+  border-bottom: 1px solid #d9d9d9;
+  padding-right: 10px;
+  margin-right: 0;
 }
 .language-selector .dropdown-menu {
   color: #000;
+}
+#menu-main .language-selector .dropdown-menu {
+  right: 10px;
 }
 .language-selector .dropdown-menu li:hover {
   background-color: #ccc;
