@@ -23,7 +23,14 @@
    <field model="item" field="items.iScoreMinUnlock" />
    <field model="item" field="items.sSupportedLangProg" />
    <field model="item" field="items.sAccessOpenDate" />
-   <field model="item" field="items.sDuration" />
+    <div ng-if="!item.sDuration" class="form-group row">
+      <span class="control-label col-xs-4" ng-i18next="admin_item_sDuration_empty_label"></span>
+      <div class="checkboxSwitch col-xs-8">
+        <input type="checkbox" id="toggle_sDuration" class="switch" ng-click="item.sDuration='00:45:00'">
+        <label for="toggle_sDuration"><span></span></label>
+      </div>
+    </div>
+    <field model="item" field="items.sDuration" ng-if="item.sDuration"/>
    <field model="item" field="items.sEndContestDate" />
    <field model="item" field="items.sContestPhase" />
    <field model="item" field="items.iLevel" />

@@ -9,3 +9,16 @@ app.factory('$exceptionHandler', ['$log', function($log) {
       ErrorLogger.log(exception.message, exception.fileName, exception.lineNumber, exception.columnNumber, exception);
     }
 }]);
+
+app.factory('preventTemplateCache', function($injector) {
+  return {
+    'request': function(cfg) {
+      if(cfg.url.indexOf('.html') !== -1 && cfg.url.indexOf('://') !== -1) {
+        cfg.url += (window.config.domains.current.urlArgs || '');
+      }
+      return cfg;
+    }
+  }
+}).config(function($httpProvider) {
+  $httpProvider.interceptors.push('preventTemplateCache');
+});

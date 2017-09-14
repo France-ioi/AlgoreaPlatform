@@ -45,6 +45,9 @@ angular.module('algorea')
          var suffix = from ? '-'+from : '';
          $scope.itemType = this.item && this.item.sType ? this.item.sType : 'error';
          var type = $scope.itemType.toLowerCase();
+         if(type == 'root') {
+            type = 'chapter';
+         }
          if ( ! from) {
             if (type == 'chapter') {
                if (config.domains.current.useMap) {
@@ -74,7 +77,10 @@ angular.module('algorea')
             type = 'loading';
          }
          this.firstApply = false;
-         // haaaaaaack
+         // haaaaaaacks
+         if(suffix == '-children-list') {
+            return this.viewsBaseUrl+'children-list.html';
+         }
          if (type+suffix == 'task' || type+suffix=='course') {
             return this.viewsBaseUrl+'taskcourse.html';
          }
@@ -313,7 +319,7 @@ angular.module('algorea')
             that.parentItemID = item.ID;
             that.strings = itemService.getStrings(item);
             that.imageUrl = (that.strings && that.strings.sImageUrl) ? that.strings.sImageUrl : 'images/default-level.png';
-            that.children = itemService.getChildren(item);
+            //that.children = itemService.getChildren(item);
             that.user_item = itemService.getUserItem(item);
             if (!that.user_item) {
                console.error('cannot find user item for item '+item.ID);
@@ -439,6 +445,7 @@ angular.module('algorea')
             $scope.rightImmediateLink.sref();
          }
       };
+
       $scope.localInit = function() {
          $scope.getPathParams();
          $scope.firstApply = true;

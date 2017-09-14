@@ -118,6 +118,7 @@
     "admin_access_solutions": "Accès aux solutions :",
     "admin_manage_access": "Gérer les accès",
     "admin_manage_access_desc": "Utilisez la molette de la souris ou un mouvement avec deux doigts pour vous déplacer verticalement dans le tableau",
+    "admin_item_sDuration_empty_label": "Use time limit",
 
     "groupAdmin_logins_not_found": "Les logins suivants n'ont pas pu être trouvés :",
     "groupAdmin_logins_already_members": "Les logins suivants ont déjà reçu une invitation ou font déjà partie du groupe :",
