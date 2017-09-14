@@ -166,6 +166,9 @@ BREADCRUMBS TOOLBAR
 #toolbar .sidebar-left-control > * {
   margin-left: 5px;
 }
+.mobile-layout #toolbar {
+   flex-direction: column;
+}
 #breadcrumbs {
    padding: 0 10px;
    display: -webkit-flex;
@@ -209,7 +212,13 @@ BREADCRUMBS TOOLBAR
    left: 0;
    z-index: 3;
 }
+/* contest timer */
 
+.contest-timer {
+   font-weight: bold;
+   font-size: 28px;
+   margin-right: 10px;
+}
 
 /*
 ///////////
