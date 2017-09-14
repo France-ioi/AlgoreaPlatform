@@ -628,29 +628,61 @@ angular.module('algorea')
 }]);
 angular.module('algorea')
    .controller('localeController', ['$scope', '$rootScope', '$state', '$i18next', function ($scope, $rootScope, $state, $i18next) {
-      // Available locales
+      // Base locales
       $scope.locales = [
          {id: 'fr', label: 'Français'},
-         {id: 'en', label: 'English'},
-         {id: 'de', label: 'Deutsch'}
-         ]
-      // Handle locales
-      $scope.updateLocale = function(newLocale) {
+         {id: 'en', label: 'English'}
+         ];
+
+      // Fetch available locales
+      $scope.updateLocales = function(noApply) {
+         var newLocales = [];
+         var dbLocales = ModelsManager.getRecords('languages');
+         _.forEach(dbLocales, function(curLang) {
+            if(!curLang.sCode || !curLang.sName) { return; }
+            if(!_.find(newLocales, function(l) { return l.id == curLang.sCode; })) {
+               var newLang = {id: curLang.sCode, label: curLang.sName};
+               newLocales.push(newLang);
+               if(newLang.id == $scope.curLocale.id) { $scope.curLocale = newLang; }
+            }
+         });
+         if(newLocales.length) { $scope.locales = newLocales; }
+         $scope.filterLocales();
+         if(noApply !== true) {
+            $scope.$apply();
+         }
+      }
+      ModelsManager.addListener('languages', 'inserted', 'LocaleController', $scope.updateLocales, true);
+      ModelsManager.addListener('languages', 'updated', 'LocaleController', $scope.updateLocales, true);
+
+      $scope.changeLocale = function(newLocale, force) {
+         // Select a new locale
+         if(!force && $scope.curLocale.id == newLocale.id) { return; }
+
          $scope.curLocale = newLocale;
          $rootScope.sLocale = $scope.curLocale.id;
          $i18next.changeLanguage($scope.curLocale.id);
          $rootScope.$broadcast('algorea.languageChanged');
-         console.log($scope.curLocale);
       };
+
+      // Handle locales
+      $scope.filterLocales = function() {
+         for(var i = $scope.locales.length - 1; i > -1; i--) {
+            var locale = $scope.locales[i];
+            if(config.domains.current.availableLanguages && config.domains.current.availableLanguages.split(',').indexOf(locale.id) == -1) {
+               // Filter locales depending on the config
+               $scope.locales.splice(i, 1);
+            }
+            if($scope.init && locale.id == config.domains.current.defaultLanguage) {
+               $scope.curLocale = locale;
+               $scope.init = false;
+            }
+         };
+      };
+
       $scope.curLocale = $scope.locales[0];
-      for(var i = $scope.locales.length - 1; i > -1; i--) {
-         var locale = $scope.locales[i];
-         if(config.domains.current.availableLanguages && config.domains.current.availableLanguages.split(',').indexOf(locale.id) == -1) {
-            $scope.locales.splice(i, 1);
-         }
-         if(locale.id == config.domains.current.defaultLanguage) {
-            $scope.curLocale = locale;
-         }
-      };
-      $scope.updateLocale($scope.curLocale);
+      $scope.init = true; // Did we find the defaultLanguage yet?
+
+      $scope.updateLocales(true);
+      $scope.changeLocale($scope.curLocale, true);
    }]);
