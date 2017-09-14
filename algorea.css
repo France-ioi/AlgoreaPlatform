@@ -12,6 +12,9 @@ body {
    /*overflow-y: scroll;*/
    overflow-x: auto;
 }
+body.mobile-layout.sidebar-left-open {
+  overflow-x: hidden;
+}
 
 /*
  * Header colors
