@@ -81,15 +81,21 @@ body {
 }
 
 .main-titlebar-icon {
-   -webkit-flex: 0 0 75px;
-   flex: 0 0 75px;
+   display:-webkit-flex;
    display: flex;
    align-items: center;
    font-size: 63px;
-   padding-top:4px;
-   padding-left:5px;
+   padding-left: 10px;
+   font-size: 36px;
+   -webkit-flex: 0 0 56px;
+   flex: 0 0 56px;
 }
-
+.mobile-layout .main-titlebar-icon {
+   font-size: 24px;
+   -webkit-flex: 0 0 44px;
+   flex: 0 0 44px;
+   padding-left: 10px;
+}
 .main-titlebar-titles {
    -webkit-flex: 1 1 auto;
    flex: 1 1 auto;
@@ -107,16 +113,7 @@ body {
    font-weight:bold;
    font-size: 28px;
 }
-.mobile-layout .main-titlebar-icon {
-   font-size: 32px;
-   -webkit-flex: 0 0 42px;
-   flex: 0 0 42px;
-}
-.main-titlebar-icon {
-   font-size: 32px;
-   -webkit-flex: 0 0 42px;
-   flex: 0 0 42px;
-}
+
 .mobile-layout .main-titlebar-titles {
    font-size: 16px;
    padding-right: 32px;
