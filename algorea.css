@@ -282,6 +282,7 @@ header {
 .level-image {
   padding-left:20px;
   flex: 0 1 150px;
+  align-self: flex-start;
 }
 
 .level-image img {
