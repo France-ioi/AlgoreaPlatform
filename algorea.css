@@ -83,7 +83,9 @@ header {
 }
 
 #toolbar .sidebar-left-control > * {
-  margin: 5px 0 5px 10px;
+  margin: 0 5px 0 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
 .mobile-layout .sidebar-left-control > * {
   font-size: 18px;
