@@ -13,6 +13,7 @@ app.factory('$exceptionHandler', ['$log', function($log) {
 app.factory('preventTemplateCache', function($injector) {
   return {
     'request': function(cfg) {
+      console.log(cfg);
       if(cfg.url.indexOf('.html') !== -1 && cfg.url.indexOf('://') !== -1) {
         cfg.url += (window.config.domains.current.urlArgs || '');
       }
