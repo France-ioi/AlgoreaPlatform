@@ -374,7 +374,7 @@ angular.module('algorea')
          var newSelr = $scope.pathParams.selr-1;
          while(newSelr > 0) {
             var curParentItem = itemService.getItem($scope.pathParams.path[newSelr-1]);
-            if(!curParentItem.bTransparentFolder) { break; }
+            if(!curParentItem || !curParentItem.bTransparentFolder) { break; }
             newSelr -= 1;
          }
          if(newSelr > 0) {
