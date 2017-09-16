@@ -47,9 +47,9 @@ angular.module('algorea')
       }
       $scope.firstViewLoaded = true;
       $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
-      var state = $scope.user_item.sState;
-      if (!state) {state = '';} // default state is the empty string
-      var answer = $scope.user_answer ? $scope.user_answer.sAnswer : '';
+      // Default states and answer are the empty strings
+      var state = $scope.user_item.sState ? $scope.user_item.sState : '';
+      var answer = $scope.user_item.sAnswer ? $scope.user_item.sAnswer : '';
       if ($scope.loadedUserItemID == $scope.user_item.ID && $scope.taskName != 'task-answer') {
          $scope.task.reloadState(state, function () {
              $scope.task.reloadAnswer(answer, $scope.sync);
@@ -83,10 +83,13 @@ angular.module('algorea')
          $scope.intervals.syncState = $interval(function() {
             if ($scope.canGetState) {
                $scope.task.getState(function(state) {
-                  if ($scope.canGetState && state != $scope.user_item.sState) {
-                     $scope.user_item.sState = state;
-                     ModelsManager.updated('users_items', $scope.user_item.ID, false, true);
-                  }
+                  $scope.task.getAnswer(function(answer) {
+                     if ($scope.canGetState && (state != $scope.user_item.sState || answer != $scope.user_item.sAnswer)) {
+                        $scope.user_item.sState = state;
+                        $scope.user_item.sAnswer = answer;
+                        ModelsManager.updated('users_items', $scope.user_item.ID, false, true);
+                     }
+                  });
                });
             }
          }, 3000);
@@ -106,17 +109,20 @@ angular.module('algorea')
    $scope.$on('$destroy', function() {
       if ($scope.task) {
          $scope.task.getState(function(state) {
-            if ($scope.canGetState && state != $scope.user_item.sState) {
-               $scope.user_item.sState = state;
-               ModelsManager.updated('users_items', $scope.user_item.ID, false, true);
-            }
-            $scope.canGetState = false;
-            var task = $scope.task;
-            if (task) {
-               $scope.task.unload(function(){
-                  task.chan.destroy();
-               }, function(){});
-            }
+            $scope.task.getAnswer(function(answer) {
+               if ($scope.canGetState && (state != $scope.user_item.sState || answer != $scope.user_item.sAnswer)) {
+                  $scope.user_item.sState = state;
+                  $scope.user_item.sAnswer = answer;
+                  ModelsManager.updated('users_items', $scope.user_item.ID, false, true);
+               }
+               $scope.canGetState = false;
+               var task = $scope.task;
+               if (task) {
+                  $scope.task.unload(function(){
+                     task.chan.destroy();
+                  }, function(){});
+               }
+            });
          });
          angular.forEach($scope.intervals, function(interval) {
             $interval.cancel(interval);

@@ -464,6 +464,7 @@ var models = {
           bRanked: {type: "boolean", label: "", readOnly: true},
           sAllLangProg: {type: "string", label: ""},
           sState: {type: "string", label: ""},
+          sAnswer: {type: "string", label: ""},
           sToken: {type: "string", label: "", readOnly: true}
       },
 //      indexes: [

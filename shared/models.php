@@ -291,7 +291,8 @@ $tablesModels = array (
           "sContestStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "bRanked"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
           "sAllLangProg"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
-          "sState"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
+          "sState"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sAnswer"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
       ),
       "listeners" => array(
          "after" => "Listeners::UserItemsAfter"
@@ -868,7 +869,8 @@ $viewsModels = array(
           "sLastActivityDate"     => array(),
           "bRanked"               => array('readOnly' => true),
           "sAllLangProg"          => array(),
-          "sState"                => array()
+          "sState"                => array(),
+          "sAnswer"               => array()
       ),
       "filters" => array(
          "accessible" => array(
