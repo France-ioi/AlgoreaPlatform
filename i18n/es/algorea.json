@@ -107,7 +107,6 @@
     "admin_access_solutions": "Acceso a las soluciones :",
     "admin_manage_access": "Administrar el acceso",
     "admin_manage_access_desc": "Use la rueda del ratón o un movimiento con dos dedos para moverse verticalmente en la tabla",
-    "admin_item_sDuration_empty_label": "Use time limit",
 
     "groupAdmin_logins_not_found": "Los siguientes login no se han encontrado:",
     "groupAdmin_logins_already_members": "Los siguientes login ya han recibido una invitación o ya son parte del grupo:",
