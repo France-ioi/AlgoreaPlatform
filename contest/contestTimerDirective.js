@@ -27,8 +27,9 @@ angular.module('algorea')
             SyncQueue.planToSend(0);
 
 						var pathParams = pathService.getPathParams();
-						var path = pathParams.path.slice(0, pathParams.path.length - 1).join('/');
-						$state.go('contents', {path: path});
+						var sell = Math.min(pathParams.path.length - 1, pathParams.sell);
+						var path = pathParams.path.slice(0, sell).join('/');
+						$state.go('contents', {path: path, sell: sell, selr: null});
       		});
       	};
       	contestTimerService.connect(updateCallback, contestOverCallback);
