@@ -11,6 +11,6 @@ if(count($missed)) {
 }
 
 require_once __DIR__.'/../shared/connect.php';
-$stmt = $db->prepare('insert into error_log (url, browser, details) values (:url, :browser, :details)');
+$stmt = $db->prepare('insert into error_log (date, url, browser, details) values (NOW(), :url, :browser, :details)');
 $stmt->execute($_POST);
 echo json_encode(['success' => true]);
