@@ -192,12 +192,23 @@ angular.module('algorea')
          saveRecord: function(model, ID) {
             ModelsManager.updated(model, ID, false);
          },
-         // XXX: change this for language filtering
          getStrings: function(item) {
             if (!item || !item.strings) {
                return null;
             }
-            return item.strings[0];
+            var strings = item.strings[0];
+            for(var i=0; i<item.strings.length; i++) {
+               // User-chosen language
+               if(item.strings[i].language.sCode == $rootScope.sLocale) {
+                  strings = item.strings[i];
+                  break;
+               }
+               // Default language for this item
+               if(item.strings[i].language.sCode == item.defaultLanguage.sCode) {
+                  strings = item.strings[i];
+               }
+            }
+            return strings;
          },
          getUserItem: function(item, idUser) {
             if (!item) return null;

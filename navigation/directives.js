@@ -63,6 +63,9 @@ angular.module('algorea')
                scope.activityClass = (scope.pathParams.selr != 'r' && scope.item.ID == scope.pathParams.path[scope.pathParams.selr-1]) ? 'active' : 'inactive';
             }
          });
+         scope.$on('algorea.languageChanged', function() {
+            scope.strings = scope.item && scope.item.ID > 0 ? itemService.getStrings(scope.item) : null;
+         });
       }
     };
 }]);

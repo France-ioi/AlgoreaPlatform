@@ -22,6 +22,7 @@ app.directive('field', ['$rootScope', function($rootScope) {
       restrict: 'E',
       scope: {
          model: '=',
+         compare: '=',
          readonly: '@'
       },
       link: function(scope, elem, attrs) {
@@ -44,11 +45,13 @@ app.directive('field', ['$rootScope', function($rootScope) {
 angular.module('algorea')
    .controller('adminCtrl', ['$scope', '$rootScope', 'loginService', '$sce', '$location', '$timeout', function($scope, $rootScope, loginService, $sce, $location, $timeout) {
       $scope.userLogged = false;
+
       $scope.loginReady = false;
       $scope.loginClass = 'loginCentered';
       loginService.initEventListener();
       $scope.loginInnerHtml = '';
       $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl+'?'+config.domains.current.additionalLoginArgs);
+
       $scope.$on('login.login', function(event, data) {
          if (data.tempUser) {
             $scope.userLogged = false;
@@ -63,6 +66,7 @@ angular.module('algorea')
             $scope.loginClass = 'loginCorner';
          }
       });
+
       $scope.$on('login.notlogged', function(event, data) {
          $scope.userLogged = false;
          $scope.loginReady = true;
@@ -70,6 +74,7 @@ angular.module('algorea')
          $scope.loginInnerHtml = '';
          $timeout(function() {});
       });
+
       $scope.$on('login.logout', function(event, data) {
          $scope.userLogged = false;
          $scope.loginReady = true;
@@ -80,7 +85,7 @@ angular.module('algorea')
    }]);
 
 angular.module('algorea')
-   .controller('ItemsCtrl', ['$scope', '$uibModal', 'loginService', '$i18next', function($scope, $uibModal, loginService, $i18next) {
+   .controller('ItemsCtrl', ['$scope', '$rootScope', '$uibModal', 'loginService', '$i18next', function($scope, $rootScope, $uibModal, loginService, $i18next) {
       $scope.models = models;
       $scope.inForum = true;// TODO: used by tasks, should be better
       $scope.accessManager = AccessManager;
@@ -252,11 +257,13 @@ angular.module('algorea')
          groupItem.idUserCreated = $scope.loginData.ID;
          groupItem.sPropagateAccess = 'self'; //TODO: remove
          ModelsManager.insertRecord("groups_items", groupItem);
+
          var itemStrings = ModelsManager.createRecord("items_strings");
          itemStrings.idItem = item.ID;
          itemStrings.idLanguage = 1; // TODO: handle this
          itemStrings.sTitle = $i18next.t('groupAdmin_new_item');
          ModelsManager.insertRecord("items_strings", itemStrings);
+
          var itemItemParent = ModelsManager.getRecord("items_items", itemItemID);
          var itemItem = ModelsManager.createRecord("items_items");
          itemItem.idItemParent = itemItemParent.idItemChild;
@@ -264,6 +271,7 @@ angular.module('algorea')
          itemItem.idItemChild = item.ID;
          itemItem.iChildOrder = $scope.itemsTreeView1.firstAvailableOrder(parentItem);
          ModelsManager.insertRecord("items_items", itemItem);
+
          // angular.forEach(parentItem.group_items, function(group_item) {
          //    group_item.sPropagateAccess = 'children';
          //    ModelsManager.updated('groups_items', group_item.ID);
@@ -271,7 +279,44 @@ angular.module('algorea')
          $scope.itemItem = itemItem;
          $scope.item = item;
          $scope.group_item = groupItem;
-         $scope.itemStrings = itemStrings;
+         $scope.item_strings = itemStrings;
+         $scope.item_strings_compare = {};
+         $scope.availableLocales = ModelsManager.getRecords('languages');
+      };
+
+      $scope.newItemStrings = function() {
+         if (!$scope.checkSaveItem()) {
+            return;
+         }
+         var existingLocales = [];
+         for(var i=0; i < $scope.item.strings.length; i++) {
+            existingLocales.push($scope.item.strings[i].language);
+         }
+         // TODO :: default to selected admin locale
+         var idLanguage = null;
+         for(var idLocale in $scope.availableLocales) {
+            if(existingLocales.indexOf($scope.availableLocales[idLocale]) == -1) {
+               idLanguage = idLocale;
+               break;
+            }
+         }
+         if(!idLanguage) {
+            return;
+         }
+
+         var itemStrings = ModelsManager.createRecord("items_strings");
+         itemStrings.idItem = $scope.item.ID;
+         itemStrings.idLanguage = idLanguage;
+         itemStrings.sTitle = $i18next.t('groupAdmin_new_item');
+         ModelsManager.insertRecord("items_strings", itemStrings);
+         $scope.item_strings = itemStrings;
+      };
+
+      $scope.deleteItemStrings = function(id) {
+         if($scope.item.strings.length > 1) {
+            ModelsManager.deleteRecord("items_strings", id);
+            $scope.item_strings = $scope.item.strings[0];
+         }
       };
 
       $scope.newGroup = function(groupGroupID) {
@@ -355,6 +400,7 @@ angular.module('algorea')
          if (!itemID){
             $scope.item = null;
             $scope.item_strings = null;
+            $scope.item_strings_compare = null;
             $scope.$broadcast('admin.itemSelected');
             return;
          }
@@ -363,6 +409,8 @@ angular.module('algorea')
          var my_group = ModelsManager.getRecord("groups", $scope.loginData.idGroupSelf);
          $scope.my_user_item = getUserItem(my_group, $scope.item);
          $scope.item_strings = $scope.item.strings[0];
+         $scope.item_strings_compare = null;
+         $scope.availableLocales = ModelsManager.getRecords('languages');
          $scope.$broadcast('admin.itemSelected');
          $scope.$apply();
          $scope.loadGrandChildren($scope.item);
@@ -501,7 +549,7 @@ angular.module('algorea')
             if (item.strings.length === 0) {
                title = $i18next.t('groupAdmin_loading');
             } else {
-               title = item.strings[0].sTitle;
+               title = item.strings[0].sTitle; // TODO :: get strings depending on language
             }
             var accessStr = '';
             var accessStrEnd = '';

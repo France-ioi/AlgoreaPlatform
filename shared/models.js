@@ -174,6 +174,7 @@ var models = {
          idItemUnlocked: {type: "string", label: "models_items_fields_idItemUnlocked_label"},
          iScoreMinUnlock: {type: "int", label: "models_items_fields_iScoreMinUnlock_label"},
          sSupportedLangProg: {type: "string", label: "models_items_fields_sSupportedLangProg_label", defaultValue: '*'},
+         idDefaultLanguage: {type: "key", label: "models_items_fields_idDefaultLanguage_label", refModel: "languages", link: "defaultLanguage"},
          sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
          sDuration: {type: "string", label: "models_items_fields_sDuration_label"},
          sEndContestDate: {type: "jsdate", label: "models_items_fields_sEndContestDate_label"},

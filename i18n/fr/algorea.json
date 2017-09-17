@@ -118,6 +118,9 @@
     "admin_access_solutions": "Accès aux solutions :",
     "admin_manage_access": "Gérer les accès",
     "admin_manage_access_desc": "Utilisez la molette de la souris ou un mouvement avec deux doigts pour vous déplacer verticalement dans le tableau",
+    "admin_locale_select": "Langue à éditer :",
+    "admin_locale_new": "Ajouter des textes pour une autre langue",
+    "admin_locale_compare": "Comparer avec la langue :",
     "admin_item_sDuration_empty_label": "Use time limit",
 
     "groupAdmin_logins_not_found": "Les logins suivants n'ont pas pu être trouvés :",
@@ -470,6 +473,7 @@
     "models_items_fields_idItemUnlocked_label": "Items débloqués par cet item",
     "models_items_fields_iScoreMinUnlock_label": "Score minimal pour débloquer ces items",
     "models_items_fields_sSupportedLangProg_label": "Langages de programmation supportés",
+    "models_items_fields_idDefaultLanguage_label": "Langue par défaut",
     "models_items_fields_sAccessOpenDate_label": "Date d'ouverture de l'accès",
     "models_items_fields_sDuration_label": "Durée de l'épreuve",
     "models_items_fields_sEndContestDate_label": "Date de fermeture du concours",

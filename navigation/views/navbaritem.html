@@ -1,14 +1,14 @@
-<div class="sidebar-left-item" ng-controller="leftNavItemController" ng-class="backgroundClass" ng-if="!item.private_showpres" title="{{item.strings[0].sTitle}} - {{mainIconTitle}}" ng-click="item.private_go();">
+<div class="sidebar-left-item" ng-controller="leftNavItemController" ng-class="backgroundClass" ng-if="!item.private_showpres" title="{{strings.sTitle}} - {{mainIconTitle}}" ng-click="item.private_go();">
    <div class="sidebar-left-item-content-container">
       <div class="sidebar-left-item-content">
-         <div class="sidebar-left-main-item" ng-if="item.ID == leftParentItemId" title="{{item.strings[0].sTitle}}">
-            <span class="item-link">{{item.strings[0].sTitle}}</span>
+         <div class="sidebar-left-main-item" ng-if="item.ID == leftParentItemId" title="{{strings.sTitle}}">
+            <span class="item-link">{{strings.sTitle}}</span>
          </div>
          <div class="sidebar-left-item-contents-icon1" ng-if="item.ID != leftParentItemId">
             <span class="material-icons {{mainIconClass}}">{{mainIconName}}</span>
          </div>
          <div class="sidebar-left-item-contents-text" ng-if="item.ID != leftParentItemId">
-            <span  class="item-link">{{item.strings[0].sTitle}}</span>
+            <span  class="item-link">{{strings.sTitle}}</span>
          </div>
       </div>
    </div>

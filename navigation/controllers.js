@@ -345,6 +345,11 @@ angular.module('algorea')
             }
          });
       };
+      $scope.$on('algorea.languageChanged', function() {
+         if($scope.item) {
+            $scope.strings = itemService.getStrings($scope.item);
+         }
+      });
       $scope.getTitle = function(item) {
          return item.strings[0].sTitle;
       };
@@ -522,6 +527,14 @@ angular.module('algorea')
          $scope.item = {ID: 0};
          $scope.getItem(getLeftItems);
       };
+      $scope.$on('algorea.languageChanged', function() {
+         if($scope.item) {
+            var strings = itemService.getStrings($scope.item);
+            if(strings) {
+               $scope.currentLeftItemTitle = strings.sTitle;
+            }
+         }
+      });
       $scope.localInit();
       $scope.$on('syncResetted', function() {
          $scope.localInit();
@@ -554,6 +567,7 @@ angular.module('algorea')
             $scope.linkClass = "unvisited-item-link";
          }
       }
+      $scope.strings = itemService.getStrings($scope.item);
       $scope.$applyAsync();
    }
    init();
@@ -566,6 +580,9 @@ angular.module('algorea')
       if (itemId == $scope.item.ID) {
          init();
       }
+   });
+   $scope.$on('algorea.languageChanged', function() {
+      $scope.strings = itemService.getStrings($scope.item);
    });
 }]);
 
@@ -655,7 +672,7 @@ angular.module('algorea')
       });
 }]);
 angular.module('algorea')
-   .controller('localeController', ['$scope', '$rootScope', '$state', '$i18next', function ($scope, $rootScope, $state, $i18next) {
+   .controller('localeController', ['$scope', '$rootScope', '$i18next', function ($scope, $rootScope, $i18next) {
       // Base locales
       $scope.locales = [
          {id: 'fr', label: 'Français'},
