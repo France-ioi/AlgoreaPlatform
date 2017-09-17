@@ -13,7 +13,7 @@ app.factory('$exceptionHandler', ['$log', function($log) {
 app.factory('preventTemplateCache', function($injector) {
   return {
     'request': function(cfg) {
-      // we must skip bootstrap templates here since they are in cache already
+      // 'uib/' - we must skip bootstrap templates since they are in cache already
       if(cfg.url.indexOf('.html') !== -1 && cfg.url.indexOf('uib/') === -1) {
         cfg.url += (window.config.domains.current.urlArgs || '');
       }
