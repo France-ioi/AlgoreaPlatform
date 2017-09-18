@@ -277,21 +277,7 @@ IN TASK NAVIGATION
 /*
 THINGS THAT DON'T APPEAR TO BE USEFULL ANYMORE
 */
-#userinfocontainer-breadcrumbs {
-   display:none;
-}
 
-.userinfocontainer-breadcrumbs-toggled {
-   display:block !important;
-}
-@media all and (max-width: 1100px)  and (min-width: 701px) {
-   #userinfocontainer-breadcrumbs {
-      display:block;
-   }
-   .userinfocontainer-breadcrumbs-toggled {
-      display:none;
-   }
-}
 .breadcrumbs-loginbox > .userinfo {
    background:transparent;
    font-size: 12pt;
