@@ -1,0 +1,38 @@
+{
+    "en": {
+        "page_title": "Ajout de temps sur un concours",
+        "auth_required": "Vous devez être connecté pour utiliser cette page",
+        "empty_list": "Vous n'avez un accès complet à aucun concours, si vous devez bien être connecté en tant que __login__ pour utiliser cette interface, merci de rapporter le problème.",
+        "time_interval_error": "le temps supplémentaire ne permettra pas à l'utilisateur de continuer le concours car il l'a terminé depuis trop longtemps.",
+        "contest_access_error": "Erreur : vous n'avez pas accès au concours __id__",
+        "error": "Erreur: __error__",
+        "success_message": "L'utilisateur __login__ bénéficie désormais de __duration__mn supplémentaires sur le concours ID __id__",
+        "header": "Ajout de temps sur un concours",
+        "description": "Sur cette page vous pouvez ajouter du temps de concours (auquel vous avez un accès complet ou un accès aux solutions) à un élève qui est dans un des groupes que vous administrez :",
+        "login_lbl": "Login de l'utilisateur ou nom exact du groupe :",
+        "duration_lbl": "Nombre de minutes de temps supplémentaire (peut être négatif) :",
+        "mode_lbl": "Assigner ce temps supplémentaire ou l'ajouter au temps supplémentaire déjà présent ?",
+        "replace_lbl": "Assigner",
+        "add_lbl": "Ajouter",
+        "item_lbl": "Nom du concours sur lequel le temps sera rajouté :",
+        "submit": "Soumettre"
+    },
+    "fr": {
+        "page_title": "Ajout de temps sur un concours",
+        "auth_required": "Vous devez être connecté pour utiliser cette page",
+        "empty_list": "Vous n'avez un accès complet à aucun concours, si vous devez bien être connecté en tant que __login__ pour utiliser cette interface, merci de rapporter le problème.",
+        "time_interval_error": "le temps supplémentaire ne permettra pas à l'utilisateur de continuer le concours car il l'a terminé depuis trop longtemps.",
+        "contest_access_error": "Erreur : vous n'avez pas accès au concours __id__",
+        "error": "Erreur: __error__",
+        "success_message": "L'utilisateur __login__ bénéficie désormais de __duration__mn supplémentaires sur le concours ID __id__",
+        "header": "Ajout de temps sur un concours",
+        "description": "Sur cette page vous pouvez ajouter du temps de concours (auquel vous avez un accès complet ou un accès aux solutions) à un élève qui est dans un des groupes que vous administrez :",
+        "login_lbl": "Login de l'utilisateur ou nom exact du groupe :",
+        "duration_lbl": "Nombre de minutes de temps supplémentaire (peut être négatif) :",
+        "mode_lbl": "Assigner ce temps supplémentaire ou l'ajouter au temps supplémentaire déjà présent ?",
+        "replace_lbl": "Assigner",
+        "add_lbl": "Ajouter",
+        "item_lbl": "Nom du concours sur lequel le temps sera rajouté :",
+        "submit": "Soumettre"
+    }
+}
