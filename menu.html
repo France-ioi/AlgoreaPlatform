@@ -17,7 +17,7 @@
          </div>
          <div affix-me="affix==='toolbar'">
             <div id="toolbar">
-               <div ng-if="hasSidebarLeft" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control' />
+               <div ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control' />
                <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
                <span class="contest-timer" contest-timer></span>
                <span ng-if="!layout.navTopIsOpen" class="material-icons menu-more" ng-click="layout.openTaskMenu()">menu</span>
@@ -28,7 +28,7 @@
    </div>
    <div ng-if='isMobileLayout && layout.navTopIsOpen' id="headerContainer" class="mobile-layout">
       <div id="branding-toolbar">
-         <div ng-if="hasSidebarLeft && !rightIsFullScreen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control' />
+         <div ng-if="!rightIsFullScreen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control'/>
          <div class="branding-toolbar-content" id="branding-toolbar-content" ng-click="gotoIndex()">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
          <span ng-if="!mobileNavTopIsOpen" class="material-icons menu-more" ng-click="layout.openMobileNavTop()">menu</span>
          <span ng-if="mobileNavTopIsOpen && !rightIsFullScreen" class="material-icons menu-more" ng-click="layout.closeMobileNavTop()">menu</span>

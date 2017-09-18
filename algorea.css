@@ -82,6 +82,11 @@ header {
   border: 2px solid #fbfbfb;
 }
 
+.sidebarleft-inactive {
+   cursor: default;
+   color: #ccc;
+   border-color: #ccc;
+}
 #toolbar .sidebar-left-control > * {
   margin: 0 5px 0 10px;
   font-size: 18px;
