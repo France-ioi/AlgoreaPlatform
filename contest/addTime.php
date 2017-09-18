@@ -22,11 +22,17 @@ require_once '../shared/connect.php';
 
 function getAccessibleContestList() {
 	global $db;
-	$stmt = $db->prepare('SELECT `items`.`ID` as idItem, `items_strings`.`sTitle` FROM `items`  
-		JOIN `groups_items` AS `groups_items` ON (`items`.`ID` = `groups_items`.`idItem`)  
-		JOIN `groups_ancestors` AS `selfGroupAncestors` ON (`groups_items`.`idGroup` = `selfGroupAncestors`.`idGroupAncestor`)  
-		JOIN `items_strings` AS `items_strings` ON (`items`.`ID` = `items_strings`.`idItem`)  
-		WHERE ((`groups_items`.`bCachedAccessSolutions` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND `selfGroupAncestors`.`idGroupChild` = :idGroupSelf) AND items.sDuration is not null GROUP BY `items`.`ID`;');
+	$stmt = $db->prepare('SELECT `items`.`ID` as idItem, `items_strings`.`sTitle` FROM `items`
+		JOIN `groups_items` AS `groups_items` ON (`items`.`ID` = `groups_items`.`idItem`)
+		JOIN `groups_ancestors` AS `selfGroupAncestors` ON (`groups_items`.`idGroup` = `selfGroupAncestors`.`idGroupAncestor`)
+		JOIN `items_strings` AS `items_strings` ON (`items`.`ID` = `items_strings`.`idItem`)
+		WHERE
+			(
+				(`groups_items`.`bCachedAccessSolutions` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND
+				`selfGroupAncestors`.`idGroupChild` = :idGroupSelf
+			) AND
+			items.sDuration is not null GROUP BY `items`.`ID`
+	');
 	$stmt->execute(['idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
 	return $stmt->fetchAll();
 }
@@ -60,9 +66,6 @@ function addTimeToUser($idUser, $idGroupSelf, $idItem, $nbSeconds, $add) {
 		if ($secondsSinceEnd > $nbSeconds) {
 			return ['success' => false, 'error' => 'le temps supplémentaire ne permettra pas à l\'utilisateur de continuer le concours car il l\'a terminé depuis trop longtemps.'];
 		}
-		if ($secondsSinceEnd > 30*60) {
-			return ['success' => false, 'error' => 'il est impossible de rajouter du temps à des utilisateurs qui ont terminé un concours depuis plus de 30mn'];
-		}
 	}
 	// TODO: what if the user has a different user_item in its client?
 	$stmt = $db->prepare('insert into users_items (idUser, idItem, sAdditionalTime) values (:idUser, :idItem, SEC_TO_TIME(:totalAdditionalTime)) on duplicate key update sAdditionalTime = SEC_TO_TIME(:totalAdditionalTime), sFinishDate = NULL;');
@@ -88,7 +91,7 @@ function checkContestAccess($idItem, $contestList) {
 
 function getUserFromLogin($login) {
 	global $db;
-	$stmt = $db->prepare('select users.ID as idUser, users.idGroupSelf as idGroupSelf, users.sLogin from groups 
+	$stmt = $db->prepare('select users.ID as idUser, users.idGroupSelf as idGroupSelf, users.sLogin from groups
 		join groups_ancestors on groups_ancestors.idGroupChild = groups.ID
 		join users on users.idGroupSelf = groups_ancestors.idGroupChild
 		where groups_ancestors.idGroupAncestor = :idGroupOwned and users.sLogin = :login;');
@@ -112,7 +115,7 @@ function getUserListFromGroupName($groupName) {
 	$stmt->execute(['idGroup' => $idGroup]);
 	$users = $stmt->fetchAll();
 	if (!$users || !count($users)) {
-	return ['success' => false, 'error' => 'le groupe '.$groupName.' ne contient aucun utilisateur'];	
+	return ['success' => false, 'error' => 'le groupe '.$groupName.' ne contient aucun utilisateur'];
 	}
 	return ['success' => true, 'usersList' => $users];
 }
