@@ -2,43 +2,16 @@
 class PlatformRedirect {
 
     const KEY = '__platform_redirect';
+    const KEYR = '__platform_redirect_remember';
     const YES = 'yes';
     const NO = 'no';
-    const TPL = <<<EOT
-        <!DOCTYPE html>
-            <html>
-            <body>
-                <style>
-                    section {
-                        width: 400px;
-                        margin: 50px auto;
-                    }
-                    section.controls {
-                        margin-top: 20px;
-                        text-align: center;
-                    }
-                    form {
-                        display: inline-block;
-                    }
-                </style>
-                <section class="message">{{message}}</section>
-                <section class="controls">
-                    <form method="post" action="{{action}}">
-                        <input type="hidden" name="{{key}}" value="{{value_yes}}"/>
-                        <button type="submit">{{label_yes}}</button>
-                    </form>
-                    <form method="post" action="{{action}}">
-                        <input type="hidden" name="{{key}}" value="{{value_no}}"/>
-                        <button type="submit">{{label_no}}</button>
-                    </form>
-                </section>
-            </body>
-            </body>
-EOT;
+    const TPL_PATH = __DIR__.'/default_template.html';
 
 
     static function process($domain_cfg) {
         if(!property_exists($domain_cfg, 'offerRedirect')) return;
+
+        if(isset($_COOKIE[self::KEYR])) return;
 
         if(session_status() === PHP_SESSION_NONE){
             session_start();
@@ -63,7 +36,12 @@ EOT;
                     break;
             }
         } else {
-            self::render(self::TPL, $domain_cfg->offerRedirect);
+            $tplPath = self::TPL_PATH;
+            if(isset($domain_cfg->offerRedirect['template']) && $domain_cfg->offerRedirect['template'] != '') {
+                $tplPath = $domain_cfg->offerRedirect['template'];
+            }
+            $tpl = file_get_contents($tplPath);
+            self::render($tpl, $domain_cfg->offerRedirect);
         }
     }
 
@@ -72,6 +50,7 @@ EOT;
         return array_merge([
                 'action' => self::requestUrl(),
                 'key' => self::KEY,
+                'keyr' => self::KEYR,
                 'value_yes' => self::YES,
                 'value_no' => self::NO,
             ], $params);
@@ -86,7 +65,6 @@ EOT;
         die(str_replace($keys, array_values($params), $html));
     }
 
-
     static function actionYes($url) {
         // $_SESSION[self::KEY] = self::YES;
         // uncomment to save state
@@ -97,6 +75,9 @@ EOT;
 
     static function actionNo() {
         $_SESSION[self::KEY] = self::NO;
+        if(isset($_POST[self::KEYR])) {
+            setcookie(self::KEYR, 'no', time()+60*60*24*180);
+        }
         self::redirect(self::requestUrl());
     }
 

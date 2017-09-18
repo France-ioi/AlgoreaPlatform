@@ -105,10 +105,12 @@ $config->shared->domains['default']->tabs[3] = array(
 // Domain redirect options
 /*
 $config->shared->domains['default']->offerRedirect = array(
+        'template' => '', // path to template, leave empty for default template
         'url' => 'http://test.test',
         'message' => 'Redirect to .... ?',
         'label_yes' => 'Yes',
-        'label_no' => 'No'
+        'label_no' => 'No',
+        'label_no' => "Don't ask again"
 );
 */
 
