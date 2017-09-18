@@ -1,5 +1,7 @@
 'use strict';
 
+/*
+// Not currently in use
 angular.module('algorea')
   .directive('viewButton', function () {
     return {
@@ -9,7 +11,7 @@ angular.module('algorea')
                 '</button>',
   };
 });
-
+*/
 
 
 // loosely based on http://stackoverflow.com/questions/32513974/affix-element-with-pure-angularjs
