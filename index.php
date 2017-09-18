@@ -1,5 +1,7 @@
 <?php
         require_once "config.php";
+        require_once 'offerRedirect/platform_redirect.php';
+        PlatformRedirect::process($config->shared->domains['current']);
         $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
 ?>
 <!DOCTYPE html>

@@ -99,7 +99,18 @@ $config->shared->domains['default']->tabs[3] = array(
         'title' => 'menu_contest',
         'path' => '4002/4006',
         'icon' => 'create'
-        );
+);
+
+
+// Domain redirect options
+/*
+$config->shared->domains['default']->offerRedirect = array(
+        'url' => 'http://test.test',
+        'message' => 'Redirect to .... ?',
+        'label_yes' => 'Yes',
+        'label_no' => 'No'
+);
+*/
 
 // * End of configuration block for one domain
 

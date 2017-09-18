@@ -31,8 +31,18 @@ app.directive('field', ['$rootScope', function($rootScope) {
          scope.fieldname = parts[1];
       },
       controller: ['$scope', function($scope) {
+            $scope.onChange = function() {
+               if ($scope.field.type == "duration") {
+                  var v = ($scope.model[$scope.fieldname] || '').trim();
+                  if(v == '' || v == '00:00:00') {
+                     $scope.model[$scope.fieldname] = null;
+                  }
+               }
+            };
          $scope.clear = function() {
             if ($scope.field.type == "jsdate") {
+               $scope.model[$scope.fieldname] = null;
+            } else if ($scope.field.type == "duration") {
                $scope.model[$scope.fieldname] = null;
             }
          };
