@@ -113,7 +113,7 @@
 
 <nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-show="hasSidebarLeft"></nav>
 
-<article id="view-right" ui-view="right" autoscroll="false" ng-click="layout.closeIfOpen();"></article>
+<article id="view-right" ui-view="right" autoscroll="false"></article>
 
 </div>
 
