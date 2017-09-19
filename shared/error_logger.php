@@ -11,6 +11,11 @@ if(count($missed)) {
 }
 
 require_once __DIR__.'/../shared/connect.php';
-$stmt = $db->prepare('insert into error_log (date, url, browser, details) values (NOW(), :url, :browser, :details)');
-$stmt->execute($_POST);
+if(session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$params = array_intersect_key($_POST, array_flip($required));
+$params['user_id'] = isset($_SESSION['login']) ? $_SESSION['login']['ID'] : null;
+$stmt = $db->prepare('insert into error_log (date, url, browser, details, user_id) values (NOW(), :url, :browser, :details, :user_id)');
+$stmt->execute($params);
 echo json_encode(['success' => true]);

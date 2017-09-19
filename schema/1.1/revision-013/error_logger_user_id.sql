@@ -1,0 +1,1 @@
+ALTER TABLE `error_log` ADD `user_id` bigint unsigned NULL;

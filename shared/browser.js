@@ -28,7 +28,7 @@ window.browser = {
 
 
     refreshWarning: function() {
-        this.element.find('[data-i18n]').each(function(i, el) {
+        this.element && this.element.find('[data-i18n]').each(function(i, el) {
             var key = $(el).attr('data-i18n');
             window.i18next.exists(key) && $(el).html(window.i18next.t(key));
         })
