@@ -73,7 +73,7 @@ angular.module('algorea')
             url: "/forum/",
             views: {
                'left': {
-                   template: '<div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList track by $index"></div>',
+                   template: '',
                    controller: 'leftNavigationController',
                 },
                 'right': {
