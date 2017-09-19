@@ -7,7 +7,7 @@
 <div ng-click="" class="level-container" ng-if="item.bDisplayDetailsInParent">
 	<div class="level-image"><img ng-src="{{imageUrl}}"/></div>
 	<div class="level-notimage">
-		<div class="level-title" ng-class="{grayed: item_status() == 'grayed'}"><a ui-sref="{{getSref()}}" ng-click='!isMobileLayout && layout.openSidebarLeft();'>{{strings.sTitle}}</a></div>
+		<div class="level-title" ng-class="{grayed: item_status() == 'grayed'}"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></div>
 		<div class="level-subtitle">{{strings.sSubtitle}}</div>
 		<span class="level-moreInfos" ng-if="strings.sDescription && strings.sEduComment">
 			<span ng-hide="formValues.moreInfosOpened" ng-click="formValues.moreInfosOpened = true;"><i class="glyphicon glyphicon-triangle-right"></i>plus d'infos</span>

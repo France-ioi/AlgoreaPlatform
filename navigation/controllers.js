@@ -481,13 +481,9 @@ angular.module('algorea')
       $scope.panel = 'left';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
       $scope.itemsList = [];
-      $rootScope.hasSidebarLeft = false;
       function getLeftItems(item) {
          if (!item) {
-            $rootScope.hasSidebarLeft = false;
             return;
-         } else {
-            $rootScope.hasSidebarLeft = true;
          }
          $scope.leftParentItemId = item.ID;
          $scope.itemsList = [];

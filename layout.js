@@ -309,6 +309,7 @@ angular.module('algorea')
            $scope.layout.navTopIsOpen = false;
          }
         $scope.layout.closeRight();
+        $scope.layout.closeSidebarLeft();
        }
        $scope.layout.refreshSizes();
     };
@@ -381,12 +382,13 @@ angular.module('algorea')
     $rootScope.refreshSizes = $scope.layout.refreshSizes;
     // resizing on state change
     $rootScope.$on('$viewContentLoaded', function() {
-       $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
+      $rootScope.hasSidebarLeft = $state.current.views.left.template.length > 1 ? true : false;
+      if ($rootScope.hasSidebarLeft) {$scope.layout.openSidebarLeft();}
+      $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
     $interval($scope.layout.refreshSizes, 1000);
     $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
-    $rootScope.hasSidebarLeft = false;
-    $rootScope.sidebarLeftIsOpen = false;
+    $rootScope.sidebarLeftIsOpen = true;
     $rootScope.showSidebarLeftOverlay = false;
     $rootScope.mobileNavTopIsOpen = false;
     $rootScope.isMobileLayout = $(window).width() < 700 ? true : false;
