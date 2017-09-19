@@ -5,7 +5,7 @@
         $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
 ?>
 <!DOCTYPE html>
-<html lang="fr" ng-app="algorea"  ng-controller="navigationController">
+<html lang="fr" ng-controller="navigationController">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -101,7 +101,8 @@
     }
     </style>
 </head>
-<body ng-controller="layoutController" id="body" ng-cloak ng-class="{'mobile-layout': isMobileLayout}">
+<body ng-controller="layoutController" id="body" ng-class="{'mobile-layout': isMobileLayout}">
+<div class="body-wrapper" ng-cloak>
 <?php if ($animationHtmlFile): ?>
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
@@ -142,8 +143,8 @@ function startAnimation() {
 }
 if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAnimation();
 </script>
-<script src="<?= includeFile('errors/error_logger.js') ?>"></script>
 <?php if (!$compiledMode): ?>
+<script src="<?= includeFile('shared/error_logger.js') ?>"></script>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
   <?php if ($usesForum): ?>
     <script src="<?= includeFile('bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
@@ -153,6 +154,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <?php endif; ?>
   <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
+  <script src="<?= includeFile('shared/browser.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_'.$config->shared->domains['current']->defaultAngularLocale.'.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-sanitize/angular-sanitize.min.js') ?>"></script>
@@ -227,7 +229,9 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   window.i18next.init(i18nextOpts);
   window.i18next.on('initialized', function (options) {
     window.i18nextOptions = options;
+    window.browser.refreshWarning();
   });
 </script>
+</div>
 </body>
 </html>

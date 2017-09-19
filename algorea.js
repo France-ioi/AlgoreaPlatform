@@ -23,3 +23,10 @@ app.factory('preventTemplateCache', function($injector) {
 }).config(function($httpProvider) {
   $httpProvider.interceptors.push('preventTemplateCache');
 });
+
+angular.element(document).ready(function() {
+  window.browser.compatible(config.domains.current['compatibleBrowsers'], function() {
+    angular.bootstrap(document.getElementsByTagName("html")[0], ['algorea']);
+  });
+
+});

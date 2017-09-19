@@ -645,5 +645,8 @@
     "models_users_threads_fields_idThread_label": "Nit",
     "models_users_threads_fields_sLastReadDate_label": "Datum zadnjega branja",
     "models_users_threads_fields_sLastWriteDate_label": "Datum zadnjega sporočila",
-    "models_users_threads_fields_bStarred_label": "Z zvezdico"
+    "models_users_threads_fields_bStarred_label": "Z zvezdico",
+
+    "incompatible_browser_text": "Warning! You are using unsupported browser.",
+    "incompatible_browser_btn": "Continue anyway"
 }

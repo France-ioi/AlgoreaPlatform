@@ -35,7 +35,7 @@ window.ErrorLogger = {
     if(url[url.length - 1] != '/') {
       url += '/';
     }
-    url += 'errors/error_logger.php';
+    url += 'shared/error_logger.php';
     $.post(url, data,
         function(res) {
             if (!res || !res.success) {
@@ -49,7 +49,7 @@ window.ErrorLogger = {
   },
 
   getBrowser: function() {
-    return window['bowser'] ? bowser.name + ' ' + bowser.version : '';
+    return window['browser'] ? window.browser.info() : '';
   },
 
   formatDetails: function() {

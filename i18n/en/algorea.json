@@ -645,5 +645,8 @@
     "models_users_threads_fields_idThread_label": "Thread",
     "models_users_threads_fields_sLastReadDate_label": "Last read date",
     "models_users_threads_fields_sLastWriteDate_label": "Last message date",
-    "models_users_threads_fields_bStarred_label": "Starred"
+    "models_users_threads_fields_bStarred_label": "Starred",
+
+    "incompatible_browser_text": "Warning! You are using unsupported browser.",
+    "incompatible_browser_btn": "Continue anyway"
 }

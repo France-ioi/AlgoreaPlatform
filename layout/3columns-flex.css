@@ -2,7 +2,7 @@ html {
    min-height:100%;
 }
 
-body {
+.body-wrapper {
   display: -webkit-flex;
   display:flex;
   -webkit-flex-direction:column;
