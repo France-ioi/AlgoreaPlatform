@@ -383,7 +383,7 @@ angular.module('algorea')
     // resizing on state change
     $rootScope.$on('$viewContentLoaded', function() {
       $rootScope.hasSidebarLeft = $state.current.views.left.template.length > 1 ? true : false;
-      if ($rootScope.hasSidebarLeft) {$scope.layout.openSidebarLeft();}
+      if ($rootScope.hasSidebarLeft && !$rootScope.isMobileLayout) {$scope.layout.openSidebarLeft();}
       $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
     $interval($scope.layout.refreshSizes, 1000);
