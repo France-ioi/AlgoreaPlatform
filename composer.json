@@ -5,7 +5,8 @@
       "php": ">=5.4.0",
       "lib-openssl": "*",
       "lib-curl": "*",
-      "franceioi/login-module-client": "dev-master"
+      "franceioi/login-module-client": "dev-master",
+      "aiken/i18next": "dev-master"
    },
     "repositories": [
         {

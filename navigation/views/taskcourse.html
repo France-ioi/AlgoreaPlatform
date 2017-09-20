@@ -1,4 +1,4 @@
-<div class="main-titlebar task-titlebar" ng-if="item.sType != 'Presentation' || item.sFullScreen == 'forceYes'" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
+<div class="main-titlebar task-titlebar" ng-if="item.bTitleBarVisible || item.sFullScreen == 'forceYes'" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
 <div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
    <div class="first-task" style="position: relative;">
      <div ng-if="itemType == 'Task'" ng-show="taskLoaded || showForum" id="task-tabs" class="task-tabs">
@@ -10,8 +10,9 @@
      </div>
 
      <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
+     <!-- the task is still rendered while loaded, as some elements, such as Blockly, glitch when they are loaded while on display: none -->
      <div ng-show="!showForum" include-task read-only="{{ item.bReadOnly }}" class="task-container" style="position: relative;"></div>
-     <div class="loading" ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index: 10; background-color: rgba(255, 255, 255, {{ loadOpacity }});"></div>
+     <div class="loading" ng-hide="taskLoaded || showForum" ng-include="viewsBaseUrl+'loading.html'" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; height: 100%; width: 100%; z-index: 1; background-color: rgba(255, 255, 255, {{ loadOpacity }});"></div>
   </div>
   <div ng-show="taskLoaded" ng-if="hasEditor && layout.separateEditorOK" class="second-task" ng-controller="taskController">
     <div uib-tabset justified="true" ng-show="taskLoaded" id="task-tabs" class="task-tabs">

@@ -1,0 +1,16 @@
+ALTER TABLE `history_filters` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_groups` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_groups_ancestors` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_groups_groups` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_groups_items` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_items` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_items_ancestors` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_items_items` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_items_strings` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_languages` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_messages` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_threads` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_users` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_users_answers` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_users_items` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `history_users_threads` CHANGE `bDeleted` `bDeleted` TINYINT(1) NOT NULL DEFAULT '0';

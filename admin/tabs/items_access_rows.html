@@ -18,6 +18,7 @@
                <button ng-switch-when=1 type="button" class="btn btn-xs btn-success accessVisibility" ng-click="open()" uib-tooltip-html="'Visibilité : <br /><b>Toujours visible</b>'" tooltip-placement="top-left"><i class="material-icons">visibility</i></button>
                <button ng-switch-when=0 type="button" class="btn btn-xs btn-danger accessVisibility" ng-click="open()" uib-tooltip-html="'Visibilité : <br /><b>Caché si inaccessible</b>'" tooltip-placement="top-left"><i class="material-icons">visibility_off</i></button>
             </span>
+            <button ng-if="item_item.parent.bFixedRanks" type="button" class="btn btn-xs btn-default" ng-click="open()">{{ item_item.iChildOrder }}</button>
          </span>
       </div>
    </div>

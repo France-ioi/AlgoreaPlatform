@@ -1,5 +1,5 @@
 angular.module('algorea')
-  .directive('contestTimer', ['contestTimerService', function (contestTimerService) {
+  .directive('contestTimer', ['contestTimerService', 'pathService', '$state', function (contestTimerService, pathService, $state) {
   	'use strict';
     return {
       restrict: 'EA',
@@ -25,8 +25,11 @@ angular.module('algorea')
       			scope.timerStr = '';
       			alert(i18next.t('contest_ended'));
             SyncQueue.planToSend(0);
-            // brutal way of ensuring that items are not accessible afterwards
-            location.reload();
+
+						var pathParams = pathService.getPathParams();
+						var sell = Math.min(pathParams.path.length - 1, pathParams.sell);
+						var path = pathParams.path.slice(0, sell).join('/');
+						$state.go('contents', {path: path, sell: sell, selr: null});
       		});
       	};
       	contestTimerService.connect(updateCallback, contestOverCallback);

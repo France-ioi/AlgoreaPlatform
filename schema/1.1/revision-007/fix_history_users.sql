@@ -1,0 +1,1 @@
+ALTER TABLE `history_users` CHANGE `ID` `ID` BIGINT(20) NOT NULL;

@@ -7,7 +7,11 @@ incremental revisions in each numbered folder.
 revisions of the previous versions.
 
 If installing: use the latest version, execute `full_schema.sql`, then each of
-the revisions.
+the revisions, or run (replace 1.1 with latest version):
+```
+php commonFramework/schema-migrate.php start 1.1/revision-001
+php commonFramework/schema-migrate.php
+```
 
 If upgrading: apply revisions from your current version, and then the revisions
 of each subsequent version. Ignore the files `full_schema.sql`.

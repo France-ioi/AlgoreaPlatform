@@ -1,12 +1,43 @@
-<form class="container-fluid">
-   <field model="item_strings" field="items_strings.sTitle" />
-   <field model="item_strings" field="items_strings.sSubtitle" />
-   <field model="item_strings" field="items_strings.sTranslator" />
-   <field model="item_strings" field="items_strings.sDescription" />
-   <field model="item_strings" field="items_strings.sEduComment" />
-   <field model="item_strings" field="items_strings.sRankingComment" />
-   <p>
-      <a class="btn btn-warning" ng-click="resetObjectChanges('items_strings', item_strings)" ng-disabled="!hasObjectChanged('items_strings', item_strings)" ng-i18next="reset"></a>
-      <a class="btn btn-primary" ng-click="saveObject('items_strings', item_strings)" ng-disabled="!hasObjectChanged('items_strings', item_strings)" ng-i18next="save"></a>
-   </p>
-</form>
+<div class="form-group">
+  <label ng-i18next="admin_locale_select"></label>
+  <div class="row">
+    <div class="col-xs-8">
+      <select class="form-control" ng-model="item_strings" ng-options="is as is.language.sName for is in item.strings">
+      </select>
+    </div>
+    <div class="col-xs-4">
+      <button class="btn btn-default" ng-i18next="admin_locale_new" ng-click="newItemStrings();"></button>
+    </div>
+  </div>
+</div>
+<div class="form-group row" ng-show="item.strings.length > 1">
+  <div class="col-xs-2">&nbsp;</div>
+  <label class="col-xs-4"><i ng-i18next="admin_locale_compare"></i></label>
+  <div class="col-xs-6">
+    <select class="form-control" ng-model="item_strings_compare" ng-options="is as is.language.sName for is in item.strings">
+    </select>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form class="container-fluid">
+       <div class="form-group row">
+         <label class="control-label col-xs-4" ng-i18next="models_items_strings_fields_idLanguage_label"></label>
+         <div class="col-xs-8">
+           <select class="form-control" ng-model="item_strings.idLanguage" ng-options="locale.ID as locale.sName for locale in availableLocales"></select>
+         </div>
+       </div>
+       <field model="item_strings" field="items_strings.sTitle" compare="item_strings_compare" />
+       <field model="item_strings" field="items_strings.sSubtitle" compare="item_strings_compare" />
+       <field model="item_strings" field="items_strings.sTranslator" compare="item_strings_compare" />
+       <field model="item_strings" field="items_strings.sDescription" compare="item_strings_compare"  />
+       <field model="item_strings" field="items_strings.sEduComment" compare="item_strings_compare" />
+       <field model="item_strings" field="items_strings.sRankingComment" compare="item_strings_compare" />
+       <p>
+          <a class="btn btn-warning" ng-click="resetObjectChanges('items_strings', item_strings)" ng-disabled="!hasObjectChanged('items_strings', item_strings)" ng-i18next="reset"></a>
+          <a class="btn btn-primary" ng-click="saveObject('items_strings', item_strings)" ng-disabled="!hasObjectChanged('items_strings', item_strings)" ng-i18next="save"></a>
+          <a class="btn btn-danger" ng-click="deleteItemStrings(item_strings.ID)" ng-if="item.strings.length > 1" ng-i18next="delete"></a>
+       </p>
+    </form>
+  </div>
+</div>
