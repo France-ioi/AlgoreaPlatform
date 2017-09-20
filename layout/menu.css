@@ -88,7 +88,6 @@ MAIN NAVIGATION
    justify-content: center;
    margin-bottom: -1px;
    flex-wrap: wrap;
-   background-color: #e8e8e8;
 }
 .mobile-layout #menu-main {
    flex-wrap: nowrap;

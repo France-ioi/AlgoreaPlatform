@@ -31,6 +31,9 @@ header {
 .language-selector {
   color: #fff;
 }
+#menu-main {
+  background-color: #e8e8e8;
+}
 #menu-main .language-selector {
   color: #5d5d5d;
   text-align: right;
