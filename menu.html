@@ -3,8 +3,8 @@
       <div id="headerContainer">
          <div ng-show='layout.navTopIsOpen' id="menu" class="menu" role="navigation">
             <div id="branding-toolbar">
-               <div ng-click="gotoIndex()">
-                  <div class="branding-toolbar-content" id="branding-toolbar-content">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
+               <div ng-click="gotoIndex()" class="branding-toolbar-content">
+                  <div id="menu-logo">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
                </div>
                <div ng-include="'navigation/views/language-selector.html'" />
             </div>
@@ -29,7 +29,7 @@
    <div ng-if='isMobileLayout && layout.navTopIsOpen' id="headerContainer" class="mobile-layout">
       <div id="branding-toolbar">
          <div ng-if="!rightIsFullScreen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control'/>
-         <div class="branding-toolbar-content" id="branding-toolbar-content" ng-click="gotoIndex()">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
+         <div class="branding-toolbar-content" id="menu-logo" ng-click="gotoIndex()">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
          <span ng-if="!mobileNavTopIsOpen" class="material-icons menu-more" ng-click="layout.openMobileNavTop()">menu</span>
          <span ng-if="mobileNavTopIsOpen && !rightIsFullScreen" class="material-icons menu-more" ng-click="layout.closeMobileNavTop()">menu</span>
          <span ng-if="mobileNavTopIsOpen && layout.navTopIsOpen && rightIsFullScreen" class="material-icons menu-more" ng-click="layout.closeMobileTaskMenu()">menu</span>
