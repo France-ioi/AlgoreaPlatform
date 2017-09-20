@@ -715,7 +715,7 @@ angular.module('algorea')
                $scope.locales.splice(i, 1);
             }
             if($scope.init && locale.id == config.domains.current.defaultLanguage) {
-               $scope.curLocale = locale;
+               $scope.changeLocale(locale);
                $scope.init = false;
             }
          };
