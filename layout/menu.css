@@ -259,6 +259,7 @@ IN TASK NAVIGATION
 .inTaskNav {
    align-self: center;
    padding-right: 10px;
+   flex: 0 0 64px;
 }
 .arrow-link-icon {
    vertical-align: middle;

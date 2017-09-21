@@ -85,16 +85,15 @@ body {
    display: flex;
    align-items: center;
    font-size: 63px;
-   padding-left: 10px;
    font-size: 36px;
    -webkit-flex: 0 0 56px;
    flex: 0 0 56px;
+   justify-content: center;
 }
 .mobile-layout .main-titlebar-icon {
    font-size: 24px;
-   -webkit-flex: 0 0 44px;
-   flex: 0 0 44px;
-   padding-left: 10px;
+   -webkit-flex: 0 0 36px;
+   flex: 0 0 36px;
 }
 .main-titlebar-titles {
    -webkit-flex: 1 1 auto;
@@ -116,7 +115,8 @@ body {
 
 .mobile-layout .main-titlebar-titles {
    font-size: 16px;
-   padding-right: 32px;
+   padding-left: 5px;
+   padding-right: 5px;
 }
 .mobile-layout .main-titlebar-title1 {
    font-size: 18px;
