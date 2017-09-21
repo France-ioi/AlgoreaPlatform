@@ -46,7 +46,7 @@ footer {
 .footer-left {
    -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
-   padding: 0 25px 0 10px;
+   padding: 0 25px 0 5px;
 }
 
 .footer-center {
@@ -59,7 +59,7 @@ footer {
 .footer-right {
    -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
-   padding: 0 10px 0 25px;
+   padding: 0 5px 0 25px;
 }
 
 
@@ -75,12 +75,12 @@ footer {
     font-size: 14px;
    }
    .footer-left {
-   padding: 0 10px;
+   padding: 0 5px;
   }
   .footer-center {
-     padding: 0 10px;
+     padding: 0 5px;
   }
   .footer-right {
-     padding: 0 10px;
+     padding: 0 5px;
   }
 }

@@ -22,7 +22,7 @@ BRANDING
 
 #branding-toolbar {
    border:0px;
-   padding-left: 10px;
+   padding-left: 5px;
    font-size: 22px;
    display: -webkit-flex;
    display: flex;
@@ -44,7 +44,7 @@ LANGUAGE SELECTOR
 */
 
 .language-selector {
-    margin-right: 10px;
+    margin-right: 5px;
     font-size: 14px;
 }
 .language-selector .language-selector-label {
@@ -216,7 +216,7 @@ BREADCRUMBS TOOLBAR
 .contest-timer {
    font-weight: bold;
    font-size: 28px;
-   margin-right: 10px;
+   margin-right: 5px;
 }
 
 /*
@@ -268,7 +268,6 @@ IN TASK NAVIGATION
 .main-right-arrow,
 .main-up-arrow,
 .main-left-arrow {
-   color: #0f4a6d;
    text-align: center;
    cursor: pointer;
    display: inline-block;
