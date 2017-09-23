@@ -14,14 +14,14 @@ angular.module('algorea')
 */
 
 
-// loosely based on http://stackoverflow.com/questions/32513974/affix-element-with-pure-angularjs
+// loosely based on https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
 // Compute the absolute top of the element.
 function getAbsoluteTop (element) {
   var top = 0;
-  while (element) {
-    top += element.offsetTop - element.scrollTop + element.clientTop;
-    element = element.offsetParent;
-  }
+  var rect = element.getBoundingClientRect();
+  var bodyRect = document.body.getBoundingClientRect(),
+      elemRect = element.getBoundingClientRect();
+      top = elemRect.top;
   return top;
 }
 // This directive sets the affix class on its single child element
