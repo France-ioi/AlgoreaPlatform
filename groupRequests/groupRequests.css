@@ -3,9 +3,15 @@
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
+.mobile-layout .groupRequest {
+	max-width: calc(100vw - 20px);
+}
 .groupRequest-tabContent {
 	background-color: #F7F7F9;
 	padding: 2em;
+}
+.mobile-layout .groupRequest-tabContent {
+	padding: 1em;
 }
 .groupRequest-tabContent > div {
 	margin-bottom: 2em;
