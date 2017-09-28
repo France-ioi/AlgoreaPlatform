@@ -155,7 +155,7 @@
 				<div class="flex-container progression-controllers">
 					<div class="progression-type-select">
 						<span ng-i18next="groupAdmin_visualization_select"></span>&nbsp;
-						<div class="inline-block btn-group">
+						<div class="btn-group">
 							<label ng-model="formValues.progressionType" uib-btn-radio="'chronological'" class="btn btn-default">{{'groupAdmin_chronological' | i18next}}</label>
 							<label ng-model="formValues.progressionType" uib-btn-radio="'collective'" class="btn btn-default">{{'groupAdmin_collective' | i18next}}</label>
 						</div>
@@ -334,10 +334,9 @@
 
 		<uib-tab heading="{{'administration' | i18next}}" index="3">
 			<div class="groupAdmin-tabContent tab-admin">
-				<div class="inline-block">
-						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span></div>
-
-						<table class="table-administrators">
+				<div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span></div>
+					<div class="table-administrators">
+						<table>
 							<thead>
 								<tr>
 									<th></th>
@@ -357,6 +356,7 @@
 								</tr>
 							</tbody>
 						</table>
+					</div>
 
 						<div class="form-inline admin-form" ng-if="adminOnGroup">
 							<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" ng-i18next="[placeholder]groupAdmin_logins_to_add">
@@ -364,7 +364,6 @@
 						</div>
 						<span ng-bind="adminInvitationError"></span>
 						<span ng-show="adminLoading" ng-i18next="loading"></span>
-					</div>
 				</div>
 		</uib-tab>
 	</uib-tabset>

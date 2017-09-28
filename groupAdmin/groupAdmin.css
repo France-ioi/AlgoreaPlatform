@@ -20,10 +20,11 @@ orange : #F29200;
 	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 }
-@media screen and (max-width: 750px) {
-	#main > article {
-		min-width: auto;
-	}
+.mobile-layout .groupAdmin {
+	max-width: calc(100vw - 20px);
+}
+.mobile-layout #main > article {
+	min-width: auto;
 }
 .groupAdmin label input {
 	margin-right: 3px;
@@ -46,6 +47,9 @@ orange : #F29200;
 	background-color: #F7F7F9;
 	padding: 2em;
 	position: relative;
+}
+.mobile-layout .groupAdmin-tabContent {
+	padding: 1em;
 }
 .groupAdmin-tabContent .row {
 	margin-bottom: 1em;
@@ -305,11 +309,9 @@ orange : #F29200;
 	background-color: #edebed;
 	padding: 2em;
 }
-@media screen and (min-width: 750px) {
-	.groupAdmin-homeContent {
-		width: 50%;
-		margin: 0 auto;
-	}
+body:not(.mobile-layout) .groupAdmin-homeContent {
+	width: 50%;
+	margin: 0 auto;
 }
 
 /*
@@ -358,8 +360,7 @@ orange : #F29200;
 	min-width: 200px;
 }
 .tab-members .action-col {
-	flex: 2 0 0;
-	min-width: 400px;
+	flex: 2 1 400px;
 }
 .tab-members .action-col .flex-container .left-col {
 	flex: 1 1 0;
@@ -422,6 +423,7 @@ orange : #F29200;
 .groupAdmin .tab-progression .parcours-select select {
 	margin-right: 3px;
 	margin-bottom: 5px;
+	max-width: 100%;
 }
 .groupAdmin .tab-progression .dl-link {
 	margin-top: 10px;
@@ -815,12 +817,13 @@ orange : #F29200;
 /*
 	Tab: Administration
 */
-.groupAdmin .inline-block {
-	display: inline-block;
-}
+
 .groupAdmin .table-administrators {
-	max-height: 200px;
 	overflow: auto;
+	max-width: 100%;
+}
+.groupAdmin .table-administrators table {
+	max-height: 200px;
 	border: 1px solid #ccc;
 	margin-bottom: 2em;
 	background-color: #fff;
