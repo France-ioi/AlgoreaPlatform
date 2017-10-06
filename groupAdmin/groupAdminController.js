@@ -729,10 +729,16 @@ angular.module('algorea')
    $scope.itemSelected = function(item) {
       if ($scope.rootItem == item) return;
       $scope.rootItem = item;
-      $scope.itemsList = [item];
-      $scope.itemsListRev = {};
-      $scope.itemsListRev[item.ID] = true;
-      fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
+
+      // Force angular to regenerate the grid; no good way to make it better
+      $scope.itemsList = [];
+      $timeout(function() {
+         $scope.itemsList = [item];
+         $scope.itemsListRev = {};
+         $scope.itemsListRev[item.ID] = true;
+         fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
+      }, 0);
+
       $scope.startSync($scope.groupId, item.ID, function() {
          $scope.initItems();
          $scope.initGroup();
