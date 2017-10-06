@@ -64,9 +64,9 @@
     "status_partial": "réponse partielle le",
     "status_validated": "validé le",
 
-    "contest_start": "Commencer le concours",
-    "contest_already_done": "Vous avez déjà effectué ce concours.",
-    "contest_ended": "Le concours est terminé !",
+    "contest_start": "Commencer l'épreuve",
+    "contest_already_done": "Vous avez déjà effectué cette épreuve.",
+    "contest_ended": "L'épreuve est terminée !",
 
     "list_total_score": "Votre score sur cette séquence :",
 
