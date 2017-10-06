@@ -554,7 +554,7 @@ angular.module('algorea')
             copiedObjectObject: null,
             isDropping: false
          };
-         var getItemTitle = function(item, item_item) {
+         var getItemTitle = function(item, item_item, noHtml) {
             var title = "";
             if (item.strings.length === 0) {
                title = $i18next.t('groupAdmin_loading');
@@ -563,13 +563,15 @@ angular.module('algorea')
             }
             var accessStr = '';
             var accessStrEnd = '';
-            var group_item = getGroupItem($scope.loginData.idGroupSelf, item.ID);
-            if (group_item && group_item.bOwnerAccess) {
-               accessStr = '<span class="dynatree-owner">';
-               accessStrEnd = '</span>';
-            } else if (group_item && group_item.bManagerAccess) {
-               accessStr = '<span class="dynatree-manager">';
-               accessStrEnd = '</span>';
+            if(!noHtml) {
+               var group_item = getGroupItem($scope.loginData.idGroupSelf, item.ID);
+               if (group_item && group_item.bOwnerAccess) {
+                  accessStr = '<span class="dynatree-owner">';
+                  accessStrEnd = '</span>';
+               } else if (group_item && group_item.bManagerAccess) {
+                  accessStr = '<span class="dynatree-manager">';
+                  accessStrEnd = '</span>';
+               }
             }
             return accessStr + "[" + item.sType + "] " + title + accessStrEnd;
          };
@@ -680,10 +682,10 @@ angular.module('algorea')
             $scope.loginData = data;
          });
 
-         function getGroupTitle(group, group_group) {
+         function getGroupTitle(group, group_group, noHtml) {
             var suffix = '';
             var preprefix = '';
-            if (group_group && group_group.sType !== 'invitationAccepted' &&
+            if (group_group && !noHtml && group_group.sType !== 'invitationAccepted' &&
                   group_group.sType !== 'requestAccepted' &&
                   group_group.sType !== 'direct') {
                preprefix = '<span style="color:gray;">';

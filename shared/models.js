@@ -176,7 +176,7 @@ var models = {
          sSupportedLangProg: {type: "string", label: "models_items_fields_sSupportedLangProg_label", defaultValue: '*'},
          idDefaultLanguage: {type: "key", label: "models_items_fields_idDefaultLanguage_label", refModel: "languages", link: "defaultLanguage"},
          sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
-         sDuration: {type: "duration", label: "models_items_fields_sDuration_label", defaultValue: 'null'},
+         sDuration: {type: "duration", label: "models_items_fields_sDuration_label", defaultValue: null},
          sEndContestDate: {type: "jsdate", label: "models_items_fields_sEndContestDate_label"},
          bShowUserInfos: {type: "boolean", label: "models_items_fields_bShowUserInfos_label"},
          sContestPhase: {
