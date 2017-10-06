@@ -263,18 +263,18 @@
 												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" uib-tooltip="Score" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
 												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
 												<div class="questions" ng-i18next="[uib-tooltip]groupAdmin_forum_requests" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
-												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_detail" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button></div>
+												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'mem/progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_detail" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button></div>
 											</div>
 										</div>
 										<div ng-if="!formValues.detailedView && item.sType == 'Task'" class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}">
 											<span ng-if="getClass(thisUserItem) == 'read'">—</span>
 											<span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
 										</div>
-										<button ng-if="!formValues.detailedView" uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
+										<button ng-if="!formValues.detailedView" uib-popover-template="'mem/progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
 										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_code" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button>
 									</td>
 								</tr>
-								<script type="text/ng-template" id="progress-details.html">
+								<script type="text/ng-template" id="mem/progress-details.html">
 									<ul class="progress-details">
 										<li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
 										<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
