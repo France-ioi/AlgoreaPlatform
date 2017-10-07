@@ -35,6 +35,10 @@ $tablesModels = array (
          "bOpened" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bFreeAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sPassword" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sPasswordTimer" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sPasswordEnd" => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sRedirectPath" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bOpenContest" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sType" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "bSendEmails" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")))
 
@@ -365,6 +369,10 @@ $viewsModels = array(
          "bOpened" => array(),
          "bFreeAccess" => array(),
          "sPassword" => array(),
+         "sPasswordTimer" => array(),
+         "sPasswordEnd" => array(),
+         "sRedirectPath" => array(),
+         "bOpenContest" => array(),
          "sType" => [],
          "bSendEmails" => array(),
       ),

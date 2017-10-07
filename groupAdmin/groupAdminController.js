@@ -508,6 +508,31 @@ angular.module('algorea')
       $scope.saveGroup();
    };
 
+   $scope.changeExpiration = function() {
+      if($scope.formValues.expirationTimer) {
+         $scope.group.sPasswordTimer = '01:00:00';
+      } else {
+         $scope.group.sPasswordTimer = null;
+      }
+      $scope.saveGroup();
+   };
+
+   $scope.refreshExpiration = function() {
+      $scope.group.sPasswordEnd = null;
+      $scope.saveGroup();
+   };
+
+   $scope.changeRedirect = function() {
+      if($scope.formValues.hasRedirect) {
+         $scope.group.sRedirectPath = $scope.levels[0].ID;
+      } else {
+         $scope.group.sRedirectPath = null;
+         $scope.group.bOpenContest = false;
+         $scope.formValues.hasContest = false;
+      }
+      $scope.saveGroup();
+   };
+
    $scope.addAdminGroups = function(groups) {
       $http.post('/groupAdmin/api.php', {action: 'addAdmins', idGroup: $scope.groupId, aAdminGroups: groups}, {responseType: 'json'}).success(function(postRes) {
          $scope.formValues.adminLogins = '';
@@ -602,8 +627,19 @@ angular.module('algorea')
          console.error('big problem!');
          return;
       }
-      if ($scope.group.sPassword) {
-         $scope.formValues.hasPassword = true;
+      $scope.formValues.hasPassword = !!$scope.group.sPassword;
+      $scope.formValues.expirationTimer = !!$scope.group.sPasswordTimer;
+      $scope.formValues.hasRedirect = !!$scope.group.sRedirectPath;
+      if($scope.formValues.hasRedirect) {
+         var pathIDs = $scope.group.sRedirectPath.split('/');
+         $scope.redirectionSelections = [];
+         $scope.redirectionSelectionsIDs = [];
+         for(var i=0; i < pathIDs.length; i++) {
+            $scope.redirectionSelections[i] = ModelsManager.getRecord('items', pathIDs[i]);
+            $scope.redirectionSelectionsIDs[i] = pathIDs[i];
+         }
+         $scope.formValues.hasContest = !!$scope.redirectionSelections[$scope.redirectionSelections.length-1].sDuration;
+         $scope.formValues.selectedBaseRedirection = $scope.redirectionSelections[0];
       }
       $scope.usersSelected = {};
       $scope.groupsSelected = {};
@@ -726,6 +762,45 @@ angular.module('algorea')
       $scope.itemSelected(newRootItem);
    }
 
+   // TODO :: put that in a controller to avoid having duplicate code
+   $scope.redirectionSelections = [];
+   $scope.redirectionSelectionsIDs = [];
+   $scope.redirectionSelected = function(depth) {
+      if (depth === 0) { // final dropdown
+         depth = $scope.redirectionSelections.length;
+      }
+      var itemId = $scope.redirectionSelectionsIDs[depth];
+      if (itemId == 0) {
+         depth=depth-1;
+         itemId = $scope.redirectionSelections[depth].ID;
+      }
+      var newSelections = [];
+      var newSelectionsIDs = [];
+      for (var i = 0; i < depth; i++) {
+         newSelections[i] = $scope.redirectionSelections[i];
+         newSelectionsIDs[i] = $scope.redirectionSelections[i].ID;
+      }
+      var newRootItem = ModelsManager.getRecord('items', itemId);
+      newSelections[depth] = newRootItem;
+      newSelectionsIDs[depth] = newRootItem.ID;
+      $scope.redirectionSelections = newSelections;
+      $scope.redirectionSelectionsIDs = newSelectionsIDs;
+      $scope.updateRedirection();
+   }
+
+   $scope.redirectionBaseSelected = function() {
+      $scope.redirectionSelections = [$scope.formValues.selectedLevel];
+      $scope.redirectionSelectionsIDs = [$scope.formValues.selectedLevel.ID];
+      $scope.updateRedirection();
+   }
+
+   $scope.updateRedirection = function() {
+      $scope.group.sRedirectPath = $scope.redirectionSelectionsIDs.join('/');
+      $scope.formValues.hasContest = !!$scope.redirectionSelections[$scope.redirectionSelections.length-1].sDuration;
+      $scope.group.bOpenContest = $scope.group.bOpenContest && $scope.hasContest;
+      $scope.saveGroup();
+   }
+
    $scope.itemSelected = function(item) {
       if ($scope.rootItem == item) return;
       $scope.rootItem = item;
@@ -758,10 +833,8 @@ angular.module('algorea')
 
    $scope.levelSelected = function() {
       $scope.itemSelected($scope.formValues.selectedLevel);
-      $scope.dropdownSelections = [];
-      $scope.dropdownSelectionsIDs = [];
-      $scope.dropdownSelections[0] = $scope.formValues.selectedLevel;
-      $scope.dropdownSelectionsIDs[0] = $scope.formValues.selectedLevel.ID;
+      $scope.dropdownSelections = [$scope.formValues.selectedLevel];
+      $scope.dropdownSelectionsIDs = [$scope.formValues.selectedLevel.ID];
    }
 
    $scope.initItems = function() {

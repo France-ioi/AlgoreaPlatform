@@ -50,6 +50,10 @@ var models = {
          bOpened: {type: "boolean", label: "models_groups_fields_bOpened_label", defaultValue: true},
          bFreeAccess: {type: "boolean", label: "models_groups_fields_bFreeAccess_label"},
          sPassword: {type: "string", label: "models_groups_fields_sPassword_label", defaultValue: ''},
+         sPasswordTimer: {type: "duration", label: "models_groups_fields_sPasswordTimer_label", defaultValue: null},
+         sPasswordEnd: {type: "string", label: "models_groups_fields_sPasswordEnd_label", defaultValue: null},
+         sRedirectPath: {type: "string", label: "models_groups_fields_sRedirectPath_label", defaultValue: null},
+         bOpenContest: {type: "boolean", label: "models_groups_fields_bOpenContest_label"},
          sType: {
             type: "enum",
             values: {Root: {label: "models_groups_fields_sType_values_Root_label", hidden: true}, Class: {label: "models_groups_fields_sType_values_Class_label"}, Club: {label: "models_groups_fields_sType_values_Club_label"}, Friends: {label: "models_groups_fields_sType_values_Friends_label"}, Other: {label:"models_groups_fields_sType_values_Other_label"}, UserSelf: {label:"models_groups_fields_sType_values_UserSelf_label", hidden: true}, UserAdmin: {label:"models_groups_fields_sType_values_UserAdmin_label", hidden: true}, RootAdmin: {label:"models_groups_fields_sType_values_RootAdmin_label", hidden: true}, RootSelf: {label:"models_groups_fields_sType_values_RootSelf_label", hidden: true}},
