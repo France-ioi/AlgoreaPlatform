@@ -41,7 +41,7 @@ angular.module('algorea')
       $scope.myUnreadGroupParents = $scope.getMyUnreadGroupParents();
    }
 
-   $scope.fullResetSync = function() {
+   $scope.fullResetSync = function(callback) {
       // TODO; this is a temporary solution until the sync system is redone
       // fixes item access not updating properly after joining/leaving a group
       // by doing a full resync...
@@ -56,6 +56,7 @@ angular.module('algorea')
          SyncQueue.sync(function () {
             SyncQueue.requests.algorea = otherReq;
             $scope.groupsLoading = false;
+            if(callback) { callback(); }
          });
       });
    }
@@ -219,12 +220,15 @@ angular.module('algorea')
                if (user_item) {user_item.sContestStartDate = new Date();}
             }
 
+            var callback = null;
             if(postRes.redirectPath) {
                var sell = postRes.redirectPath.split('/').length-1;
-               $state.go('contents', {path: postRes.redirectPath, sell: sell, selr: sell+1});
+               callback = function () { 
+                  $state.go('contents', {path: postRes.redirectPath, sell: sell, selr: sell+1});
+               }
             }
 
-            $scope.fullResetSync();
+            $scope.fullResetSync(callback);
          }
       })
       .error(function() {
