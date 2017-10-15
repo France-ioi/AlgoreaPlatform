@@ -3,7 +3,7 @@
 	require __DIR__.'/../config.php';
 	require_once __DIR__.'/../shared/connect.php';
 	use Aiken\i18next\i18next;
-	i18next::init($config->shared->domains['default']->defaultLanguage);
+	i18next::init($config->shared->domains['current']->defaultLanguage);
 	function trans($key, $variables = []) {
 		return i18next::getTranslation($key, $variables);
 	}
@@ -32,10 +32,12 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
 
 function getAccessibleContestList() {
 	global $db;
-	$stmt = $db->prepare('SELECT `items`.`ID` as idItem, `items_strings`.`sTitle` FROM `items`
+	$stmt = $db->prepare('SELECT `items`.`ID` as idItem, `items_strings`.`sTitle`, `items_strings_parents`.sTitle as sTitleParent FROM `items`
 		JOIN `groups_items` AS `groups_items` ON (`items`.`ID` = `groups_items`.`idItem`)
 		JOIN `groups_ancestors` AS `selfGroupAncestors` ON (`groups_items`.`idGroup` = `selfGroupAncestors`.`idGroupAncestor`)
 		JOIN `items_strings` AS `items_strings` ON (`items`.`ID` = `items_strings`.`idItem`)
+        LEFT JOIN `items_items` AS `items_items` ON `items_items`.idItemChild = items.ID
+		LEFT JOIN `items_strings` AS `items_strings_parents` ON (`items_items`.`idItemParent` = `items_strings_parents`.`idItem`)
 		WHERE
 			(
 				(`groups_items`.`bCachedAccessSolutions` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND
@@ -198,13 +200,18 @@ if (isset($_GET['login']) && $_GET['login'] && isset($_GET['nbMinutes']) && isse
 	<div class="form-group">
 		<label for="idItem"><?=trans('item_lbl')?></label>
 		<select class="form-control" id="idItem" name="idItem">
-			<?php
-			    $first = true;
-				foreach($contestList as $contest) {
-					echo '<option value="'.$contest['idItem'].'"'.($first ? ' selected' : '').'>'.$contest['sTitle'].'</option>';
-					$first = false;
-				}
-			?>
+<?php
+    $contestStrs = array();
+    foreach($contestList as $contest) {
+        $contestStrs[$contest['idItem']] = ($contest['sTitleParent'] ? $contest['sTitleParent'] . ' // ' : '') . $contest['sTitle'];
+    }
+    asort($contestStrs);
+    $first = true;
+	foreach($contestStrs as $idItem => $name) {
+        echo '<option value="'.$idItem.'"'.($first ? ' selected' : '').'>' . $name . '</option>';
+		$first = false;
+	}
+?>
 		</select>
 	</div>
 	<button type="submit" class="btn btn-default"><?=trans('submit')?></button>
