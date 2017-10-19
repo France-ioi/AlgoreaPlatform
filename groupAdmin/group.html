@@ -283,7 +283,7 @@
 							<tbody>
 								<tr ng-repeat="event in events">
 									<td>{{event.userStr}}</td>
-									<td>{{event.date | date}}</td>
+									<td>{{event.date | date:'short'}}</td>
 									<td class="activity-type" ng-class="getClass(event.user_item);">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" ng-i18next="[title]groupAdmin_activity_link"><span class="btn-label" ng-i18next="groupAdmin_activity_link"></span></button></td>
 									<td>{{event.itemStr}}</td>
 								</tr>

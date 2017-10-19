@@ -53,8 +53,8 @@
             </thead>
             <tbody>
                <tr ng-repeat="child in group.children | byInvitation" class="{success: invitation.success}">
-                  <td>{{child.sChildLogin}}</td>
-                  <td>{{child.sStatusDate|date}}</td>
+                  <td>{{child.child.sName}}</td>
+                  <td>{{child.sStatusDate|date:'short'}}</td>
                   <td>{{printType(child.sType)}}</td>
                   <td>
                      <div ng-if="child.sType == 'invitationSent'">
