@@ -54,8 +54,11 @@ function removeHistory($table) {
 
 $idUserQuery = "SELECT ID " . $baseUserQuery;
 
+dropTriggers('users_threads');
 executeQuery("FROM `users_threads` WHERE idUser IN ( $idUserQuery )");
+dropTriggers('users_answers');
 executeQuery("FROM `users_answers` WHERE idUser IN ( $idUserQuery )");
+dropTriggers('users_items');
 executeQuery("FROM `users_items` WHERE idUser IN ( $idUserQuery )");
 
 $idGroupSelfQuery = "SELECT idGroupSelf " . $baseUserQuery;
@@ -66,13 +69,22 @@ $db->exec("INSERT IGNORE INTO tmp__groups ($idGroupSelfQuery)");
 $db->exec("INSERT IGNORE INTO tmp__groups ($idGroupOwnedQuery)");
 
 executeQuery("FROM groups_items_propagate WHERE ID IN (SELECT ID FROM `groups_items` WHERE idGroup IN (SELECT ID FROM tmp__groups))");
+dropTriggers('groups_items');
 executeQuery("FROM `groups_items` WHERE idGroup IN (SELECT ID FROM tmp__groups)");
+
+dropTriggers('groups_groups');
 executeQuery("FROM groups_groups WHERE idGroupParent IN (SELECT ID FROM tmp__groups)");
 executeQuery("FROM groups_groups WHERE idGroupChild IN (SELECT ID FROM tmp__groups)");
+
+dropTriggers('groups_ancestors');
 executeQuery("FROM groups_ancestors WHERE idGroupAncestor IN (SELECT ID FROM tmp__groups)");
 executeQuery("FROM groups_ancestors WHERE idGroupChild IN (SELECT ID FROM tmp__groups)");
+
 executeQuery("FROM `groups_propagate` WHERE ID IN (SELECT ID FROM tmp__groups)");
+dropTriggers('groups');
 executeQuery("FROM `groups` WHERE ID IN (SELECT ID FROM tmp__groups)");
+
+dropTriggers('users');
 executeQuery($baseUserQuery);
 
 removeHistory("users_threads");
@@ -85,4 +97,4 @@ removeHistory("groups");
 removeHistory("users");
 
 // Put triggers back in place
-require_once __DIR__.'/../commonFramework/modelsManager/triggers.php';
+require __DIR__.'/../commonFramework/modelsManager/triggers.php';
