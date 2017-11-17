@@ -1,5 +1,7 @@
 'use strict';
 
+/*
+// Not currently in use
 angular.module('algorea')
   .directive('viewButton', function () {
     return {
@@ -9,17 +11,17 @@ angular.module('algorea')
                 '</button>',
   };
 });
+*/
 
 
-
-// loosely based on http://stackoverflow.com/questions/32513974/affix-element-with-pure-angularjs
+// loosely based on https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
 // Compute the absolute top of the element.
 function getAbsoluteTop (element) {
   var top = 0;
-  while (element) {
-    top += element.offsetTop - element.scrollTop + element.clientTop;
-    element = element.offsetParent;
-  }
+  var rect = element.getBoundingClientRect();
+  var bodyRect = document.body.getBoundingClientRect(),
+      elemRect = element.getBoundingClientRect();
+      top = elemRect.top;
   return top;
 }
 // This directive sets the affix class on its single child element
@@ -125,7 +127,7 @@ angular.module('algorea')
     if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
       mapService.setClickedCallback(function(path, lastItem) {
-        if (lastItem.sType == 'Task' || lastItem.sType == 'Course' || lastItem.sType == 'Presentation') {
+        if (lastItem.sType == 'Task' || lastItem.sType == 'Course') {
            var pathArray = path.split('/');
            var selr = pathArray.length;
            var sell = selr -1;
@@ -164,7 +166,6 @@ angular.module('algorea')
       },
       buttonClass: "fullscreen",
       state: "normal",
-      menuOpen: true,
       navTopIsOpen: true,
       goFullscreen: function() {
 
@@ -186,7 +187,7 @@ angular.module('algorea')
       openMap: function() {
          if (!$scope.mapInfos.mapMode && config.domains.current.useMap) {
             if ($scope.mapInfos.hasMap == 'button') {
-               $scope.layout.openMenu();
+               $scope.layout.navTopIsOpen = true;
             }
             $scope.mapInfos.mapMode = true;
             //$('#footer').hide();
@@ -198,7 +199,7 @@ angular.module('algorea')
       closeMap: function() {
          if ($scope.mapInfos.mapMode) {
             if ($scope.mapInfos.hasMap == 'button') {
-               $scope.layout.closeMenu();
+               $scope.layout.navTopIsOpen = false;
             }
             //$('#footer').show();
             $('#view-right').show();
@@ -208,7 +209,8 @@ angular.module('algorea')
       },
       openSidebarLeft: function() {
         $rootScope.sidebarLeftIsOpen = true;
-        layoutService.openSidebarLeftOverlay(); // is hidden in CSS for viewports wider than 700px
+        layoutService.openSidebarLeftOverlay(); // is hidden in CSS when not mobile layout to enable its visibility when resizing window
+        $scope.layout.closeNavTopOverlay();
         if ($rootScope.isMobileLayout) {
           $scope.layout.closeMobileNavTop();
         }
@@ -221,86 +223,54 @@ angular.module('algorea')
         $scope.layout.closeSidebarLeft();
         layoutService.closeSidebarLeftOverlay();
       },
-      toggleLeft: function() {
-         //$('#sidebar-left').toggleClass('sidebar-left-toggled');
-         $('.main-left-arrow').toggleClass('main-left-arrow-toggled');
-         $scope.layout.refreshSizes();
+      openTaskMenu: function() {
+         layoutService.affixHeader();
+         layoutService.openNavTopOverlay();
+         $scope.layout.navTopIsOpen = true;
+      },
+      openMobileTaskMenu: function() {
+        layoutService.openNavTopOverlay();
+        $scope.layout.navTopIsOpen = true;
+        layoutService.openMobileTopMenu();
+      },
+      closeMobileTaskMenu: function() {
+        layoutService.closeNavTopOverlay();
+        $scope.layout.navTopIsOpen = false;
+        layoutService.closeMobileTopMenu();
+      },
+      closeNavTopOverlay: function() {
+        if ($rootScope.showNavTopOverlay) {
+          layoutService.closeNavTopOverlay();
+          layoutService.affixToolbar();
+          $scope.layout.navTopIsOpen = false;
+        }
+      },
+      openMobileNavTop: function() {
+        layoutService.openMobileTopMenuOverlay();
+        layoutService.openMobileTopMenu();
+        if ($rootScope.isMobileLayout) {
+          $scope.layout.closeSidebarLeft();
+        }
+      },
+      closeMobileNavTop: function() {
+        layoutService.closeMobileTopMenuOverlay();
+        layoutService.closeMobileTopMenu();
+      },
+      breadcrumbsClicked: function(event) {
+         // do not close menu when user clicks on link
+         if (!config.domains.current.clickableMenu || event.target.parentNode.parentNode.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
+            return;
+         }
       },
       toggleRight: function() {
          $('#sidebar-right').toggleClass('sidebar-right-toggled');
          $('#main-titlebar-community').toggleClass('main-titlebar-community-toggled');
-         $('.main-right-arrow').toggleClass('main-right-arrow-toggled');
          $scope.layout.refreshSizes();
       },
       setRightIcon: function() {
          if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
             $('#main-titlebar-community').addClass('main-titlebar-community-toggled');
          }
-      },
-      toggleMenu: function() {
-         $('#headerContainer').toggleClass('menu-toggled');
-         $('#fixed-header-room').toggleClass('fixed-header-room-toggled');
-         $('#footer').toggleClass('footer-toggled');
-         $scope.layout.syncBreadcrumbs();
-      },
-      openTaskMenu: function() {
-         $scope.layout.toggleMenu();
-         layoutService.affixHeader();
-         layoutService.openNavTopOverlay();
-         $scope.layout.openMenu();
-      },
-      openMobileTaskMenu: function() {
-        layoutService.openNavTopOverlay();
-        $scope.layout.navTopIsOpen = true;
-        layoutService.openMobileTopMenu();
-        $scope.layout.openMenu();
-      },
-      closeMobileTaskMenu: function() {
-        layoutService.closeNavTopOverlay();
-        $scope.layout.navTopIsOpen = false;
-        layoutService.closeMobileTopMenu();
-        $scope.layout.closeMenu();
-      },
-      closeNavTopOverlay: function() {
-        layoutService.closeNavTopOverlay();
-        layoutService.affixToolbar();
-        $scope.layout.closeMenu();
-      },
-      openMobileNavTop: function() {
-        layoutService.openMobileTopMenuOverlay();
-        layoutService.openMobileTopMenu();
-      },
-      closeMobileNavTop: function() {
-        layoutService.closeMobileTopMenuOverlay();
-        layoutService.closeMobileTopMenu();
-      },
-      syncBreadcrumbs: function() {
-         // here we cheat a little: #userinfocontainer-breadcrumbs is recreated from times to times so
-         // the class is not always in sync with the menu. A true fix would be to rewrite the layout
-         // algorithm entirely
-         // TODO: clean this, #userinfocontainer-breadcrumbs doesn't exist
-         if ($('#breadcrumbs').hasClass('breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
-            $('#breadcrumbs').toggleClass('breadcrumbs-toggled');
-         }
-         if ($('#userinfocontainer-breadcrumbs').hasClass('userinfocontainer-breadcrumbs-toggled') != $('#menu').hasClass('menu-toggled')) {
-            $('#userinfocontainer-breadcrumbs').toggleClass('userinfocontainer-breadcrumbs-toggled');
-         }
-      },
-      closeMenu: function() {
-        $scope.layout.navTopIsOpen = false;
-        $scope.layout.menuOpen = false;
-        if (!$('#headerContainer').hasClass('menu-toggled')) {
-            $scope.layout.toggleMenu();
-        }
-        $scope.layout.syncBreadcrumbs();
-      },
-      openMenu: function() {
-        $scope.layout.navTopIsOpen = true;
-        $scope.layout.menuOpen = true;
-         if ($('#headerContainer').hasClass('menu-toggled')) {
-           $scope.layout.toggleMenu();
-         }
-         $scope.layout.syncBreadcrumbs();
       },
       closeRight: function() {
          $scope.layout.rightOpen = false;
@@ -311,52 +281,6 @@ angular.module('algorea')
          } else {
             if (!$('#sidebar-right').hasClass('sidebar-right-toggled')) {
                $scope.layout.toggleRight();
-            }
-         }
-      },
-      closeLeft: function() {
-         $scope.layout.leftOpen = false;
-         if ($(window).width() < 1130) {
-            if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
-               $scope.layout.toggleLeft();
-            }
-         } else {
-            if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
-               $scope.layout.toggleLeft();
-            }
-         }
-      },
-      bClicked: function(event) {
-         // do not open menu when user clicks on arrows
-         if (event.target.className.indexOf('link-arrow') != -1) {
-            return;
-         }
-         if ($(window).width() < 1100) {
-            if (!$('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.menuOpen = true;
-               $scope.layout.toggleMenu();
-            }
-         } else {
-            if ($('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.menuOpen = true;
-               $scope.layout.toggleMenu();
-            }
-         }
-      },
-      breadcrumbsClicked: function(event) {
-         // do not close menu when user clicks on link
-         if (!config.domains.current.clickableMenu || event.target.parentNode.parentNode.className.indexOf('breadcrumbs-item') != -1 || event.target.className.indexOf('link-arrow') != -1) {
-            return;
-         }
-         $scope.layout.menuOpen = !$scope.layout.menuOpen;
-         $scope.layout.toggleMenu();
-         if ($(window).width() < 1100) {
-            if ($('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.menuOpen = false;
-            }
-         } else {
-            if (!$('#headerContainer').hasClass('menu-toggled')) {
-               $scope.layout.menuOpen = false;
             }
          }
       },
@@ -372,73 +296,21 @@ angular.module('algorea')
                $scope.layout.toggleRight();
             }
          }
-      },
-      openLeft: function(force) {
-         if (!force && $scope.layout.leftOpen) {
-            $scope.layout.closeLeft();
-            return;
-         }
-         if ($(window).width() >= 700 && $(window).width < 1130) {
-            if (!$('#sidebar-left').hasClass('sidebar-left-toggled')) {
-               $scope.layout.leftOpen = true;
-               $scope.layout.toggleLeft();
-            }
-         } else {
-            if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
-               $scope.layout.leftOpen = true;
-               $scope.layout.toggleLeft();
-            }
-         }
-      },
-      closeIfOpen: function() {
-         if ($scope.layout.leftOpen) {
-            $scope.layout.closeLeft();
-         }
-         if (config.domains.current.clickableMenu && $scope.layout.menuOpen && !$scope.mapInfos.mapMode) {
-            $scope.layout.closeMenu();
-         }
       }
     };
-    $scope.toggleFullscreen = function() {
-      if ($scope.layout.state == "normal") {
-
-      } else {
-
-      }
-    };
-   function fixArrowPositions() {
-      if ($('#sidebar-left').hasClass('sidebar-left-toggled') != $('.main-left-arrow').hasClass('main-left-arrow-toggled')) {
-         $('.main-left-arrow').toggleClass('main-left-arrow-toggled')
-      }
-      if ($('#sidebar-right').hasClass('sidebar-right-toggled') != $('.main-right-arrow').hasClass('main-right-arrow-toggled')) {
-         $('.main-right-arrow').toggleClass('main-right-arrow-toggled')
-      }
-   }
    $scope.layout.rightIsFullScreen = function(rightIsFullScreen) {
       if (rightIsFullScreen == $rootScope.rightIsFullScreen) {
-         fixArrowPositions();
          return;
       }
       $rootScope.rightIsFullScreen = rightIsFullScreen;
+       $scope.layout.navTopIsOpen = true;
        if (rightIsFullScreen) {
          if (!$scope.mapInfos.mapMode) {
-            $scope.layout.closeMenu();
+           $scope.layout.navTopIsOpen = false;
          }
-         $scope.layout.closeLeft();
-         $scope.layout.closeRight();
-       } else if ($(window).width() > 1130) {
-         $scope.layout.leftOpen = false;
-         $scope.layout.rightOpen = false;
-         $scope.layout.menuOpen = false;
-         if ($('#sidebar-left').hasClass('sidebar-left-toggled')) {
-            $scope.layout.toggleLeft();
-         }
-         if ($('#sidebar-right').hasClass('sidebar-right-toggled')) {
-            $scope.layout.toggleRight();
-         }
-         $scope.layout.openMenu();
+        $scope.layout.closeRight();
+        $scope.layout.closeSidebarLeft();
        }
-       fixArrowPositions();
        $scope.layout.refreshSizes();
     };
     var isCurrentlyOnePage = !config.domains.current.useLeftNavigation;
@@ -499,13 +371,6 @@ angular.module('algorea')
        // reset the opened/closed status of the left sidebar depending on the
        // new window width
        var newWindowWidth = $(window).width();
-       if(newWindowWidth < 700) {
-          $scope.layout.openLeft(true);
-       } else if(newWindowWidth < 1130 && lastWindowWidth >= 1130) {
-          $scope.layout.closeLeft();
-       } else if(newWindowWidth >= 1130 && lastWindowWidth < 1130) {
-          $scope.layout.openLeft(true);
-       }
        lastWindowWidth = newWindowWidth;
 
        $scope.layout.refreshSizes();
@@ -517,12 +382,13 @@ angular.module('algorea')
     $rootScope.refreshSizes = $scope.layout.refreshSizes;
     // resizing on state change
     $rootScope.$on('$viewContentLoaded', function() {
-       $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
+      $rootScope.hasSidebarLeft = $state.current.views && $state.current.views.left.template.length > 1;
+      if ($rootScope.hasSidebarLeft && !$rootScope.isMobileLayout) {$scope.layout.openSidebarLeft();}
+      $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
     $interval($scope.layout.refreshSizes, 1000);
     $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
-    $rootScope.hasSidebarLeft = false;
-    $rootScope.sidebarLeftIsOpen = false;
+    $rootScope.sidebarLeftIsOpen = true;
     $rootScope.showSidebarLeftOverlay = false;
     $rootScope.mobileNavTopIsOpen = false;
     $rootScope.isMobileLayout = $(window).width() < 700 ? true : false;

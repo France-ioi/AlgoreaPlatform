@@ -1,0 +1,8 @@
+<div ng-controller='localeController' uib-dropdown>
+  <span class='language-selector-label' uib-dropdown-toggle>{{curLocale.label}}</span>
+  <ul uib-dropdown-menu class='language-selector-dropdown'>
+     <li ng-repeat='lang in locales' ng-click="changeLocale(lang);">
+        <span>{{lang.label}}</span>
+     </li>
+  </ul>
+</div>

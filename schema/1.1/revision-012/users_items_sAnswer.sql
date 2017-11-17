@@ -1,0 +1,2 @@
+ALTER TABLE `users_items` ADD `sAnswer` MEDIUMTEXT NULL DEFAULT NULL AFTER `sState`;
+ALTER TABLE `history_users_items` ADD `sAnswer` MEDIUMTEXT NULL DEFAULT NULL AFTER `sState`;

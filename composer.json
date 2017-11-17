@@ -4,6 +4,7 @@
       "phpseclib/phpseclib": "*",
       "php": ">=5.4.0",
       "lib-openssl": "*",
-      "lib-curl": "*"
+      "lib-curl": "*",
+      "aiken/i18next": "dev-master"
    }
 }

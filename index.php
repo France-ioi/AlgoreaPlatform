@@ -1,5 +1,7 @@
 <?php
         require_once "config.php";
+        require_once 'offerRedirect/platform_redirect.php';
+        PlatformRedirect::process($config->shared->domains['current']);
         $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
 ?>
 <!DOCTYPE html>
@@ -99,7 +101,7 @@
     }
     </style>
 </head>
-<body ng-controller="layoutController" id="body" ng-cloak ng-class="{'mobile-layout': isMobileLayout}">
+<body ng-controller="layoutController" id="body" ng-cloak ng-class="{'mobile-layout': isMobileLayout, 'has-sidebar-left-open': (hasSidebarLeft && sidebarLeftIsOpen)}">
 <?php if ($animationHtmlFile): ?>
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
@@ -113,7 +115,7 @@
 
 <nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-show="hasSidebarLeft"></nav>
 
-<article id="view-right" ui-view="right" autoscroll="false" ng-click="layout.closeIfOpen();"></article>
+<article id="view-right" ui-view="right" autoscroll="false"></article>
 
 </div>
 

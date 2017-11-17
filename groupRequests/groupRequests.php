@@ -24,7 +24,7 @@ require_once __DIR__."/../shared/listeners.php";
 require_once __DIR__."/../commonFramework/modelsManager/modelsTools.inc.php"; // for getRandomID
 require_once __DIR__."/../commonFramework/sync/syncCommon.php"; // for syncGetVersion
 
-function getGroupsMathing($request, $db) {
+function getGroupsMatching($request, $db) {
    if (!isset($request['lookupString']) || !$request['lookupString']) {
       echo json_encode(array('result' => false, 'error' => 'missing arguments in request'));
       return;
@@ -49,16 +49,21 @@ function joinGroup($request, $db) {
       echo json_encode(array('result' => false, 'error' => 'missing arguments in request'));
       return;
    }
+
+   // Get group
+   $query = "SELECT groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID, groups.sPasswordEnd < NOW() as bPasswordExpired FROM groups LEFT JOIN groups_groups ON groups.ID = groups_groups.idGroupParent AND groups_groups.idGroupChild = :idGroupSelf";
    if (isset($request['ID'])) {
-      $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.ID = :ID group by groups.ID;';
+      $query .= " where groups.ID = :ID GROUP BY groups.ID;";
       $values = array('ID' => $request['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
    } else {
-      $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.sPassword = :password group by groups.ID;';
+      $query .= " where groups.sPassword = :password GROUP BY groups.ID;";
       $values = array('password' => $request['password'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
    }
    $stmt = $db->prepare($query);
    $stmt->execute($values);
    $result = $stmt->fetch();
+
+   // Check the request is valid
    if (!$result || empty($result)) {
       echo json_encode(array('success' => false, 'error' => 'Le groupe demandé n\'a pas été trouvé.'));
       return;
@@ -71,10 +76,22 @@ function joinGroup($request, $db) {
       echo json_encode(array('success' => false, 'error' => 'Le mot de passe indiqué ne correspond pas.'));
       return;
    }
+   if ($result['sPassword'] && $result['bPasswordExpired']) {
+      echo json_encode(array('success' => false, 'error' => 'Ce mot de passe a expiré.'));
+      return;
+   }
    if ($result['bOpened'] == 0 && !isset($request['password'])) {
       echo json_encode(array('success' => false, 'error' => 'Ce groupe est actuellement fermé.'));
       return;
    }
+
+   // If we're redirected to an item after, check the user confirmed, else return a message
+   if($result['sRedirectPath'] && !isset($request['confirm'])) {
+      echo json_encode(['success' => false, 'confirmNeeded' => true, 'openContest' => $result['bOpenContest']]);
+      return;
+   }
+
+   // Add to group
    $groupGroupType = 'requestSent';
    if (isset($request['password']) || (!$result['sPassword'] && $result['bFreeAccess'] == 1)) {
       $groupGroupType = 'requestAccepted';
@@ -83,19 +100,40 @@ function joinGroup($request, $db) {
    if (!$groupGroupID) {
       $groupGroupID = getRandomID();
    }
+
    $version = syncGetVersion($db);
    $query = "lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0); insert into `groups_groups` (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion) values (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, :groupGroupType, NOW(), :version) on duplicate key update sType=VALUES(sType), sStatusDate=VALUES(sStatusDate); unlock tables;";
    $values = array('ID' => $groupGroupID, 'idGroup' => $result['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'version' => $version, 'groupGroupType' => $groupGroupType);
    $stmt = $db->prepare($query);
    $stmt->execute($values);
+
+   // Set group password expiration if needed
+   if($result['sPasswordTimer'] && !$result['sPasswordEnd']) {
+      $stmt = $db->prepare("UPDATE groups SET sPasswordEnd = NOW() + sPasswordTimer WHERE ID = :idGroup AND sPasswordEnd IS NULL;");
+      $stmt->execute(['idGroup' => $result['ID']]);
+   }
+   $redirectPath = implode('/', array_filter(explode('/', $result['sRedirectPath'])));
+   $returnedObject = array('success' => true, 'type' => $groupGroupType, 'ID' => $groupGroupID, 'groupName' => $result['sName'], 'redirectPath' => $redirectPath);
+
    unset($stmt);
    Listeners::groupsGroupsAfter($db);
-   $returnedObject = array('success' => true, 'type' => $groupGroupType, 'ID' => $groupGroupID, 'groupName' => $result['sName']);
+
+   // Handle contest opening
+   if($result['sRedirectPath'] && $result['bOpenContest']) {
+      require_once __DIR__."/../contest/common.php";
+      $pathSplit = explode('/', $result['sRedirectPath']);
+      $idItem = intval(end($pathSplit));
+      $contestData = openContest($idItem, $_SESSION['login']['ID'], $_SESSION['login']['idGroupSelf']);
+      if($contestData['success']) {
+         $returnedObject['contestData'] = $contestData;
+      }
+   }
+
    echo json_encode($returnedObject);
 }
 
 if ($request['action'] == 'getGroupsMatching') {
-   getGroupsMathing($request, $db);
+   getGroupsMatching($request, $db);
 } elseif ($request['action'] == 'joinGroup') {
    joinGroup($request, $db);
 } else {

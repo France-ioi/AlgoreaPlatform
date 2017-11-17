@@ -6,7 +6,6 @@ HEADER
 
 header {
    z-index: 3;
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
 #headerContainer {
 }
@@ -21,21 +20,20 @@ BRANDING
 ////////
 */
 
-#menu-logo {
-   background-color:#82bf2b;
-   color:white;
+#branding-toolbar {
    border:0px;
-   padding-left: 10px;
+   padding-left: 5px;
    font-size: 22px;
-}
-.mobile-layout #menu-logo {
    display: -webkit-flex;
    display: flex;
    flex-direction:row;
    justify-content:space-between;
    align-items: center;
 }
-.mobile-layout #menu-logo .menu-more {
+.branding-toolbar-content {
+   cursor: pointer;
+}
+.mobile-layout #branding-toolbar .menu-more {
    flex: 0 0 32px;
 }
 
@@ -46,10 +44,25 @@ LANGUAGE SELECTOR
 */
 
 .language-selector {
-    float: right;
-    color: black;
+    margin-right: 5px;
+    font-size: 14px;
 }
-
+.language-selector .language-selector-label {
+   cursor: pointer;
+}
+.language-selector .language-selector-label i {
+   vertical-align: middle;
+}
+.language-selector .dropdown-menu {
+   min-width: auto;
+   width: auto;
+   left: initial;
+   right: 0;
+}
+.language-selector .dropdown-menu li {
+   padding: 0 20px;
+   cursor: pointer;
+}
 /*
 ///////////////
 MAIN NAVIGATION
@@ -72,8 +85,9 @@ MAIN NAVIGATION
    display: -webkit-flex;
    display:flex;
    flex-direction:row;
-   justify-content:space-between;
+   justify-content: center;
    margin-bottom: -1px;
+   flex-wrap: wrap;
 }
 .mobile-layout #menu-main {
    flex-wrap: nowrap;
@@ -86,25 +100,19 @@ MAIN NAVIGATION
    display:flex;
    -webkit-flex-direction:column;
    flex-direction:column;
-   background: #e8e8e8;
-   -webkit-flex: 1 1 150px;
-   flex: 1 1 150px;
+   -webkit-flex: 1 0 150px;
+   flex: 1 0 150px;
    justify-content:space-around;
    font-size: 22px;
-   color: #5d5d5d;
    cursor:pointer;
    white-space: nowrap;
-   border-bottom: 1px solid #d9d9d9;
-   border-right: 1px solid #d9d9d9;
    line-height: 45px;
+}
+body:not(.mobile-layout) .menu-item {
+   max-width: 300px;
 }
 .mobile-layout .menu-item {
    flex-basis: 40px;
-   border-bottom: 1px solid #d9d9d9;
-}
-.menu-item-active {
-   background: #2aa3ff !important;
-   color:white !important;
 }
 .menu-item-content {
    text-align: center;
@@ -126,11 +134,6 @@ MAIN NAVIGATION
 .userinfo .logout-btn {
    transition: all 250ms;
 }
-.userinfo .logout-btn:active,
-.userinfo .logout-btn:hover,
-.userinfo .logout-btn:focus {
-   color: #000;
-}
 .menu-item-login-logged .userbox-text {
    display: none;
 }
@@ -143,16 +146,15 @@ BREADCRUMBS TOOLBAR
 */
 
 #toolbar {
-   background-color: #2aa3ff;
    font-size: 16px;
    line-height: 26px;
    min-height: 26px;
    display: -webkit-flex;
    display: flex;
    position: relative;
+   align-items: center;
 }
 #toolbar.affix {
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
    position: fixed;
    top: 0;
    width: 100%;
@@ -162,6 +164,9 @@ BREADCRUMBS TOOLBAR
 }
 #toolbar .sidebar-left-control > * {
   margin-left: 5px;
+}
+.mobile-layout #toolbar {
+   flex-direction: column;
 }
 #breadcrumbs {
    padding: 0 10px;
@@ -180,16 +185,7 @@ BREADCRUMBS TOOLBAR
    -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
    padding-right:10px;
-}
-#breadcrumbs a {
-   color: #000;
-}
-#breadcrumbs .breadcrumbs-item-active {
-   color: #fff;
-}
-#breadcrumbs .breadcrumbs-after-selected,
-#breadcrumbs .breadcrumbs-after-selected a {
-   color: #ccc;
+   align-self: center;
 }
 #breadcrumbs .breadcrumbs-item-inactive-not-last::after,
 #breadcrumbs .breadcrumbs-inactive-not-last::after,
@@ -200,8 +196,11 @@ BREADCRUMBS TOOLBAR
 
 /* Exercise mode menu display*/
 .menu-more {
-   color: #fff;
    cursor: pointer;
+   align-self: center;
+}
+#toolbar .menu-more {
+   padding-right: 10px;
 }
 #navTopOverlay,
 #mobileNavTopOverlay {
@@ -211,10 +210,14 @@ BREADCRUMBS TOOLBAR
    bottom: 0;
    left: 0;
    z-index: 3;
-   background-color: #ccc;
-   background-color: rgba(0,0,0,0.3);
 }
+/* contest timer */
 
+.contest-timer {
+   font-weight: bold;
+   font-size: 28px;
+   margin-right: 5px;
+}
 
 /*
 ///////////
@@ -229,7 +232,6 @@ LOGIN FRAME
    margin-right:auto;
    top:50px;
    right:0px;
-   background-color:#878787;
    width:260px;
    overflow: hidden;
    border: 0px solid;
@@ -250,125 +252,31 @@ LOGIN FRAME
 
 
 /*
-THINGS THAT SHOULD BE IN ANOTHER FILE
+//////////////////
+IN TASK NAVIGATION
+//////////////////
 */
-
+.inTaskNav {
+   align-self: center;
+   padding-right: 10px;
+   flex: 0 0 64px;
+}
 .arrow-link-icon {
-   font-size:27pt !important;
+   vertical-align: middle;
 }
 
-.main-right-arrow {
-   position:fixed;
-   right:260px;
-   bottom:35px;
-   height:48px;
-   width:48px;
-   background-color:#2aa3ff;
-   color:white;
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
-   z-index:2;
-   text-align:center;
-   /*display: -webkit-flex !important;
-   display:flex !important;*/
-   display:none !important;
-   -webkit-flex-direction:column;
-   flex-direction:column;
-   justify-content:space-around;
-   -webkit-justify-content:space-around;
-   cursor:pointer;
-   font-size:27pt !important;
-}
-
-.main-right-arrow-toggled {
-   right:0px !important;
-}
-
-.main-up-arrow {
-   position:fixed;
-   right:260px;
-   bottom:35px;
-   height:48px;
-   width:48px;
-   background:#2aa3ff;
-   color:white;
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
-   z-index:2;
-   text-align:center;
-   /*display: -webkit-flex !important;
-   display:flex !important;*/
-   display:none !important;
-   -webkit-flex-direction:column;
-   flex-direction:column;
-   justify-content:space-around;
-   -webkit-justify-content:space-around;
-   cursor:pointer;
-   font-size:27pt !important;
-}
-
-.main-right-arrow-toggled {
-   right:0px !important;
-}
-
+.main-right-arrow,
+.main-up-arrow,
 .main-left-arrow {
-   position:fixed;
-   transform: rotate(180deg);/* hack to get the arrow in the desired direction */
-   -webkit-transform: rotate(180deg);/* hack to get the arrow in the desired direction */
-   left:325px;
-   bottom:35px;
-   height:48px;
-   width:48px;
-   background:#2aa3ff;
-   color:white;
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
-   z-index:2;
-   text-align:center;
-   cursor:pointer;
-   /*display: -webkit-flex !important;
-   display:flex !important;*/
-   display:none !important;
-   -webkit-flex-direction:column;
-   flex-direction:column;
-   justify-content:space-around;
-   -webkit-justify-content:space-around;
-   font-size:27pt !important;
+   text-align: center;
+   cursor: pointer;
+   display: inline-block;
 }
 
-.main-left-arrow-toggled {
-   left:82px !important;
-}
-
-@media all and (max-width: 1100px) and (min-width: 700px) {
-   .main-left-arrow {
-      left:82px;
-   }
-   .main-left-arrow-toggled {
-      left:325px !important;
-   }
-   .main-right-arrow {
-      right:0px;
-   }
-   .main-right-arrow-toggled {
-      right:260px !important;
-   }
-}
 /*
 THINGS THAT DON'T APPEAR TO BE USEFULL ANYMORE
 */
-#userinfocontainer-breadcrumbs {
-   display:none;
-}
 
-.userinfocontainer-breadcrumbs-toggled {
-   display:block !important;
-}
-@media all and (max-width: 1100px)  and (min-width: 701px) {
-   #userinfocontainer-breadcrumbs {
-      display:block;
-   }
-   .userinfocontainer-breadcrumbs-toggled {
-      display:none;
-   }
-}
 .breadcrumbs-loginbox > .userinfo {
    background:transparent;
    font-size: 12pt;

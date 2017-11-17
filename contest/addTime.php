@@ -1,8 +1,18 @@
+<?php
+	require __DIR__.'/../vendor/autoload.php';
+	require __DIR__.'/../config.php';
+	require_once __DIR__.'/../shared/connect.php';
+	use Aiken\i18next\i18next;
+	i18next::init($config->shared->domains['current']->defaultLanguage);
+	function trans($key, $variables = []) {
+		return i18next::getTranslation($key, $variables);
+	}
+?>
 <!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
-<title>Ajout de temps sur un concours</title>
+<title><?=trans('page_title')?></title>
 <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 <style>
 body {width: 800px;margin-left:auto;margin-right:auto;margin-top:50px;}
@@ -14,19 +24,27 @@ body {width: 800px;margin-left:auto;margin-right:auto;margin-top:50px;}
 if (session_status() === PHP_SESSION_NONE){session_start();}
 
 if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
-	echo "vous devez être connecté pour utiliser cette page";
+	echo trans('auth_required');
 	return;
 }
 
-require_once '../shared/connect.php';
+//require_once '../shared/connect.php';
 
 function getAccessibleContestList() {
 	global $db;
-	$stmt = $db->prepare('SELECT `items`.`ID` as idItem, `items_strings`.`sTitle` FROM `items`  
-		JOIN `groups_items` AS `groups_items` ON (`items`.`ID` = `groups_items`.`idItem`)  
-		JOIN `groups_ancestors` AS `selfGroupAncestors` ON (`groups_items`.`idGroup` = `selfGroupAncestors`.`idGroupAncestor`)  
-		JOIN `items_strings` AS `items_strings` ON (`items`.`ID` = `items_strings`.`idItem`)  
-		WHERE ((`groups_items`.`bCachedAccessSolutions` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND `selfGroupAncestors`.`idGroupChild` = :idGroupSelf) AND items.sDuration is not null GROUP BY `items`.`ID`;');
+	$stmt = $db->prepare('SELECT `items`.`ID` as idItem, `items_strings`.`sTitle`, `items_strings_parents`.sTitle as sTitleParent FROM `items`
+		JOIN `groups_items` AS `groups_items` ON (`items`.`ID` = `groups_items`.`idItem`)
+		JOIN `groups_ancestors` AS `selfGroupAncestors` ON (`groups_items`.`idGroup` = `selfGroupAncestors`.`idGroupAncestor`)
+		JOIN `items_strings` AS `items_strings` ON (`items`.`ID` = `items_strings`.`idItem`)
+        LEFT JOIN `items_items` AS `items_items` ON `items_items`.idItemChild = items.ID
+		LEFT JOIN `items_strings` AS `items_strings_parents` ON (`items_items`.`idItemParent` = `items_strings_parents`.`idItem`)
+		WHERE
+			(
+				(`groups_items`.`bCachedAccessSolutions` = 1 OR `groups_items`.`bCachedFullAccess` = 1) AND
+				`selfGroupAncestors`.`idGroupChild` = :idGroupSelf
+			) AND
+			items.sDuration is not null GROUP BY `items`.`ID`
+	');
 	$stmt->execute(['idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
 	return $stmt->fetchAll();
 }
@@ -34,7 +52,7 @@ function getAccessibleContestList() {
 $contestList = getAccessibleContestList();
 
 if (!$contestList || !count($contestList)) {
-	echo '<p>Vous n\'avez un accès complet à aucun concours, si vous devez bien être connecté en tant que '.$_SESSION['login']['sLogin'].' pour utiliser cette interface, merci de rapporter le problème.</p>';
+	echo trans('empty_list', ['login' => $_SESSION['login']['sLogin']]);
 	return;
 }
 
@@ -58,10 +76,7 @@ function addTimeToUser($idUser, $idGroupSelf, $idItem, $nbSeconds, $add) {
 		$now = new DateTime($userItem['now']);
 		$secondsSinceEnd = $now->getTimestamp() - $userFinishDate->getTimestamp();
 		if ($secondsSinceEnd > $nbSeconds) {
-			return ['success' => false, 'error' => 'le temps supplémentaire ne permettra pas à l\'utilisateur de continuer le concours car il l\'a terminé depuis trop longtemps.'];
-		}
-		if ($secondsSinceEnd > 30*60) {
-			return ['success' => false, 'error' => 'il est impossible de rajouter du temps à des utilisateurs qui ont terminé un concours depuis plus de 30mn'];
+			return ['success' => false, 'error' => trans('time_interval_error')];
 		}
 	}
 	// TODO: what if the user has a different user_item in its client?
@@ -88,7 +103,7 @@ function checkContestAccess($idItem, $contestList) {
 
 function getUserFromLogin($login) {
 	global $db;
-	$stmt = $db->prepare('select users.ID as idUser, users.idGroupSelf as idGroupSelf, users.sLogin from groups 
+	$stmt = $db->prepare('select users.ID as idUser, users.idGroupSelf as idGroupSelf, users.sLogin from groups
 		join groups_ancestors on groups_ancestors.idGroupChild = groups.ID
 		join users on users.idGroupSelf = groups_ancestors.idGroupChild
 		where groups_ancestors.idGroupAncestor = :idGroupOwned and users.sLogin = :login;');
@@ -112,7 +127,7 @@ function getUserListFromGroupName($groupName) {
 	$stmt->execute(['idGroup' => $idGroup]);
 	$users = $stmt->fetchAll();
 	if (!$users || !count($users)) {
-	return ['success' => false, 'error' => 'le groupe '.$groupName.' ne contient aucun utilisateur'];	
+	return ['success' => false, 'error' => 'le groupe '.$groupName.' ne contient aucun utilisateur'];
 	}
 	return ['success' => true, 'usersList' => $users];
 }
@@ -130,7 +145,7 @@ function getUsersListFromRequest($loginOrGroupName) {
 function handleRequest($request) {
 	global $contestList;
 	if (!checkContestAccess($request['idItem'], $contestList)) {
-		echo '<p>Erreur : vous n\'avez pas accès au concours ID '.$request['idItem'].'</p>';
+		echo trans('contest_access_error', ['id' => $request['idItem']]);
 		return;
 	}
 	$add = (isset($request['type']) && $request['type'] == 'add');
@@ -144,10 +159,14 @@ function handleRequest($request) {
 	foreach($userList as $user) {
 		$res = addTimeToUser($user['idUser'], $user['idGroupSelf'], $request['idItem'], $nbSeconds, $add);
 		if (!$res['success']) {
-			echo 'Erreur: '.$res['error'];
+			trans('error', ['error' => $res['error']]);
 		} else {
 			$nbMinutes = intval($res['totalAdditionalTime']) / 60;
-			echo "<p>L'utilisateur ".$user['sLogin']." bénéficie désormais de ".$nbMinutes."mn supplémentaires sur le concours ID ".$request['idItem']."</p>";
+			echo trans('success_message', [
+				'login' => $user['sLogin'],
+				'duration' => $nbMinutes,
+				'id' => $request['idItem']
+			]);
 		}
 	}
 }
@@ -157,41 +176,45 @@ if (isset($_GET['login']) && $_GET['login'] && isset($_GET['nbMinutes']) && isse
 }
 
 ?>
-<h1>Ajout de temps sur un concours</h1>
-
-<p>Sur cette page vous pouvez ajouter du temps de concours (auquel vous avez un accès complet ou un accès aux solutions) à un élève qui est dans un des groupes que vous administrez :</p>
+<h1><?=trans('header')?></h1>
+<p><?=trans('description')?></p>
 
 <form method="get">
 	<div class="form-group">
-	  <label for="login">Login de l'utilisateur ou nom exact du groupe :</label>
+	  <label for="login"><?=trans('login_lbl')?></label>
 	  <input type="text" class="form-control" id="login" name="login">
 	</div>
 	<div class="form-group">
-	  <label for="nbMinutes">Nombre de minutes de temps supplémentaire (peut être négatif) :</label>
+	  <label for="nbMinutes"><?=trans('duration_lbl')?></label>
 	  <input type="text" class="form-control" id="nbMinutes" name="nbMinutes">
 	</div>
 	<div class="form-group">
-	  Assigner ce temps supplémentaire ou l'ajouter au temps supplémentaire déjà présent ?
+	  <?=trans('mode_lbl')?>
 	  <div class="radio">
-	    <label><input type="radio" name="type" value="replace" checked>Assigner</label>
+	    <label><input type="radio" name="type" value="replace" checked><?=trans('replace_lbl')?></label>
 	  </div>
 	  <div class="radio">
-	    <label><input type="radio" name="type" value="add">ajouter</label>
+	    <label><input type="radio" name="type" value="add"><?=trans('add_lbl')?></label>
 	  </div>
 	</div>
 	<div class="form-group">
-		<label for="idItem">Nom du concours sur lequel le temps sera rajouté :</label>
+		<label for="idItem"><?=trans('item_lbl')?></label>
 		<select class="form-control" id="idItem" name="idItem">
-			<?php
-			    $first = true;
-				foreach($contestList as $contest) {
-					echo '<option value="'.$contest['idItem'].'"'.($first ? ' selected' : '').'>'.$contest['sTitle'].'</option>';
-					$first = false;
-				}
-			?>
+<?php
+    $contestStrs = array();
+    foreach($contestList as $contest) {
+        $contestStrs[$contest['idItem']] = ($contest['sTitleParent'] ? $contest['sTitleParent'] . ' // ' : '') . $contest['sTitle'];
+    }
+    asort($contestStrs);
+    $first = true;
+	foreach($contestStrs as $idItem => $name) {
+        echo '<option value="'.$idItem.'"'.($first ? ' selected' : '').'>' . $name . '</option>';
+		$first = false;
+	}
+?>
 		</select>
 	</div>
-	<button type="submit" class="btn btn-default">Soumettre</button>
+	<button type="submit" class="btn btn-default"><?=trans('submit')?></button>
 </form>
 </body>
 </html>

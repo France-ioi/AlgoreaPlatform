@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('groupRequestsController', ['$scope', '$http', 'loginService', '$rootScope', 'itemService', '$filter', '$timeout', '$i18next', function ($scope, $http, loginService, $rootScope, itemService, $filter, $timeout, $i18next) {
+   .controller('groupRequestsController', ['$scope', '$http', 'loginService', '$rootScope', 'itemService', 'contestTimerService', '$state', '$filter', '$timeout', '$i18next', function ($scope, $http, loginService, $rootScope, itemService, contestTimerService, $state, $filter, $timeout, $i18next) {
    $scope.layout.isOnePage(true);
    $scope.layout.hasMap('never');
    $scope.loading = true;
@@ -41,7 +41,7 @@ angular.module('algorea')
       $scope.myUnreadGroupParents = $scope.getMyUnreadGroupParents();
    }
 
-   $scope.fullResetSync = function() {
+   $scope.fullResetSync = function(callback) {
       // TODO; this is a temporary solution until the sync system is redone
       // fixes item access not updating properly after joining/leaving a group
       // by doing a full resync...
@@ -56,6 +56,7 @@ angular.module('algorea')
          SyncQueue.sync(function () {
             SyncQueue.requests.algorea = otherReq;
             $scope.groupsLoading = false;
+            if(callback) { callback(); }
          });
       });
    }
@@ -169,31 +170,65 @@ angular.module('algorea')
    };
 
    $scope.joinGroup = function(result) {
-      $scope.groupsLoading = true;
-      result.joinLog = "chargement...";
       $scope.passwordInfo = null;
-      $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
+      $scope.lastJoinRequest = {
+         action: 'joinGroup',
+         ID: result.ID,
+         password: result.password};
+      $scope.sendJoinRequest($scope.lastJoinRequest);
+   }
+
+   $scope.joinConfirm = function() {
+      if(!$scope.lastJoinRequest) { return; }
+      $scope.lastJoinRequest['confirm'] = true;
+      $scope.sendJoinRequest($scope.lastJoinRequest);
+   };
+
+   $scope.sendJoinRequest = function(request) {
+      $scope.groupsLoading = true;
+      $scope.groupRequestInfo = '';
+      $scope.groupRequestConfirm = false;
+      $http.post('/groupRequests/groupRequests.php', request, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
-            var error = (postRes && postRes.error) ? postRes.error : $i18next.t('groupRequests_error_please_contact');
-            console.error("got error from groupRequests handler: "+error);
-            if (result.password && !result.ID) {
-               $scope.passwordInfo = error;
+            if(postRes && postRes.confirmNeeded) {
+               $scope.groupRequestConfirm = true;
+               $scope.groupRequestConfirmOpen = !!postRes.openContest;
             } else {
-               result.joinLog = error;
+               var error = (postRes && postRes.error) ? postRes.error : $i18next.t('groupRequests_error_please_contact');
+               console.error("got error from groupRequests handler: "+error);
+               $scope.groupRequestInfo = error;
+               $scope.groupRequestInfoClass = "alert-danger";
             }
             $scope.groupsLoading = false;
          } else {
-            if (result.password) {
-               $scope.passwordInfo = $i18next.t('groupRequests_join_success')+postRes.groupName;
+            if (request.password) {
+               $scope.groupRequestInfo = $i18next.t('groupRequests_join_success')+postRes.groupName;
+               $scope.groupRequestInfoClass = "alert-success";
             }
-            result.relationType = postRes.type;
+            //request.relationType = postRes.type;
             var record = ModelsManager.getRecord('groups_groups', postRes.ID);
             if (record) {
                record.sType = postRes.type;
-               result.joinLog = null;
             }
 
-            $scope.fullResetSync();
+            if(postRes.contestData) {
+               // A contest was automatically opened upon entering the group
+               var data = postRes.contestData;
+               config.data = {endTime: data.endTime, startTime: data.startTime, duration: data.duration, idItem: data.idItem};
+               contestTimerService.startContest(data.idItem, data.duration);
+               var user_item = itemService.getUserItem(itemService.getItem((data.idItem)));
+               if (user_item) {user_item.sContestStartDate = new Date();}
+            }
+
+            var callback = null;
+            if(postRes.redirectPath) {
+               var sell = postRes.redirectPath.split('/').length-1;
+               callback = function () { 
+                  $state.go('contents', {path: postRes.redirectPath, sell: sell, selr: sell+1});
+               }
+            }
+
+            $scope.fullResetSync(callback);
          }
       })
       .error(function() {

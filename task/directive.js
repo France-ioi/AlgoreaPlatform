@@ -90,8 +90,20 @@ angular.module('algorea')
          }
       };
       scope.platform.updateHeight = function(height, success, error) {
+         // TODO :: remove once we are sure it's not used anymore
+         console.log("updateHeight is deprecated and shouldn't be called");
          scope.updateHeight(height);
          if (success) { success(); }
+      };
+      scope.platform.updateDisplay = function(data, success, error) {
+         // Task asked the platform to update display
+         if(data.height) {
+            scope.updateHeight(data.height);
+         }
+         if(data.views) {
+            scope.setTabs(data.views);
+         }
+         if(success) { success(); }
       };
       // move to next item in same chapter
       scope.moveToNext = function() {
@@ -239,7 +251,7 @@ angular.module('algorea')
                   // An item has been unlocked, need to reset sync as for some
                   // reason it doesn't get the changes
                }
-               scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
+               scope.user_item.iScore = Math.max(scope.user_item.iScore, score);
                $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                scope.$applyAsync();
                if (success) { success(postRes.bValidated); } else { return postRes.bValidated; };
@@ -323,7 +335,7 @@ angular.module('algorea')
             elem[0].src = scope.taskUrl;
             $timeout(function() { loadTask(scope, elem, sameUrl);});
          }
-         if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Presentation' || scope.item.sType == 'Course')) {
+         if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Course')) {
             initTask(false);
          }
          // function comparing two url, returning true if the iframe won't be reloaded
@@ -335,7 +347,7 @@ angular.module('algorea')
             return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
-            if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Presentation' && scope.item.sType !== 'Course')) {
+            if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Course')) {
                return;
             }
             scope.taskLoaded = false;
@@ -376,6 +388,12 @@ angular.module('algorea')
          });
          scope.$on('algorea.reloadView', function(event, viewName){
             if (viewName == scope.panel) {
+               reinit();
+            }
+         });
+         scope.$on('algorea.languageChanged', function(event) {
+            if (scope.itemUrl) {
+               scope.itemUrl = null; // Avoid considering it's the same URL as we just changed language
                reinit();
             }
          });

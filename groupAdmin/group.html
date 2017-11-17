@@ -97,29 +97,6 @@
 						<div class="bloc-inscription">
 							<div class="flex-container">
 								<div class="left-col">
-									<div class="label-title label-list-item" ng-i18next="groupAdmin_title_code"></div>
-									<p ng-i18next="groupAdmin_code_desc"></p>
-								</div>
-								<div class="right-col">
-									<div class="checkboxSwitch">
-										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
-										<label for="codeInscr"><span></span></label>
-									</div>
-								</div>
-							</div>
-							<div class="flex-container" ng-if="formValues.hasPassword">
-								<div class="left-col">
-									<p ng-i18next="groupAdmin_code_label"></p>
-								</div>
-								<div class="right-col form-inline">
-									<input type="text" class="form-control access-code" ng-model="group.sPassword" readonly/>
-									<button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
-								</div>
-							</div>
-						</div>
-						<div class="bloc-inscription">
-							<div class="flex-container">
-								<div class="left-col">
 									<div class="label-title label-list-item" ng-i18next="groupAdmin_title_spontaneous"></div>
 									<p ng-i18next="groupAdmin_allow_spontaneous"></p>
 								</div>
@@ -140,6 +117,98 @@
 								</ul>
 							</div>
 						</div>
+						<div class="bloc-inscription">
+							<div class="flex-container">
+								<div class="left-col">
+									<div class="label-title label-list-item" ng-i18next="groupAdmin_title_code"></div>
+									<p ng-i18next="groupAdmin_code_desc"></p>
+								</div>
+								<div class="right-col">
+									<div class="checkboxSwitch">
+										<input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
+										<label for="codeInscr"><span></span></label>
+									</div>
+								</div>
+							</div>
+							<div class="flex-container" ng-if="formValues.hasPassword">
+								<div class="left-col">
+									<p ng-i18next="groupAdmin_code_label"></p>
+								</div>
+								<div class="right-col form-inline">
+									<input type="text" class="form-control access-code" ng-model="group.sPassword" readonly/>
+									<button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
+								</div>
+							</div>
+                            <hr ng-if="formValues.hasPassword" />
+                            <div class="flex-container" ng-if="formValues.hasPassword">
+                                <div class="left-col">
+                                    <p><b ng-i18next="groupAdmin_code_expiration"></b></p>
+                                </div>
+                                <div class="right-col form-inline">
+                                    <div class="checkboxSwitch">
+                                        <input type="checkbox" ng-change="changeExpiration();" id="expirCheck" class="switch" ng-model="formValues.expirationTimer">
+                                        <label for="expirCheck"><span></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-container" ng-if="formValues.expirationTimer">
+                                <div class="left-col">
+                                    <p ng-i18next="groupAdmin_code_expiration_timer"></p>
+                                </div>
+                                <div class="right-col form-inline">
+                                    <div class="checkboxSwitch">
+                                        <input type="text" id="expirLength" ng-change="saveGroup();" class="form-control" ng-model="group.sPasswordTimer">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-container" ng-if="formValues.expirationTimer">
+                                <div class="left-col">
+                                    <p ng-hide="group.sPasswordEnd" ng-i18next="groupAdmin_code_expiration_inactive"></p>
+                                    <p ng-show="group.sPasswordEnd"><span ng-i18next="groupAdmin_code_expiration_active"></span> : {{ group.sPasswordEnd | date:'short' }}</p>
+                                </div>
+                                <div class="right-col form-inline">
+                                    <button ng-if="group.sPasswordEnd" ng-click="refreshExpiration();" class="btn btn-primary" ng-i18next="reset"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bloc-inscription">
+                            <div class="flex-container">
+                                <div class="left-col">
+                                    <div class="label-title label-list-item" ng-i18next="groupAdmin_redirect_title"></div>
+                                    <p ng-i18next="groupAdmin_redirect_desc"></p>
+                                </div>
+                                <div class="right-col form-inline">
+                                    <div class="checkboxSwitch">
+                                        <input type="checkbox" ng-change="changeRedirect();" id="redirCheck" class="switch" ng-model="formValues.hasRedirect">
+                                        <label for="redirCheck"><span></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="parcours-select" ng-if="formValues.hasRedirect">
+                                <span ng-i18next="groupAdmin_course"></span>
+                                <select ng-model="formValues.selectedBaseRedirection" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="redirectionBaseSelected()">
+                                </select>
+                                <select ng-repeat="(depth, selectedItem) in redirectionSelections" ng-if="depth != 0" ng-change="redirectionSelected(depth)" ng-model="redirectionSelectionsIDs[depth]">
+                                    <option value=""></option>
+                                    <option ng-repeat="child in redirectionSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == redirectionSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+                                </select>
+                                <select ng-if="redirectionSelections[redirectionSelections.length-1].children.length" ng-change="redirectionSelected(0)" ng-model="redirectionSelectionsIDs[redirectionSelections.length]">
+                                    <option selected="selected" value=""></option>
+                                    <option ng-repeat="child in redirectionSelections[redirectionSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+                                </select>
+                            </div>
+                            <div class="flex-container" ng-if="formValues.hasContest">
+                                <div class="left-col">
+                                    <p ng-i18next="groupAdmin_redirect_contest"></p>
+                                </div>
+                                <div class="right-col form-inline">
+                                    <div class="checkboxSwitch">
+                                        <input type="checkbox" ng-change="saveGroup();" id="contestCheck" class="switch" ng-model="group.bOpenContest">
+                                        <label for="contestCheck"><span></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 					</div>
 				</div>
 			</div>
@@ -155,7 +224,7 @@
 				<div class="flex-container progression-controllers">
 					<div class="progression-type-select">
 						<span ng-i18next="groupAdmin_visualization_select"></span>&nbsp;
-						<div class="inline-block btn-group">
+						<div class="btn-group">
 							<label ng-model="formValues.progressionType" uib-btn-radio="'chronological'" class="btn btn-default">{{'groupAdmin_chronological' | i18next}}</label>
 							<label ng-model="formValues.progressionType" uib-btn-radio="'collective'" class="btn btn-default">{{'groupAdmin_collective' | i18next}}</label>
 						</div>
@@ -214,7 +283,7 @@
 							<tbody>
 								<tr ng-repeat="event in events">
 									<td>{{event.userStr}}</td>
-									<td>{{event.date | date}}</td>
+									<td>{{event.date | date:'short'}}</td>
 									<td class="activity-type" ng-class="getClass(event.user_item);">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" ng-i18next="[title]groupAdmin_activity_link"><span class="btn-label" ng-i18next="groupAdmin_activity_link"></span></button></td>
 									<td>{{event.itemStr}}</td>
 								</tr>
@@ -263,18 +332,18 @@
 												<div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" uib-tooltip="Score" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
 												<div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
 												<div class="questions" ng-i18next="[uib-tooltip]groupAdmin_forum_requests" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
-												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_detail" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button></div>
+												<div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'mem/progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_detail" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button></div>
 											</div>
 										</div>
 										<div ng-if="!formValues.detailedView && item.sType == 'Task'" class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}">
 											<span ng-if="getClass(thisUserItem) == 'read'">—</span>
 											<span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
 										</div>
-										<button ng-if="!formValues.detailedView" uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
+										<button ng-if="!formValues.detailedView" uib-popover-template="'mem/progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
 										<button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_code" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button>
 									</td>
 								</tr>
-								<script type="text/ng-template" id="progress-details.html">
+								<script type="text/ng-template" id="mem/progress-details.html">
 									<ul class="progress-details">
 										<li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
 										<li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
@@ -334,10 +403,9 @@
 
 		<uib-tab heading="{{'administration' | i18next}}" index="3">
 			<div class="groupAdmin-tabContent tab-admin">
-				<div class="inline-block">
-						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span></div>
-
-						<table class="table-administrators">
+				<div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span></div>
+					<div class="table-administrators">
+						<table>
 							<thead>
 								<tr>
 									<th></th>
@@ -357,6 +425,7 @@
 								</tr>
 							</tbody>
 						</table>
+					</div>
 
 						<div class="form-inline admin-form" ng-if="adminOnGroup">
 							<input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" ng-i18next="[placeholder]groupAdmin_logins_to_add">
@@ -364,7 +433,6 @@
 						</div>
 						<span ng-bind="adminInvitationError"></span>
 						<span ng-show="adminLoading" ng-i18next="loading"></span>
-					</div>
 				</div>
 		</uib-tab>
 	</uib-tabset>

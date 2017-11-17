@@ -35,9 +35,13 @@ $tablesModels = array (
          "bOpened" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bFreeAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sPassword" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sPasswordTimer" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sPasswordEnd" => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sRedirectPath" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bOpenContest" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sType" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "bSendEmails" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")))
-         
+
       )
    ),
 
@@ -85,6 +89,7 @@ $tablesModels = array (
          "idItemUnlocked" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "iScoreMinUnlock" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sSupportedLangProg" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "idDefaultLanguage" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sAccessOpenDate" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sDuration" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sEndContestDate" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
@@ -92,6 +97,11 @@ $tablesModels = array (
          "sContestPhase" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "iLevel" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bNoScore" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bTitleBarVisible" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bTransparentFolder" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bDisplayDetailsInParent" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bDisplayChildrenAsTabs" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bCustomChapter" => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
       )
    ),
    "items_items" => array(
@@ -158,7 +168,7 @@ $tablesModels = array (
          "bCachedAccessSolutions" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bCachedGrayedAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bCachedManagerAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
-         "sPropagateAccess" => array("skipHistory" => true, "type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
+         "sPropagateAccess" => array("skipHistory" => true, "type" => "string", "access" => array("write" => array("admin"), "read" => array("user"))),
       ),
       "listeners" => array(
          "before" => "Listeners::groupsItemsBefore",
@@ -286,7 +296,8 @@ $tablesModels = array (
           "sContestStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "bRanked"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
           "sAllLangProg"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
-          "sState"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
+          "sState"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sAnswer"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
       ),
       "listeners" => array(
          "after" => "Listeners::UserItemsAfter"
@@ -358,6 +369,10 @@ $viewsModels = array(
          "bOpened" => array(),
          "bFreeAccess" => array(),
          "sPassword" => array(),
+         "sPasswordTimer" => array(),
+         "sPasswordEnd" => array(),
+         "sRedirectPath" => array(),
+         "bOpenContest" => array(),
          "sType" => [],
          "bSendEmails" => array(),
       ),
@@ -469,6 +484,7 @@ $viewsModels = array(
          "idItemUnlocked" => array(),
          "iScoreMinUnlock" => array(),
          "sSupportedLangProg" => array(),
+         "idDefaultLanguage" => array(),
          "sAccessOpenDate" => array(),
          "sDuration" => array(),
          "sEndContestDate" => array(),
@@ -476,6 +492,11 @@ $viewsModels = array(
          "sContestPhase" => array(),
          "iLevel" => array(),
          "bNoScore" => array(),
+         "bTitleBarVisible" =>  array(),
+         "bTransparentFolder" => array(),
+         "bDisplayDetailsInParent" => array(),
+         "bDisplayChildrenAsTabs" => array(),
+         "bCustomChapter" => array()
       ),
       "filters" => array(
          "accessible" => array(
@@ -858,7 +879,8 @@ $viewsModels = array(
           "sLastActivityDate"     => array(),
           "bRanked"               => array('readOnly' => true),
           "sAllLangProg"          => array(),
-          "sState"                => array()
+          "sState"                => array(),
+          "sAnswer"               => array()
       ),
       "filters" => array(
          "accessible" => array(

@@ -9,12 +9,13 @@ angular.module('algorea')
       $scope.userinfoClass = 'userinfo-closed';
       $scope.loginFrameClass = 'loginFrame-login';
       loginService.bindScope($rootScope);
-      $scope.$on('login.login', function(event, data) {
+
+      function loadLoginData(data, mustSync) {
          $scope.innerHtml = 'login_disconnect';
          if (data.tempUser) {
             $scope.loginStr = null;   
          } else {
-            $scope.loginStr = data.login;
+            $scope.loginStr = data.sLogin;
          }
          $scope.loggedIn = true;
          $scope.tempUser = data.tempUser;
@@ -24,11 +25,18 @@ angular.module('algorea')
          } else {
             $scope.loginFrameClass = 'loginFrame-logout';
          }
-         itemService.syncWithNewLogin(data.login, data.loginData);
+         if(mustSync) {
+            itemService.syncWithNewLogin(data.sLogin, data.loginData);
+         }
          $scope.hideFrame();
          $timeout(function(){$scope.$apply();});
+      };
+
+      $scope.$on('login.login', function(event, data) {
+         data.sLogin = data.login;
+         loadLoginData(data, true);
       });
-      $scope.$on('login.logout', function(event,data) {
+      $scope.$on('login.logout', function(event, data) {
          $scope.loginStr = null;
       });
       $scope.showFrame = function() {
@@ -46,6 +54,6 @@ angular.module('algorea')
             $scope.hideFrame();
          }
       };
-      loginService.init();
+      loginService.getLoginData(loadLoginData);
       $scope.openLoginPopup = loginService.openLoginPopup;
 }]);

@@ -1,0 +1,3 @@
+<span ng-if="!hasSidebarLeft" class="material-icons sidebar-left-control-closed sidebarleft-inactive">keyboard_arrow_down</span>
+<span ng-click="layout.openSidebarLeft();" ng-if="hasSidebarLeft && !sidebarLeftIsOpen" class="material-icons sidebar-left-control-closed" >keyboard_arrow_down</span>
+<span ng-click="layout.closeSidebarLeft();" ng-if="hasSidebarLeft && sidebarLeftIsOpen" class="material-icons sidebar-left-control-open">keyboard_arrow_up</span>

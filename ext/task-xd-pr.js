@@ -191,7 +191,12 @@ Platform.prototype.getTask = function() {
 Platform.prototype.validate = function(mode) {};
 Platform.prototype.showView = function(views) {};
 Platform.prototype.askHint = function(platformToken) {};
-Platform.prototype.updateHeight = function(height) {this.task.iframe.height(parseInt(height)+40);};
+Platform.prototype.updateHeight = function(height) { this.updateDisplay({height: height}); };
+Platform.prototype.updateDisplay = function(data) {
+   if(data.height) {
+      this.task.iframe.height(parseInt(data.height)+40);
+   }
+};
 Platform.prototype.getTaskParams = function(key, defaultValue) {
    var res = {minScore: -3, maxScore: 6, randomSeed: 0, noScore: 0, readOnly: false};
    if (typeof key !== 'undefined') {
