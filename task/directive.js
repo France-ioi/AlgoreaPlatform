@@ -26,11 +26,19 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-.directive('buildTask', ['$location', '$sce', '$http', '$timeout', '$rootScope', '$state', '$interval', '$injector', 'itemService', 'pathService', '$i18next', function ($location, $sce, $http, $timeout, $rootScope, $state, $interval, $injector, itemService, pathService, $i18next) {
+  .directive('buildTask', ['$sce', '$http', '$timeout', '$rootScope', '$interval', '$injector', '$i18next', function ($sce, $http, $timeout, $rootScope, $interval, $injector, $i18next) {
    var mapService = null;
    if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
    }
+    var itemService, pathService;
+    if($injector.has('itemService')) {
+      itemService = $injector.get('itemService');
+    }
+    if($injector.has('pathService')) {
+      itemService = $injector.get('pathService');
+    }
+
    function loadTask(scope, elem, sameUrl) {
       scope.loadingError = false;
       if (scope.item.sType == 'Task') {
