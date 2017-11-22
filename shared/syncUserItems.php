@@ -63,6 +63,7 @@ function createMissingUserItems($db, &$serverChanges, $type) {
 }
 
 function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
+  global $config;
    static $token_fields = array(
       'bHasAccessCorrection' => null,
       'bAccessSolutions'     => null,
@@ -102,6 +103,9 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
 
       $bAccessSolutions = ($userItem['data']->bAccessSolutions != '0' || $userItem['data']->bValidated != '0') ? '1': '0';
       $params['bAccessSolutions'] = $bAccessSolutions;
+
+      $params['randomSeed'] = 0;
+      $params['platformName'] = $config->platform->name;
 
       $token = $tokenGenerator->encodeJWS($params);
       $userItem['data']->sToken = $token;

@@ -57,7 +57,7 @@ function getTokenParams($request) {
       $params['idItemLocal'] = $stmt->fetchColumn();
       if (!$params['idItemLocal']) {
          echo json_encode(array('result' => false, 'error' => 'cannot find item with url '.$params['itemUrl']));
-         exit;     
+         exit;
       }
    }
    if (isset($_SESSION) && isset($_SESSION['login']) && $params['idUser'] != $_SESSION['login']['ID']) {
@@ -158,7 +158,7 @@ function checkSubmissionRight($idItem, $idUser=false) {
    } elseif($readOnly == 1) {
       return ['result' => false, 'error' => 'Item is read-only'];
    }
-   return ['result' => true]; 
+   return ['result' => true];
 }
 
 function askValidation($request, $db) {
@@ -185,7 +185,8 @@ function askValidation($request, $db) {
       'idItem' => $params['idItem'],
       'itemUrl' => $params['itemUrl'],
       'idItemLocal' => $params['idItemLocal'],
-      'idUserAnswer' => $ID
+      'idUserAnswer' => $ID,
+      'platformName' => $config->platform->name
    );
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $answerToken = $tokenGenerator->encodeJWS($answerParams);
@@ -207,6 +208,7 @@ function askHint($request, $db) {
    Listeners::UserItemsAfter($db);
 
    $params['nbHintsGiven'] = $params['nbHintsGiven'] + 1;
+   $params['platformName'] = $config->platform->name;
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $token = $tokenGenerator->encodeJWS($params);
    echo json_encode(array('result' => true, 'sToken' => $token));
@@ -223,7 +225,7 @@ function graderResult($request, $db) {
    $scoreParams = getScoreParams($request, $params, isset($request['scoreToken']) ? $request['scoreToken'] : null, $db);
    $score = floatval($scoreParams['score']);
    if (!isset($request['scoreToken'])) {
-      $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);   
+      $idUserAnswer = getIdUserAnswer($params, $request['answerToken']);
    } else {
       $idUserAnswer = isset($params['idUserAnswer']) ? $params['idUserAnswer'] : $scoreParams['idUserAnswer'];
    }
@@ -261,6 +263,7 @@ function graderResult($request, $db) {
    $token = isset($request['sToken']) ? $request['sToken'] : $request['scoreToken'];
    if ($bValidated && isset($params['bAccessSolutions']) && !$params['bAccessSolutions']) {
       $params['bAccessSolutions'] = true;
+      $params['platformName'] = $config->platform->name;
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
       $token = $tokenGenerator->encodeJWS($params);
    }
@@ -308,6 +311,8 @@ function getToken($request, $db) {
       'idItem' => $data['sTextId'],
       'itemUrl' => $data['sUrl'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],
+      'randomSeed' => 0,
+      'platformName' => $config->platform->name
    );
    $tokenArgs['id'+$data['sType']] = $tokenArgs['idItem']; // TODO: should disapear
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
