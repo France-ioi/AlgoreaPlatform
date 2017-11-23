@@ -225,7 +225,6 @@ angular.module('algorea')
       };
       scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
-           alert(scoreToken)
             var postParams = {
               action: 'graderResult',
               scoreToken: scoreToken,
