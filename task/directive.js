@@ -117,16 +117,24 @@ angular.module('algorea')
       scope.moveToNext = function() {
          scope.goRightLink();
       };
-      scope.platform.askHint = function(hintToken, success, error) {
+      scope.platform.askHint = function(hintsRequested, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
-         $http.post('/task/task.php', {action: 'askHint', sToken: scope.user_item.sToken, hintToken: hintToken, userItemId: scope.user_item.ID}, {responseType: 'json'}).success(function(postRes) {
+         $http.post('/task/task.php', {
+           action: 'askHint',
+           sToken: scope.user_item.sToken,
+           hintsRequested: hintsRequested,
+           userItemId: scope.user_item.ID
+          }, {
+            responseType: 'json'
+          }).success(function(postRes) {
             if ( ! postRes.result) {
                error("got error from task.php: "+postRes.error);
             } else if (scope.user_item.ID != scope.askHintUserItemID) {
                error("got askHint return from another task");
             } else {
                scope.user_item.sToken = postRes.sToken;
+               alert(1)
                scope.task.updateToken(scope.user_item.sToken, success, error);
             }
          })
@@ -148,7 +156,14 @@ angular.module('algorea')
             };
             scope.task.getAnswer(function (answer) {
                if (scope.loadedUserItemID != scope.user_item.ID) error('scope.loadedUserItemID != scope.user_item.ID');
-               $http.post('/task/task.php', {action: 'askValidation', sToken: scope.user_item.sToken, sAnswer: answer, userItemId: scope.user_item.ID}, {responseType: 'json'}).success(function(postRes) {
+               $http.post('/task/task.php', {
+                 action: 'askValidation',
+                 sToken: scope.user_item.sToken,
+                 sAnswer: answer,
+                 userItemId: scope.user_item.ID
+                }, {
+                  responseType: 'json'
+                }).success(function(postRes) {
                   if (scope.loadedUserItemID != scope.user_item.ID) {
                      error('loadedUserItemID != user_item.ID');
                      return;
@@ -210,7 +225,14 @@ angular.module('algorea')
       };
       scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
-            var postParams = {action: 'graderResult', scoreToken: scoreToken, score: score, message: message, sToken: scope.user_item.sToken};
+           alert(scoreToken)
+            var postParams = {
+              action: 'graderResult',
+              scoreToken: scoreToken,
+              score: score,
+              message: message,
+              sToken: scope.user_item.sToken
+            };
             if (!scoreToken) {
                postParams.answerToken = answerToken;
             }

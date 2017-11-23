@@ -186,7 +186,8 @@ function askValidation($request, $db) {
       'itemUrl' => $params['itemUrl'],
       'idItemLocal' => $params['idItemLocal'],
       'idUserAnswer' => $ID,
-      'platformName' => $config->platform->name
+      'platformName' => $config->platform->name,
+      'randomSeed' => 0
    );
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $answerToken = $tokenGenerator->encodeJWS($answerParams);
@@ -209,6 +210,7 @@ function askHint($request, $db) {
 
    $params['nbHintsGiven'] = $params['nbHintsGiven'] + 1;
    $params['platformName'] = $config->platform->name;
+   $params['hintsRequested'] = $request['hintsRequested'];
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $token = $tokenGenerator->encodeJWS($params);
    echo json_encode(array('result' => true, 'sToken' => $token));
@@ -230,8 +232,8 @@ function graderResult($request, $db) {
       $idUserAnswer = isset($params['idUserAnswer']) ? $params['idUserAnswer'] : $scoreParams['idUserAnswer'];
    }
    // TODO: handle validation in a proper way
-   $bValidated = ($score > 99);
-   $bKeyObtained = false;
+   $bValidated = ($score > 99) ? 1 : 0;
+   $bKeyObtained = 0;
 
    $query = "UPDATE `users_answers` SET sGradingDate = NOW(), bValidated = :bValidated, iScore = :iScore WHERE idUser = :idUser AND idItem = :idItem AND ID = :idUserAnswer;";
    $stmt = $db->prepare($query);
