@@ -134,7 +134,6 @@ angular.module('algorea')
                error("got askHint return from another task");
             } else {
                scope.user_item.sToken = postRes.sToken;
-               alert(1)
                scope.task.updateToken(scope.user_item.sToken, success, error);
             }
          })
