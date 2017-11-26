@@ -17,6 +17,7 @@ function default_user_item_factory($idUser, $item, $insertId) {
       'bValidated' => 0,
       'bFinished' => 0,
       'nbTasksWithHelp' => 0,
+      'sHintsRequested' => '',
       'nbHintsCached' => 0,
       'nbCorrectionsRead' => 0,
       'iPrecision' => 0,
@@ -70,6 +71,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       'bSubmissionPossible'  => null,
       'bHintsAllowed'        => null, // from item
       'bHasSolvedTask'       => null,
+      'sHintsRequested'      => null,
       'nbHintsGiven'         => null,
       'idItem'               => null,
       'itemUrl'              => null,
@@ -95,6 +97,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
          $params['bSubmissionPossible'] = true;
       }
       $params['idUser'] = $userItem['data']->idUser;
+      $params['sHintsRequested'] = $userItem['data']->sHintsRequested;
       $params['nbHintsGiven'] = $userItem['data']->nbHintsCached;
       $params['bHintPossible'] = true;
       // platform needs idTask:

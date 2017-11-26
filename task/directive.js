@@ -117,13 +117,13 @@ angular.module('algorea')
       scope.moveToNext = function() {
          scope.goRightLink();
       };
-      scope.platform.askHint = function(hintsRequested, success, error) {
+      scope.platform.askHint = function(hintToken, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
          $http.post('/task/task.php', {
            action: 'askHint',
            sToken: scope.user_item.sToken,
-           hintsRequested: hintsRequested,
+           hintToken: hintToken,
            userItemId: scope.user_item.ID
           }, {
             responseType: 'json'

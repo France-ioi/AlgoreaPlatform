@@ -454,6 +454,7 @@ var models = {
           bFinished: {type: "boolean", label: "", readOnly: true},
           bKeyObtained: {type: "boolean", label: "", readOnly: true},
           nbTasksWithHelp: {type: "int", label: "", readOnly: true},
+          sHintsRequested: {type: "string", label: "", readOnly: true},
           nbHintsCached: {type: "int", label: "", readOnly: true},
           nbCorrectionsRead: {type: "int", label: "", readOnly: true},
           iPrecision: {type: "int", label: "", readOnly: true},

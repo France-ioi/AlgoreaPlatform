@@ -51,6 +51,11 @@ function getTokenParams($request) {
       echo json_encode(array('result' => false, 'error' => 'missing idUser or itemUrl in token'));
       exit;
    }
+   if(isset($request['hintToken'])) {
+      // TODO :: the tokenParser should be using the platform parameters
+      $hintParams = $tokenParser->decodeJWS($request['hintToken']);
+      $params['askedHint'] = $hintParams['askedHint'];
+   }
    if (!isset($params['idItemLocal'])) {
       $stmt = $db->prepare('select idItem from users_answers where ID = :idUserAnswer;');
       $stmt->execute(['idUserAnswer' => $params['idUserAnswer']]);
@@ -174,6 +179,10 @@ function askValidation($request, $db) {
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
    $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'sAnswer' => $request['sAnswer']));
+   $query = "SELECT sHintsRequested, nbHintsCached FROM `users_items` WHERE idUser = :idUser AND idItem = :idItem;";
+   $stmt = $db->prepare($query);
+   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
+   $hintsInfo = $stmt->fetch(PDO::FETCH_ASSOC);
    $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
@@ -187,7 +196,9 @@ function askValidation($request, $db) {
       'idItemLocal' => $params['idItemLocal'],
       'idUserAnswer' => $ID,
       'platformName' => $config->platform->name,
-      'randomSeed' => 0
+      'randomSeed' => 0,
+      'sHintsRequested' => $hintsInfo['sHintsRequested'],
+      'nbHintsGiven' => $hintsInfo['nbHintsCached']
    );
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $answerToken = $tokenGenerator->encodeJWS($answerParams);
@@ -196,6 +207,9 @@ function askValidation($request, $db) {
 
 function askHint($request, $db) {
    global $config;
+   // User asks for a hint: we record the request in users_items and generate a
+   // new token to tell the task we recorded the hint request
+
    $params = getTokenParams($request);
    $canValidate = checkSubmissionRight($params['idItemLocal'], $params['idUser']);
    if (!$canValidate['result']) {
@@ -203,14 +217,34 @@ function askHint($request, $db) {
       return;
    }
    createUserItemIfMissing($request['userItemId'], $params);
-   $query = "UPDATE `users_items` SET nbHintsCached = nbHintsCached + 1, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
-   $stmt = $db->prepare($query);
+
+   // Get the previours hints requested JSON data
+   $stmt = $db->prepare("SELECT sHintsRequested FROM `users_items` WHERE idUser = :idUser AND idItem = :idItem;");
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
+   if($hintsRequested = $stmt->fetchColumn()) {
+      try {
+         $hintsRequested = json_decode($hintsRequested, true);
+         if(!is_array($hintsRequested)) {
+            error_log("Unable to read sHintsRequested from user " . $params['idUser'] . ", item " . $params['idItemLocal'] . " (not an array)");
+            $hintsRequested = array();
+         }
+      } catch(Exception $e) {
+         error_log("Unable to read sHintsRequested from user " . $params['idUser'] . ", item " . $params['idItemLocal'] . " (invalid JSON)");
+         $hintsRequested = array(); // Should we just fail here?
+      }
+   } else {
+      $hintsRequested = array();
+   }
+   $hintsRequested[] = $params['askedHint'];
+
+   $query = "UPDATE `users_items` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
+   $stmt = $db->prepare($query);
+   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested)));
    Listeners::UserItemsAfter($db);
 
-   $params['nbHintsGiven'] = $params['nbHintsGiven'] + 1;
    $params['platformName'] = $config->platform->name;
-   $params['hintsRequested'] = $request['hintsRequested'];
+   $params['sHintsRequested'] = json_encode($hintsRequested);
+   $params['nbHintsGiven'] = count($hintsRequested);
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $token = $tokenGenerator->encodeJWS($params);
    echo json_encode(array('result' => true, 'sToken' => $token));
@@ -274,7 +308,7 @@ function graderResult($request, $db) {
 
 function getToken($request, $db) {
    global $config;
-   $query = 'select `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
+   $query = 'select `users_items`.`sHintsRequested`, `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
    'from `items` '.
    'join `groups_items` on `groups_items`.`idItem` = `items`.`ID` '.
    'join `users_items` on `users_items`.`idItem` = `items`.`ID` '.
@@ -304,6 +338,7 @@ function getToken($request, $db) {
       'bAccessSolutions' => $bAccessSolutions,
       'bSubmissionPossible' => true,
       'bHintsAllowed' => $data['bHintsAllowed'],
+      'sHintsRequested' => $data['sHintsRequested'],
       'nbHintsGiven' => $data['nbHintsCached'],
       'bIsAdmin' => false,
       'bReadAnswers' => true,
