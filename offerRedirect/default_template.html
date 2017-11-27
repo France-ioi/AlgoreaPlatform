@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <style>
+        section {
+            width: 400px;
+            margin: 50px auto;
+        }
+        section.controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        form {
+            display: inline-block;
+        }
+    </style>
+    <section class="message">{{message}}</section>
+    <section class="controls">
+        <form method="post" action="{{action}}">
+            <input type="hidden" name="{{key}}" value="{{value_yes}}"/>
+            <button type="submit">{{label_yes}}</button>
+        </form>
+        <form method="post" action="{{action}}">
+            <input type="hidden" name="{{key}}" value="{{value_no}}"/>
+            <button type="submit">{{label_no}}</button>
+            <input type="checkbox" name="{{keyr}}"/> {{label_remember}}
+        </form>
+    </section>
+</body>
+</html>
