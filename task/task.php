@@ -52,9 +52,26 @@ function getTokenParams($request) {
       exit;
    }
    if(isset($request['hintToken'])) {
-      // TODO :: the tokenParser should be using the platform parameters
-      $hintParams = $tokenParser->decodeJWS($request['hintToken']);
-      $params['askedHint'] = $hintParams['askedHint'];
+      // There's a hintToken to decode too
+      // Get task platform information
+      $query = 'SELECT * from platforms join items on items.idPlatform = platforms.ID where items.ID = :idItem;';
+      $stmt = $db->prepare($query);
+      $stmt->execute(array('idItem' => $params['idItemLocal']));
+      $platform = $stmt->fetch();
+
+      if($platform['bUsesTokens']) {
+         $taskTokenParser = new TokenParser($platform['sPublicKey'], $platform['sName']);
+         try {
+            $hintParams = $taskTokenParser->decodeJWS($request['hintToken']);
+         } catch(Exception $e) {
+            error_log("Unable to read hintToken from user " . $params['idUser'] . ", item " . $params['idItemLocal']);
+         }
+      } else {
+         $hintParams = $request['hintToken'];
+      }
+      if(isset($hintParams['askedHint'])) {
+         $params['askedHint'] = $hintParams['askedHint'];
+      }
    }
    if (!isset($params['idItemLocal'])) {
       $stmt = $db->prepare('select idItem from users_answers where ID = :idUserAnswer;');
@@ -235,13 +252,20 @@ function askHint($request, $db) {
    } else {
       $hintsRequested = array();
    }
-   $hintsRequested[] = $params['askedHint'];
 
+   // Add the new requested hint to the list if it's not in the list yet
+   if(!in_array($params['askedHint'], $hintsRequested)) {
+      $hintsRequested[] = $params['askedHint'];
+   }
+
+   // Update users_items with the hint request
    $query = "UPDATE `users_items` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested)));
+   unset($stmt);
    Listeners::UserItemsAfter($db);
 
+   // Generate a new token
    $params['platformName'] = $config->platform->name;
    $params['sHintsRequested'] = json_encode($hintsRequested);
    $params['nbHintsGiven'] = count($hintsRequested);
