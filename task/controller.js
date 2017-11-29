@@ -109,7 +109,7 @@ angular.module('algorea')
       // Save the state and the answer
       $scope.task.getState(function(state) {
          $scope.task.getAnswer(function(answer) {
-            if ($scope.canGetState && (state != $scope.user_item.sState || answer != $scope.user_item.sAnswer)) {
+            if ($scope.canGetState) {
                $scope.user_item.sState = state;
                $scope.user_item.sAnswer = answer;
                ModelsManager.updated('users_items', $scope.user_item.ID);

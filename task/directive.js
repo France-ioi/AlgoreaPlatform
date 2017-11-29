@@ -206,7 +206,7 @@ angular.module('algorea')
 
                // Save state while evaluating
                scope.task.getState(function(state) {
-                  if (scope.canGetState && (state != scope.user_item.sState || answer != scope.user_item.sAnswer)) {
+                  if (scope.canGetState) {
                      scope.user_item.sState = state;
                      scope.user_item.sAnswer = answer;
                      ModelsManager.updated('users_items', scope.user_item.ID);
