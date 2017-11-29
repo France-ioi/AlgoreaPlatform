@@ -105,24 +105,30 @@ angular.module('algorea')
       }
       $scope.syncHeight();
    };
+   $scope.saveStateAnswer = function(callback) {
+      // Save the state and the answer
+      $scope.task.getState(function(state) {
+         $scope.task.getAnswer(function(answer) {
+            if ($scope.canGetState && (state != $scope.user_item.sState || answer != $scope.user_item.sAnswer)) {
+               $scope.user_item.sState = state;
+               $scope.user_item.sAnswer = answer;
+               ModelsManager.updated('users_items', $scope.user_item.ID);
+            }
+            callback();
+         });
+      });
+   };
 
    $scope.$on('$destroy', function() {
       if ($scope.task) {
-         $scope.task.getState(function(state) {
-            $scope.task.getAnswer(function(answer) {
-               if ($scope.canGetState && (state != $scope.user_item.sState || answer != $scope.user_item.sAnswer)) {
-                  $scope.user_item.sState = state;
-                  $scope.user_item.sAnswer = answer;
-                  ModelsManager.updated('users_items', $scope.user_item.ID, false, true);
-               }
-               $scope.canGetState = false;
-               var task = $scope.task;
-               if (task) {
-                  $scope.task.unload(function(){
-                     task.chan.destroy();
-                  }, function(){});
-               }
-            });
+         $scope.saveStateAnswer(function() {
+            $scope.canGetState = false;
+            var task = $scope.task;
+            if (task) {
+               $scope.task.unload(function(){
+                  task.chan.destroy();
+               }, function(){});
+            }
          });
          angular.forEach($scope.intervals, function(interval) {
             $interval.cancel(interval);

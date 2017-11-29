@@ -155,6 +155,8 @@ angular.module('algorea')
             };
             scope.task.getAnswer(function (answer) {
                if (scope.loadedUserItemID != scope.user_item.ID) error('scope.loadedUserItemID != scope.user_item.ID');
+
+               // Get validation token to send to the task
                $http.post('/task/task.php', {
                  action: 'askValidation',
                  sToken: scope.user_item.sToken,
@@ -172,6 +174,7 @@ angular.module('algorea')
                   } else if (validateUserItemID != scope.user_item.ID) {
                      error('got validate from another task');
                   } else if (scope.item.sValidationType != 'Manual') {
+                     // Create the user_answer corresponding to this submission
                      var newAnswer = ModelsManager.createRecord('users_answers');
                      newAnswer.ID = postRes.answer.idUserAnswer;
                      newAnswer.idItem = postRes.answer.idItemLocal;
@@ -188,6 +191,7 @@ angular.module('algorea')
                      // to change the sSubmissionDate to ModelsManager.now()
                      scope.item.last_answer = newAnswer;
 
+                     // Grade the task
                      scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
                         if (success) { success(); }
                         if (validated && mode == 'next') {
@@ -198,6 +202,15 @@ angular.module('algorea')
                })
                .error(function() {
                   error("error calling task.php");
+               });
+
+               // Save state while evaluating
+               scope.task.getState(function(state) {
+                  if (scope.canGetState && (state != scope.user_item.sState || answer != scope.user_item.sAnswer)) {
+                     scope.user_item.sState = state;
+                     scope.user_item.sAnswer = answer;
+                     ModelsManager.updated('users_items', scope.user_item.ID);
+                  }
                });
             }, function() {
               ErrorLogger.logTaskError(scope.item.sUrl);
@@ -375,32 +388,37 @@ angular.module('algorea')
             return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
+            // New task URL
             if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Course')) {
                return;
             }
-            scope.taskLoaded = false;
-            scope.canGetState = false;
-            //scope.selectTab('task');
-            scope.currentView = null;
             angular.forEach(scope.intervals, function(interval, name) {
                $interval.cancel(interval);
             });
             scope.intervals = {};
             var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (scope.task && !scope.task.unloaded) {
-               scope.task.unloaded = true;
-               scope.task.unload(function() {
-                  if (!sameUrl) {
-                     TaskProxyManager.deleteTaskProxy(scope.taskName);
-                     elem[0].src = '';
-                     $timeout(function() {initTask(sameUrl);});
-                  } else {
-                     scope.task.updateToken(scope.user_item.sToken, function() {
-                        initTask(sameUrl);
-                     });
-                  }
+               scope.saveStateAnswer(function () {
+                  scope.task.unload(function() {
+                     scope.taskLoaded = false;
+                     scope.canGetState = false;
+                     scope.currentView = null;
+                     scope.task.unloaded = true;
+                     if (!sameUrl) {
+                        TaskProxyManager.deleteTaskProxy(scope.taskName);
+                        elem[0].src = '';
+                        $timeout(function() {initTask(sameUrl);});
+                     } else {
+                        scope.task.updateToken(scope.user_item.sToken, function() {
+                           initTask(sameUrl);
+                        });
+                     }
+                  });
                });
             } else {
+               scope.taskLoaded = false;
+               scope.canGetState = false;
+               scope.currentView = null;
                if (!sameUrl) {
                   TaskProxyManager.deleteTaskProxy(scope.taskName);
                   elem[0].src = '';
