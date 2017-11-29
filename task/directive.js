@@ -388,7 +388,11 @@ angular.module('algorea')
             return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
-            // New task URL
+            // New task selected
+
+            // Resynchronise changes to users_items
+            SyncQueue.planToSend(0);
+
             if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Course')) {
                return;
             }
@@ -398,23 +402,22 @@ angular.module('algorea')
             scope.intervals = {};
             var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (scope.task && !scope.task.unloaded) {
-               scope.saveStateAnswer(function () {
-                  scope.task.unload(function() {
-                     scope.taskLoaded = false;
-                     scope.canGetState = false;
-                     scope.currentView = null;
-                     scope.task.unloaded = true;
-                     if (!sameUrl) {
-                        TaskProxyManager.deleteTaskProxy(scope.taskName);
-                        elem[0].src = '';
-                        $timeout(function() {initTask(sameUrl);});
-                     } else {
-                        scope.task.updateToken(scope.user_item.sToken, function() {
-                           initTask(sameUrl);
-                        });
-                     }
-                  });
+               scope.task.unload(function() {
+                  scope.taskLoaded = false;
+                  scope.canGetState = false;
+                  scope.currentView = null;
+                  scope.task.unloaded = true;
+                  if (!sameUrl) {
+                     TaskProxyManager.deleteTaskProxy(scope.taskName);
+                     elem[0].src = '';
+                     $timeout(function() {initTask(sameUrl);});
+                  } else {
+                     scope.task.updateToken(scope.user_item.sToken, function() {
+                        initTask(sameUrl);
+                     });
+                  }
                });
+               
             } else {
                scope.taskLoaded = false;
                scope.canGetState = false;

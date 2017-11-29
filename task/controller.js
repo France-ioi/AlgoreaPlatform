@@ -82,9 +82,10 @@ angular.module('algorea')
       if (!$scope.intervals.syncState) {
          $scope.intervals.syncState = $interval(function() {
             if ($scope.canGetState) {
+               var user_item = $scope.user_item;
                $scope.task.getState(function(state) {
                   $scope.task.getAnswer(function(answer) {
-                     if ($scope.canGetState && (state != $scope.user_item.sState || answer != $scope.user_item.sAnswer)) {
+                     if ($scope.canGetState && $scope.user_item === user_item && (state != $scope.user_item.sState || answer != $scope.user_item.sAnswer)) {
                         $scope.user_item.sState = state;
                         $scope.user_item.sAnswer = answer;
                         ModelsManager.updated('users_items', $scope.user_item.ID, false, true);
@@ -107,9 +108,10 @@ angular.module('algorea')
    };
    $scope.saveStateAnswer = function(callback) {
       // Save the state and the answer
+      var user_item = $scope.user_item;
       $scope.task.getState(function(state) {
          $scope.task.getAnswer(function(answer) {
-            if ($scope.canGetState) {
+            if ($scope.canGetState && user_item === $scope.user_item) {
                $scope.user_item.sState = state;
                $scope.user_item.sAnswer = answer;
                ModelsManager.updated('users_items', $scope.user_item.ID);
