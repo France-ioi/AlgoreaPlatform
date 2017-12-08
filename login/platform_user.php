@@ -125,6 +125,72 @@ function addUserToGroupHierarchy($idGroupSelf, $groupHierarchy, $role) {
 
 }
 
+function checkUserInGroupHierarchy($idGroupSelf, $groupHierarchy, $directChild) {
+   global $db;
+   $previousGroupId = null;
+   foreach($groupHierarchy as $groupName) {
+      $groupId = null;
+      if (!$previousGroupId) {
+         $stmt = $db->prepare('select ID from groups where sName = :groupName;');
+         $stmt->execute(['groupName' => $groupName]);
+         $groupId = $stmt->fetchColumn();
+      } else {
+         $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sName = :groupName and groups_groups.idGroupParent = :previousGroupId;');
+         $stmt->execute(['groupName' => $groupName, 'previousGroupId' => $previousGroupId]);
+         $groupId = $stmt->fetchColumn();
+      }
+      if (!$groupId) {
+         return false;
+      }
+      $previousGroupId = $groupId;
+   }
+   if (!$previousGroupId) return false;
+   if($directChild) {
+      $stmt = $db->prepare('select ID from groups_groups WHERE idGroupParent = :groupParent AND idGroupChild = :groupSelf;');
+   } else {
+      $stmt = $db->prepare('select ID from groups_ancestors WHERE idGroupAncestor = :groupParent AND idGroupChild = :groupSelf;');
+   }
+   $stmt->execute(['groupParent' => $previousGroupId, 'groupSelf' => $idGroupSelf]);
+   $relId = $stmt->fetchColumn();
+   return $relId;
+}
+
+
+function assignRandom($idGroupSelf, $groupHierarchy) {
+   global $db;
+   if(checkUserInGroupHierarchy($idGroupSelf, $groupHierarchy, false) !== false) { return; }
+   $previousGroupId = null;
+   foreach($groupHierarchy as $groupName) {
+      $groupId = null;
+      if (!$previousGroupId) {
+         $stmt = $db->prepare('select ID from groups where sName = :groupName;');
+         $stmt->execute(['groupName' => $groupName]);
+         $groupId = $stmt->fetchColumn();
+      } else {
+         $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sName = :groupName and groups_groups.idGroupParent = :previousGroupId;');
+         $stmt->execute(['groupName' => $groupName, 'previousGroupId' => $previousGroupId]);
+         $groupId = $stmt->fetchColumn();
+      }
+      if (!$groupId) {
+         return false;
+      }
+      $previousGroupId = $groupId;
+   }
+   if (!$previousGroupId) return false;
+   $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups_groups.idGroupParent = :previousGroupId;');
+   $stmt->execute(['previousGroupId' => $previousGroupId]);
+   $childIds = [];
+   while($groupId = $stmt->fetchColumn()) {
+      $childIds[] = $groupId;
+   }
+   $targetId = $childIds[array_rand($childIds)];
+   $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+   $stmt->execute(['idGroupParent' => $targetId, 'idGroupChild' => $idGroupSelf]);
+   $stmt = null;
+   Listeners::createNewAncestors($db, "groups", "Group");
+}
+
+
 function handleBadges($idUser, $idGroupSelf, $aBadges) {
    foreach($aBadges as $badge) {
       if (substr($badge, 0, 9) === 'groups://') {

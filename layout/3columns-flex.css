@@ -22,43 +22,11 @@ body {
    display: -webkit-flex;
    display: flex;
 }
-
 #main > article {
-   -webkit-flex: 1 0 600px;
-   flex: 1 0 600px;
    order: 2;
    -webkit-order: 2;
-   min-width:600px;
-}
-.fixed-header-room {
-   display: none;
-}
-/*
-.fixed-header-room {
-   -webkit-flex: 0 0 125px;
-   flex: 0 0 125px;
-}
-
-.fixed-header-room-toggled {
-   -webkit-flex-basis: 25px !important;
-   flex-basis: 25px !important;
-}
-
-@media all and (max-width: 875px) {
-   .fixed-header-room {
-      -webkit-flex-basis: 25px;
-      flex-basis: 25px;
-   }
-
-   .fixed-header-room-toggled {
-      -webkit-flex-basis: 153px !important;
-      flex-basis: 153px !important;
-   }
-}
-*/
-header {
-   z-index: 3;
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+   -webkit-flex: 1 1 auto;
+   flex: 1 1 auto;
 }
 
 footer {
@@ -66,8 +34,6 @@ footer {
    color: white;
    z-index:2;
    flex: 0 0 auto;
-   /*box-shadow: 5px 0px 0px 2px rgba(0, 0, 0, 0.16), 10px 0px 0px 2px rgba(0, 0, 0, 0.12);*/
-   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
 
 .footer-container {
@@ -80,7 +46,7 @@ footer {
 .footer-left {
    -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
-   padding: 0 25px;
+   padding: 0 25px 0 10px;
 }
 
 .footer-center {
@@ -93,43 +59,28 @@ footer {
 .footer-right {
    -webkit-flex: 0 1 auto;
    flex: 0 1 auto;
-   padding: 0 25px;
+   padding: 0 10px 0 25px;
 }
 
-
-#headerContainer {
-   display: -webkit-flex;
-   display: flex;
-   -webkit-flex-flow: column;
-   flex-direction: column;
-}
 
 
 /* Too narrow to support three columns */
 @media all and (max-width: 700px) {
-
-   header {
-      position:initial;
-      -webkit-flex: 0 0 auto;
-      flex: 0 0 auto;
-   }
-
-   #fixed-header-room {
-      display:none;
-   }
-   #sidebar-left {
-      -webkit-flex-basis:auto!important;
-      flex-basis:auto!important;
-   }
-
-   #main, #page {
+   #page {
       -webkit-flex-flow: column;
       flex-direction: column;
    }
 
-   #main > article, #main > nav, #main > aside {
-      /* Return them to document order */
-      -webkit-order: 0;
-       order: 0;
+   footer {
+    font-size: 14px;
    }
+   .footer-left {
+   padding: 0 10px;
+  }
+  .footer-center {
+     padding: 0 10px;
+  }
+  .footer-right {
+     padding: 0 10px;
+  }
 }

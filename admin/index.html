@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <script src="../config.js.php" type="text/javascript"></script>
+      <script src="../errors/error_logger.js"></script>
+      <script src="../bower_components/bowser/src/bowser.js"></script>
       <script src="../bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
       <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
       <script src="../bower_components/angular/angular.min.js"></script>
@@ -14,6 +16,7 @@
       <script src="../bower_components/i18next/i18next.min.js"></script>
       <script src="../bower_components/i18next-xhr-backend/i18nextXHRBackend.min.js"></script>
       <script src="../bower_components/ng-i18next/dist/ng-i18next.min.js"></script>
+      <script src="../bower_components/lodash/dist/lodash.min.js"></script>
       <script>
          var rootUrl = '../commonFramework/';
       </script>
@@ -33,6 +36,7 @@
       <script src="../bower_components/pem-platform/task-xd-pr.js"></script>
       <script src="../task/controller.js" type="text/javascript"></script>
       <script src="../task/directive.js" type="text/javascript"></script>
+      <script src="../navigation/controllers.js" type="text/javascript"></script>
       <script src="groupsCtrl.js" type="text/javascript"></script>
       <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"  type="text/javascript"></script>
       <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
@@ -48,7 +52,10 @@
    </head>
    <body ng-cloak>
       <div ng-show="loginReady" ng-class="loginClass">
-         <span class="loginUserInfo">{{loginInnerHtml}}</span>
+         <div>
+           <span class="loginUserInfo">{{loginInnerHtml}}</span>
+           <div ng-include="templatesPrefix+'/navigation/views/language-selector.html'"></div>
+         </div>
          <iframe id="loginFrame" class="loginFrame" ng-src="{{loginModuleUrl}}"></iframe>
       </div>
       <div ng-hide="loginReady" class="loginCentered">
@@ -152,9 +159,9 @@
       'allowMultiLoading' : false,
       'loadPath': function (lng, ns) {
                     if(ns == 'commonFramework') {
-                      return '/commonFramework/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/commonFramework/i18n/'+lng+'/'+ns+'.json';
                     } else {
-                      return '/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/i18n/'+lng+'/'+ns+'.json';
                     }
                   }
     }

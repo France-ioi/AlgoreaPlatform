@@ -87,13 +87,13 @@ angular.module('algorea')
                   return false;
                },
                objectFilter: function(item) {
-                  if (item.sType == 'Course' || item.sType == 'Presentation') {
+                  if (item.sType == 'Course') {
                      return false;
                   }
                   return true;
                },
                relationFilter: function(item_item) {
-                  if (item_item.child.sType == 'Course' || item_item.child.sType == 'Presentation') {
+                  if (item_item.child.sType == 'Course') {
                      return false;
                   }
                   return true;

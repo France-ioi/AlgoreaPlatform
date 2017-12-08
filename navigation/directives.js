@@ -7,8 +7,8 @@ angular.module('algorea')
       scope: false,
       template: function(element, attrs) {
         if (attrs.from == 'menu') {
-           return '<span class="breadcrumbs-item-{{activityClass}} breadcrumbs-{{activityClass}}-{{lastClass}} breadcrumbs-{{distanceClass}}">' +
-                  '  <span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
+           return '<span ng-if="visible" class="breadcrumbs-item-{{activityClass}} breadcrumbs-{{activityClass}}-{{lastClass}} breadcrumbs-{{distanceClass}}">' +
+                  '<span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
                   '  <a ng-if="!active" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a></span>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,
@@ -25,6 +25,8 @@ angular.module('algorea')
             scope.user_item = scope.item && scope.item.ID > 0 ? itemService.getUserItem(scope.item) : null;
             scope.item_item = scope.item && scope.item.ID > 0 ? scope.selectItemItem(scope.item, scope.parentItemID) : null;
             scope.depth = scope.item && scope.item.breadCrumbsDepth ? scope.item.breadCrumbsDepth : 0;
+            scope.visible = scope.item && !scope.item.bTransparentFolder;
+            scope.active_tab=0;
             if (from == 'menu') {
                scope.lastClass = (scope.depth+1 == scope.pathParams.path.length) ? 'last' : 'not-last'; // IE8 doesn't support the :not(:last-child) selector...
                scope.active = (scope.depth+1 == scope.pathParams.selr);
@@ -41,11 +43,12 @@ angular.module('algorea')
                   scope.setPercentDone(scope.item);
                   scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'/'+scope.item.ID;
                   scope.activityClass = (scope.pathParams.selr != 'r' && scope.item.ID == scope.pathParams.path[scope.pathParams.selr-1]) ? 'active' : 'inactive';
+               } else if (from == "children-list") {
+                  scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'/'+scope.item.ID;
                } else {
                   scope.relativePath = '';
                }
                scope.depth = (scope.depth === undefined) ? 0 : scope.depth + 1;
-               scope.children = scope.getChildren();
             }
          };
          scope.init(attrs.from);
@@ -59,6 +62,9 @@ angular.module('algorea')
                }
                scope.activityClass = (scope.pathParams.selr != 'r' && scope.item.ID == scope.pathParams.path[scope.pathParams.selr-1]) ? 'active' : 'inactive';
             }
+         });
+         scope.$on('algorea.languageChanged', function() {
+            scope.strings = scope.item && scope.item.ID > 0 ? itemService.getStrings(scope.item) : null;
          });
       }
     };

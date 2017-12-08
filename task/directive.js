@@ -90,8 +90,20 @@ angular.module('algorea')
          }
       };
       scope.platform.updateHeight = function(height, success, error) {
+         // TODO :: remove once we are sure it's not used anymore
+         console.log("updateHeight is deprecated and shouldn't be called");
          scope.updateHeight(height);
          if (success) { success(); }
+      };
+      scope.platform.updateDisplay = function(data, success, error) {
+         // Task asked the platform to update display
+         if(data.height) {
+            scope.updateHeight(data.height);
+         }
+         if(data.views) {
+            scope.setTabs(data.views);
+         }
+         if(success) { success(); }
       };
       // move to next item in same chapter
       scope.moveToNextImmediate = function() {
@@ -169,6 +181,8 @@ angular.module('algorea')
                .error(function() {
                   error("error calling task.php");
                });
+            }, function() {
+              ErrorLogger.logTaskError(scope.item.sUrl);
             });
          }
       };
@@ -181,7 +195,7 @@ angular.module('algorea')
             } else if (res.options && key in res.options) {
                res = res.options[key];
             } else {
-               res = (typeof defaultValue !== 'undefined') ? defaultValue : null; 
+               res = (typeof defaultValue !== 'undefined') ? defaultValue : null;
             }
          }
          if (success) {
@@ -241,7 +255,7 @@ angular.module('algorea')
                   // An item has been unlocked, need to reset sync as for some
                   // reason it doesn't get the changes
                }
-               scope.user_item.iScore = Math.max(scope.user_item.iScore, 10*score);
+               scope.user_item.iScore = Math.max(scope.user_item.iScore, score);
                $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
                scope.$applyAsync();
                if (success) { success(postRes.bValidated); } else { return postRes.bValidated; };
@@ -312,7 +326,7 @@ angular.module('algorea')
             if (scope.item.sUrl) {
                if (scope.item.bUsesAPI) {
                   var itemUrl = scope.item.sUrl;
-                  scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name));
+                  scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name, $rootScope.sLocale));
                   // we save the value, to compare it with the new one if iframe is reloaded
                   scope.itemUrl = itemUrl;
                } else {
@@ -325,7 +339,7 @@ angular.module('algorea')
             elem[0].src = scope.taskUrl;
             $timeout(function() { loadTask(scope, elem, sameUrl);});
          }
-         if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Presentation' || scope.item.sType == 'Course')) {
+         if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Course')) {
             initTask(false);
          }
          // function comparing two url, returning true if the iframe won't be reloaded
@@ -333,11 +347,11 @@ angular.module('algorea')
          function isSameBaseUrl(oldItemUrl, newItemUrl) {
             if (!oldItemUrl || !newItemUrl) {return false;}
             var baseOldItemUrl = oldItemUrl.indexOf('#') == -1 ? oldItemUrl : oldItemUrl.substr(0, oldItemUrl.indexOf('#'));
-            var baseNewItemUrl = newItemUrl.indexOf('#') == -1 ? newItemUrl : newItemUrl.substr(0, newItemUrl.indexOf('#'));  
+            var baseNewItemUrl = newItemUrl.indexOf('#') == -1 ? newItemUrl : newItemUrl.substr(0, newItemUrl.indexOf('#'));
             return baseNewItemUrl == baseOldItemUrl;
          }
          function reinit() {
-            if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Presentation' && scope.item.sType !== 'Course')) {
+            if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Course')) {
                return;
             }
             scope.taskLoaded = false;
@@ -381,6 +395,20 @@ angular.module('algorea')
                reinit();
             }
          });
+         scope.$on('algorea.languageChanged', function(event) {
+            if (scope.itemUrl) {
+               scope.itemUrl = null; // Avoid considering it's the same URL as we just changed language
+               reinit();
+            }
+         });
       },
     };
+}]);
+
+
+angular.module('algorea').factory('$exceptionHandler', ['$log', function($log) {
+  return function (exception, cause) {
+    $log.error(exception, cause);
+    ErrorLogger.log(exception.message, exception.fileName, exception.lineNumber, exception.columnNumber, exception);
+  }
 }]);

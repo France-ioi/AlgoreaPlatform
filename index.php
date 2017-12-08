@@ -1,3 +1,9 @@
+<?php
+        require_once "config.php";
+        require_once 'offerRedirect/platform_redirect.php';
+        PlatformRedirect::process($config->shared->domains['current']);
+        $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
+?>
 <!DOCTYPE html>
 <?php
 require_once "config.php";
@@ -11,8 +17,8 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
     <meta http-equiv="Content-Language" content="<?=$defaultLanguage ?>" />
     <title ng-bind="domainTitle"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
-    <base href="/">
-    <script type="text/javascript">
+    <base href="<?=$base_href?>">
+      <script type="text/javascript">
       <?php
         $assetsBaseUrl = '';
         $urlArgs = '';
@@ -55,6 +61,7 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
         echo 'var config = '.json_encode($config->shared).';';
       ?>
     </script>
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <?php if (!$compiledMode): ?>
       <link rel="stylesheet" href="<?= includeFile('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>">
       <link href="<?= includeFile('layout/3columns-flex.css') ?>" rel="stylesheet" type="text/css" />
@@ -78,7 +85,6 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
     <?php endif; ?>
     <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
-    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     #animation-debut {
       position:absolute;
@@ -101,19 +107,21 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
     }
     </style>
 </head>
-<body ng-controller="layoutController" id="body" ng-cloak>
+<body ng-controller="layoutController" id="body" ng-cloak ng-class="{'mobile-layout': isMobileLayout, 'has-sidebar-left-open': sidebarLeftIsOpen}">
 <?php if ($animationHtmlFile): ?>
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
-<div id="navOverlay" ng-if="navOverlay" ng-click="layout.closeNavOverlay()"></div>
+<div ng-if="showNavTopOverlay" id="navTopOverlay" ng-click="layout.closeNavTopOverlay()"></div>
+<div ng-if="showMobileNavTopOverlay" id="mobileNavTopOverlay" ng-click="layout.closeMobileNavTop()"></div>
+<div ng-if="showSidebarLeftOverlay" id="sidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
 <div id="fixed-header-room" class="fixed-header-room"></div>
 <header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
 </header>
 <div id='main'>
 
-<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-hide="layout.isMenuClosed()"></nav>
+<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-show="hasSidebarLeft"></nav>
 
-<article id="view-right" ui-view="right" autoscroll="false" ng-click="layout.closeIfOpen();"></article>
+<article id="view-right" ui-view="right" autoscroll="false"></article>
 
 </div>
 
@@ -140,6 +148,7 @@ function startAnimation() {
 }
 if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAnimation();
 </script>
+<script src="<?= includeFile('errors/error_logger.js') ?>"></script>
 <?php if (!$compiledMode): ?>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
   <?php if ($usesForum): ?>
@@ -149,6 +158,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     <script src="<?= includeFile('ext/inheritance.js') ?>" type="text/javascript"></script>
     <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <?php endif; ?>
+  <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_'.$config->shared->domains['current']->defaultAngularLocale.'.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-sanitize/angular-sanitize.min.js') ?>"></script>
@@ -157,6 +167,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('bower_components/i18next/i18next.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/i18next-xhr-backend/i18nextXHRBackend.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/ng-i18next/dist/ng-i18next.min.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/js-md5/build/md5.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/jschannel/src/jschannel.js') ?>"></script>
   <script src="<?= includeFile('bower_components/pem-platform/task-xd-pr.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/modelsManager/modelsManager.js') ?>"></script>
@@ -206,16 +217,16 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     'lng' => $defaultLanguage,
     'fallbackLng' => ['en', 'fr'],
     'fallbackNS' => 'algorea',
-    'debug' => true,
+//    'debug' => true,
     'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea']
     ]); ?>;
   i18nextOpts['backend'] = {
     'allowMultiLoading': false,
     'loadPath': function (lng, ns) {
                     if(ns == 'commonFramework') {
-                      return '/commonFramework/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/commonFramework/i18n/'+lng+'/'+ns+'.json';
                     } else {
-                      return '/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/i18n/'+lng+'/'+ns+'.json';
                     }
                   }
     };

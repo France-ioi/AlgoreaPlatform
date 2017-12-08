@@ -116,7 +116,7 @@ angular.module('algorea')
    $scope.layout.isOnePage(true);
    $scope.layout.hasMap('never');
    $scope.groupFields = models.groups.fields;
-   
+
    function getThread(user_item) {
       if (!user_item.item) {
          return null;
@@ -274,7 +274,7 @@ angular.module('algorea')
       $scope.events.splice(_.sortedIndexBy($scope.events, event, function(event) {return event.date;}), 0, event);
       if ($scope.events.length > $scope.numberOfEvents) {
          $scope.events.shift();
-         $scope.oldestEventDate = $scope.events[$scope.events.length-1].date;   
+         $scope.oldestEventDate = $scope.events[$scope.events.length-1].date;
       }
    };
 
@@ -296,7 +296,7 @@ angular.module('algorea')
             insertEvent(userItem, 'hint', userItem.sLastHintDate);
          }
          if (userItem.sThreadStartDate > $scope.oldestEventDate) {
-            insertEvent(userItem, 'newThread', userItem.sThreadStartDate);  
+            insertEvent(userItem, 'newThread', userItem.sThreadStartDate);
          }
       });
       _.reverse($scope.events);
@@ -534,7 +534,7 @@ angular.module('algorea')
          } else {
             // deleting on the js side due to limitations of the requestSet deletion algorithm
             angular.forEach($scope.group.parents, function(parent) {
-               ModelsManager.deleted('groups_groups', parent.ID);   
+               ModelsManager.deleted('groups_groups', parent.ID);
             });
             ModelsManager.deleted('groups', $scope.group.ID);
             SyncQueue.planToSend(0);
@@ -567,7 +567,7 @@ angular.module('algorea')
       })
       .error(function() {
          console.error("error calling groupAdmin/api.php");
-      }); 
+      });
    };
 
    $scope.changeAdminRole = function(group_group, sRole) {
@@ -580,7 +580,7 @@ angular.module('algorea')
       })
       .error(function() {
          console.error("error calling groupAdmin/api.php");
-      }); 
+      });
    };
 
    $scope.startSync = function(groupId, itemId, callback) {
@@ -690,7 +690,7 @@ angular.module('algorea')
       if (!item) return;
       angular.forEach(item.children, function(child_item_item) {
          var child_item = child_item_item.child;
-         if (child_item.sType != 'Course' && child_item.sType != 'Presentation') {
+         if (child_item.sType != 'Course') {
             itemsList.push(child_item);
             itemsListRev[child_item.ID] = true;
          }
@@ -814,7 +814,7 @@ angular.module('algorea')
       })
       .error(function() {
          console.error("error calling groupAdmin/api.php");
-      }); 
+      });
    };
 
    $scope.init = function() {
@@ -853,7 +853,7 @@ angular.module('algorea')
    $scope.$on('$destroy', function() {
       $scope.stopSync();
    });
-   
+
    $scope.loading = true;
    itemService.onNewLoad($scope.init);
 

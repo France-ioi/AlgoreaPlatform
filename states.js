@@ -29,17 +29,7 @@ angular.module('algorea')
             },
             views: {
                'left': {
-                   template: '<div class="sidebar-left-content sidebar-left-content-title"><div class="sidebar-left-item" ng-controller="leftNavItemController" ng-class="backgroundClass" ng-if="!item.private_showpres" ng-click="layout.toggleLeft();">'+
-   '<div class="sidebar-left-item-content-container">'+
-      '<div class="sidebar-left-item-content">'+
-         '<div class="sidebar-left-item-contents-icon1">'+
-            '<span class="material-icons">menu</span>'+
-         '</div>'+
-         '<div class="sidebar-left-item-contents-text">Navigation</div>'+
-      '</div>'+
-   '</div>'+
-   '</div>'+
-   '</div><div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList"></div>',
+                   template: '<div class="sidebar-left-content" ng-include="\''+templatesPrefix+'navigation/views/navbaritem.html\'" ng-repeat="item in itemsList track by $index"></div>',
                    controller: 'leftNavigationController',
                 },
                 'right': {
@@ -84,6 +74,7 @@ angular.module('algorea')
             views: {
                'left': {
                    template: '',
+                   controller: 'leftNavigationController',
                 },
                 'right': {
                    templateUrl: templatesPrefix+'forum/index.html',
@@ -170,7 +161,7 @@ angular.module('algorea')
 angular.module('algorea')
    .service('pathService', ['$stateParams', '$state', '$rootScope', '$timeout', 'itemService','$view','$window','$location', function($stateParams, $state, $rootScope, $timeout, itemService,$view, $window,$location) {
      /* Warning: tricks at work here!
-      * 
+      *
       * As of today (2014-03-18), none of the available routers handle the possibility
       * to have query params reload the views and others not. But we have to
       * do that here, and we do it with the following code.
@@ -230,7 +221,7 @@ angular.module('algorea')
             }
          }
       });
-    /* 
+    /*
      * Simple service for path parsing and analysis and url factoring
      */
       return {
@@ -278,6 +269,7 @@ angular.module('algorea')
            }
            var sell = panel=='left' ? pathParams.sell : pathParams.selr;
            var path = pathParams.basePathStr + relativePath;
+           sell = '' + (parseInt(sell) + Math.max(relativePath.split('/').length - 2, 0)); // If we're going much deeper, jump
            var selr = null;
            if (pathParams.pathStr.substring(0, path.length) == path && (pathParams.path[path.length+1] || pathParams.pathStr[path.length+1]=='/')) {
               selr = pathParams.baseDepth + depth;
@@ -313,7 +305,7 @@ angular.module('algorea')
         },
         goToResolution: function(pathParams) {
            $state.go('contents', {
-              path:   pathParams.pathStr, 
+              path:   pathParams.pathStr,
               sell:   pathParams.selr,
               selr:   pathParams.selr,
               viewl:  pathParams.viewl,
@@ -323,13 +315,13 @@ angular.module('algorea')
         openItemFromLink: function(itemId, pathParams, pane) {
            if (itemService.isSonOf(itemId, pathParams.currentItemID)) {
               $state.go('contents', {
-                 path:   pathParams.basePathStr+'/'+itemId, 
+                 path:   pathParams.basePathStr+'/'+itemId,
                  sell:   pane == 'right' ? pathParams.selr : pathParams.sell,
                  selr:   pane == 'right' ? parseInt(pathParams.selr)+1 : parseInt(pathParams.sell)+1,
               });
            } else {
               $state.go('contents', {
-                 path:   itemId, 
+                 path:   itemId,
                  sell:   -1,
                  selr:   1,
               });
