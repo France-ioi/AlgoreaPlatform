@@ -688,7 +688,7 @@ angular.module('algorea')
             }
          });
          if(newLocales.length) { $scope.locales = newLocales; }
-         $scope.filterLocales();
+         $scope.filterLocales(noApply);
          if(noApply !== true) {
             $scope.$apply();
          }
@@ -707,7 +707,7 @@ angular.module('algorea')
       };
 
       // Handle locales
-      $scope.filterLocales = function() {
+      $scope.filterLocales = function(noApply) {
          for(var i = $scope.locales.length - 1; i > -1; i--) {
             var locale = $scope.locales[i];
             if(config.domains.current.availableLanguages && config.domains.current.availableLanguages.split(',').indexOf(locale.id) == -1) {
@@ -715,7 +715,11 @@ angular.module('algorea')
                $scope.locales.splice(i, 1);
             }
             if($scope.init && locale.id == config.domains.current.defaultLanguage) {
-               $scope.curLocale = locale;
+               if(noApply) {
+                  $scope.curLocale = locale;
+               } else {
+                  $scope.changeLocale(locale);
+               }
                $scope.init = false;
             }
          };
