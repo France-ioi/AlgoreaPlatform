@@ -1,0 +1,24 @@
+<div ng-controller="groupsAccountsDeleteCtrl" ng-if="group && group.sType != 'UserSelf'">
+    <div class="form-group">
+        <button ng-if="!expanded" class="btn btn-default" ng-click="expand()">Delete users from this group</button>
+    </div>
+
+    <div ng-if="expanded">
+        <h3>Delete users from this group</h3>
+        <p>This tool allows you to delete batches of generated logins and passwords</p>
+
+        <div class="form-group">
+            <label>Username prefix:</label>
+            <input class="form-control" ng-model="login.prefix" ng-change="refreshExampleLogin()"></textarea>
+        </div>
+        <div class="form-group" ng-if="login.example">
+            Example of generated login: <strong>{{login.example}}</strong>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" ng-click="deleteUsers()" ng-disabled="fetching">Delete users</button>
+        </div>
+    </div>
+    <div class="alert alert-danger" ng-if="error">{{error}}</div>
+    <div class="alert alert-success" ng-if="success">Accounts deleted</div>
+</div>

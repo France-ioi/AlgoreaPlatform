@@ -23,6 +23,8 @@
 <div ng-if="group && group.sType == 'UserSelf'">
    <p ng-i18next="admin_no_add_userself"></p>
 </div>
+
+<!-- invites -->
 <div ng-controller="groupInvitationCtrl" ng-if="group && group.sType != 'UserSelf'">
    <span ng-if="error"><strong>{{Error}}</strong></span>
    <div ng-if="!error">
@@ -67,3 +69,7 @@
       </div>
    </div>
 </div>
+
+
+<div ng-include="'tabs/groups_accounts_create.html'"></div>
+<div ng-include="'tabs/groups_accounts_delete.html'"></div>

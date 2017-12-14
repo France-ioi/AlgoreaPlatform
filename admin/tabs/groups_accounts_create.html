@@ -1,0 +1,69 @@
+<div ng-controller="groupsAccountsCreateCtrl" ng-if="group && group.sType != 'UserSelf'">
+    <div class="form-group">
+        <button ng-if="!expanded" class="btn btn-default" ng-click="expand()">Create users for this group</button>
+    </div>
+
+    <div ng-if="expanded">
+        <h3>Create users for this group</h3>
+        <p>This tool allows you to create batches of generated logins and passwords to distribute to students.
+        The users created this way will automatically be added to the group {{group.sName}}</p>
+
+        <div class="checkboxSwitch">
+            <input type="checkbox" id="users_in_ubgroups" class="switch" ng-click="users_in_subgroups=!users_in_subgroups">
+            <label for="users_in_ubgroups"><span></span></label>
+            Create users in subgroups
+        </div>
+
+        <div class="form-group" ng-if="!users_in_subgroups">
+            <label>Number of users to create in this group</label>
+            <input type="text" class="form-control" ng-model="login.amount"/>
+        </div>
+
+
+        <div ng-if="users_in_subgroups">
+            <div class="form-group">
+                <label>Provide the name of the subgroups, one per line:</label>
+                <textarea class="form-control" ng-model="subgroups.list" rows="5" ng-change="calculateSubgoupsTotal()"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Number of users to create in each subgroup:</label>
+                <input type="text" class="form-control" ng-model="subgroups.users_per_subgroup" ng-change="calculateSubgoupsTotal()"/>
+            </div>
+            <div>
+                The total number of users created will be: {{subgroups.total}}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Username prefix:</label>
+            <input class="form-control" ng-model="login.prefix" ng-change="refreshExampleLogin()"></textarea>
+        </div>
+        <div class="form-group" ng-if="login.example">
+            Example of generated login: <strong>{{login.example}}</strong>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" ng-click="createUsers()" ng-disabled="fetching">Create users</button>
+        </div>
+
+    </div>
+    <div class="alert alert-danger" ng-if="error">{{error}}</div>
+
+    <div ng-if="accounts.length">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th ng-i18next="login"></th>
+                    <th ng-i18next="password"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="account in accounts">
+                    <td>{{account.login}}</td>
+                    <td>{{account.password}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

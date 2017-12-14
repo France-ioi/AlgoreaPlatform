@@ -4,6 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+    "hash": "ba005991a2cd3819b39c112298e99b27",
     "content-hash": "41eaafa9c1eb0fc64e7dd5e3b79a4b0e",
     "packages": [
         {
@@ -103,7 +104,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2017-05-04T02:00:24+00:00"
+            "time": "2017-05-04 02:00:24"
         },
         {
             "name": "fgrosse/phpasn1",
@@ -172,7 +173,7 @@
                 "x509",
                 "x690"
             ],
-            "time": "2016-10-29T15:46:46+00:00"
+            "time": "2016-10-29 15:46:46"
         },
         {
             "name": "franceioi/login-module-client",
@@ -180,9 +181,10 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/France-ioi/login-module-client.git",
-                "reference": "aac095420f9b26edbff19f3afe864641aa07ee1b"
+                "reference": "8ab80fd833e73b3b26fbd29ce3a212a3bd4d7c06"
             },
             "require": {
+                "guzzlehttp/guzzle": "^6.3",
                 "league/oauth2-client": "^2.0",
                 "php": "^5.4|^7.0"
             },
@@ -196,7 +198,7 @@
                 "MIT"
             ],
             "description": "Login Module Client Library",
-            "time": "2017-03-31 03:31:57"
+            "time": "2017-12-13 17:57:24"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -261,7 +263,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-06-22T18:50:49+00:00"
+            "time": "2017-06-22 18:50:49"
         },
         {
             "name": "guzzlehttp/promises",
@@ -312,7 +314,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20T10:07:11+00:00"
+            "time": "2016-12-20 10:07:11"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -377,25 +379,25 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20T17:10:46+00:00"
+            "time": "2017-03-20 17:10:46"
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "5f57366c99ac013ee9d78670c1fc0b9ca7871d95"
+                "reference": "313250eab923e673a5c0c8f463f443ee79f4383f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/5f57366c99ac013ee9d78670c1fc0b9ca7871d95",
-                "reference": "5f57366c99ac013ee9d78670c1fc0b9ca7871d95",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/313250eab923e673a5c0c8f463f443ee79f4383f",
+                "reference": "313250eab923e673a5c0c8f463f443ee79f4383f",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.0",
-                "paragonie/random_compat": "^2.0",
+                "paragonie/random_compat": "^1|^2",
                 "php": ">=5.6.0"
             },
             "require-dev": {
@@ -444,7 +446,7 @@
                 "oauth2",
                 "single sign on"
             ],
-            "time": "2017-02-02T04:08:45+00:00"
+            "time": "2017-04-25 14:43:14"
         },
         {
             "name": "mdanter/ecc",
@@ -510,7 +512,7 @@
                 "phpecc",
                 "secp256k1"
             ],
-            "time": "2017-01-04T12:13:24+00:00"
+            "time": "2017-01-04 12:13:24"
         },
         {
             "name": "paragonie/random_compat",
@@ -558,7 +560,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2017-03-13T16:27:32+00:00"
+            "time": "2017-03-13 16:27:32"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -650,7 +652,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2017-06-05T06:31:10+00:00"
+            "time": "2017-06-05 06:31:10"
         },
         {
             "name": "psr/cache",
@@ -696,7 +698,7 @@
                 "psr",
                 "psr-6"
             ],
-            "time": "2016-08-06T20:24:11+00:00"
+            "time": "2016-08-06 20:24:11"
         },
         {
             "name": "psr/http-message",
@@ -746,7 +748,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06T14:39:51+00:00"
+            "time": "2016-08-06 14:39:51"
         },
         {
             "name": "spomky-labs/aes-key-wrap",
@@ -806,7 +808,7 @@
                 "padding",
                 "wrap"
             ],
-            "time": "2017-03-25T21:07:11+00:00"
+            "time": "2017-03-25 21:07:11"
         },
         {
             "name": "spomky-labs/base64url",
@@ -858,7 +860,7 @@
                 "safe",
                 "url"
             ],
-            "time": "2016-01-21T19:50:30+00:00"
+            "time": "2016-01-21 19:50:30"
         },
         {
             "name": "spomky-labs/jose",
@@ -940,7 +942,7 @@
                 "jwa",
                 "jwt"
             ],
-            "time": "2017-02-06T18:22:51+00:00"
+            "time": "2017-02-06 18:22:51"
         },
         {
             "name": "spomky-labs/php-aes-gcm",
@@ -1002,7 +1004,7 @@
                 "aes",
                 "gcm"
             ],
-            "time": "2016-11-22T21:11:11+00:00"
+            "time": "2016-11-22 21:11:11"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1061,7 +1063,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-06-14T15:44:48+00:00"
+            "time": "2017-06-14 15:44:48"
         },
         {
             "name": "symfony/polyfill-php70",
@@ -1120,7 +1122,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-06-14T15:44:48+00:00"
+            "time": "2017-06-14 15:44:48"
         }
     ],
     "packages-dev": [],
