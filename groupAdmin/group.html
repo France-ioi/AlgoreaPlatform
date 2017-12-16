@@ -367,6 +367,11 @@
 					</div>
 				</div>
 		</uib-tab>
+		<uib-tab heading="{{'groupAccountsManager' | i18next}}" index="4">
+			<div class="groupAdmin-tabContent">
+				<div ng-include="'groupAdmin/groupAccountsManager.html'"></div>
+			</div>
+		</uib-tab>
 	</uib-tabset>
 </div>
 <div ng-if="loading" ng-i18next="loading">

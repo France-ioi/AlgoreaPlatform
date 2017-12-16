@@ -402,6 +402,7 @@ orange : #F29200;
 .tab-progression .flex-container.view-chrono > div + div {
 	flex: 2 1 620px;
 }
+
 .groupAdmin .validated {
 	background-color: #0faa8b !important;
 }
@@ -857,6 +858,57 @@ orange : #F29200;
 		display: none;
 	}
 }
+
+
+/*
+	Accounts manager
+*/
+#groupAccountsManagerPopupController_print .box {
+	margin: 4px;
+}
+#groupAccountsManagerPopupController_print table.outer {
+	width: 100%;
+	border-collapse: collapse;
+}
+#groupAccountsManagerPopupController_print table.outer>tbody>tr>td {
+    border: solid black 1px;
+    text-align: center;
+    vertical-align: middle;
+}
+#groupAccountsManagerPopupController_print table.inner>tbody>tr>td {
+	width: 50%;
+	padding: 1px 5px;
+	text-align: left;
+	border: 0;
+}
+#groupAccountsManagerPopupController_print .td1 {
+    width: 20%;
+}
+#groupAccountsManagerPopupController_print .td2 {
+    width: 30%;
+}
+#groupAccountsManagerPopupController_print .td3 {
+    width: 50%;
+}
+
+
+
+/*
+	Common
+*/
+.groupAdmin .col-wrapper {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+}
+.groupAdmin .col-wrapper .col-left {
+	flex: 1 1 0;
+	margin-right: 2em;
+}
+.groupAdmin .col-wrapper .col-right {
+	flex: 1 1 0;
+}
+
 
 /*
 *

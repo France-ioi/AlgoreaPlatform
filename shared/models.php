@@ -37,9 +37,15 @@ $tablesModels = array (
          "sPassword" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sType" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "bSendEmails" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")))
-
       )
    ),
+
+    "groups_login_prefixes" => array(
+        "fields" => array(
+            "idGroup" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+            "prefix" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
+        )
+    ),
 
    "groups_groups" => array(
       "autoincrementID" => false,
@@ -245,7 +251,8 @@ $tablesModels = array (
           "idGroupSelf"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "idGroupOwned"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "idGroupAccess"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
-          "sNotificationReadDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin")))
+          "sNotificationReadDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
+          "loginModulePrefix" => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin")))
       )
    ),
    "users_answers" => array(
@@ -395,6 +402,16 @@ $viewsModels = array(
             "condition"  => "`[PREFIX]groups`.`sType` != :[PREFIX_FIELD]sType",
          ),
       ),
+   ),
+   "groups_login_prefixes" => array(
+      "mainTable" => "groups_login_prefixes",
+      "adminOnly" => false,
+      "fields" => array(
+         "idGroup" => array(),
+         "prefix" => array()
+      ),
+      "joins" => array(),
+      "filters" => array()
    ),
    "groups_groups" => array(
       "mainTable" => "groups_groups",
@@ -772,6 +789,7 @@ $viewsModels = array(
           "idGroupSelf"           => array('readOnly' => true),
           "idGroupOwned"          => array('readOnly' => true),
           "sNotificationReadDate" => array(),
+          "loginModulePrefix"     => array()
       ),
       "filters" => array(
          "ancestors" => array(

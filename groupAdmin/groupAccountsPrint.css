@@ -1,0 +1,43 @@
+.box {
+    margin: 8px;
+}
+
+table {
+    font-size: 20px;
+    line-height: 25px;
+}
+
+table.outer {
+    page-break-inside: avoid;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.outer>tbody>tr>td {
+    border: solid black 1px;
+    padding: 10px 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.inner {
+    margin: 0 auto;
+}
+
+table.inner>tbody>tr>td {
+    width: 50%;
+    text-align: left;
+    border: 0;
+}
+
+.td1 {
+    width: 20%;
+}
+
+.td2 {
+    width: 30%;
+}
+
+.td3 {
+    width: 50%;
+}

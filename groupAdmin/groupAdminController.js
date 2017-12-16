@@ -538,7 +538,7 @@ angular.module('algorea')
             });
             ModelsManager.deleted('groups', $scope.group.ID);
             SyncQueue.planToSend(0);
-            $state.go('groupAdmin');
+            $state.go('groupRequests');
          }
       })
       .error(function() {
@@ -774,7 +774,7 @@ angular.module('algorea')
             });
          }
       });
-      if (!$scope.formValues.selectedLevel) {
+      if (!$scope.formValues.selectedLevel && $scope.levels.length) {
          $scope.formValues.selectedLevel = $scope.levels[0];
          $scope.levelSelected($scope.levels[0].ID);
       }
