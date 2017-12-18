@@ -183,10 +183,23 @@ angular.module('algorea')
         var win = window.open('', 'PRINT', 'width=300,height=300');
         win.document.write(html);
         win.document.close();
-        win.focus();
-        win.print();
-        win.close();
-        $scope.printing = false;
+
+        var interval = setInterval(function() {
+            if (win.document.readyState != "complete") return;
+            clearInterval(interval);
+            interval = null;
+            win.focus();
+            win.print();
+            win.close();
+            $scope.printing = false;
+        }, 10);
+
+        setTimeout(function() {
+            if(!interval) return;
+            clearInterval(interval);
+            $scope.printing = false;
+            console.error('Print popup readyState error');
+        }, 2000);
     }
 
     $scope.close = function () {

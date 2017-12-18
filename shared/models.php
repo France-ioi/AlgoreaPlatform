@@ -41,6 +41,7 @@ $tablesModels = array (
    ),
 
     "groups_login_prefixes" => array(
+        "autoincrementID" => false,
         "fields" => array(
             "idGroup" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
             "prefix" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
