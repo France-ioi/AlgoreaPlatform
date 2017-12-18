@@ -1,5 +1,5 @@
-<div ng-controller="groupAccountsManagerController"></div>
-    <div class="col-wrapper" ng-controller="groupAccountsManagerController">
+<div ng-controller="groupAccountsManagerController">
+    <div class="col-wrapper" ng-if="available">
 
         <!-- create accounts -->
         <div class="col-left">
@@ -8,11 +8,11 @@
 
             <div class="form-group">
                 <label ng-i18next="groupAccountsManager_prefix"></label>
-                <input class="form-control" ng-model="create_params.prefix" ng-focus="create_params.error=null"></textarea>
+                <input class="form-control" ng-model="create_params.prefix" ng-focus="create_params.error=null"/>
             </div>
             <div class="form-group" ng-if="create_params.prefix">
                 <span ng-i18next="groupAccountsManager_example"></span>
-                <strong>{{user&&user.loginModulePrefix ? user.loginModulePrefix + '_' : ''}}{{create_params.prefix}}_0123456789</strong>
+                <strong>{{user.loginModulePrefix}}_{{create_params.prefix}}_0123456789</strong>
             </div>
 
             <div class="form-group" ng-if="!users_in_subgroups">
@@ -38,7 +38,7 @@
             </div>
             <div class="form-group" ng-if="delete_params.prefix">
                 <span ng-i18next="groupAccountsManager_example"></span>
-                <strong>{{user&&user.loginModulePrefix ? user.loginModulePrefix + '_' : ''}}{{delete_params.prefix}}_0123456789</strong>
+                <strong>{{user.loginModulePrefix}}_{{delete_params.prefix}}_0123456789</strong>
             </div>
 
             <div class="alert alert-danger" ng-if="delete_params.error">{{delete_params.error}}</div>
@@ -59,7 +59,5 @@
 
         </div>
     </div>
-
-
-    <div class="alert alert-success" ng-if="success" ng-i18next="groupAccountsManager_delete_success">Accounts deleted</div>
+    <div class="alert alert-danger" ng-show="error">{{error}}</div>
 </div>

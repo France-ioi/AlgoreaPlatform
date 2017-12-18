@@ -232,6 +232,7 @@
     "groupAdmin_logins_to_add": "Usernames to add (space-separated) :",
 
     "groupAccountsManager": "Accounts manager",
+    "groupAccountsManager_empty_loginModulePrefix_alert": "Available only for users with loginModulePrefix",
     "groupAccountsManager_create_title": "Create users for this group",
     "groupAccountsManager_create_note": "This tool allows you to create batches of generated logins and passwords to distribute to students. The users created this way will automatically be added to the group.",
     "groupAccountsManager_prefix": "Username prefix",

@@ -1,15 +1,21 @@
-"use strict";
-
 angular.module('algorea')
     .controller('groupAccountsManagerController', ['$scope', '$http', '$i18next', '$uibModal', 'loginService', function($scope, $http, $i18next, $uibModal, loginService) {
+    'use strict';
+
+    $scope.user = {}
+    $scope.error = null;
+    $scope.fetching = false;
+    $scope.available = false;
 
     loginService.getLoginData(function(res) {
         $scope.user = ModelsManager.getRecord('users', res.ID);
+        if(!$scope.user.loginModulePrefix) {
+            $scope.error = $i18next.t('groupAccountsManager_empty_loginModulePrefix_alert');
+        } else {
+            $scope.available = true;
+        }
     });
 
-
-    $scope.error = null;
-    $scope.fetching = false;
 
     function accountsManagerRequest(params, callback) {
         $scope.fetching = true;
@@ -22,8 +28,8 @@ angular.module('algorea')
                     $scope.error = res.error
                 }
             })
-            .error(function() {
-                $scope.error = 'Server error';
+            .error(function(res) {
+                $scope.error = res && res.error ? res.error : 'Server error';
                 console.error("error calling accounts_manager.php");
             });
     }
@@ -39,8 +45,6 @@ angular.module('algorea')
 
 
     // create users
-
-    $scope.create_error = false;
     $scope.create_params = {
         prefix: '',
         amount: 1,

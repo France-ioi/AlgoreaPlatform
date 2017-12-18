@@ -133,7 +133,10 @@ function getLoginModulePrefix($prefix) {
         'ID' => $_SESSION['login']['ID']
     ]);
     $res = $stm->fetch();
-    return $res['loginModulePrefix'] ? $res['loginModulePrefix'].'_'.$prefix : $prefix;
+    if(!$res['loginModulePrefix']) {
+        throw new Exception('Action not available, empty user.loginModulePrefix');
+    }
+    return $res['loginModulePrefix'].'_'.$prefix;
 }
 
 
