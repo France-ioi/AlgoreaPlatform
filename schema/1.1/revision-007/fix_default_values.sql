@@ -1,3 +1,18 @@
+ALTER TABLE `groups`
+CHANGE `sDateCreated` `sDateCreated` datetime NULL AFTER `sDescription`;
+ALTER TABLE `history_groups`
+CHANGE `sDateCreated` `sDateCreated` datetime NULL AFTER `sDescription`;
+
+ALTER TABLE `users`
+CHANGE `sLastLoginDate` `sLastLoginDate` datetime NULL AFTER `sLangProg`;
+ALTER TABLE `history_users`
+CHANGE `sLastLoginDate` `sLastLoginDate` datetime NULL AFTER `sLangProg`;
+
+ALTER TABLE `groups_items`
+CHANGE `sCachedAccessReason` `sCachedAccessReason` varchar(200) NULL AFTER `sCachedGrayedAccessDate`;
+ALTER TABLE `history_groups_items`
+CHANGE `sCachedAccessReason` `sCachedAccessReason` varchar(200) NULL AFTER `sCachedGrayedAccessDate`;
+
 ALTER TABLE `users` CHANGE `sSalt` `sSalt` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `users` CHANGE `sRecover` `sRecover` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `users` CHANGE `sTimeZone` `sTimeZone` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
