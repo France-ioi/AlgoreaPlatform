@@ -4,6 +4,7 @@ require_once __DIR__.'/../shared/connect.php';
 require_once __DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php';
 require_once __DIR__.'/../login/lib.php';
 require_once __DIR__.'/../shared/listeners.php';
+require_once __DIR__.'/../shared/RemoveUsersClass.php';
 
 function syncDebug($type, $b_or_e, $subtype='') {}
 
@@ -14,11 +15,6 @@ if(session_status() === PHP_SESSION_NONE) {
 if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
     http_response_code(400);
     die("Auth failed");
-}
-
-
-function escapePrefix($prefix) {
-    return str_replace('_', '\_', $prefix).'\_%';
 }
 
 
@@ -61,62 +57,15 @@ function addUserToGroup($algorea_user_id, $group_id) {
 }
 
 
-function deleteUserEntries($row) {
-    global $db;
-    //TODO: what more?
-    $p = [
-        'ID' => $row['ID'],
-        'idGroupSelf' => $row['idGroupSelf'],
-        'idGroupOwned' => $row['idGroupOwned']
-    ];
-    $query = '
-        delete from `groups_groups`
-        where idGroupChild IN (:idGroupSelf, :idGroupOwned, :ID)';
-    $stmt = $db->prepare($query);
-    $stmt->execute($p);
-
-    $p = [
-        'idGroupSelf' => $row['idGroupSelf'],
-        'idGroupOwned' => $row['idGroupOwned']
-    ];
-    $query = '
-        delete from `groups`
-        where ID IN (:idGroupSelf, :idGroupOwned)';
-    $stmt = $db->prepare($query);
-    $stmt->execute($p);
-
-    Listeners::groupsGroupsAfter($db);
-}
-
-
 function deleteUsersByPrefix($prefix) {
     global $db;
-    $query = '
-        select
-            ID, idGroupSelf, idGroupOwned
-        from
-            `users`
-        where
-            sLogin like :prefix';
-    $stm = $db->prepare($query);
-    $stm->execute([
-        'prefix' => escapePrefix($prefix)
+    $prefix = str_replace('_', '\_', $prefix).'\_%';
+    $prefix = $db->quote($prefix);
+    $remover = new RemoveUsersClass($db, [
+        'baseUserQuery' => 'FROM users WHERE sLogin LIKE '.$prefix,
+        'output' => false
     ]);
-    $rows = $stm->fetchAll();
-    if(count($rows)) {
-        $ids = [];
-        foreach($rows as $row) {
-            deleteUserEntries($row);
-            $ids[] = $row['ID'];
-        }
-        $query = '
-            delete from
-                `users`
-            where
-                ID in ('.implode(',', $ids).')';
-        $stmt = $db->prepare($query);
-        $stmt->execute([]);
-    }
+    $remover->execute();
 }
 
 
