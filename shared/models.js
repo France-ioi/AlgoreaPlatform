@@ -49,6 +49,7 @@ var models = {
          sDateCreated: {type: "jsdate", label: "models_groups_fields_sDateCreated_label"},
          bOpened: {type: "boolean", label: "models_groups_fields_bOpened_label", defaultValue: true},
          bFreeAccess: {type: "boolean", label: "models_groups_fields_bFreeAccess_label"},
+         idTeamItem: {type: "int", label: "models_groups_fields_idTeamItem_label", defaultValue: null},
          sPassword: {type: "string", label: "models_groups_fields_sPassword_label", defaultValue: ''},
          sPasswordTimer: {type: "duration", label: "models_groups_fields_sPasswordTimer_label", defaultValue: null},
          sPasswordEnd: {type: "string", label: "models_groups_fields_sPasswordEnd_label", defaultValue: null},
@@ -56,7 +57,18 @@ var models = {
          bOpenContest: {type: "boolean", label: "models_groups_fields_bOpenContest_label"},
          sType: {
             type: "enum",
-            values: {Root: {label: "models_groups_fields_sType_values_Root_label", hidden: true}, Class: {label: "models_groups_fields_sType_values_Class_label"}, Club: {label: "models_groups_fields_sType_values_Club_label"}, Friends: {label: "models_groups_fields_sType_values_Friends_label"}, Other: {label:"models_groups_fields_sType_values_Other_label"}, UserSelf: {label:"models_groups_fields_sType_values_UserSelf_label", hidden: true}, UserAdmin: {label:"models_groups_fields_sType_values_UserAdmin_label", hidden: true}, RootAdmin: {label:"models_groups_fields_sType_values_RootAdmin_label", hidden: true}, RootSelf: {label:"models_groups_fields_sType_values_RootSelf_label", hidden: true}},
+            values: {
+               Root: {label: "models_groups_fields_sType_values_Root_label", hidden: true},
+               Class: {label: "models_groups_fields_sType_values_Class_label"},
+               Team: {label: "models_groups_fields_sType_values_Team_label"},
+               Club: {label: "models_groups_fields_sType_values_Club_label"},
+               Friends: {label: "models_groups_fields_sType_values_Friends_label"},
+               Other: {label:"models_groups_fields_sType_values_Other_label"},
+               UserSelf: {label:"models_groups_fields_sType_values_UserSelf_label", hidden: true},
+               UserAdmin: {label:"models_groups_fields_sType_values_UserAdmin_label", hidden: true},
+               RootAdmin: {label:"models_groups_fields_sType_values_RootAdmin_label", hidden: true},
+               RootSelf: {label:"models_groups_fields_sType_values_RootSelf_label", hidden: true}
+            },
             label: "models_groups_fields_sType_label",
             defaultValue: "Class",
             nullInvalid: true
@@ -179,6 +191,20 @@ var models = {
          iScoreMinUnlock: {type: "int", label: "models_items_fields_iScoreMinUnlock_label"},
          sSupportedLangProg: {type: "string", label: "models_items_fields_sSupportedLangProg_label", defaultValue: '*'},
          idDefaultLanguage: {type: "key", label: "models_items_fields_idDefaultLanguage_label", refModel: "languages", link: "defaultLanguage"},
+         sTeamMode: {
+            type: "enum",
+            widget: "radio-buttons",
+            values: {
+               All: {label: "models_items_fields_sTeamMode_values_All_label"},
+               Half: {label: "models_items_fields_sTeamMode_values_Half_label"},
+               One: {label: "models_items_fields_sTeamMode_values_One_label"},
+               None: {label: "models_items_fields_sTeamMode_values_None_label"}
+            },
+            label: "models_items_fields_sTeamMode_label",
+            defaultValue: null
+         },
+         idTeamInGroup: {type: "int", label: "models_items_fields_idTeamInGroup_label", refModel: "groups", link: "teamInGroup", defaultValue: null},
+         iTeamMaxMembers: {type: "int", label: "models_items_fields_iTeamMaxMembers_label"},
          sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
          sDuration: {type: "duration", label: "models_items_fields_sDuration_label", defaultValue: null},
          sEndContestDate: {type: "jsdate", label: "models_items_fields_sEndContestDate_label"},

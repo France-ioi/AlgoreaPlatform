@@ -415,6 +415,7 @@
     "models_groups_fields_bOpenContest_label": "Démarrer l'épreuve associée à ce contenu après entrée",
     "models_groups_fields_sType_values_Root_label": "Racine",
     "models_groups_fields_sType_values_Class_label": "Classe",
+    "models_groups_fields_sType_values_Team_label": "Équipe",
     "models_groups_fields_sType_values_Club_label": "Club",
     "models_groups_fields_sType_values_Friends_label": "Amis",
     "models_groups_fields_sType_values_Other_label": "Autre",

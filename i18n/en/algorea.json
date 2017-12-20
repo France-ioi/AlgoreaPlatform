@@ -398,6 +398,7 @@
     "models_groups_fields_sPassword_label": "Password (if empty, no password required)",
     "models_groups_fields_sType_values_Root_label": "Root",
     "models_groups_fields_sType_values_Class_label": "Classroom",
+    "models_groups_fields_sType_values_Team_label": "Team",
     "models_groups_fields_sType_values_Club_label": "Club",
     "models_groups_fields_sType_values_Friends_label": "Friends",
     "models_groups_fields_sType_values_Other_label": "Other",

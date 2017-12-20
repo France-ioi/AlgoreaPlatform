@@ -5,4 +5,5 @@
     <div ng-bind-html="strings.sDescription"></div>
     <div ng-if="item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-tabs.html'"></div>
     <div ng-if="!item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-list.html'"></div>
+    <div ng-if="item.sTeamMode" ng-include="templatesPrefix+'teams/teams.html'"></div>
 </div>
