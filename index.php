@@ -197,8 +197,12 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('task/controller.js') ?>"></script>
   <script src="<?= includeFile('task/directive.js') ?>"></script>
   <script src="<?= includeFile('groupRequests/groupRequestsController.js') ?>"></script>
+
+  <script src="<?= includeFile('groupRequests/myAccountController.js') ?>"></script>
+  <script src="<?= includeFile('groupRequests/groupsOwnerController.js') ?>"></script>
+  <script src="<?= includeFile('groupRequests/groupsMemberController.js') ?>"></script>
+
   <script src="<?= includeFile('groupAdmin/groupAdminController.js') ?>"></script>
-  <script src="<?= includeFile('groupAdmin/groupAdminIndexController.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAccountsManagerController.js') ?>"></script>
   <script src="<?= includeFile('userInfos/controller.js') ?>"></script>
   <?php if ($usesForum): ?>

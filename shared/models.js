@@ -424,6 +424,7 @@ var models = {
           idGroupAccess: {type: "key", label: "models_users_fields_idGroupAccess_label", link: "groupAccess", refModel: "groups", invLink: "userAccess"},
           sNotificationReadDate: {type: "jsdate", label: "models_users_fields_sNotificationReadDate_label"},
           loginModulePrefix: {type: "string", label: "models_users_fields_loginModulePrefix_label"},
+          allowSubgroups: {type: "boolean", label: ""}
       },
       links: {
          threads: {refModel: "threads", key: "idUserCreated", type: "object"}

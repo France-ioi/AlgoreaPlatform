@@ -1,0 +1,159 @@
+<div class="groupRequest-tabContent">
+    <div ng-if="!tempUser">
+        <div class="">
+            <div ng-if="!loading && !showTable()">
+                <p data-18n="groupRequests_member_no_group"></p>
+            </div>
+            <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_invites"></h2>
+            <div class="table-wrapper">
+                <table class="table table-bordered table-hover" ng-if="showTable()">
+                    <thead>
+                        <tr>
+                        <th ng-i18next="group"></th>
+                        <th ng-i18next="date"></th>
+                        <th ng-i18next="status"></th>
+                        <th ng-i18next="action"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="mygroupgroup.sType == 'invitationSent' || mygroupgroup.sType == 'requestSent'">
+                        <td>{{mygroupgroup.parent.sName}}</td>
+                        <td>{{mygroupgroup.sStatusDate | date}}</td>
+                        <td>{{printType(mygroupgroup.sType)}}</td>
+                        <td>
+                            <div ng-if="mygroupgroup.sType == 'invitationSent'">
+                                <button class="btn btn-default" ng-click="acceptInvitation(mygroupgroup)" ng-i18next="accept"></button>
+                                <button class="btn btn-default" confirm="refuseInvitation(mygroupgroup)" rel="Êtes-vous sûr de vouloir refuser l'invitation au groupe {{group_group.parent.sName}} ?" ng-i18next="reject"></button>
+                            </div>
+                            <div ng-if="mygroupgroup.sType == 'requestSent'">
+                                <button class="btn btn-default" ng-click="cancelRequest(mygroupgroup)" ng-i18next="cancel"></button>
+                            </div>
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_my_groups"></h2>
+            <div class="table-wrapper">
+                <table class="table table-bordered table-hover" ng-if="showTable()">
+                    <thead>
+                        <tr>
+                        <th ng-i18next="group"></th>
+                        <th ng-i18next="date"></th>
+                        <th ng-i18next="status"></th>
+                        <th ng-i18next="action"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID" ng-if="(mygroupgroup.sType == 'invitationAccepted' || mygroupgroup.sType == 'requestAccepted' || mygroupgroup.sType == 'direct') && mygroupgroup.parent.sType != 'RootSelf'">
+                        <td>{{mygroupgroup.parent.sName}}</td>
+                        <td>{{mygroupgroup.sStatusDate | date}}</td>
+                        <td>{{printType(mygroupgroup.sType)}}</td>
+                        <td>
+                            <div>
+                                <button class="btn btn-default" confirm="leaveGroup(mygroupgroup)" rel="test" ng-i18next="groupRequests_leave_group;[rel]groupRequests_leave_confirm"></button>
+                            </div>
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <div ng-if="groupsLoading">
+            <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="groupRequests_loading"></strong></p></center>
+        </div>
+        <div class="">
+            <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_join"></h2>
+            <div ng-if="!loading">
+                <form class="form">
+                    <label class="label-title" for="askedPassword"><span ng-i18next="groupRequests_join_code"></span><span class="label-description" ng-i18next="groupRequests_join_code_desc"></span></label>
+                    <div class="form-group form-inline">
+                        <input type="text" class="form-control" name="askedPassword" id="askedPassword" ng-model="pageData.askedPassword">
+                        <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword" ng-i18next="join"></button>
+                    </div>
+                </form>
+                <div ng-if="passwordInfo">
+                    {{passwordInfo}}
+                </div>
+                <form class="form">
+                    <label class="label-title" for="lookupString"><span ng-i18next="groupRequests_search_name"></span><span class="label-description" ng-i18next="groupRequests_search_name_desc"></span></label>
+                    <div class="form-group form-inline">
+                        <input type="search" id="lookupString" class="form-control" name="lookupString" ng-model="pageData.lookupString">
+                        <button type="button" class="btn btn-default" ng-click="lookup()" ng-disabled="!pageData.lookupString" ng-i18next="search"></button>
+                    </div>
+                </form>
+                <p>{{resultsError}}</p>
+                <table ng-if="results" class="search-groups-results table table-bordered">
+                    <tbody ng-repeat="result in results">
+                        <tr class="{{result.relationType}}">
+                        <td rowspan="2" class="groupName">{{result.sName}} ({{result.sType}})</td>
+                        <td class="helper-text">
+                            <p ng-if="result.hasPassword && result.bOpened">
+                                <i class="material-icons">lock</i>
+                                <span ng-i18next="groupRequests_password_needed"></span>
+                            </p>
+                            <p ng-if="!result.hasPassword && result.bOpened">
+                                <i class="material-icons">lock_open</i>
+                                <span><span ng-i18next="groupRequests_open_group"></span> <span ng-hide="result.bFreeAccess" ng-i18next="groupRequests_approval_needed"></span></span>
+                            </p>
+                        </td>
+                        <td ng-switch="result.relationType">
+                            <p ng-switch-when="invitationSent" ng-i18next="groupRequests_rel_invitationSent"></p>
+                            <p ng-switch-when="invitationAccepted" ng-i18next="groupRequests_rel_invitationAccepted"></p>
+                            <p ng-switch-when="requestAccepted" ng-i18next="groupRequests_rel_requestAccepted"></p>
+                            <p ng-switch-when="direct" ng-i18next="groupRequests_rel_direct"></p>
+                            <p ng-switch-when="requestSent"><i class="material-icons">query_builder</i> <span ng-i18next="groupRequests_rel_requestSent"></span></p>
+                            <div ng-switch-default>
+                                <div class="form-inline" ng-if="result.hasPassword && result.bOpened">
+                                    <label for="password{{result.sName}}" ng-i18next="groupRequests_password"></label>
+                                    <input type="text" id="password{{result.sName}}" name="password" class="form-control" ng-model="result.password" placeholder="Mot de passe">
+                                    <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)" ng-i18next="groupRequests_join_group"></button>
+                                </div>
+                                <p ng-if="!result.hasPassword && result.bOpened">
+                                    <button type="button" ng-if="result.bOpened" class="btn btn-default" ng-click="joinGroup(result)" ng-i18next="groupRequests_join_group"></button>
+                                    <span ng-hide="result.bFreeAccess" ng-i18next="groupRequests_approval_needed"></span>
+                                </p>
+                                <p ng-if="!result.bOpened" ng-i18next="groupRequests_closed_group"></p>
+                                <div class="alert alert-warning" role="alert" ng-show="result.joinLog">{{result.joinLog}}</div>
+                            </div>
+                        </td>
+                        </tr>
+                        <tr class="{{result.relationType}}">
+                        <td colspan=3>
+                            <span ng-if="result.sDescription" class="description">{{result.sDescription}}</span>
+                            <span ng-if="!result.sDescription" class="no-description" ng-i18next="groupRequests_no_description"></span>
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h2 class="groupRequest-title" ng-hide="loading">
+                <span ng-i18next="groupRequests_title_history"></span>
+                <span class="title-desc" ng-i18next="groupRequests_subtitle_history"></span>
+            </h2>
+
+            <ul ng-if="!loading" class="history-list list list-block">
+                <li ng-repeat="mygroupgroup in myGroupParents | orderBy:'-sStatusDate' track by mygroupgroup.ID | limitTo: historyLimit" ng-class="{historyActive: !user.sNotificationReadDate || mygroupgroup.sStatusDate > user.sNotificationReadDate}"  ng-if="mygroupgroup.parent.sType != 'RootSelf'">
+                    {{mygroupgroup.sStatusDate | date}}&nbsp;:
+                    <span ng-switch="mygroupgroup.sType">
+                        <span ng-switch-when="invitationRefused"><span ng-i18next="groupRequests_mytype_invitationRefused"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="requestRefused"><span ng-i18next="groupRequests_mytype_requestRefused"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="invitationSent"><span ng-i18next="groupRequests_mytype_invitationSent"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="requestSent"><span ng-i18next="groupRequests_mytype_requestSent"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="left"><span ng-i18next="groupRequests_mytype_left"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-when="removed"><span ng-i18next="groupRequests_mytype_removed"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                        <span ng-switch-default><span ng-i18next="groupRequests_mytype_default"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
+                    </span>
+                </li>
+            </ul>
+            <button class="btn btn-standard" ng-click="addHistoryLimit()" ng-if="!loading && parentsLength && parentsLength > historyLimit" ng-i18next="groupRequests_ten_more"></button>
+            <button class="btn btn-default" ng-click="markAllAsRead()" ng-show="!loading && unreadParentsLength" ng-i18next="groupRequests_mark_read"></button>
+        </div>
+    </div>
+
+    <div ng-if="groups_error">
+        {{groups_error}}
+    </div>
+</div>

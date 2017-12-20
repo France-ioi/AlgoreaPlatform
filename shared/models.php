@@ -253,7 +253,8 @@ $tablesModels = array (
           "idGroupOwned"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "idGroupAccess"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sNotificationReadDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
-          "loginModulePrefix" => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin")))
+          "loginModulePrefix" => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
+          "allowSubgroups" => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin")))
       )
    ),
    "users_answers" => array(
@@ -790,7 +791,8 @@ $viewsModels = array(
           "idGroupSelf"           => array('readOnly' => true),
           "idGroupOwned"          => array('readOnly' => true),
           "sNotificationReadDate" => array(),
-          "loginModulePrefix"     => array()
+          "loginModulePrefix"     => array(),
+          "allowSubgroups"        => array()
       ),
       "filters" => array(
          "ancestors" => array(

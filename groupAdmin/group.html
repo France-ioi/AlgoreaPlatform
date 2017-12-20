@@ -59,11 +59,10 @@
 					<div class="members-col">
 						<div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span></div>
 						<ul class="list list-block list-users">
-							<li class="list-item" ng-repeat="child in group.children | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
+							<li class="list-item" ng-repeat="child in group.children | usersOnly | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
 								<span class="user-status connected"></span>
-								<span class="user-name" ng-if="child.child.sType == 'UserSelf'">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
-								<span class="user-name" ng-if="child.child.sType != 'UserSelf'"><a ui-sref="groupAdminGroup({idGroup: child.child.ID})">{{child.child.sName}}</a></span>
-								<span class="action" ng-if="child.child.sType == 'UserSelf'">
+								<span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
+								<span class="action">
 									<button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" uib-tooltip="supprimer"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="delete"></span></button>
 								</span>
 							</li>

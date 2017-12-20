@@ -77,6 +77,16 @@ angular.module('algorea').
     };
   });
 
+angular.module('algorea').
+  filter('usersOnly', function() {
+    return function(groups_groups) {
+      var r = _.filter(groups_groups, function(g) {
+        return g.child.sType == 'UserSelf';
+      })
+      return r;
+    };
+  });
+
 angular.module('algorea')
    .controller('groupAdminBreadCrumbsController', ['$scope', '$stateParams', '$i18next', function ($scope, $stateParams, $i18next) {
    'use strict';

@@ -204,7 +204,7 @@ angular.module('algorea')
                   break;
                }
                // Default language for this item
-               if(item.strings[i].language.sCode == item.defaultLanguage.sCode) {
+               if(item.defaultLanguage && item.strings[i].language.sCode == item.defaultLanguage.sCode) {
                   strings = item.strings[i];
                }
             }
