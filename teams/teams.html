@@ -1,0 +1,28 @@
+<div class="panel panel-default" ng-controller="teamsController">
+  <div class="panel-body">
+    <div>Cette épreuve s'effectue par équipes.</div>
+    <div class="text-danger">{{ error }}</div>
+    <div ng-show="team">
+      <div ng-if="team.isAdmin">Vous dirigez l'équipe {{ team.sName }} pour cette épreuve.</div>
+      <div ng-if="!team.isAdmin">Vous faites partie de l'équipe {{ team.sName }} pour cette épreuve.</div>
+      <div ng-if="team.sPassword">Mot de passe de l'équipe : {{ team.sPassword }} <button class="btn btn-default" ng-if="team.isAdmin" ng-click="changeTeamPassword();">Fermer l'équipe</button></div>
+      <div ng-if="!team.sPassword">L'équipe est actuellement fermée. <button class="btn btn-default" ng-if="team.isAdmin" ng-click="changeTeamPassword();">Réouvrir l'équipe</button></div>
+      <table class="table table-bordered table-hover">
+        <tr>
+          <th>Membres de l'équipe</th>
+          <th ng-if="team.isAdmin">Retirer de l'équipe</th>
+        </tr>
+        <tr ng-repeat="child in team.children">
+          <td>{{ child.sName }}</td>
+          <td ng-if="team.isAdmin && child.idGroupChild != userGroupSelf"><button class="btn btn-default" ng-click="removeTeamMember(child.idGroupChild);">Retirer</button></td>
+          <td ng-if="team.isAdmin && child.idGroupChild == userGroupSelf"><button class="btn btn-default" ng-click="leaveTeam();">Quitter l'équipe</button></td>
+        </tr>
+      </table>
+      <div><button class="btn btn-danger" ng-click="leaveTeam();">Quitter l'équipe</button></div>
+    </div>
+    <div ng-hide="team">
+      <div>Rejoindre une équipe par code : <input type="text" ng-model="joinPassword"></input><button class="btn btn-default" ng-click="joinTeam();">Rejoindre</button></div>
+      <div>Créer une nouvelle équipe nommée : <input type="text" ng-model="newTeamName"></input><button class="btn btn-default" ng-click="createTeam();">Créer</button></div>
+    </div>
+  </div>
+</div>
