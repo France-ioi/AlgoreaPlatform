@@ -42,9 +42,16 @@ $tablesModels = array (
          "bOpenContest" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sType" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "bSendEmails" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")))
-
       )
    ),
+
+    "groups_login_prefixes" => array(
+        "autoincrementID" => false,
+        "fields" => array(
+            "idGroup" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+            "prefix" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")))
+        )
+    ),
 
    "groups_groups" => array(
       "autoincrementID" => false,
@@ -224,6 +231,7 @@ $tablesModels = array (
           "sBirthDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "iGraduationYear"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sSex"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
+          "sStudentId"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sAddress"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sZipcode"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sCity"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
@@ -252,7 +260,9 @@ $tablesModels = array (
           "idGroupSelf"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "idGroupOwned"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "idGroupAccess"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
-          "sNotificationReadDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin")))
+          "sNotificationReadDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
+          "loginModulePrefix" => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
+          "allowSubgroups" => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin")))
       )
    ),
    "users_answers" => array(
@@ -403,7 +413,21 @@ $viewsModels = array(
             "joins" => array("invited"),
             "condition"  => '`[PREFIX]invited`.`idGroupParent` = :[PREFIX_FIELD]idGroup',
          ),
+         "sTypeExclude" => array(
+            "joins" => array(),
+            "condition"  => "`[PREFIX]groups`.`sType` != :[PREFIX_FIELD]sType",
+         ),
       ),
+   ),
+   "groups_login_prefixes" => array(
+      "mainTable" => "groups_login_prefixes",
+      "adminOnly" => false,
+      "fields" => array(
+         "idGroup" => array(),
+         "prefix" => array()
+      ),
+      "joins" => array(),
+      "filters" => array()
    ),
    "groups_groups" => array(
       "mainTable" => "groups_groups",
@@ -416,6 +440,7 @@ $viewsModels = array(
          "userInviting" => array('type' => 'LEFT', "dstField" => "ID", "srcField" => "idUserInviting", "srcTable" => "groups_groups", "dstTable" => "users"),
          "usersLeft" => array("type" => 'LEFT', "dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users"),
          "users" => array("dstField" => "idGroupSelf", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "users"),
+         "childGroups" => array("dstField" => "ID", "srcField" => "idGroupChild", "srcTable" => "groups_groups", "dstTable" => "groups"),
       ),
       "fields" => array(
          "idGroupParent" => array(),
@@ -460,6 +485,10 @@ $viewsModels = array(
          "addLogin" => array(
             "joins" => array("users", "userInviting"),
             "ignoreValue" => true,
+         ),
+         "sTypeExclude" => array(
+            "joins" => array("childGroups"),
+            "condition"  => "`[PREFIX]childGroups`.`sType` != :[PREFIX_FIELD]sType",
          ),
       ),
    ),
@@ -764,6 +793,7 @@ $viewsModels = array(
           "sBirthDate"            => array(),
           "iGraduationYear"       => array(),
           "sSex"                  => array(),
+          "sStudentId"                  => array(),
           "sAddress"              => array(),
           "sZipcode"              => array(),
           "sCity"                 => array(),
@@ -778,6 +808,8 @@ $viewsModels = array(
           "idGroupSelf"           => array('readOnly' => true),
           "idGroupOwned"          => array('readOnly' => true),
           "sNotificationReadDate" => array(),
+          "loginModulePrefix"     => array(),
+          "allowSubgroups"        => array()
       ),
       "filters" => array(
          "ancestors" => array(

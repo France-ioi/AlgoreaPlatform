@@ -366,8 +366,8 @@ body {
 
 /* LOGIN */
 .loginCentered {
-   height: 300px;
-   width: 250px;
+   height: 600px;
+   width: 600px;
    margin: auto;
    position: absolute;
    bottom: 0;
@@ -395,10 +395,18 @@ body {
   }
 }
 .loginFrame {
-   width: 250px;
    border: 0px solid;
    box-shadow: 0px 0px 0px;
-   height:250px;
+}
+
+.loginCentered .loginFrame {
+   width: 600px;
+   height: 600px;
+}
+
+.loginCorner .loginFrame {
+   width: 250px;
+   height: 100px;
 }
 
 .dynatree-active > a > .dynatree-owner {

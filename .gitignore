@@ -5,3 +5,4 @@ config_local.php
 .htpasswd
 node_modules/
 dist/
+downloads/

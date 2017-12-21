@@ -5,10 +5,16 @@
         $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
 ?>
 <!DOCTYPE html>
-<html lang="fr" ng-app="algorea"  ng-controller="navigationController">
+<?php
+require_once "config.php";
+
+$defaultLanguage = $config->shared->domains['current']->defaultLanguage;
+?>
+<html lang="<?=$defaultLanguage ?>" ng-app="algorea"  ng-controller="navigationController">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="<?=$defaultLanguage ?>" />
     <title ng-bind="domainTitle"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximal-scale=1.0, user-scalable=no, minimal-scale=1.0">
     <base href="<?=$base_href?>">
@@ -191,9 +197,14 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('task/controller.js') ?>"></script>
   <script src="<?= includeFile('task/directive.js') ?>"></script>
   <script src="<?= includeFile('groupRequests/groupRequestsController.js') ?>"></script>
+
+  <script src="<?= includeFile('groupRequests/myAccountController.js') ?>"></script>
+  <script src="<?= includeFile('groupRequests/groupsOwnerController.js') ?>"></script>
+  <script src="<?= includeFile('groupRequests/groupsMemberController.js') ?>"></script>
+
   <script src="<?= includeFile('groupAdmin/groupAdminController.js') ?>"></script>
-  <script src="<?= includeFile('groupAdmin/groupAdminIndexController.js') ?>"></script>
   <script src="<?= includeFile('teams/controller.js') ?>"></script>
+  <script src="<?= includeFile('groupAdmin/groupAccountsManagerController.js') ?>"></script>
   <script src="<?= includeFile('userInfos/controller.js') ?>"></script>
   <?php if ($usesForum): ?>
     <script src="<?= includeFile('forum/forumIndexController.js') ?>"></script>
@@ -209,7 +220,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
 <script>
   window.i18next.use(window.i18nextXHRBackend);
   var i18nextOpts = <?= json_encode([
-    'lng' => $config->shared->domains['current']->defaultLanguage,
+    'lng' => $defaultLanguage,
     'fallbackLng' => ['en', 'fr'],
     'fallbackNS' => 'algorea',
 //    'debug' => true,

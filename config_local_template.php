@@ -127,4 +127,14 @@ foreach ($config->shared->domains as $domain => $domainData) {
 }
 
 $config->shared->domains['current'] = $config->shared->domains[$thisDomain];
+
+
+// Login module
+// Login module
+$config->login_module_client = [
+        'id' => '3',
+        'secret' => '1AtKfSc7KbgIo8GDCI31pA9laP7pFoBqSg3RtVHq',
+        'base_url' => 'http://login-module.dev',
+        'redirect_uri' => $config->shared->domains['current']->baseUrl.'/login/callback_oauth.php',
+];
 ?>

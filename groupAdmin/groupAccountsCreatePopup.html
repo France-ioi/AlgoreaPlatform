@@ -1,0 +1,29 @@
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>
+<button class="btn btn-primary" ng-click="print()" ng-disabled="printing" ng-i18next="groupAccountsManager_print"></button>
+<div id="groupAccountsManagerPopupController_print">
+    <div class="box" ng-repeat="account in accounts">
+        <table class="outer">
+            <tr>
+                <td class="td1">
+                    <div ng-i18next="models_groups_items_fields_idGroup_label"></div>
+                    <div>{{group}}</div>
+                </td>
+                <td class="td2">
+
+                </td>
+                <td class="td3">
+                    <table class="inner">
+                        <tr>
+                            <td><span ng-i18next="groupAccountsManager_login"></span>: </td>
+                            <td>{{account.login}}</td>
+                        </tr>
+                        <tr>
+                            <td><span ng-i18next="groupAccountsManager_password"></span>: </td>
+                            <td>{{account.password}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

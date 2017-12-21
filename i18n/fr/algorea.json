@@ -13,6 +13,7 @@
     "delete": "Supprimer",
     "description": "Description",
     "edition": "Édition",
+    "error": "Erreur",
     "events": "Événements",
     "exercise": "Exercice",
     "group": "Groupe",
@@ -54,6 +55,8 @@
     "menu_progress": "Progresser",
     "menu_contest": "Concourir",
     "menu_discover": "Découvrir",
+
+    "error_item_not_found": "Désolé, l'item que vous recherchez n'existe pas !",
 
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",
@@ -363,11 +366,9 @@
 
     "userInfos_not_logged": "Désolé, vous ne pouvez pas modifier vos données utilisateur. Merci de vous connecter (bouton en haut à droite de l'écran) pour pouvoir le faire.",
     "userInfos_title_infos": "Voici les informations vous concernant auxquelles nous avons accès :",
-    "userInfos_info_first": "Prénom :",
-    "userInfos_info_last": "Nom :",
-    "userInfos_info_birthdate": "Date de naissance :",
-    "userInfos_info_email": "Adresse e-mail :",
-    "userInfos_change_password": "Changer mon mot de passe",
+    "userInfos_btn_profile": "Éditer mon profil",
+    "userInfos_btn_auth_methods": "Méthodes d'authentification",
+    "userInfos_btn_password": "Changer mon mot de passe",
 
     "models_filters_fields_idUser_label": "id de l'utilisateur",
     "models_filters_fields_sName_label": "Nom du filtre",
@@ -587,6 +588,7 @@
     "models_users_fields_sTimeZone_label": "Fuseau horaire",
     "models_users_fields_sBirthDate_label": "Date de naissance",
     "models_users_fields_iGraduationYear_label": "Année du bac",
+    "models_users_fields_sStudentId_label": "Étudiant ID",
     "models_users_fields_sSex_values_Male_label": "Masculin",
     "models_users_fields_sSex_values_Female_label": "Féminin",
     "models_users_fields_sSex_label": "Genre",

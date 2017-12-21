@@ -5,8 +5,8 @@ require_once 'listeners.php';
 
 function createGroup($ID, $name, $type) {
     global $db, $config;
-    $stmt = $db->prepare('insert ignore into groups (ID, sName, sType) values (:ID, :sName, :sType);');
-    $stmt->execute(['ID' => $ID, 'sName' => $name, 'sType' => $type]);
+    $stmt = $db->prepare('insert ignore into groups (ID, sName, sTextId, sType) values (:ID, :sName, :sTextId, :sType);');
+    $stmt->execute(['ID' => $ID, 'sName' => $name, 'sTextId' => $name, 'sType' => $type]);
 }
 
 function createGroupGroup($idGroupParent, $idGroupChild, $iChildOrder) {

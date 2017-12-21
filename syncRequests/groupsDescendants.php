@@ -19,7 +19,9 @@ class groupsDescendants {
       }
 
       $requests['groupsDescendants']["filters"]["descendants"] = ['values' => ['idGroup' => $groupId]];
+      $requests['groupsDescendants']["filters"]["sTypeExclude"] = ['values' => ['sType' => 'UserSelf']];
       $requests['groupsGroupsDescendants']['filters']['descendantsRead'] = ['values' => ['idGroupOwned' => $groupId]];
+      $requests['groupsGroupsDescendants']["filters"]["sTypeExclude"] = ['values' => ['sType' => 'UserSelf']];
 
       return $requests;
    }

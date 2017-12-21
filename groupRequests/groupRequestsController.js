@@ -17,7 +17,6 @@ angular.module('algorea')
       $scope.user.sNotificationReadDate = new Date();
       ModelsManager.updated('users', $scope.user.ID);
    };
-   $scope.loading = true;
 
    // involved sync design pattern: call updateGroups if a group_group when necessary
    var needToUpdateAtEndOfSync = false;
@@ -146,11 +145,11 @@ angular.module('algorea')
       });
    };
    $scope.lookup = function() {
-      $scope.error = null;
+      $scope.groups_error = null;
       $http.post('/groupRequests/groupRequests.php', {action: 'getGroupsMatching', lookupString: $scope.pageData.lookupString}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from groupRequests handler: "+postRes.error);
-            $scope.error = postRes.error;
+            $scope.groups_error = postRes.error;
          } else {
             if (!postRes.results.length) {
                $scope.resultError = $i18next.t('groupRequests_no_group_found');
@@ -237,14 +236,28 @@ angular.module('algorea')
       });
    };
 
+
+    // user profile
+
+    $scope.openPopup = function(action) {
+        loginService.openLoginPopup(action);
+    }
+
+    $scope.refreshUser = function() {
+    }
+
+
    $scope.init = function() {
       $scope.updateGroups();
       loginService.getLoginData(function(res) {
-         if (res.tempUser) {
-            $scope.error = $i18next.t('groupRequests_not_logged');
+         $scope.loginLoading = false;
+         //console.log('>>>>', res);
+         $scope.tempUser = res.tempUser;
+         if(res.tempUser) {
+            $scope.loading = false;
+            $scope.groups_error = $i18next.t('groupRequests_not_logged');
             return;
          }
-         $scope.loginLoading = false;
          SyncQueue.addSyncEndListeners('groupRequestsInit', function() {
             itemService.getAsyncRecord('groups', res.idGroupSelf, function(myGroup) {
                $scope.loading = false;
@@ -259,14 +272,24 @@ angular.module('algorea')
 
    itemService.onNewLoad($scope.init);
    $scope.$on('login.login', function(event, data) {
+      $scope.tempUser = data.tempUser;
       $scope.loading = true;
       $scope.loginLoading = true;
-      $scope.error = null;
+      $scope.groups_error = null;
       $scope.myGroup = null;
       $scope.user = null;
       $scope.results = null;
       $scope.myGroupParents = [];
       $scope.init();
+   });
+
+   $scope.$on('login.update', function(event, data) {
+      $scope.tempUser = data.tempUser;
+      $scope.loginLoading = true;
+      loginService.getLoginData(function(res) {
+        $scope.loginLoading = false;
+        $scope.user = ModelsManager.getRecord('users', res.ID);
+      });
    });
 
    $scope.stopSync = function() {

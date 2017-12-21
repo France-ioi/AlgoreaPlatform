@@ -1,0 +1,1 @@
+ALTER TABLE `groups` ADD `sTextId` VARCHAR(255) NOT NULL DEFAULT '' AFTER `sName`;

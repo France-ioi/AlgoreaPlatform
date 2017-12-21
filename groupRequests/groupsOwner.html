@@ -1,0 +1,37 @@
+<div class="groupRequest-tabContent">
+    <div ng-if="!tempUser">
+        <div class="adminGroup">
+            <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_my_groups"></h2>
+            <div ng-controller="groupAdminIndexController">
+                <div ng-if="loading" ng-i18next="groupRequests_loading"></div>
+                <div ng-show="error" class="alert alert-warning">{{error}}</div>
+                <div ng-if="!loading">
+                    <div ng-hide="myGroupAdmin.children.length">
+                        <p ng-i18next="groupRequests_error_no_group"></p>
+                    </div>
+                    <div ng-show="myGroupAdmin.children.length">
+                        <h3 ng-i18next="groupRequests_view_group"></h3>
+                        <ul class="list list-block list-groups">
+                            <li class="list-item" ng-repeat="group_group in myGroupAdmin.children | groupsgroupsChildrenNameSort">
+                                <a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <label for="newGroupName">
+                            <span ng-i18next="groupRequests_create_group"></span>
+                            <span class="label-description" ng-i18next="groupRequests_create_group_desc"></span>
+                        </label>
+                        <div class="form-inline">
+                            <input type="text" ng-model="formValues.groupName" class="form-control" id="newGroupName"/>
+                            <button ng-click="newGroup();" class="btn btn-default" ng-i18next="groupRequests_add_group"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="groups_error">
+        {{groups_error}}
+    </div>
+</div>

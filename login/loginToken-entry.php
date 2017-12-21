@@ -27,7 +27,7 @@ function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
    $db->exec($query);
    $userAdminGroupId = null;
    if ($isTempUser) {
-      $stm = $db->prepare('select ID from groups where `sName`=\'tempUsers\';');
+      $stm = $db->prepare('select ID from groups where `sTextId`=\'RootTemp\';');
       $stm->execute();
       $RootTempGroupId = $stm->fetchColumn();
       $db->exec("lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = '$RootTempGroupId'),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values ($RootTempGroupId, '$userSelfGroupId', @maxIChildOrder+1); unlock tables;");

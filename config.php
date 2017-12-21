@@ -20,11 +20,14 @@ $config = (object) array(
    "login" => (object) array(
       "public_key" => ""
    ),
+   "login_module_client" => array(),
    "sync" => (object) array(
       "server" => "",
       "params" => (object) array(  ),
       "useTransaction" => false,
       "maxChanges" => 20000,
+      "memLimit" => '',
+      "debug" => false
    ),
    "shared" => (object) array(
       "RootItemId" => "1",

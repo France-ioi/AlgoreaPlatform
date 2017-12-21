@@ -13,7 +13,7 @@ angular.module('algorea')
       function loadLoginData(data, mustSync) {
          $scope.innerHtml = 'login_disconnect';
          if (data.tempUser) {
-            $scope.loginStr = null;   
+            $scope.loginStr = null;
          } else {
             $scope.loginStr = data.sLogin;
          }
@@ -36,6 +36,11 @@ angular.module('algorea')
          data.sLogin = data.login;
          loadLoginData(data, true);
       });
+      $scope.$on('login.update', function(event, data) {
+            $scope.loginStr = data.login;
+            $scope.hideFrame();
+            $timeout(function(){$scope.$apply();});
+      });
       $scope.$on('login.logout', function(event, data) {
          $scope.loginStr = null;
       });
@@ -54,6 +59,7 @@ angular.module('algorea')
             $scope.hideFrame();
          }
       };
+      loginService.init();
       loginService.getLoginData(loadLoginData);
       $scope.openLoginPopup = loginService.openLoginPopup;
 }]);

@@ -56,11 +56,11 @@ angular.module('algorea')
    .controller('adminCtrl', ['$scope', '$rootScope', 'loginService', '$sce', '$location', '$timeout', function($scope, $rootScope, loginService, $sce, $location, $timeout) {
       $scope.userLogged = false;
 
-      $scope.loginReady = false;
+      $scope.loginReady = true;
       $scope.loginClass = 'loginCentered';
-      loginService.initEventListener();
       $scope.loginInnerHtml = '';
-      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.loginUrl+'?'+config.domains.current.additionalLoginArgs);
+      $scope.loginModuleUrl = $sce.trustAsResourceUrl(config.domains.current.baseUrl + '/login/popup_redirect.php?action=login');
+      loginService.init();
 
       $scope.$on('login.login', function(event, data) {
          if (data.tempUser) {
@@ -76,7 +76,12 @@ angular.module('algorea')
             $scope.loginClass = 'loginCorner';
          }
       });
-
+      $scope.$on('login.update', function(event, data) {
+            $scope.userLogged = true;
+            $scope.loginReady = true;
+            $scope.loginInnerHtml = 'logged as ' + data.login;
+            $scope.loginClass = 'loginCorner';
+      });
       $scope.$on('login.notlogged', function(event, data) {
          $scope.userLogged = false;
          $scope.loginReady = true;
@@ -434,6 +439,7 @@ angular.module('algorea')
          $scope.item_item = itemItem;
          $scope.group_item = itemItem ? getGroupItem($scope.loginData.idGroupSelf, itemItem.child.ID) : null;
          $scope.itemSelected(itemItem ? itemItem.idItemChild : null, true);
+         $scope.zip_message = false;
       };
 
       $scope.groupSelected = function(groupID, withGroupGroup) {
@@ -472,6 +478,7 @@ angular.module('algorea')
          if (groupGroup) { // Happens when we click on "Unused objects"
             $scope.groupSelected(groupGroup.idGroupChild, true);
          }
+         $scope.zip_message = false;
       };
 
       $scope.checkFields = function(item, fields, searchParams) {
@@ -617,6 +624,36 @@ angular.module('algorea')
          $scope.itemsTreeView2 = new TreeView("treeItems2", treeViewSharedData, paramsItems);
          $scope.itemsTreeView2.fillTree();
       };
+
+
+      $scope.zip_btn_disabled = false;
+      $scope.zip_message = false;
+      $scope.zipExport = function(itemId, groupId) {
+            $scope.zip_btn_disabled = true;
+            $scope.zip_message = 'Please wait...';
+            $.ajax({
+                  type: 'GET',
+                  url: 'zip_export.php',
+                  data: {
+                        itemId: itemId,
+                        groupId: groupId
+                  },
+                  success: function(res) {
+                        $scope.zip_btn_disabled = false;
+                        if(res && res.file) {
+                              $scope.zip_message = false;
+                              window.open(res.file, 'zip_download_window', 'toolbar=0,location=no,directories=0,status=0,scrollbars=0,resizeable=0,width=1,height=1,top=0,left=0');
+                              window.focus();
+                        } else {
+                              $scope.zip_message = res;
+                        }
+                  },
+                  error: function(request, status, err) {
+                        $scope.zip_btn_disabled = false;
+                        $scope.zip_message = err;
+                  }
+            });
+      }
 
       $scope.initGroups = function() {
          $scope.initGroupsDone = true;
@@ -1303,4 +1340,6 @@ angular.module('algorea')
          $uibModalInstance.close();
          AccessManager.resetAccess();
       };
+
+
    }]);

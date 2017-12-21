@@ -1,0 +1,33 @@
+<div ng-if="!loginLoading" controller="myAccountController">
+    <div class="groupRequest-tabContent" ng-if="tempUser" ng-i18next="userInfos_not_logged"></div>
+    <div class="groupRequest-tabContent" ng-if="!tempUser">
+        <div>
+            <button class="btn btn-default" ng-click="openPopup('profile')" ng-i18next="userInfos_btn_profile"></button>
+<!--                    <button class="btn btn-default" ng-click="openPopup('auth_methods')" ng-i18next="userInfos_btn_auth_methods"></button>-->
+        </div>
+        <h2 class="groupRequest-title" ng-i18next="userInfos_title_infos"></h2>
+        <div>
+            <table class="table">
+                <tbody>
+                    <tr><td ng-i18next="models_users_fields_sLogin_label"></td><td>{{user.sLogin}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sEmail_label"></td><td>{{user.sEmail}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sFirstName_label"></td><td>{{user.sFirstName}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sLastName_label"></td><td>{{user.sLastName}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sStudentId_label"></td><td>{{user.sStudentId}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sCountryCode_label"></td><td>{{user.sCountryCode}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sSex_label"></td><td>{{user.sSex}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sBirthDate_label"></td><td>{{user.sBirthDate}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_iGraduationYear_label"></td><td>{{user.iGraduationYear}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sAddress_label"></td><td>{{user.sAddress}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sZipcode_label"></td><td>{{user.sZipcode}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sCity_label"></td><td>{{user.sCity}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sLandLineNumber_label"></td><td>{{user.sLandLineNumber}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sCellPhoneNumber_label"></td><td>{{user.sCellPhoneNumber}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sDefaultLanguage_label"></td><td>{{user.sDefaultLanguage}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sFreeText_label"></td><td>{{user.sFreeText}}</td></tr>
+                    <tr><td ng-i18next="models_users_fields_sWebSite_label"></td><td>{{user.sWebSite}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

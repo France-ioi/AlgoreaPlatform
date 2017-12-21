@@ -2,6 +2,10 @@
 
 require_once "../shared/connect.php";
 
+const DONWLOADS_PATH = 'downloads/';
+const DONWLOADS_DIR = __DIR__.'/../'.DONWLOADS_PATH;
+const DONWLOADS_LIFETIME = 172800; // secs
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -42,7 +46,7 @@ function make_and_change_directory($name) {
    }
    mkdir($name);
    chdir($name);
-   
+
    return $name;
 }
 
@@ -52,32 +56,10 @@ function return_from_directory() {
 }
 
 
-function mktempdir($prefix='') { // modified, from http://stackoverflow.com/questions/1707801/making-a-temporary-dir-for-unpacking-a-zipfile-into
-   $tempfile=tempnam(sys_get_temp_dir(),$prefix);
-   if (file_exists($tempfile)) {
-      unlink($tempfile);
-   }
-   $tempfile = $tempfile . ".d";
-   mkdir($tempfile);
-   if (is_dir($tempfile)) {
-      return $tempfile;
-   }
-   else { print("Directory access error in result generation, line ".__LINE__.".\n"); exit(); }   
-}
-
-
-function make_and_change_into_working_dirs() {
-   $tmpdir = mktempdir("results");
-
-   chdir($tmpdir);
-
-   return $tmpdir;
-}
-
 
 function cmp_user_info(&$a, &$b) {
    if ($a["lastname"] < $b["lastname"]) return -1;
-   if ($a["lastname"] > $b["lastname"]) return 1; 
+   if ($a["lastname"] > $b["lastname"]) return 1;
    return ($a["firstname"] < $b["firstname"]) ? -1 : 1;
 }
 
@@ -87,7 +69,7 @@ function &obtain_user_information(&$db, $main_group_id) {
 
    $stmt = $db->prepare("SELECT users.ID, users.sLogin, users.sFirstName, users.sLastName
       FROM users
-         JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild 
+         JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild
       WHERE groups_ancestors.idGroupAncestor = :groupId;");
    if ($stmt->execute(['groupId' => $main_group_id])) {
       while ($row = $stmt->fetch()) {
@@ -97,7 +79,7 @@ function &obtain_user_information(&$db, $main_group_id) {
    else { print("Database error in result generation, line ".__LINE__.".\n"); exit(); }
 
    uasort($user_information, 'cmp_user_info');
-   
+
    return $user_information;
 }
 
@@ -106,12 +88,12 @@ function make_item_directory_tree(&$db, &$item_information, $item_id, $item_orde
    $stmt = $db->prepare("SELECT items.sTextId, items_strings.sTitle  FROM items join items_strings on items_strings.idItem = items.ID WHERE items.ID = :itemId;");
    if ($stmt->execute(['itemId' => $item_id])) {
       if ($row = $stmt->fetch()) {
-      
+
          $dir = make_and_change_directory($item_order_number . "-" . $row["sTitle"]);
-         
+
          $item_information[$item_id] = array("name" => $row["sTitle"], "directory" => getcwd());
-      
-         $stmt_loc = $db->prepare("SELECT idItemChild, iChildOrder FROM items_items 
+
+         $stmt_loc = $db->prepare("SELECT idItemChild, iChildOrder FROM items_items
                      JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
                      JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items_items.idItemChild
                      JOIN users_items ON items_items.idItemChild = items_items.idItemChild AND users_items.idUser = :idUser
@@ -136,7 +118,7 @@ function &obtain_item_information(&$db, $main_item_id, &$base_dir) {
    $item_information = array();
 
    $base_dir = make_item_directory_tree($db, $item_information, $main_item_id, 0, true);
-   
+
    return $item_information;
 }
 
@@ -147,14 +129,14 @@ function populate_user_information(&$db, &$user_information, &$item_information,
    $stmt = $db->prepare("SELECT users_items.idUser, users_items.idItem, users_items.iScore,
          users_items.nbSubmissionsAttempts, users_items.bValidated, users_items.bFinished, users_items.sStartDate, users_items.sValidationDate, users_items.nbCorrectionsRead, users_items.nbHintsCached, users_items.nbCorrectionsRead, users_items.nbTasksWithHelp, users_items.nbChildrenValidated, users_items.nbTasksSolved, users_items.nbTasksTried
       FROM users_items
-         JOIN users ON users_items.idUser = users.ID 
-         JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild 
+         JOIN users ON users_items.idUser = users.ID
+         JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild
          JOIN items_ancestors ON users_items.idItem = items_ancestors.idItemChild
       WHERE groups_ancestors.idGroupAncestor = :groupId
          AND items_ancestors.idItemAncestor = :itemId;");
    if ($stmt->execute(['groupId' => $main_group_id, 'itemId' => $main_item_id])) {
       while ($row = $stmt->fetch()) {
-         $user_information[$row["idUser"]]["results"][$row["idItem"]] = array("score" => $row["iScore"], 
+         $user_information[$row["idUser"]]["results"][$row["idItem"]] = array("score" => $row["iScore"],
               "jsondata" => array("nbSubmissionsAttempts" => $row["nbSubmissionsAttempts"],
                                   "iScore"                => $row["iScore"],
                                   "bValidated"            => $row["bValidated"],
@@ -175,17 +157,17 @@ function populate_user_information(&$db, &$user_information, &$item_information,
    // ------ BEGIN SECTION
    //
    // This section must be removed if items are their own ancestors in the database
-   // 
+   //
    $stmt = $db->prepare("SELECT users_items.idUser, users_items.idItem, users_items.iScore,
          users_items.nbSubmissionsAttempts, users_items.bValidated, users_items.bFinished, users_items.sStartDate, users_items.sValidationDate, users_items.nbCorrectionsRead, users_items.nbHintsCached, users_items.nbCorrectionsRead, users_items.nbTasksWithHelp, users_items.nbChildrenValidated, users_items.nbTasksSolved, users_items.nbTasksTried
       FROM users_items
-         JOIN users ON users_items.idUser = users.ID 
-         JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild 
+         JOIN users ON users_items.idUser = users.ID
+         JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild
       WHERE groups_ancestors.idGroupAncestor = :groupId
          AND users_items.idItem = :itemId;");
    if ($stmt->execute(['groupId' => $main_group_id, 'itemId' => $main_item_id])) {
       while ($row = $stmt->fetch()) {
-         $user_information[$row["idUser"]]["results"][$row["idItem"]] = array("score" => $row["iScore"], 
+         $user_information[$row["idUser"]]["results"][$row["idItem"]] = array("score" => $row["iScore"],
               "jsondata" => array("nbSubmissionsAttempts" => $row["nbSubmissionsAttempts"],
                                   "iScore"                => $row["iScore"],
                                   "bValidated"            => $row["bValidated"],
@@ -231,7 +213,7 @@ function write_files(&$db, &$user_information, &$item_information) {
       fwrite($csv,"\n");
 
       $stmt = $db->prepare("SELECT sAnswer, iScore, ID FROM users_answers WHERE idUser = :userId AND idItem = :itemId order by sSubmissionDate asc;");
-            
+
       foreach($user_information as $userId => $user_info) {
          if ($user_info["lastname"] == "") $user_info["lastname"] = "Nom non renseigné";
          if ($user_info["firstname"] == "") $user_info["firstname"] = "Prénom non renseigné";
@@ -239,20 +221,20 @@ function write_files(&$db, &$user_information, &$item_information) {
          foreach($item_information as $itemId => $item_info) {
             $directory = $item_info["directory"] . "/" . $user_info["login"] . "/";
             mkdir($directory);
-         
+
             if (array_key_exists ($itemId, $user_info["results"])) {
                fwrite($csv,";" . $user_info["results"][$itemId]["score"]);
-               
+
                $file = fopen($directory . "data.json", "w");
                if ($file) {
                   fwrite($file, json_encode($user_info["results"][$itemId]["jsondata"]));
                   fclose($file);
                }
-               else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }   
+               else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }
             }
             else fwrite($csv,";");
             ////print($userId . ':' . $itemId . ':');
-            
+
             $counter = 0;
             if ($stmt->execute(['userId' => $userId, 'itemId' => $itemId])) {
                while ($row = $stmt->fetch()) {
@@ -271,7 +253,7 @@ function write_files(&$db, &$user_information, &$item_information) {
                         $filename = $directory . ++$counter . "-" . $row["iScore"] . "-"   . $row["ID"] . "." . $extension;
                         // TODO: handle tests better (directory?)
                         if (isset($answer['sourceCode']) && $answer['sourceCode']) {
-                          $answerContent = $answer['sourceCode'];  
+                          $answerContent = $answer['sourceCode'];
                         } elseif (isset($answer['tests']) && $answer['tests']) {
                           $answerContent = json_encode($answer['tests']);
                         } else {
@@ -283,13 +265,13 @@ function write_files(&$db, &$user_information, &$item_information) {
                      }
                   }
                   //print("Writing answer to ". $filename . "\n");
-                  
+
                   $file = fopen($filename, "w");
                   if ($file) {
                      fwrite($file, $answerContent);
                      fclose($file);
                   }
-                  else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }   
+                  else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }
                }
             }
             else { print("Database error in result generation, line ".__LINE__.".\n"); exit(); }
@@ -299,7 +281,7 @@ function write_files(&$db, &$user_information, &$item_information) {
 
       fclose($csv);
    }
-   else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }   
+   else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }
 }
 
 
@@ -312,34 +294,78 @@ function &make_zip_file_name(&$db, $main_group_id, $main_item_id) {
       if ($row = $stmt->fetch()) {
          //print("Item: ". $row["sTextId"] . "\n");
          //print("Group: ". $row["sName"] . "\n");
-         
+
          $zip_id = $row["sName"] . "_" . $row["sTextId"] . $zip_id;
       }
       else { print("Database error in result generation, line ".__LINE__.".\n"); exit(); }
    }
    else { print("Database error in result generation, line ".__LINE__.".\n"); exit(); }
 
-   $zip_id = preg_replace("/[^a-zA-Z0-9_\-]/", "_" , $zip_id);
-   
+   $zip_id = preg_replace("/[^a-zA-Z0-9_\-]/", "_" , $zip_id).'.zip';
+
    return $zip_id;
 }
 
 
+function initTmpDir() {
+  do {
+    $download_id = sha1(time().microtime());
+    $dir = DONWLOADS_DIR.'/'.$download_id;
+  } while(is_dir($dir));
+  @mkdir($dir);
+  if(!is_writable($dir)) {
+    die('Directory creation error.');
+  }
+  chdir($dir);
+  return $download_id;
+}
+
+
+function getFile($download_id, $zip_id) {
+  global $config;
+  return rtrim($config->shared->domains['current']->baseUrl, '/').'/'.DONWLOADS_PATH.$download_id.'/'.$zip_id;
+}
+
+
+function deleteDir($dir) {
+  $files = array_diff(scandir($dir), ['.','..']);
+  foreach($files as $file) {
+    $path = $dir.'/'.$file;
+    if(is_dir($path)) {
+      deleteDir($path);
+    } else {
+      unlink($path);
+    }
+   }
+   return rmdir($dir);
+ }
+
+
+function cleanupDownloads() {
+  $now = time();
+  $files = scandir(DONWLOADS_DIR);
+  $files = array_diff($files, ['.', '..']);
+  foreach($files as $file) {
+    $dir = DONWLOADS_DIR.$file;
+    if(is_dir($dir) && ($now - filemtime($dir) > DONWLOADS_LIFETIME)) {
+      deleteDir($dir);
+    }
+  }
+}
+
+
+
+cleanupDownloads();
 $base_dir = "";
-
-$wdir = make_and_change_into_working_dirs();
-
+$download_id = initTmpDir();
 $user_information = obtain_user_information($db, $main_group_id);
 $item_information = obtain_item_information($db, $main_item_id, $base_dir);
-
 populate_user_information($db, $user_information, $item_information, $main_group_id, $main_item_id);
-
 write_files($db, $user_information, $item_information);
-
 $zip_id = make_zip_file_name($db, $main_group_id, $main_item_id);
-exec("zip -r ". $zip_id . ".zip " . $base_dir . ' ' . $groupName . ".csv");
-
-header("Content-Type: application/zip");
-header("Content-Disposition: attachment; filename=".$zip_id.".zip");
-header("Content-Length: " . filesize($zip_id.".zip"));
-readfile($zip_id.".zip");
+exec("zip -r ". $zip_id . ' ' . $base_dir . ' ' . $groupName . ".csv");
+header("Content-Type: application/json");
+die(json_encode([
+  'file' => getFile($download_id, $zip_id)
+]));
+?>

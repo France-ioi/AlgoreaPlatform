@@ -80,7 +80,15 @@ var models = {
          parents: {refModel: "groups_groups", key: "idGroupChild", type: "object"},
          userSelf: {refModel: "users", key: "idGroupSelf", type: "direct"},
          userOwned: {refModel: "users", key: "idGroupOwned", type: "direct"},
-         userAccess: {refModel: "users", key: "idGroupAccess", type: "direct"}
+         userAccess: {refModel: "users", key: "idGroupAccess", type: "direct"},
+         login_prefixes: {refModel: "groups_login_prefixes", key: "idGroup", type: "array"}
+      }
+   },
+
+   groups_login_prefixes: {
+      fields: {
+        idGroup: {type: "key", label: "models_groups_login_prefixes_fields_idGroup_label", refModel: "groups", link: "parent", invLink: "login_prefixes"},
+        prefix: {type: "string", label: "models_groups_login_prefixes_fields_prefix_label"}
       }
    },
 
@@ -402,6 +410,7 @@ var models = {
           sTimeZone: {type: "string", label: "models_users_fields_sTimeZone_label"},
           sBirthDate: {type: "string", label: "models_users_fields_sBirthDate_label"},
           iGraduationYear: {type: "int", label: "models_users_fields_iGraduationYear_label"},
+          sStudentId: {type: "string", label: "models_users_fields_sStudentId_label"},
           sSex: {
              type: "enum",
              values: {Male: {label: "models_users_fields_sSex_values_Male_label"}, Female: {label: "models_users_fields_sSex_values_Female_label"}},
@@ -443,7 +452,9 @@ var models = {
           idGroupSelf: {type: "key", label: "models_users_fields_idGroupSelf_label", link: "groupSelf", refModel: "groups", invLink: "userSelf"},
           idGroupOwned: {type: "key", label: "models_users_fields_idGroupOwned_label", link: "groupOwned", refModel: "groups", invLink: "userOwned"},
           idGroupAccess: {type: "key", label: "models_users_fields_idGroupAccess_label", link: "groupAccess", refModel: "groups", invLink: "userAccess"},
-          sNotificationReadDate: {type: "jsdate", label: "models_users_fields_sNotificationReadDate_label"}
+          sNotificationReadDate: {type: "jsdate", label: "models_users_fields_sNotificationReadDate_label"},
+          loginModulePrefix: {type: "string", label: "models_users_fields_loginModulePrefix_label"},
+          allowSubgroups: {type: "boolean", label: ""}
       },
       links: {
          threads: {refModel: "threads", key: "idUserCreated", type: "object"}
