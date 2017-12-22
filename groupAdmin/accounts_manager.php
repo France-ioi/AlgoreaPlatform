@@ -5,8 +5,7 @@ require_once __DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php';
 require_once __DIR__.'/../login/lib.php';
 require_once __DIR__.'/../shared/listeners.php';
 require_once __DIR__.'/../shared/RemoveUsersClass.php';
-
-function syncDebug($type, $b_or_e, $subtype='') {}
+require_once __DIR__.'/../shared/UserHelperClass.php';
 
 if(session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -15,45 +14,6 @@ if(session_status() === PHP_SESSION_NONE) {
 if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
     http_response_code(400);
     die("Auth failed");
-}
-
-
-function createUser($user) {
-    global $db;
-    list($idGroupOwned, $idGroupSelf) = createGroupsFromLogin($db, $user['login']);
-    $id = getRandomID();
-    $query = '
-        insert into `users` (
-            `ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`
-        ) values (
-            :ID, :idUser, :sLogin, \'0\', NOW(), :idGroupSelf, :idGroupOwned
-        )';
-    $stmt = $db->prepare($query);
-    $stmt->execute([
-        'ID' => $id,
-        'idUser' => $user['id'],
-        'sLogin' => $user['login'],
-        'idGroupSelf' => $idGroupSelf,
-        'idGroupOwned' => $idGroupOwned,
-    ]);
-    return $idGroupSelf;
-}
-
-
-function addUserToGroup($algorea_user_id, $group_id) {
-    global $db;
-    $query = '
-        insert ignore into `groups_groups` (
-            idGroupParent, idGroupChild, sType, sRole, sStatusDate
-        ) values (
-            :idGroupParent, :idGroupChild, \'direct\', \'member\', NOW()
-        )';
-    $stmt = $db->prepare($query);
-    $stmt->execute([
-        'idGroupParent' => $group_id,
-        'idGroupChild' => $algorea_user_id
-    ]);
-    Listeners::groupsGroupsAfter($db);
 }
 
 
@@ -85,7 +45,7 @@ function getLoginModulePrefix($prefix) {
     if(!$res['loginModulePrefix']) {
         throw new Exception('Action not available, empty user.loginModulePrefix');
     }
-    return $res['loginModulePrefix'].'_'.$prefix;
+    return $res['loginModulePrefix'].'_'.$prefix.'_';
 }
 
 
@@ -112,9 +72,10 @@ try {
                 throw new Exception('Wrong grop id');
             }
             $res = $manager->create($prefix, $amount);
-            foreach($res as $user) {
-                $algorea_user_id = createUser($user);
-                addUserToGroup($algorea_user_id, $group_id);
+            foreach($res as $external_user) {
+                $user_helper = new UserHelperClass($db);
+                $user = $user_helper->createUser($external_user);
+                $user_helper->addUserToGroup($user['idGroupSelf'], $group_id);
             }
             break;
         case 'delete':

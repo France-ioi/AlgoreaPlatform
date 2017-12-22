@@ -10,12 +10,21 @@ try {
     die($e->getMessage());
 }
 
+if(session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$groupCodeEnter = isset($_SESSION['groupCodeEnter']) ? $_SESSION['groupCodeEnter'] : null;
+if($_SESSION['login']['ID'] != $groupCodeEnter['idUser']) {
+    unset($_SESSION['groupCodeEnter']);
+    $groupCodeEnter = null;
+}
 
 $action = isset($_GET['action']) ? $_GET['action'] : die('Empty action');
 switch($action) {
     case 'login':
         $authorization_helper = $client->getAuthorizationHelper();
-        $url = $authorization_helper->getUrl();
+        $url = $authorization_helper->getUrl($groupCodeEnter ? $groupCodeEnter['login_module_params'] : null);
         break;
     case 'logout':
         $url = $redirect_helper->getLogoutUrl($config->shared->domains['current']->baseUrl.'/login/callback_logout.php');

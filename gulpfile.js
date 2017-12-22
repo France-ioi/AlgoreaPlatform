@@ -41,7 +41,7 @@ gulp.task('admin-css', function() {
 });
 
 gulp.task('js', function() {
-  return gulp.src(['ext/inheritance.js','algorea.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','shared/*.js','commonFramework/treeview/*.js','login/*.js','layout.js','navigation/*.js','groupRequests/*.js','map/*.js','community/*.js','states.js','task/*.js','userInfos/*.js','forum/*.js','groupAdmin/*.js','contest/*.js'])
+  return gulp.src(['ext/inheritance.js','algorea.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','shared/*.js','commonFramework/treeview/*.js','login/*.js','layout.js','navigation/*.js','groupRequests/*.js','map/*.js','community/*.js','states.js','task/*.js','userInfos/*.js','forum/*.js','groupAdmin/*.js','contest/*.js','groupCodePrompt/*.js'])
     //.pipe(jshint())
     //.pipe(jshint.reporter('jshint-stylish'))
     //.pipe(sourcemaps.init())
@@ -76,7 +76,7 @@ gulp.task('admin-templates', function () {
 
 gulp.task('vendor-js', function() {
   // exclude bootstrap from included js, include fr_fr locale
-  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "dynatree": {"dependencies": {"jquery-ui": "*"}}, "angular": {"dependencies": {"jquery": "*"}}, "angular-i18n": {"main": ['angular-locale_fr-fr.js'], "dependencies": {"angular":"*"}}}})) 
+  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "dynatree": {"dependencies": {"jquery-ui": "*"}}, "angular": {"dependencies": {"jquery": "*"}}, "angular-i18n": {"main": ['angular-locale_fr-fr.js'], "dependencies": {"angular":"*"}}}}))
     .pipe(uglify())
     .pipe(concat('vendor.min.js'))
     .pipe(gulp.dest(''));

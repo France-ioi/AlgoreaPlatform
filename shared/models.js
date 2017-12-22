@@ -208,7 +208,8 @@ var models = {
          bTransparentFolder: {type: "boolean", label: "models_items_fields_bTransparentFolder_label", defaultValue: 0},
          bDisplayChildrenAsTabs: {type: "boolean", label: "models_items_fields_bDisplayChildrenAsTabs_label", defaultValue: 0},
          bCustomChapter: {type: "boolean", label: null, defaultValue: 0, readOnly: true},
-         bDisplayDetailsInParent: {type: "boolean", label: "models_items_fields_bDisplayDetailsInParent_label", defaultValue: 0}
+         bDisplayDetailsInParent: {type: "boolean", label: "models_items_fields_bDisplayDetailsInParent_label", defaultValue: 0},
+         groupCodeEnter: {type: "boolean", label: "models_items_fields_groupCodeEnter_label", defaultValue: 0}
       },
       links: {
          children: {refModel: "items_items", key: "idItemParent", type: "array", orderBy: "iChildOrder"},

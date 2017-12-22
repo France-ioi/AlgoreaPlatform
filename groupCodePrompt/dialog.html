@@ -1,0 +1,17 @@
+<div ng-controller="groupCodePromptController" class="group-code-prompt">
+    <div class="alert alert-warning" ng-if="tempUser" ng-i18next="groupCodePrompt_auth_required"></div>
+    <div ng-if="!code.valid" class="form">
+        <div class="form-group">
+            <label ng-i18next="groupCodePrompt_label"></label>
+            <input type="text" ng-model="code.value" ng-trim="true" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <button ng-click="validate()" ng-diabled="loading" class="btn btn-default" ng-i18next="groupCodePrompt_validate"></button>
+        </div>
+    </div>
+    <div ng-if="code.valid" class="form">
+        <p ng-i18next="[i18next]({sTitle: item.strings[0].sTitle})groupCodePrompt_confirmation_request"></p>
+        <button ng-click="enter()" ng-diabled="loading" class="btn btn-default" ng-i18next="groupCodePrompt_confirm"></button>
+    </div>
+    <div class="alert alert-danger" ng-if="error">{{error}}</div>
+</div>

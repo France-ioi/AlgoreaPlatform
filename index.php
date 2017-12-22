@@ -185,6 +185,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('navigation/service.js') ?>"></script>
   <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
   <script src="<?= includeFile('navigation/directives.js') ?>"></script>
+
   <script src="<?= includeFile('community/controller.js') ?>"></script>
   <?php if ($useMap): ?>
     <script src="<?= includeFile('bower_components/paper/dist/paper-full.min.js') ?>"></script>
@@ -201,7 +202,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('groupRequests/myAccountController.js') ?>"></script>
   <script src="<?= includeFile('groupRequests/groupsOwnerController.js') ?>"></script>
   <script src="<?= includeFile('groupRequests/groupsMemberController.js') ?>"></script>
-
+  <script src="<?= includeFile('groupCodePrompt/controller.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAdminController.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAccountsManagerController.js') ?>"></script>
   <script src="<?= includeFile('userInfos/controller.js') ?>"></script>
