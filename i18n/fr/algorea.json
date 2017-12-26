@@ -125,7 +125,7 @@
     "admin_locale_new": "Ajouter des textes pour une autre langue",
     "admin_locale_compare": "Comparer avec la langue :",
     "admin_item_sDuration_empty_label": "Use time limit",
-
+    "profile_not_logged": "Please log in (button at the top right of the screen) to access this feature.",
     "groupAdmin_logins_not_found": "Les logins suivants n'ont pas pu être trouvés :",
     "groupAdmin_logins_already_members": "Les logins suivants ont déjà reçu une invitation ou font déjà partie du groupe :",
     "groupAdmin_confirm_unsaved": "Des données de l'item en cours ont été modifiées, vous allez perdre les changements.",
@@ -256,6 +256,14 @@
     "groupAccountsManager_exist_prefixes_hint": "Click on prefix to select for deletion",
     "groupAccountsManager_delete": "Delete users",
     "groupAccountsManager_delete_success": "Accounts deleted",
+
+    "groupSubgroups": "Subgroups",
+    "groupSubgroups_empty": "No subgroups",
+    "groupSubgroups_parents": "Groups that contain this group",
+    "groupSubgroups_not_available": "Not available for your account.",
+    "groupSubgroups_create_label": "Create new subgroup(s)",
+    "groupSubgroups_incorrect_names_array": "Enter 1..20 subgroup names",
+    "groupSubgroups_create_btn": "Create",
 
     "groupCodePrompt_auth_required": "If you already have an account on this platform, please login first.",
     "groupCodePrompt_label": "To start this item, you may enter a group code provided by your teacher.",

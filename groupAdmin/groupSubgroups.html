@@ -1,0 +1,39 @@
+<div ng-controller="groupSubgroupsController" class="groupAdmin-tabContent">
+    <div class="col-wrapper" ng-if="available">
+        <div class="col-left">
+            <div class="form-group">
+                <label ng-i18next="groupSubgroups_create_label"></label>
+                <textarea rows="10" class="form-control" type="text" ng-model="formValues.groupNames"></textarea>
+            </div>
+            <div class="form-group">
+                <button ng-disabled="loading" ng-click="createSubgroups()" class="btn btn-default" ng-i18next="groupSubgroups_create_btn"></button>
+            </div>
+        </div>
+        <div class="col-right">
+            <label ng-i18next="groupSubgroups"></label>
+            <div ng-hide="group.children.length">
+                <p ng-i18next="groupSubgroups_empty"></p>
+            </div>
+            <div ng-show="group.children.length">
+                <ul class="list list-block list-groups">
+                    <li class="list-item" ng-repeat="group_group in group.children | groupsOnly | groupsgroupsChildrenNameSort">
+                        <a ng-click="openGroup(group_group.idGroupChild);">{{group_group.child.sName}}</a>
+                        <span class="action">
+                            <button class="btn-icon btn-delete btn-small" ng-click="deleteGroup(group_group.idGroupChild, $event)" uib-tooltip="supprimer"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="delete"></span></button>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <div ng-if="show_parents">
+                <label ng-i18next="groupSubgroups_parents"></label>
+                <ul class="list list-block list-groups">
+                    <li class="list-item" ng-repeat="group_group in group.parents | groupsgroupsChildrenNameSort">
+                        <a ng-click="openGroup(group_group.idGroupParent);">{{group_group.parent.sName}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="alert alert-danger" ng-if="error">{{error}}</div>
+</div>

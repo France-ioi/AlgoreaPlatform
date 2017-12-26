@@ -119,7 +119,7 @@
     "admin_access_solutions": "Zugriff auf Lösungen",
     "admin_manage_access": "Zugriff verwalten",
     "admin_manage_access_desc": "Verwenden Sie das Mausrad oder eine Bewegung mit zwei Fingern um vertikal in der Tabelle zu scrollen",
-
+    "profile_not_logged": "Please log in (button at the top right of the screen) to access this feature.",
     "groupAdmin_logins_not_found": "Die folgenden Logins wurden nicht gefunden: ",
     "groupAdmin_logins_already_members": "Die folgenden Logins haben bereits eine Einladung erhalten oder sind der Gruppe schon beigetreten:",
     "groupAdmin_confirm_unsaved": "Dieses Item wurde bereits bearbeitet, alle Änderungen werden verworfen.",
@@ -250,6 +250,14 @@
     "groupAccountsManager_exist_prefixes_hint": "Click on prefix to select for deletion",
     "groupAccountsManager_delete": "Delete users",
     "groupAccountsManager_delete_success": "Accounts deleted",
+
+    "groupSubgroups": "Subgroups",
+    "groupSubgroups_empty": "No subgroups",
+    "groupSubgroups_parents": "Groups that contain this group",
+    "groupSubgroups_not_available": "Not available for your account.",
+    "groupSubgroups_create_label": "Create new subgroup(s)",
+    "groupSubgroups_incorrect_names_array": "Enter 1..20 subgroup names",
+    "groupSubgroups_create_btn": "Create",
 
     "groupCodePrompt_auth_required": "If you already have an account on this platform, please login first.",
     "groupCodePrompt_label": "To start this item, you may enter a group code provided by your teacher.",

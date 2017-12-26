@@ -65,7 +65,7 @@ angular.module('algorea')
       })
       .error(function() {
          console.error("error calling groupAdmin/api.php");
-      }); 
+      });
    };
 
    $scope.selfAdminGroup = null;
@@ -87,7 +87,7 @@ angular.module('algorea')
    $scope.$on('$destroy', function() {
    	$scope.stopSync();
    });
-   
+
 	$scope.loading = true;
    $scope.$on('login.logout', function(event,data) {
       $scope.loading = true;

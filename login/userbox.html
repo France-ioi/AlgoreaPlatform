@@ -1,4 +1,4 @@
-<div ng-if="loginStr" class="menu-item-login" ng-class="{'menu-item-active': activated === false}" ng-click="gotoMenuItem($index, 'groupRequests')">
+<div ng-if="loginStr" class="menu-item-login" ng-class="{'menu-item-active': activated === false}" ng-click="gotoMenuItem($index, 'profile')">
    <div class="menu-item-content menu-item-login-logged">
      <div class="userinfo">
        <span class="userbox-text" ng-click="$event.stopPropagation(); $event.preventDefault(); openLoginPopup('logout');" ng-i18next="{{ innerHtml }}"></span>

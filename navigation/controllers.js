@@ -635,7 +635,7 @@ angular.module('algorea')
             }
          }
          if(specials.indexOf('login') == -1) {
-            tabs.push({special: 'login', path: 'groupRequests'});
+            tabs.push({special: 'login', path: 'profile'});
          }
          return tabs;
       };
@@ -647,8 +647,8 @@ angular.module('algorea')
          if (tabPath == 'forum'){
             $state.go('forum');
          }
-         else if (tabPath == 'groupRequests'){
-            $state.go('groupRequests');
+         else if (tabPath == 'profile'){
+            $state.go('profile');
          } else {
             if (tabPath.indexOf('/') !== -1) {
                $state.go('contents', {path: tabPath,sell:1,selr:2});

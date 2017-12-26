@@ -125,7 +125,8 @@ orange : #F29200;
 	clear: both;
 }
 .groupAdmin .list-block.list-users li,
-.groupAdmin .list-block.list-applicants li {
+.groupAdmin .list-block.list-applicants li,
+.groupAdmin .list-block.list-groups li {
 	position: relative;
 	padding-left: 20px;
 	padding-right: 25px;
@@ -141,16 +142,12 @@ orange : #F29200;
 	top: 0;
 	right: 0;
 }
-.groupAdmin .list-block.list-groups {
-	max-height: 20em;
-	overflow: auto;
-}
-.groupAdmin .list-block.list-groups a {
+.groupAdmin .list-block a {
 	color: #480a2a;
 	cursor: pointer;
 	display: block;
 }
-.groupAdmin .list-block.list-groups a:hover {
+.groupAdmin .list-block a:hover {
 	text-decoration: none;
 }
 .groupAdmin .list-block.list-users .list-item.selected {

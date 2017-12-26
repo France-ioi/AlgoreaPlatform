@@ -2,14 +2,14 @@
    <span class="material-icons sidebar-right-title-icon">forum</span> <span ng-i18next="community"></span>
 </div>
 <div class="sidebar-right-item sidebar-right-subtitle">
-   <span class="material-icons sidebar-right-subtitle-icon">group</span> <strong><a ui-sref="groupRequests" ng-i18next="groupAdmin_groups_mine"></a></strong>
+   <span class="material-icons sidebar-right-subtitle-icon">group</span> <strong><a ui-sref="profile({ section: 'groupsMember'})" ng-i18next="groupAdmin_groups_mine"></a></strong>
 </div>
-<div ng-controller="groupRequestsController" class="community">
+<div ng-controller="groupsMemberController" class="community">
    <span style="display:none;" ng-init="rightPanel = true;"></span>
    <div class="sidebar-right-item " ng-repeat="mygroupgroup in getMyUnreadGroupParents() track by mygroupgroup.ID | orderBy : '-sStatusDate' | limitTo: historyLimit" class="list-group-item">
          <span class="material-icons sidebar-right-item-left-icon">group_add</span>
          <p class="sidear-right-item-text">
-            {{mygroupgroup.sStatusDate | date}}: 
+            {{mygroupgroup.sStatusDate | date}}:
             <span ng-switch="mygroupgroup.sType">
                <span ng-switch-when="invitationRefused"><span ng-i18next="groupRequests_mytype_invitationRefused"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>
                <span ng-switch-when="requestRefused"><span ng-i18next="groupRequests_mytype_requestRefused"></span> <strong>{{mygroupgroup.parent.sName}}</strong></span>

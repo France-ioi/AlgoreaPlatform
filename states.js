@@ -41,20 +41,36 @@ angular.module('algorea')
                    controller: 'superBreadCrumbsController',
                 },
              },
-          }).state('groupRequests', {
-             url: "/groupRequests",
-             views: {
+          })
+          .state('profile', {
+            url: "/profile/:section",
+            views: {
+              'left': {
+                  template: '',
+                },
+                'right': {
+                  templateUrl: templatesPrefix+'profile/profile.html',
+                  controller: 'profileController',
+                },
+                'breadcrumbs': {
+                  template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Profile</span></div>',
+                },
+            },
+          }).state("groupAdminGroup", {
+            url: "/groupAdmin/:idGroup/:section",
+            views: {
                'left': {
                    template: '',
                 },
                 'right': {
-                   templateUrl: templatesPrefix+'groupRequests/groupRequests.html',
-                   controller: 'groupRequestsController',
+                   templateUrl: templatesPrefix+'groupAdmin/group.html',
+                   controller: 'groupAdminController',
                 },
                 'breadcrumbs': {
-                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Profil</span></div>',
+                   templateUrl: templatesPrefix+'groupAdmin/breadcrumbs.html',
+                   controller: 'groupAdminBreadCrumbsController',
                 },
-             },
+             }
           }).state('userInfos', {
              url: "/userInfos",
              views: {
@@ -82,21 +98,6 @@ angular.module('algorea')
                 },
                 'breadcrumbs': {
                    template: '',
-                },
-             },
-          }).state("groupAdminGroup", {
-            url: "/groupAdmin/:idGroup",
-            views: {
-               'left': {
-                   template: '',
-                },
-                'right': {
-                   templateUrl: templatesPrefix+'groupAdmin/group.html',
-                   controller: 'groupAdminController',
-                },
-                'breadcrumbs': {
-                   template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last"><a ui-sref="groupRequests()" ng-i18next="profile"></a></span></div><div class="breadcrumbs-item"> <span class="breadcrumbs-item-active breadcrumbs-item-active-last">{{group.sName}}</span></div>',
-                   controller: 'groupAdminBreadCrumbsController',
                 },
              },
           }).state("concourir", {

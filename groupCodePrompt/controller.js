@@ -1,8 +1,7 @@
 angular.module('algorea')
     .controller('groupCodePromptController', ['$scope', 'loginService', '$http', '$i18next', function ($scope, loginService, $http, $i18next) {
 
-    $scope.loggedIn = false;
-
+    $scope.tempUser = true;
     $scope.$on('login.login', function(event, data) {
         $scope.tempUser = data.tempUser;
     });

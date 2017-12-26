@@ -1,0 +1,184 @@
+<div class="groupAdmin-tabContent tab-progression">
+    <div class="print">
+        <span class="avertissement" ng-i18next="groupAdmin_print_warning"></span>
+        <span class="progressionType"><span ng-i18next="groupAdmin_visualization_type"> {{formValues.progressionTypeStr}}</span>
+    </div>
+
+    <div class="flex-container progression-controllers">
+        <div class="progression-type-select">
+            <span ng-i18next="groupAdmin_visualization_select"></span>&nbsp;
+            <div class="inline-block btn-group">
+                <label ng-model="formValues.progressionType" uib-btn-radio="'chronological'" class="btn btn-default">{{'groupAdmin_chronological' | i18next}}</label>
+                <label ng-model="formValues.progressionType" uib-btn-radio="'collective'" class="btn btn-default">{{'groupAdmin_collective' | i18next}}</label>
+            </div>
+        </div>
+        <div>
+            <p class="print" ng-i18next="groupAdmin_legend"></p>
+            <ul class="legend">
+                <li><span class="legend-color green"></span><span class="legend-label" ng-i18next="groupAdmin_legend_validated"></span></li>
+                <li><span class="legend-color red"></span><span class="legend-label" ng-i18next="groupAdmin_legend_not_validated"></span></li>
+                <li><span class="legend-color orange"></span><span class="legend-label" ng-i18next="groupAdmin_legend_partial"></span></li>
+                <li><span class="legend-color dark-grey"></span><span class="legend-label" ng-i18next="groupAdmin_legend_opened"></span></li>
+                <li><span class="legend-color light-grey"></span><span class="legend-label" ng-i18next="groupAdmin_legend_not_opened"></span></li>
+            </ul>
+        </div>
+    </div>
+    <div class="parcours-select">
+        <span ng-i18next="groupAdmin_course"></span>
+        <select ng-model="formValues.selectedLevel" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="levelSelected()">
+        </select>
+        <select ng-repeat="(depth, selectedItem) in dropdownSelections" ng-if="depth != 0" ng-change="dropdownSelected(depth)" ng-model="dropdownSelectionsIDs[depth]">
+            <option value="" ng-i18next="all"></option>
+            <option ng-repeat="child in dropdownSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == dropdownSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+        </select>
+        <select ng-if="dropdownSelections[dropdownSelections.length-1].children.length" ng-change="dropdownSelected(0)" ng-model="dropdownSelectionsIDs[dropdownSelections.length]">
+            <option selected="selected" value="" ng-i18next="all"></option>
+            <option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+        </select>
+    </div>
+    <p class="dl-link"><a target="_self" ng-href="/admin/zip_export.php?itemId={{dropdownSelections[dropdownSelections.length-1].ID}}&groupId={{group.ID}}">
+        <button class="btn btn-primary" ng-i18next="admin_zip_export"></button>
+    </a></p>
+
+    <div ng-if="formValues.progressionType != 'collective'" class="flex-container view-chrono">
+        <div>
+            <div class="groupAdmin-title"><span ng-i18next="users"></span> <span class="title-desc" ng-i18next="groupAdmin_users_desc"></span></div>
+            <ul class="list list-block list-users">
+            <!-- TODO : add class toggle when selected -->
+                    <li ng-repeat="child in group.children | confirmed" ng-click="toggleUserRowSelection(child.child);" ng-class="{row_selected: groupsSelected[child.idGroupChild] == true}">
+                        <span class="user-status connected"></span>
+                        <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
+                    </li>
+            </ul>
+            <div class="select-toggle"><span ng-i18next="groupAdmin_select"></span> <a href="#" ng-click="selectAllUsers();" ng-i18next="all"></a> | <a href="#" ng-click="selectNoUser();" ng-i18next="none"></a></div>
+        </div>
+        <div>
+            <div class="groupAdmin-title" ng-i18next="groupAdmin_recent_activity"></div>
+            <table class="table table-activity">
+                <thead>
+                    <tr>
+                        <th ng-i18next="user"></th>
+                        <th ng-i18next="date"></th>
+                        <th ng-i18next="type"></th>
+                        <th ng-i18next="exercise"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="event in events">
+                        <td>{{event.userStr}}</td>
+                        <td>{{event.date | date}}</td>
+                        <td class="activity-type" ng-class="getClass(event.user_item);">{{event.eventStr}}<button class="btn-icon btn-small btn-modal" ng-click="openPopup(event.user_item);" ng-i18next="[title]groupAdmin_activity_link"><span class="btn-label" ng-i18next="groupAdmin_activity_link"></span></button></td>
+                        <td>{{event.itemStr}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div ng-if="formValues.progressionType == 'collective'">
+        <div class="table-controllers clearfix">
+            <div class="checkboxSwitch pull-left">
+                <span ng-i18next="groupAdmin_show_details"></span>
+                <input type="checkbox" id="switchView" class="switch" ng-model="formValues.detailedView">
+                <label for="switchView"><span></span></label>
+            </div>
+            <div class="checkboxSwitch pull-left">
+                <span for="switchDescription" ng-i18next="groupAdmin_show_descriptions"></span>
+                <input type="checkbox" id="switchDescription" class="switch" ng-model="formValues.showDescription">
+                <label for="switchDescription"><span></span></label>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table class="table-progress table-head" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
+                <thead>
+                    <tr>
+                        <th class="fixed-width step-name" ng-i18next="groupAdmin_chapter_name"></th>
+                        <th class="fixed-width step-descr" ng-if="formValues.showDescription" ng-i18next="description"></th>
+                        <th ng-repeat="child in group.children | confirmed" ng-if="!formValues.detailedView" class="text-center name" uib-tooltip="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})" tooltip-placement="top-right"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
+                        <th ng-repeat="child in group.children | confirmed" ng-if="formValues.detailedView" class="text-center name"><div class="user-info-wrapper"><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
+                    </tr>
+                </thead>
+                </table>
+                <table class="table-progress table-body" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
+                <tbody>
+                    <tr ng-repeat="(idx, item) in itemsList track by idx">
+                        <td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><p uib-tooltip="{{item.strings[0].sTitle}}" tooltip-placement="top-left">{{item.strings[0].sTitle}}</p></td>
+                        <td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
+                        <td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
+                            <div ng-if="formValues.detailedView" class="progress-details">
+                                <div class="details-row">
+                                    <div class="date" ng-i18next="[uib-tooltip]groupAdmin_last_activity" tooltip-placement="top">{{getDate(thisUserItem)}}</div>
+                                    <div class="time" ng-i18next="[uib-tooltip]groupAdmin_time_spent" tooltip-placement="top">{{getDuration(thisUserItem)}}</div>
+                                    <div class="help" ng-i18next="[uib-tooltip]groupAdmin_hints_requested" tooltip-placement="top">{{thisUserItem.nbHintsCached}}</div>
+                                </div>
+                                <div class="details-row">
+                                    <div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" uib-tooltip="Score" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
+                                    <div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} essai{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
+                                    <div class="questions" ng-i18next="[uib-tooltip]groupAdmin_forum_requests" tooltip-placement="top" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+                                    <div class="button" ng-if="item.sType == 'Task'&& thisUserItem.nbSubmissionsAttempts"><button uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top" class="btn-icon btn-small btn-preview"></button><button class="btn-icon btn-modal" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_detail" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button></div>
+                                </div>
+                            </div>
+                            <div ng-if="!formValues.detailedView && item.sType == 'Task'" class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}">
+                                <span ng-if="getClass(thisUserItem) == 'read'">—</span>
+                                <span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
+                            </div>
+                            <button ng-if="!formValues.detailedView" uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
+                            <button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_code" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button>
+                        </td>
+                    </tr>
+                    <script type="text/ng-template" id="progress-details.html">
+                        <ul class="progress-details">
+                            <li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
+                            <li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
+                            <li class="date" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_last_activity"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+                            <li class="date" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_validation_date"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+                            <li class="time" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_time_spent"></span> : {{getDuration(thisUserItem)}}</li>
+                            <li class="time" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_time_validation"></span> : {{getDuration(thisUserItem)}}</li>
+                            <li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} <span ng-i18next="groupAdmin_attempt"</span>{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
+                            <li class="questions"><span ng-i18next="groupAdmin_forum_requests"></span> : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+                            <li class="help"><span ng-i18next="groupAdmin_hints_requested"></span> : {{thisUserItem.nbHintsCached}}</li>
+                        </ul>
+                    </script>
+                </tbody>
+            </table>
+        </div>
+        <div class="print">
+            <table class="table-progress-print" ng-class="{'view-global': !formValues.detailedView, 'view-detail': formValues.detailedView}">
+                <thead>
+                    <tr>
+                        <th class="fixed-width step-name" ng-i18next="groupAdmin_chapter_name"></th>
+                        <th class="fixed-width step-descr" ng-if="formValues.showDescription" ng-i18next="description"></th>
+                        <th ng-repeat="child in group.children | confirmed" class="text-center name" title="{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})"><div><span class="user-info"><span class="user-login">{{child.child.userSelf.sLogin}}</span> <span class="user-name">({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span></span></div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(idx, item) in itemsList track by idx">
+                        <td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><div>{{item.strings[0].sTitle}}</div></td>
+                        <td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
+                        <td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
+                            <div ng-if="formValues.detailedView" class="progress-details">
+                                <div class="details-row">
+                                    <div class="date" ng-i18next="[title]groupAdmin_last_activity">{{getDate(thisUserItem)}}</div>
+                                    <div class="time" ng-i18next="[title]groupAdmin_time_spent">{{getDuration(thisUserItem)}}</div>
+                                    <div class="help" ng-i18next="[title]groupAdmin_hints_requested">{{thisUserItem.nbHintsCached}}</div>
+                                </div>
+                                <div class="details-row">
+                                    <div class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}" ng-i18next="[title]score" ng-if="item.sType == 'Task'">{{thisUserItem.iScore}}%</div>
+                                    <div class="submissions">{{thisUserItem.nbSubmissionsAttempts}} <span ng-i18next="groupAdmin_attempt"></span>{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</div>
+                                    <div class="questions" ng-i18next="[title]groupAdmin_forum_requests" ng-if="item.sType == 'Task'">{{thisUserItem.sThreadStartDate ? '1' : '0'}}</div>
+                                </div>
+                            </div>
+                            <!-- Affichage du score :
+                            non lu : vide / lu, sans essai : tiret / commencé : score
+                                -->
+                            <div class="score text-center" ng-if="!formValues.detailedView && item.sType == 'Task'">
+                                <span ng-if="getClass(thisUserItem) == 'read'">—</span>
+                                <span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
