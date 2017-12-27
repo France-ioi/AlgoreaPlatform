@@ -94,7 +94,4 @@ function syncDebug() {}
 
 main();
 
-// at the end, add some admins with:
-// insert ignore into groups_items (idItem, idGroup, bOwnerAccess, bManagerAccess, bCachedManagerAccess) select idItemChild as idItem, XX as idGroup, 1 as bOwnerAccess, 1 as bManagerAccess, 1 as bCachedManagerAccess from items_ancestors where idItemAncestor = YYY;
-// insert ignore into groups_items (idItem, idGroup, bOwnerAccess, bManagerAccess, bCachedManagerAccess) values (YYY, XXX, 1, 1, 1);
-// where YYY is the root of the platform and XXX the idGroupSelf of the user you want as admin
+// at the end, add some admins with the shared/addAdmin.php script

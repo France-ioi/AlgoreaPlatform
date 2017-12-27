@@ -47,6 +47,8 @@ php shared/initPlatform.php
 
 this will make a boilerplate for a platform. You can use this script again if you want to set up another platform on the same database, with different item IDs.
 
+To add users as administrators on this platform, they must first log into the platform (to have their user created within the platform), then check the `shared/addAdmin.php` script to add them as users. You'll need to modify the configuration at the beginning of the file.
+
 ## Webserver configuration
 
 Example webserver configurations.
