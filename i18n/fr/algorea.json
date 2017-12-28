@@ -16,6 +16,7 @@
     "error": "Erreur",
     "events": "Événements",
     "exercise": "Exercice",
+    "friends": "Amis",
     "group": "Groupe",
     "groups": "Groupes",
     "item": "Item",
@@ -241,6 +242,7 @@
     "groupAdmin_admins_of_group": "Administrateurs du groupe",
     "groupAdmin_add_group": "Ajouter un groupe",
     "groupAdmin_logins_to_add": "Logins à ajouter (séparer par des espaces) :",
+    "groupAdmin_team_not_editable": "Vous ne pouvez pas éditer les équipes à travers cette interface.",
 
     "community": "Communauté",
     "community_accept": "accepter",

@@ -36,15 +36,41 @@ function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
    }
    $team = $stmt->fetch();
    if($team && $getExtra) {
-      // Get other members
-      $stmt = $db->prepare("SELECT groups_groups.idGroupChild, groups.sName FROM groups_groups JOIN groups ON groups_groups.idGroupChild = groups.ID WHERE groups_groups.idGroupParent = :idTeam;");
-      $stmt->execute(['idTeam' => $team['ID']]);
-      $team['children'] = $stmt->fetchAll();
-
       // Get admin information
-      $stmt = $db->prepare("SELECT idGroupParent FROM groups_groups WHERE idGroupChild = :idTeam AND sRole = 'owner';");
+      $stmt = $db->prepare("
+         SELECT groups_groups.idGroupParent, users.idGroupSelf
+         FROM groups_groups
+         JOIN users ON users.idGroupOwned = groups_groups.idGroupParent
+         WHERE idGroupChild = :idTeam AND sRole = 'owner';");
       $stmt->execute(['idTeam' => $team['ID']]);
-      $team['isAdmin'] = ($stmt->fetchColumn() == $_SESSION['login']['idGroupOwned']);
+      $adminInfo = $stmt->fetch();
+      $team['isAdmin'] = ($adminInfo['idGroupParent'] == $_SESSION['login']['idGroupOwned']);
+
+      // Get other members
+      $stmt = $db->prepare("
+         SELECT groups_groups.idGroupChild, groups.sName, groups_groups.sStatusDate, groups_ancestors.ID IS NOT NULL AS qualified
+         FROM groups_groups
+         JOIN groups ON groups_groups.idGroupChild = groups.ID
+         JOIN items
+         LEFT JOIN groups_ancestors ON groups_groups.idGroupChild = groups_ancestors.idGroupChild AND groups_ancestors.idGroupAncestor = items.idTeamInGroup
+         WHERE groups_groups.idGroupParent = :idTeam AND items.ID = :idItem;");
+      $stmt->execute(['idTeam' => $team['ID'], 'idItem' => $idItem]);
+      $children = $stmt->fetchAll();
+
+      // Add admin information and sort children
+      $team['children'] = [];
+      foreach($children as $child) {
+         $child['qualified'] = ($child['qualified'] == '1');
+         $child['isAdmin'] = ($child['idGroupChild'] == $adminInfo['idGroupSelf']);
+         if($child['idGroupChild'] == $_SESSION['login']['idGroupSelf']) {
+            $team['user'] = $child;
+         }
+         if($child['isAdmin']) {
+            array_unshift($team['children'], $child);
+         } else {
+            $team['children'][] = $child;
+         }
+      }
    }
    return $team;
 }
@@ -112,7 +138,31 @@ function getTeam($request) {
       return ['result' => false, 'error' => 'No item provided.'];
    }
    $team = getUserTeam($request['idItem'], true);
-   return ['result' => true, 'team' => $team];
+
+   $stmt = $db->prepare("SELECT * FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $request['idItem']]);
+   $item = $stmt->fetch();
+
+   // Check qualification state
+   $canReset = false;
+   if(!$item['idTeamInGroup'] || $item['sTeamMode'] == 'None') {
+      // No qualification needed
+      $qualState = 2;
+   } else {
+      $stmt = $db->prepare("SELECT ID FROM groups_ancestors WHERE idGroupAncestor = :idGroupAncestor AND idGroupChild = :idGroupSelf;");
+      $stmt->execute(['idGroupAncestor' => $item['idTeamInGroup'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+      if($stmt->fetchColumn()) {
+         // Qualified
+         $qualState = 1;
+      } else {
+         // Not qualified; 0 means we can still enter a team  to participate, -1 means we can't
+         $qualState = $item['sTeamMode'] == 'All' ? -1 : 0;
+         // TODO :: better criteria when we will have multiple badges
+         $canReset = count($_SESSION['login']['aBadges']) == 0;
+      }
+   }
+
+   return ['result' => true, 'team' => $team, 'qualificationState' => $qualState, 'canResetQualificationState' => $canReset];
 }
 
 
@@ -328,6 +378,22 @@ function leaveTeam($request) {
 }
 
 
+function resetDoNotPossess($request) {
+   // Reset the "do not possess" flag on the badge
+   global $config;
+   require_once __DIR__.'/../vendor/autoload.php';
+
+   try {
+      $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
+      $badgesManager = $client->getBadgesManager();
+      $badgesManager->resetDoNotPossess($_SESSION['login']['loginId']);
+      return ['result' => true];
+   } catch(Exception $e) {
+      return ['result' => false, 'error' => $e->getMessage()];
+   }
+}
+
+
 if($request['action'] == 'getTeam') {
    die(json_encode(getTeam($request)));
 } elseif($request['action'] == 'createTeam') {
@@ -340,4 +406,6 @@ if($request['action'] == 'getTeam') {
    die(json_encode(removeTeamMember($request)));
 } elseif($request['action'] == 'leaveTeam') {
    die(json_encode(leaveTeam($request)));
+} elseif($request['action'] == 'resetDoNotPossess') {
+   die(json_encode(resetDoNotPossess($request)));
 }

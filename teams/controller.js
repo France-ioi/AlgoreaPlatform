@@ -7,9 +7,14 @@ angular.module('algorea')
          // Update scope data from a request answer
          if(data.team) {
             $scope.team = data.team;
+            $scope.hasPassword = !!data.team.sPassword;
             loginService.getLoginData(function(data) {
                $scope.userGroupSelf = data.idGroupSelf;
             });
+         }
+         if(typeof data.qualificationState != 'undefined') {
+            $scope.qualificationState = data.qualificationState;
+            $scope.canResetQualificationState = data.canResetQualificationState;
          }
       };
 
@@ -77,6 +82,12 @@ angular.module('algorea')
       $scope.leaveTeam = function() {
          $scope.apiRequest('leaveTeam', null, false, function() {
             $scope.team = null;
+         });
+      };
+
+      $scope.resetDoNotPossess = function() {
+         $scope.apiRequest('resetDoNotPossess', null, false, function() {
+            $scope.resetMessage = true;
          });
       };
 

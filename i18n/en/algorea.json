@@ -16,6 +16,7 @@
     "error": "Error",
     "events": "Events",
     "exercise": "Task",
+    "friends": "Friends",
     "group": "Group",
     "groups": "Groups",
     "item": "Item",
@@ -230,6 +231,7 @@
     "groupAdmin_admins_of_group": "Group administrators",
     "groupAdmin_add_group": "Add a group",
     "groupAdmin_logins_to_add": "Usernames to add (space-separated) :",
+    "groupAdmin_team_not_editable": "Teams are not editable through this interface.",
 
     "groupAccountsManager": "Accounts manager",
     "groupAccountsManager_empty_loginModulePrefix_alert": "Available only for users with loginModulePrefix",

@@ -634,8 +634,12 @@ angular.module('algorea')
    $scope.initGroup = function() {
       $scope.group = ModelsManager.getRecord('groups', $scope.groupId);
       if (!$scope.group) {
-         console.error('big problem!');
+         console.error('Group not found!');
+         $state.go('groupRequests');
          return;
+      }
+      if($scope.group.sType == 'Team') {
+         $scope.error = 'groupAdmin_team_not_editable';
       }
       $scope.formValues.hasPassword = !!$scope.group.sPassword;
       $scope.formValues.expirationTimer = !!$scope.group.sPasswordTimer;
