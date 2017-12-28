@@ -7,11 +7,11 @@ if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 
 if (!isset($request['action'])) {
-   echo json_encode(array('result' => false, 'error' => 'missing action'));
+   echo json_encode(array('result' => false, 'error' => 'api_error'));
    exit();
 }
 if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
-   echo json_encode(array('result' => false, 'error' => 'only identified users can use this feature'));
+   echo json_encode(array('result' => false, 'error' => 'api_needs_login'));
    exit();
 }
 
@@ -86,7 +86,7 @@ function checkRequirements($team, $idItem, $modGroup, $removing=false) {
    $item = $stmt->fetch();
    if(!$item || !$item['sTeamMode']) {
       // Item was deleted right now or someone is crafting requests
-      return ['result' => false, 'error' => 'Invalid item.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
 
    if($team) {
@@ -97,7 +97,7 @@ function checkRequirements($team, $idItem, $modGroup, $removing=false) {
 
    // Is the new number of people ok?
    if(!$removing && $item['iTeamMaxMembers'] && $count > $item['iTeamMaxMembers']) {
-      return ['result' => false, 'error' => 'Maximum number of members reached.'];
+      return ['result' => false, 'error' => 'teams_max_members_reached'];
    }
 
    // Do the members satisfy the acceptance condition?
@@ -118,11 +118,11 @@ function checkRequirements($team, $idItem, $modGroup, $removing=false) {
       $nbOk = intval($stmt->fetchColumn());
 
       if($item['sTeamMode'] == 'One' && $nbOk == 0) {
-         return ['result' => false, 'error' => 'At least one member must fulfill the access requirements.'];
+         return ['result' => false, 'error' => 'teams_qualified_one'];
       } elseif($item['sTeamMode'] == 'Half' && $nbOk < $count / 2) {
-         return ['result' => false, 'error' => 'At least half of the members must fulfill the access requirements.'];
+         return ['result' => false, 'error' => 'teams_qualified_half'];
       } elseif($item['sTeamMode'] == 'All' && $nbOk < $count) {
-         return ['result' => false, 'error' => 'All the members must fulfill the access requirements.'];
+         return ['result' => false, 'error' => 'teams_qualified_all'];
       }
    }
    return ['result' => true];
@@ -135,7 +135,7 @@ function getTeam($request) {
    // Send the team for the current item
    global $db;
    if(!isset($request['idItem']) || !$request['idItem']) {
-      return ['result' => false, 'error' => 'No item provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
    $team = getUserTeam($request['idItem'], true);
 
@@ -170,16 +170,16 @@ function createTeam($request) {
    // Create a team
    global $db;
    if(!isset($request['idItem']) || !$request['idItem']) {
-      return ['result' => false, 'error' => 'No item provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
    if(!isset($request['name']) || !$request['name']) {
-      return ['result' => false, 'error' => 'No name provided.'];
+      return ['result' => false, 'error' => 'teams_no_name'];
    }
    if(!isset($request['password']) || !$request['password']) {
-      return ['result' => false, 'error' => 'No password provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
    if(getUserTeam($request['idItem'])) {
-      return ['result' => false, 'error' => 'User already belongs to a team for this item.'];
+      return ['result' => false, 'error' => 'teams_already_has_team'];
    }
 
    // Check requirements
@@ -191,7 +191,7 @@ function createTeam($request) {
    $stmt = $db->prepare("INSERT INTO groups (ID, sName, sDateCreated, sPassword, sType, idTeamItem) VALUES(:id, :name, NOW(), :password, 'Team', :idItem);");
    $res = $stmt->execute(['id' => $idGroup, 'name' => $request['name'], 'password' => $request['password'], 'idItem' => $request['idItem']]);
    if(!$res) {
-      return ['result' => false, 'error' => 'Error while creating team.'];
+      return ['result' => false, 'error' => 'teams_creation_error'];
    }
 
    // Add user as owner
@@ -212,13 +212,13 @@ function joinTeam($request) {
    // Join a team with a password
    global $db;
    if(!isset($request['idItem']) || !$request['idItem']) {
-      return ['result' => false, 'error' => 'No item provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
    if(!isset($request['password']) || !$request['password']) {
-      return ['result' => false, 'error' => 'No password provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
    if(getUserTeam($request['idItem'])) {
-      return ['result' => false, 'error' => 'User already belongs to a team for this item.'];
+      return ['result' => false, 'error' => 'teams_already_have_team'];
    }
 
    // Get team
@@ -241,7 +241,7 @@ function joinTeam($request) {
       // Send back information about the team
       return ['result' => true, 'team' => getUserTeam($request['idItem'], true)];
    } else {
-      return ['result' => false, 'error' => 'Invalid password.'];
+      return ['result' => false, 'error' => 'teams_invalid_password'];
    }
 }
 
@@ -250,15 +250,15 @@ function changeTeamPassword($request) {
    // Change the password for a team
    global $db;
    if(!isset($request['idItem']) || !$request['idItem']) {
-      return ['result' => false, 'error' => 'No item provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
 
    $team = getUserTeam($request['idItem'], true);
    if(!$team) {
-      return ['result' => false, 'error' => "User doesn't belong to a team for this item."];
+      return ['result' => false, 'error' => 'teams_no_team'];
    }
    if(!$team['isAdmin']) {
-      return ['result' => false, 'error' => "Only the team owner can remove members."];
+      return ['result' => false, 'error' => 'teams_not_admin'];
    }
 
    $password = (isset($request['password']) && $request['password']) ? $request['password'] : null;
@@ -274,10 +274,10 @@ function removeTeamMember($request) {
    // Remove a member from a team
    global $db;
    if(!isset($request['idItem']) || !$request['idItem']) {
-      return ['result' => false, 'error' => 'No item provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
    if(!isset($request['idGroupChild']) || !$request['idGroupChild']) {
-      return ['result' => false, 'error' => 'No user provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
 
    if($request['idGroupChild'] == $_SESSION['login']['idGroupSelf']) {
@@ -287,10 +287,10 @@ function removeTeamMember($request) {
 
    $team = getUserTeam($request['idItem'], true);
    if(!$team) {
-      return ['result' => false, 'error' => "User doesn't belong to a team for this item."];
+      return ['result' => false, 'error' => 'teams_no_team'];
    }
    if(!$team['isAdmin']) {
-      return ['result' => false, 'error' => "Only the team owner can remove members."];
+      return ['result' => false, 'error' => 'teams_not_admin'];
    }
 
    $stmt = $db->prepare("SELECT ID FROM groups_groups WHERE idGroupParent = :idTeam AND idGroupChild = :idGroupChild;");
@@ -298,7 +298,7 @@ function removeTeamMember($request) {
    $groupGroupID = $stmt->fetchColumn();
 
    if(!$groupGroupID) {
-      return ['result' => false, 'error' => "This user doesn't belong to this team."];
+      return ['result' => false, 'error' => 'teams_not_a_member'];
    }
 
    // Check requirements
@@ -326,11 +326,11 @@ function leaveTeam($request) {
    // Leave a team
    global $db;
    if(!isset($request['idItem']) || !$request['idItem']) {
-      return ['result' => false, 'error' => 'No item provided.'];
+      return ['result' => false, 'error' => 'api_error'];
    }
    $team = getUserTeam($request['idItem'], true);
    if(!$team) {
-      return ['result' => false, 'error' => "User doesn't belong to a team for this item."];
+      return ['result' => false, 'error' => 'teams_no_team'];
    }
 
    // Check requirements
@@ -408,4 +408,6 @@ if($request['action'] == 'getTeam') {
    die(json_encode(leaveTeam($request)));
 } elseif($request['action'] == 'resetDoNotPossess') {
    die(json_encode(resetDoNotPossess($request)));
+} else {
+   die(json_encode(['result' => false, 'error' => 'api_error']));
 }

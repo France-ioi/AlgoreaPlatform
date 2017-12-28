@@ -1,25 +1,26 @@
 <div class="panel panel-default" ng-controller="teamsController">
   <div class="panel-body">
     <div>
-      <p>Cette épreuve s'effectue par équipes.</p>
-      <p>Pour pouvoir accéder à cette épreuve, vous devez former une équipe :
+      <p ng-i18next="teams_intro"></p>
+      <p><span ng-i18next="teams_conditions_intro"></span>
         <ul>
-          <li ng-if="item.iTeamMaxMembers">qui contient au maximum {{ item.iTeamMaxMembers }} membres</li>
-          <li ng-if="item.idTeamInGroup && item.sTeamMode == 'One'">dont au moins un membre est qualifié</li>
-          <li ng-if="item.idTeamInGroup && item.sTeamMode == 'Half'">dont au moins la moitié des membres sont qualifiés</li>
-          <li ng-if="item.idTeamInGroup && item.sTeamMode == 'All'">dont tous les membres sont qualifiés</li>
-          <li ng-if="!item.iTeamMaxMembers && (!item.idTeamInGroup || item.sTeamMode == 'None')">sans condition</span>
+          <li ng-if="item.iTeamMaxMembers"><span ng-i18next="teams_conditions_max"></span> {{ item.iTeamMaxMembers }} <span ng-i18next="teams_conditions_members"></span></li>
+          <li ng-if="item.idTeamInGroup && item.sTeamMode == 'One'" ng-i18next="teams_conditions_one"></li>
+          <li ng-if="item.idTeamInGroup && item.sTeamMode == 'Half'" ng-i18next="teams_conditions_half"></li>
+          <li ng-if="item.idTeamInGroup && item.sTeamMode == 'All'" ng-i18next="teams_conditions_all"></li>
+          <li ng-if="!item.iTeamMaxMembers && (!item.idTeamInGroup || item.sTeamMode == 'None')" ng-i18next="teams_conditions_none"></li>
       </ul></p>
-      <p ng-if="qualificationState == 1" class="text-success">Vous êtes qualifié(e) pour cette épreuve.</p>
-      <p ng-if="qualificationState <= 0" class="text-warning">Vous n'êtes pas qualifié(e) pour cette épreuve. <span ng-if="qualificationState == 0">Néanmoins, vous pouvez quand même participer en formant une équipe avec des participants qualifiés.</span></p>
-      <p ng-if="canResetQualificationState">Vous pouvez aussi fournir un code de qualification pour cette épreuve. <button class="btn btn-default" ng-click="resetDoNotPossess();">Redemander le code</button> <span ng-if="resetMessage"><b>Veuillez vous déconnecter puis vous reconnecter.</b></span></p>
+      <p ng-if="qualificationState == 1" class="text-success" ng-i18next="teams_qualification_yes"></p>
+      <p ng-if="qualificationState <= 0" class="text-warning"><span ng-i18next="teams_qualification_no"></span> <span ng-if="qualificationState == 0" ng-i18next="teams_qualification_join"></span></p>
+      <p ng-if="canResetQualificationState"><span ng-i18next="teams_qualification_reset_code"></span> <button class="btn btn-default" ng-click="resetDoNotPossess();" ng-i18next="teams_qualification_reset_code_btn"></button> <span ng-if="resetMessage"><b ng-i18next="teams_qualification_reset_code_msg"></b></span></p>
       <hr />
     </div>
-    <div class="text-danger">{{ error }}</div>
+    <div class="text-danger" ng-i18next="{{ error }}"></div>
     <div ng-show="team">
-      <div ng-if="team.isAdmin">Vous dirigez l'équipe {{ team.sName }} pour cette épreuve.</div>
-      <div ng-if="!team.isAdmin">Vous faites partie de l'équipe {{ team.sName }} pour cette épreuve.</div>
-      <div ng-if="team.isAdmin || team.sPassword">Code pour rejoindre l'équipe :
+      <div ng-if="team.isAdmin"><span ng-i18next="teams_team_leading"></span> {{ team.sName }} <span ng-i18next="teams_for_this_contest"></span></div>
+      <div ng-if="!team.isAdmin"><span ng-i18next="teams_team_member"></span> {{ team.sName }} <span ng-i18next="teams_for_this_contest"></span></div>
+      <div ng-if="team.isAdmin || team.sPassword">
+        <span ng-i18next="teams_code"></span>
         <input type="text" class="access-code" ng-model="team.sPassword" readonly/>
         <span class="checkboxSwitch" ng-if="team.isAdmin">
           <input type="checkbox" id="codeInscr" class="switch" ng-model="hasPassword" ng-change="changeTeamPassword();">
@@ -29,22 +30,22 @@
       <hr />
       <table class="table table-bordered table-hover">
         <tr>
-          <th>Membres de l'équipe</th>
-          <th>Membre depuis</th>
-          <th ng-if="team.isAdmin">Retirer de l'équipe</th>
+          <th ng-i18next="teams_table_members"></th>
+          <th ng-i18next="teams_table_since"></th>
+          <th ng-if="team.isAdmin" ng-i18next="teams_table_remove"></th>
         </tr>
         <tr ng-repeat="child in team.children">
-          <td ng-class="{'success': child.qualified}"><b>{{ child.sName }}</b> <span ng-if="child.isAdmin">(dirigeant)</span> <span ng-if="child.qualified">(qualifié)</span></td>
-          <td>{{ child.sStatusDate }}</td>
-          <td ng-if="team.isAdmin && child.idGroupChild != userGroupSelf"><button class="btn btn-danger" ng-click="removeTeamMember(child.idGroupChild);">Retirer</button></td>
-          <td ng-if="team.isAdmin && child.idGroupChild == userGroupSelf"><button class="btn btn-danger" ng-click="leaveTeam();">Quitter l'équipe</button></td>
+          <td ng-class="{'success': child.qualified}"><b>{{ child.sName }}</b> <span ng-if="child.isAdmin" ng-i18next="teams_table_leader"></span> <span ng-if="child.qualified" ng-i18next="teams_table_qualified"></span></td>
+          <td>{{ child.sStatusDate|date:'short' }}</td>
+          <td ng-if="team.isAdmin && child.idGroupChild != userGroupSelf"><button class="btn btn-danger" ng-click="removeTeamMember(child.idGroupChild);" ng-i18next="remove"></button></td>
+          <td ng-if="team.isAdmin && child.idGroupChild == userGroupSelf"><button class="btn btn-danger" ng-click="leaveTeam();" ng-i18next="teams_leave"></button></td>
         </tr>
       </table>
-      <div><button class="btn btn-danger" ng-click="leaveTeam();">Quitter l'équipe</button></div>
+      <div><button class="btn btn-danger" ng-click="leaveTeam();" ng-i18next="teams_leave"></button></div>
     </div>
     <div ng-hide="team">
-      <div>Rejoindre une équipe par code : <input type="text" ng-model="joinPassword"></input><button class="btn btn-default" ng-click="joinTeam();">Rejoindre</button></div>
-      <div>Créer une nouvelle équipe nommée : <input type="text" ng-model="newTeamName"></input><button class="btn btn-default" ng-click="createTeam();">Créer</button></div>
+      <div><span ng-i18next="teams_join_code"></span> <input type="text" ng-model="joinPassword"></input><button class="btn btn-default" ng-click="joinTeam();" ng-i18next="join"></button></div>
+      <div><span ng-i18next="teams_create"></span> <input type="text" ng-model="newTeamName"></input><button class="btn btn-default" ng-click="createTeam();" ng-i18next="create"></button></div>
     </div>
   </div>
 </div>
