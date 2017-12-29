@@ -17,11 +17,11 @@
     </div>
     <div class="text-danger" ng-i18next="{{ error }}"></div>
     <div ng-show="team">
-      <div><b>
+      <div>
         <span ng-if="team.isAdmin" ng-i18next="teams_team_leading"></span>
         <span ng-if="!team.isAdmin" ng-i18next="teams_team_member"></span>
-        {{ team.sName }}.
-      </b></div>
+        : <b>{{ team.sName }}</b>.
+      </div>
       <div ng-if="team.isAdmin || team.sPassword">
         <span ng-i18next="teams_code"></span>
         <input type="text" class="access-code" ng-model="team.sPassword" readonly/>
@@ -55,6 +55,7 @@
           <span ng-i18next="{{ team.checkRequirements.error }}"></span>
         </b>
       </div>
+      <div style="height: 16px;"></div>
       <div><button class="btn btn-danger" ng-click="leaveTeam();" ng-i18next="teams_leave"></button></div>
     </div>
     <div ng-hide="team">
