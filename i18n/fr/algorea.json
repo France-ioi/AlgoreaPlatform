@@ -174,7 +174,7 @@
     "admin_locale_compare": "Comparer avec la langue :",
     "admin_item_sDuration_empty_label": "Utiliser la limite de temps",
 
-    "profile_not_logged": "Veuillez vous connecter (bouton en haut à droite de l'écran) pour accéder à cette interface.",
+    "profile_not_logged": "Veuillez vous connecter (en cliquant sur l'onglet \"Se connecter\") pour accéder à cette interface.",
 
     "groupAdmin_logins_not_found": "Les logins suivants n'ont pas pu être trouvés :",
     "groupAdmin_logins_already_members": "Les logins suivants ont déjà reçu une invitation ou font déjà partie du groupe :",
