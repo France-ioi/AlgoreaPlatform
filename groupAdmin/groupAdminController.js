@@ -123,6 +123,17 @@ angular.module('algorea')
    'use strict';
    $scope.error = null;
 
+
+    function validateSection(section) {
+     return section ? section : 'description'
+    }
+    $scope.section = validateSection($stateParams.section ? $stateParams.section : 'description');
+
+    $scope.selectSection = function(section) {
+      $scope.section = validateSection(section);
+      $state.go('groupAdminGroup', {section: section}, {notify: false});
+    }
+
    $scope.layout.isOnePage(true);
    $scope.layout.hasMap('never');
    $scope.groupFields = models.groups.fields;
@@ -573,7 +584,7 @@ angular.module('algorea')
             });
             ModelsManager.deleted('groups', $scope.group.ID);
             SyncQueue.planToSend(0);
-            $state.go('groupRequests');
+            $state.go('profile', { section: 'groupsOwner'});
          }
       })
       .error(function() {
@@ -733,7 +744,7 @@ angular.module('algorea')
       });
       $scope.usersSelected[user.ID] = true;
       $scope.updateEvents();
-      $scope.formValues.activeTab = 2; // selects members tab
+      $scope.section = 'progress'; // formValues.activeTab = 2; // selects members tab
    }
 
    function fillItemsListWithSonsRec(itemsList, itemsListRev, item) {

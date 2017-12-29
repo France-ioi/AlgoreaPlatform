@@ -1,0 +1,47 @@
+<div class="groupAdmin-tabContent tab-group-description">
+    <div class="flex-container">
+        <label class="control-label item-label">
+            <span class="label-title" ng-i18next="groupAdmin_group_name"></span>
+            <span class="label-description" ng-i18next="groupAdmin_group_name_desc"></span>
+        </label>
+        <input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
+    </div>
+    <div class="flex-container">
+        <label class="control-label item-label">
+            <span class="label-title" ng-i18next="type"></span>
+            <span class="label-description" ng-i18next="groupAdmin_type_desc"></span>
+        </label>
+        <select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
+            <option value="Class" ng-selected="group.sType == 'Class'" ng-i18next="class"></option>
+            <option value="Friends" ng-selected="group.sType == 'Friends'" ng-i18next="team"></option>
+            <option value="Other" ng-selected="group.sType == 'Other'" ng-i18next="other"></option>
+        </select>
+    </div>
+    <div class="flex-container">
+            <label class="control-label item-label">
+                <span class="label-title" ng-i18next="description"></span>
+                <span class="label-description" ng-i18next="groupAdmin_description_desc"></span>
+            </label>
+            <textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
+    </div>
+    <div ng-if="group.sType == 'Class'" class="flex-container">
+            <label class="control-label item-label" ng-if="group.sType == 'Class'">
+                <span class="label-title" ng-i18next="level"></span>
+                <span class="label-description" ng-i18next="groupAdmin_level_desc"></span>
+            </label>
+            <div class="item-control">
+                <select ng-model="group.iGrade" class="form-control">
+                    <option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
+                </select>
+                <input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
+        </div>
+    </div>
+    <div class="group-action" ng-if="adminOnGroup">
+        <div class="group-save">
+            <a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)" ng-i18next="save"></a>
+        </div>
+        <div class="block-delete">
+            <a class="group-delete" confirm="deleteGroup();"><span ng-i18next="groupAdmin_delete_group;[rel]groupAdmin_delete_group_msg"></span><i class="material-icons">delete</i></a>
+        </div>
+    </div>
+</div>

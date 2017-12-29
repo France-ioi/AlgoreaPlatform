@@ -1,0 +1,16 @@
+<div class="groupRequest">
+    <div ng-if="tempUser && !loading" class="alert alert-warning" ng-i18next="profile_not_logged"></div>
+    <uib-tabset active="section" ng-if="!tempUser && !loading">
+        <uib-tab heading="{{'groupRequests_title_account'|i18next}}" index="'myAccount'" select="selectSection('myAccount')">
+            <div ng-include="'profile/myAccount.html'"></div>
+        </uib-tab>
+
+        <uib-tab heading="{{'groupRequests_title_groups'|i18next}}" index="'groupsMember'" select="selectSection('groupsMember')">
+            <div ng-include="'profile/groupsMember.html'"></div>
+        </uib-tab>
+
+        <uib-tab heading="{{'groupRequests_title_my_groups'|i18next}}" index="'groupsOwner'" select="selectSection('groupsOwner')">
+            <div ng-include="'profile/groupsOwner.html'"></div>
+        </uib-tab>
+    </uib-tabset>
+</div>

@@ -40,9 +40,11 @@ angular.module('algorea')
             $state.go('forum');
          }
       }
+
       $scope.getTemplate = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
+
          $scope.itemType = this.item && this.item.sType ? this.item.sType : 'error';
          var type = $scope.itemType.toLowerCase();
          if(type == 'root') {
@@ -77,12 +79,18 @@ angular.module('algorea')
             type = 'loading';
          }
          this.firstApply = false;
+
          // haaaaaaacks
          if(suffix == '-children-list') {
             return this.viewsBaseUrl+'children-list.html';
          }
          if (type+suffix == 'task' || type+suffix=='course') {
-            return this.viewsBaseUrl+'taskcourse.html';
+            var user_item = itemService.getUserItem(this.item);
+            if(this.item.groupCodeEnter) {
+                  return $rootScope.templatesPrefix+'groupCodePrompt/dialog.html';
+            } else {
+                  return this.viewsBaseUrl+'taskcourse.html';
+            }
          }
          return this.viewsBaseUrl+type+suffix+'.html';
       };
@@ -627,7 +635,7 @@ angular.module('algorea')
             }
          }
          if(specials.indexOf('login') == -1) {
-            tabs.push({special: 'login', path: 'groupRequests'});
+            tabs.push({special: 'login', path: 'profile'});
          }
          return tabs;
       };
@@ -639,8 +647,8 @@ angular.module('algorea')
          if (tabPath == 'forum'){
             $state.go('forum');
          }
-         else if (tabPath == 'groupRequests'){
-            $state.go('groupRequests');
+         else if (tabPath == 'profile'){
+            $state.go('profile');
          } else {
             if (tabPath.indexOf('/') !== -1) {
                $state.go('contents', {path: tabPath,sell:1,selr:2});

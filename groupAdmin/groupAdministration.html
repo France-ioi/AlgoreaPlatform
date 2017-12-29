@@ -1,0 +1,32 @@
+<div class="groupAdmin-tabContent tab-admin">
+    <div class="inline-block">
+        <div class="groupAdmin-title"><span ng-i18next="groupAdmin_admins_of_group"></span></div>
+            <table class="table-administrators">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th ng-i18next="owner"></th>
+                        <th ng-i18next="administrator"></th>
+                        <th ng-i18next="observer"></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="parent in group.parents | userSort:true:true">
+                        <td>{{parent.parent.userOwned.sLogin}} ({{parent.parent.userOwned.sFirstName}} {{parent.parent.userOwned.sLastName}})</td>
+                        <td><span ng-if="parent.sRole == 'owner'"><i class="material-icons">done</i></span></td>
+                        <td><input type="radio" ng-model="parent.sRole" ng-value="'manager'" ng-change="changeAdminRole(parent, 'manager');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'manager' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
+                        <td><input type="radio" ng-model="parent.sRole" ng-value="'observer'" ng-change="changeAdminRole(parent, 'observer');" ng-if="adminOnGroup && parent.sRole != 'owner'"><span ng-if="parent.sRole == 'observer' && !adminOnGroup" class="glyphicon glyphicon-ok"></span></td>
+                        <td><button class="btn-icon btn-delete btn-small" uib-tooltip="supprimer" ng-if="adminOnGroup && parent.sRole != 'owner'" ng-click="removeAdmin(parent);"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="delete"></span></button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="form-inline admin-form" ng-if="adminOnGroup">
+                <input type="text" class="form-control" id="adminLogins" ng-model="formValues.adminLogins" ng-i18next="[placeholder]groupAdmin_logins_to_add">
+                <button  ng-click="inviteAdminLogins();" class="btn-icon btn-add"><i class="material-icons md-36">add_circle</i><span class="btn-label" ng-i18next="groupAdmin_add_group"></span></button>
+            </div>
+            <span ng-bind="adminInvitationError"></span>
+            <span ng-show="adminLoading" ng-i18next="loading"></span>
+    </div>
+</div>

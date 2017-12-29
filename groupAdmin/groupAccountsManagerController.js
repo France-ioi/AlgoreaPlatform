@@ -1,6 +1,8 @@
+'use strict';
+
 angular.module('algorea')
     .controller('groupAccountsManagerController', ['$scope', '$http', '$i18next', '$uibModal', 'loginService', function($scope, $http, $i18next, $uibModal, loginService) {
-    'use strict';
+
 
     $scope.user = {}
     $scope.error = null;

@@ -12,7 +12,8 @@ require_once __DIR__.'/../config.php';
 if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 
-if (!isset($request['action']) || ($request['action'] != 'createGroup' && !isset($request['idGroup']))) {
+$idGroupRequired = $request['action'] != 'createGroup' && $request['action'] != 'createMultipleGroups';
+if (!isset($request['action']) || ($idGroupRequired && !isset($request['idGroup']))) {
    echo json_encode(array('success' => false, 'error' => 'missing action or idGroup'));
    exit();
 }
@@ -36,7 +37,7 @@ if (isset($request['idGroup'])) {
 
    // if ($sRole != 'manager' && $sRole != 'owner') {
    //    echo json_encode(array('success' => false, 'error' => 'you do not have the rights to modify this group', 'idGroupOwned' => $idGroupOwned));
-   //    exit();	
+   //    exit();
    // }
 } else {
    $idGroup = null;
@@ -128,7 +129,7 @@ function addAdmins($idGroup, $groupArray) {
       $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup]);
       $nextIChildOrder = intval($stmt->fetchColumn()+1);
       $stmt = $db->prepare($queryInsert);
-      $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup, 'nextIChildOrder' => $nextIChildOrder, 'myUserId' => $_SESSION['login']['ID']]);   
+      $stmt->execute(['idGroupAdmin' => $idGroupAdmin, 'idGroup' => $idGroup, 'nextIChildOrder' => $nextIChildOrder, 'myUserId' => $_SESSION['login']['ID']]);
    }
    Listeners::groupsGroupsAfter($db);
    echo json_encode(array('success' => true));
@@ -138,7 +139,7 @@ function changeAdminRole($idGroup, $idGroupAdmin, $sRole) {
    global $db;
    if ($sRole != 'observer' && $sRole != 'manager') {
       echo json_encode(array('success' => false, 'error' => 'unknown role: '.$sRole));
-      exit();     
+      exit();
    }
    if (!$idGroupAdmin) {
       echo json_encode(array('success' => false, 'error' => 'missing idGroupAdmin argument.'));
@@ -183,6 +184,41 @@ function createGroup($idGroup, $sName) {
    echo json_encode(array('success' => true, 'idGroup' => $idGroup));
 }
 
+
+function createMultipleGroups($sNames, $idParent) {
+    global $db;
+    if(!is_array($sNames) || !count($sNames) || count($sNames) > 20) {
+        $res = [
+            'success' => false,
+            'error' => 'incorrect sNames array'
+        ];
+        die(json_encode($res));
+    }
+    $stmt_group = $db->prepare('
+        insert into groups
+            (ID, sName, sDateCreated, sType)
+        values
+            (:idGroup, :sName, NOW(), \'Class\');
+    ');
+    $stmt_group_group = $db->prepare('
+        insert into groups_groups
+            (idGroupChild, idGroupParent, sRole)
+        values
+            (:idGroup, :idGroupOwned, \'owner\');
+    ');
+    $idGroups = [];
+    foreach($sNames as $sName) {
+        $idGroup = getRandomID();
+        $stmt_group->execute(['idGroup' => $idGroup, 'sName' => $sName]);
+        $stmt_group_group->execute(['idGroup' => $idGroup, 'idGroupOwned' => $idParent]);
+        $idGroups[] = $idGroup;
+    }
+    Listeners::groupsGroupsAfter($db);
+    echo json_encode(array('success' => true, 'idGroups' => $idGroups));
+ }
+
+
+
 if ($request['action'] == 'refreshCode') {
    refreshCode($idGroup);
 } elseif ($request['action'] == 'removeUser') {
@@ -197,6 +233,8 @@ if ($request['action'] == 'refreshCode') {
    deleteGroup($idGroup);
 } elseif ($request['action'] == 'createGroup') {
    createGroup($idGroup, $request['sName']);
+} elseif ($request['action'] == 'createMultipleGroups') {
+    createMultipleGroups($request['sNames'], $request['idParent']);
 } else {
    echo json_encode(array('success' => false, 'error' => 'unknown action: '.$request['action']));
    exit();

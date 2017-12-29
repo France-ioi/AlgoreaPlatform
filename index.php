@@ -70,7 +70,7 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
       <link href="<?= includeFile('layout/sidebar-left.css') ?>" rel="stylesheet" type="text/css" />
       <link href="<?= includeFile('layout/sidebar-right.css') ?>" rel="stylesheet" type="text/css" />
       <link href="<?= includeFile('groupAdmin/groupAdmin.css') ?>" rel="stylesheet" type="text/css" />
-      <link href="<?= includeFile('groupRequests/groupRequests.css') ?>" rel="stylesheet" type="text/css" />
+      <link href="<?= includeFile('profile/groups.css') ?>" rel="stylesheet" type="text/css" />
       <link rel="stylesheet" href="<?= includeFile('algorea.css') ?>" type="text/css">
       <?php if ($usesForum): ?>
         <link href="<?= includeFile('bower_components/dynatree/dist/skin/ui.dynatree.css') ?>" rel="stylesheet" type="text/css">
@@ -185,6 +185,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('navigation/service.js') ?>"></script>
   <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
   <script src="<?= includeFile('navigation/directives.js') ?>"></script>
+
   <script src="<?= includeFile('community/controller.js') ?>"></script>
   <?php if ($useMap): ?>
     <script src="<?= includeFile('bower_components/paper/dist/paper-full.min.js') ?>"></script>
@@ -196,15 +197,17 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('states.js') ?>"></script>
   <script src="<?= includeFile('task/controller.js') ?>"></script>
   <script src="<?= includeFile('task/directive.js') ?>"></script>
-  <script src="<?= includeFile('groupRequests/groupRequestsController.js') ?>"></script>
 
-  <script src="<?= includeFile('groupRequests/myAccountController.js') ?>"></script>
-  <script src="<?= includeFile('groupRequests/groupsOwnerController.js') ?>"></script>
-  <script src="<?= includeFile('groupRequests/groupsMemberController.js') ?>"></script>
+  <script src="<?= includeFile('profile/profileController.js') ?>"></script>
+  <script src="<?= includeFile('profile/myAccountController.js') ?>"></script>
+  <script src="<?= includeFile('profile/groupsOwnerController.js') ?>"></script>
+  <script src="<?= includeFile('profile/groupsMemberController.js') ?>"></script>
 
+  <script src="<?= includeFile('groupCodePrompt/controller.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAdminController.js') ?>"></script>
   <script src="<?= includeFile('teams/controller.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAccountsManagerController.js') ?>"></script>
+  <script src="<?= includeFile('groupAdmin/groupSubgroupsController.js') ?>"></script>
   <script src="<?= includeFile('userInfos/controller.js') ?>"></script>
   <?php if ($usesForum): ?>
     <script src="<?= includeFile('forum/forumIndexController.js') ?>"></script>

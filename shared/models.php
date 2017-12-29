@@ -113,6 +113,7 @@ $tablesModels = array (
          "bDisplayDetailsInParent" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bDisplayChildrenAsTabs" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bCustomChapter" => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
+         "groupCodeEnter" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")))
       )
    ),
    "items_items" => array(
@@ -534,7 +535,8 @@ $viewsModels = array(
          "bTransparentFolder" => array(),
          "bDisplayDetailsInParent" => array(),
          "bDisplayChildrenAsTabs" => array(),
-         "bCustomChapter" => array()
+         "bCustomChapter" => array(),
+         "groupCodeEnter" => array()
       ),
       "filters" => array(
          "accessible" => array(

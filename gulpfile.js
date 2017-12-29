@@ -23,7 +23,7 @@ var debug = require('gulp-debug');
 var mainBowerFiles = require('main-bower-files');
 
 gulp.task('css', function() {
-  return gulp.src(['algorea.css','forum/forum.css','layout/*.css','groupAdmin/groupAdmin.css','groupRequests/groupRequests.css'])
+  return gulp.src(['algorea.css','forum/forum.css','layout/*.css','groupAdmin/groupAdmin.css','profile/*.css'])
     //.pipe(sourcemaps.init())
     .pipe(minifyCSS())
     //.pipe(sourcemaps.write())
@@ -41,7 +41,7 @@ gulp.task('admin-css', function() {
 });
 
 gulp.task('js', function() {
-  return gulp.src(['ext/inheritance.js','algorea.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','shared/*.js','commonFramework/treeview/*.js','login/*.js','layout.js','navigation/*.js','groupRequests/*.js','map/*.js','community/*.js','states.js','task/*.js','userInfos/*.js','forum/*.js','groupAdmin/*.js','contest/*.js'])
+  return gulp.src(['ext/inheritance.js','algorea.js','commonFramework/modelsManager/*.js','commonFramework/sync/*.js','shared/*.js','commonFramework/treeview/*.js','login/*.js','layout.js','navigation/*.js','profile/*.js','map/*.js','community/*.js','states.js','task/*.js','userInfos/*.js','forum/*.js','groupAdmin/*.js','contest/*.js','groupCodePrompt/*.js'])
     //.pipe(jshint())
     //.pipe(jshint.reporter('jshint-stylish'))
     //.pipe(sourcemaps.init())
@@ -69,14 +69,14 @@ gulp.task('templates', function () {
 });
 
 gulp.task('admin-templates', function () {
-    return gulp.src(['admin/**/*html','**/*html','!ext/**/*.html','!*.html','!groupRequests/**/*.html','!admin/*.html','!forum/**/*.html','!userInfos/**/*.html','!community/**/*.html','!dist/**/*.html','!navigation/**/*.html','!node_modules/**/*.html','!commonFramework/sync/*.html'])
+    return gulp.src(['admin/**/*html','**/*html','!ext/**/*.html','!*.html','!profile/**/*.html','!admin/*.html','!forum/**/*.html','!userInfos/**/*.html','!community/**/*.html','!dist/**/*.html','!navigation/**/*.html','!node_modules/**/*.html','!commonFramework/sync/*.html'])
         .pipe(templateCache({module: 'algorea'}))
         .pipe(gulp.dest('admin'));
 });
 
 gulp.task('vendor-js', function() {
   // exclude bootstrap from included js, include fr_fr locale
-  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "dynatree": {"dependencies": {"jquery-ui": "*"}}, "angular": {"dependencies": {"jquery": "*"}}, "angular-i18n": {"main": ['angular-locale_fr-fr.js'], "dependencies": {"angular":"*"}}}})) 
+  return gulp.src(mainBowerFiles({"filter": '**/*.js', "overrides": {"bootstrap": {"main": []}, "dynatree": {"dependencies": {"jquery-ui": "*"}}, "angular": {"dependencies": {"jquery": "*"}}, "angular-i18n": {"main": ['angular-locale_fr-fr.js'], "dependencies": {"angular":"*"}}}}))
     .pipe(uglify())
     .pipe(concat('vendor.min.js'))
     .pipe(gulp.dest(''));

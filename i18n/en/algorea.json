@@ -167,7 +167,7 @@
     "admin_access_solutions": "Access to solutions :",
     "admin_manage_access": "Manage access",
     "admin_manage_access_desc": "Use the mouse wheel or a two finger movement to move vertically in the table",
-
+    "profile_not_logged": "Please log in (button at the top right of the screen) to access this feature.",
     "groupAdmin_logins_not_found": "The following logins have not ben found:",
     "groupAdmin_logins_already_members": "The following logins already have received an invitation or already belong to the group:",
     "groupAdmin_confirm_unsaved": "Some fields of the current item have been changed, you will lose these changes.",
@@ -299,6 +299,21 @@
     "groupAccountsManager_exist_prefixes_hint": "Click on prefix to select for deletion",
     "groupAccountsManager_delete": "Delete users",
     "groupAccountsManager_delete_success": "Accounts deleted",
+
+    "groupSubgroups": "Subgroups",
+    "groupSubgroups_empty": "No subgroups",
+    "groupSubgroups_parents": "Groups that contain this group",
+    "groupSubgroups_not_available": "Not available for your account.",
+    "groupSubgroups_create_label": "Create new subgroup(s)",
+    "groupSubgroups_incorrect_names_array": "Enter 1..20 subgroup names",
+    "groupSubgroups_create_btn": "Create",
+
+    "groupCodePrompt_auth_required": "If you already have an account on this platform, please login first.",
+    "groupCodePrompt_label": "To start this item, you may enter a group code provided by your teacher.",
+    "groupCodePrompt_validate": "Validate group code",
+    "groupCodePrompt_validation_failed": "Validation failed",
+    "groupCodePrompt_confirmation_request": "This group code will open {{sTitle}} and start your participation. Please confirm.",
+    "groupCodePrompt_confirm": "Confirm",
 
     "community": "Community",
     "community_accept": "accept",
@@ -513,6 +528,7 @@
     "models_items_fields_bTransparentFolder_label": "Transparent folder",
     "models_items_fields_bDisplayChildrenAsTabs_label": "Display children as tabs",
     "models_items_fields_bDisplayDetailsInParent_label":"Display details in parent",
+    "models_items_fields_groupCodeEnter_label": "Offer users to enter through a group code",
     "models_items_fields_sTextId_label": "TextID",
     "models_items_fields_sType_values_Root_label": "Root",
     "models_items_fields_sType_values_Level_label": "Level",
