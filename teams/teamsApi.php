@@ -95,6 +95,11 @@ function checkRequirements($team, $idItem, $modGroup, $removing=false) {
       $count = 1;
    }
 
+   if($count == 0) {
+      // We're removing the last member
+      return ['result' => true];
+   }
+
    // Is the new number of people ok?
    if(!$removing && $item['iTeamMaxMembers'] && $count > $item['iTeamMaxMembers']) {
       return ['result' => false, 'error' => 'teams_max_members_reached'];

@@ -62,7 +62,7 @@
     "error_item_not_found": "Désolé, l'item que vous recherchez n'existe pas !",
 
     "api_error": "Erreur lors de la récupération des informations. Veuillez réessayer.",
-    "api_needs_login": "Seuls les utilisateurs enregistrés peuvent utiliser cette interface.",
+    "api_needs_login": "Seuls les utilisateurs connectés peuvent utiliser cette interface.",
 
     "teams_intro": "Cette épreuve s'effectue par équipes.",
     "teams_conditions_intro": "Pour pouvoir accéder à cette épreuve, vous devez former une équipe :",
