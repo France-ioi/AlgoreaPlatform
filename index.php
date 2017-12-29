@@ -222,9 +222,9 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   var i18nextOpts = <?= json_encode([
     'lng' => $defaultLanguage,
     'fallbackLng' => ['en', 'fr'],
-    'fallbackNS' => 'algorea',
 //    'debug' => true,
-    'ns' =>  $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea']
+    'fallbackNS' => $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
+    'ns' => $config->shared->domains['current']->customStringsName ? [$config->shared->domains['current']->customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea']
     ]); ?>;
   i18nextOpts['backend'] = {
     'allowMultiLoading': false,
