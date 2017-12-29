@@ -48,9 +48,10 @@ function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
 
       // Get other members
       $stmt = $db->prepare("
-         SELECT groups_groups.idGroupChild, groups.sName, groups_groups.sStatusDate, groups_ancestors.ID IS NOT NULL AS qualified
+         SELECT groups_groups.idGroupChild, users.sFirstName, users.sLastName, groups.sName, groups_groups.sStatusDate, groups_ancestors.ID IS NOT NULL AS qualified
          FROM groups_groups
          JOIN groups ON groups_groups.idGroupChild = groups.ID
+         JOIN users ON users.idGroupSelf = groups_groups.idGroupChild
          JOIN items
          LEFT JOIN groups_ancestors ON groups_groups.idGroupChild = groups_ancestors.idGroupChild AND groups_ancestors.idGroupAncestor = items.idTeamInGroup
          WHERE groups_groups.idGroupParent = :idTeam AND items.ID = :idItem;");
@@ -71,12 +72,15 @@ function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
             $team['children'][] = $child;
          }
       }
+
+      // Get requirements information
+      $team['checkRequirements'] = checkRequirements($team, $idItem);
    }
    return $team;
 }
 
 
-function checkRequirements($team, $idItem, $modGroup, $removing=false) {
+function checkRequirements($team, $idItem, $modGroup=null, $removing=false) {
    // Check whether a team still fulfills the requirements of the item after
    // adding or removing a member
    global $db;
@@ -90,7 +94,7 @@ function checkRequirements($team, $idItem, $modGroup, $removing=false) {
    }
 
    if($team) {
-      $count = count($team['children']) + ($removing ? -1 : 1);
+      $count = count($team['children']) + ($modGroup ? ($removing ? -1 : 1) : 0);
    } else {
       $count = 1;
    }
@@ -108,7 +112,7 @@ function checkRequirements($team, $idItem, $modGroup, $removing=false) {
    // Do the members satisfy the acceptance condition?
    if($item['sTeamMode'] != 'None' && $item['idTeamInGroup']) {
       $children = [];
-      if(!$removing) {
+      if(!$removing && $modGroup) {
          $children[] = $modGroup;
       }
       if($team) {
@@ -187,10 +191,6 @@ function createTeam($request) {
       return ['result' => false, 'error' => 'teams_already_has_team'];
    }
 
-   // Check requirements
-   $req = checkRequirements(null, $request['idItem'], $_SESSION['login']['idGroupSelf']);
-   if(!$req['result']) { return $req; }
-
    // Create new team
    $idGroup = getRandomID();
    $stmt = $db->prepare("INSERT INTO groups (ID, sName, sDateCreated, sPassword, sType, idTeamItem) VALUES(:id, :name, NOW(), :password, 'Team', :idItem);");
@@ -232,10 +232,11 @@ function joinTeam($request) {
    $res = $stmt->fetch();
 
    if($res) {
-      // Check requirements
       $team = getUserTeam($request['idItem'], true, $res['ID']);
-      $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
-      if(!$req['result']) { return $req; }
+      // Check requirements
+      // TODO :: check requirements only when contest is started
+//      $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
+//      if(!$req['result']) { return $req; }
 
       // Add user as member
       $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
@@ -307,8 +308,9 @@ function removeTeamMember($request) {
    }
 
    // Check requirements
-   $req = checkRequirements($team, $request['idItem'], $request['idGroupChild'], true);
-   if(!$req['result']) { return $req; }
+   // TODO :: check requirements only when contest is started
+//   $req = checkRequirements($team, $request['idItem'], $request['idGroupChild'], true);
+//   if(!$req['result']) { return $req; }
 
    $stmt = $db->prepare("DELETE FROM groups_groups WHERE ID = :id;");
    $stmt->execute(['id' => $groupGroupID]);
@@ -339,8 +341,9 @@ function leaveTeam($request) {
    }
 
    // Check requirements
-   $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf'], true);
-   if(!$req['result']) { return $req; }
+   // TODO :: check requirements only when contest is started
+//   $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf'], true);
+//   if(!$req['result']) { return $req; }
 
    // Get admin
    $stmt = $db->prepare("SELECT ID, idGroupParent FROM groups_groups WHERE idGroupChild = :idGroup AND sRole = 'owner';");

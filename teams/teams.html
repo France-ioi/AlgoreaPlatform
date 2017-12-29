@@ -1,5 +1,5 @@
 <div class="panel panel-default" ng-controller="teamsController">
-  <div class="panel-body">
+  <div ng-show="isLogged" class="panel-body">
     <div>
       <p ng-i18next="teams_intro"></p>
       <p><span ng-i18next="teams_conditions_intro"></span>
@@ -17,8 +17,11 @@
     </div>
     <div class="text-danger" ng-i18next="{{ error }}"></div>
     <div ng-show="team">
-      <div ng-if="team.isAdmin"><span ng-i18next="teams_team_leading"></span> {{ team.sName }} <span ng-i18next="teams_for_this_contest"></span></div>
-      <div ng-if="!team.isAdmin"><span ng-i18next="teams_team_member"></span> {{ team.sName }} <span ng-i18next="teams_for_this_contest"></span></div>
+      <div><b>
+        <span ng-if="team.isAdmin" ng-i18next="teams_team_leading"></span>
+        <span ng-if="!team.isAdmin" ng-i18next="teams_team_member"></span>
+        {{ team.sName }}.
+      </b></div>
       <div ng-if="team.isAdmin || team.sPassword">
         <span ng-i18next="teams_code"></span>
         <input type="text" class="access-code" ng-model="team.sPassword" readonly/>
@@ -35,17 +38,32 @@
           <th ng-if="team.isAdmin" ng-i18next="teams_table_remove"></th>
         </tr>
         <tr ng-repeat="child in team.children">
-          <td ng-class="{'success': child.qualified}"><b>{{ child.sName }}</b> <span ng-if="child.isAdmin" ng-i18next="teams_table_leader"></span> <span ng-if="child.qualified" ng-i18next="teams_table_qualified"></span></td>
+          <td ng-class="{'success': child.qualified}">
+            <b ng-if="child.sFirstName || child.sLastName">{{ child.sFirstName }} {{ child.sLastName }} <i>[{{ child.sName }}]</i></b>
+            <b ng-if="!child.sFirstName && !child.sLastName">{{ child.sName }}</b>
+            <span ng-if="child.isAdmin" ng-i18next="teams_table_leader"></span>
+            <span ng-if="child.qualified" ng-i18next="teams_table_qualified"></span>
+          </td>
           <td>{{ child.sStatusDate|date:'short' }}</td>
-          <td ng-if="team.isAdmin && child.idGroupChild != userGroupSelf"><button class="btn btn-danger" ng-click="removeTeamMember(child.idGroupChild);" ng-i18next="remove"></button></td>
-          <td ng-if="team.isAdmin && child.idGroupChild == userGroupSelf"><button class="btn btn-danger" ng-click="leaveTeam();" ng-i18next="teams_leave"></button></td>
+          <td><button class="btn btn-danger" ng-if="team.isAdmin && child.idGroupChild != userGroupSelf" ng-click="removeTeamMember(child.idGroupChild);" ng-i18next="remove"></button></td>
         </tr>
       </table>
+      <div>
+        <b ng-if="team.checkRequirements.result" class="text-success" ng-i18next="teams_requirements_yes"></b>
+        <b ng-if="!team.checkRequirements.result" class="text-warning">
+          <span ng-i18next="teams_requirements_no"></span>
+          <span ng-i18next="{{ team.checkRequirements.error }}"></span>
+        </b>
+      </div>
       <div><button class="btn btn-danger" ng-click="leaveTeam();" ng-i18next="teams_leave"></button></div>
     </div>
     <div ng-hide="team">
       <div><span ng-i18next="teams_join_code"></span> <input type="text" ng-model="joinPassword"></input><button class="btn btn-default" ng-click="joinTeam();" ng-i18next="join"></button></div>
       <div><span ng-i18next="teams_create"></span> <input type="text" ng-model="newTeamName"></input><button class="btn btn-default" ng-click="createTeam();" ng-i18next="create"></button></div>
     </div>
+  </div>
+  <div ng-show="!isLogged" class="panel-body">
+    <p ng-i18next="teams_intro"></p>
+    <p ng-i18next="teams_not_logged"></p>
   </div>
 </div>

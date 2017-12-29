@@ -1,7 +1,8 @@
 angular.module('algorea')
-   .controller('teamsController', ['$scope', '$rootScope', '$http', 'loginService', function ($scope, $rootScope, $http, loginService) {
+   .controller('teamsController', ['$scope', '$rootScope', '$http', '$i18next', 'loginService', function ($scope, $rootScope, $http, $i18next, loginService) {
       $scope.newTeamName = '';
       $scope.joinPassword = '';
+      $scope.isLogged = true;
 
       $scope.updateTeam = function(data) {
          // Update scope data from a request answer
@@ -34,9 +35,11 @@ angular.module('algorea')
 
          $http.post('/teams/teamsApi.php', parameters).success(function(res) {
             if(!res.result) {
+               if(res.error == 'api_needs_login') { $scope.isLogged = false; }
                $scope[errorVar] = res.error;
                return;
             }
+            $scope.isLogged = true;
             $scope.updateTeam(res);
             if(syncAfter) { SyncQueue.planToSend(0); }
             if(callback) {
@@ -74,12 +77,14 @@ angular.module('algorea')
 
       $scope.removeTeamMember = function(idGroupChild) {
          if(!idGroupChild) { return; }
+         if(!confirm($i18next.t('teams_confirm_remove'))) { return; }
          $scope.apiRequest('removeTeamMember', {idGroupChild: idGroupChild}, true, function(res) {
             if(!res.team) { $scope.team = null; } // we just left the team
          });
       };
 
       $scope.leaveTeam = function() {
+         if(!confirm($i18next.t('teams_confirm_leave'))) { return; }
          $scope.apiRequest('leaveTeam', null, false, function() {
             $scope.team = null;
          });
