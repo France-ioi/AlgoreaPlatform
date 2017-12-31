@@ -91,9 +91,7 @@ angular.module('algorea')
       };
 
       $scope.resetDoNotPossess = function() {
-         $scope.apiRequest('resetDoNotPossess', null, false, function() {
-            $scope.resetMessage = true;
-         });
+         loginService.openLoginPopup('badge');
       };
 
       $scope.loading = true;

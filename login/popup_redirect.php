@@ -38,6 +38,9 @@ switch($action) {
     case 'profile':
         $url = $redirect_helper->getProfileUrl($config->shared->domains['current']->baseUrl.'/login/callback_profile.php');
         break;
+    case 'badge':
+        $url = $redirect_helper->getBadgeUrl($config->shared->domains['current']->baseUrl.'/login/callback_profile.php');
+        break;
     case 'password':
         $url = $redirect_helper->getPasswordUrl();
         break;

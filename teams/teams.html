@@ -12,7 +12,7 @@
       </ul></p>
       <p ng-if="qualificationState == 1" class="text-success" ng-i18next="teams_qualification_yes"></p>
       <p ng-if="qualificationState <= 0" class="text-warning"><span ng-i18next="teams_qualification_no"></span> <span ng-if="qualificationState == 0" ng-i18next="teams_qualification_join"></span></p>
-      <p ng-if="canResetQualificationState"><span ng-i18next="teams_qualification_reset_code"></span> <button class="btn btn-default" ng-click="resetDoNotPossess();" ng-i18next="teams_qualification_reset_code_btn"></button> <span ng-if="resetMessage"><b ng-i18next="teams_qualification_reset_code_msg"></b></span></p>
+      <p ng-if="canResetQualificationState"><span ng-i18next="teams_qualification_reset_code"></span> <button class="btn btn-default" ng-click="resetDoNotPossess();" ng-i18next="teams_qualification_reset_code_btn"></button></p>
       <hr />
     </div>
     <div class="text-danger" ng-i18next="{{ error }}"></div>

@@ -180,7 +180,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/France-ioi/login-module-client.git",
-                "reference": "9c527d3aa925395b5e2e96b4dd6a63a661ccec16"
+                "reference": "7d50d72d68b3b87f05d92682e473ed3958b11102"
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.3",
@@ -197,7 +197,7 @@
                 "MIT"
             ],
             "description": "Login Module Client Library",
-            "time": "2017-12-20 18:17:40"
+            "time": "2017-12-28 16:59:48"
         },
         {
             "name": "guzzlehttp/guzzle",

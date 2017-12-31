@@ -386,22 +386,6 @@ function leaveTeam($request) {
 }
 
 
-function resetDoNotPossess($request) {
-   // Reset the "do not possess" flag on the badge
-   global $config;
-   require_once __DIR__.'/../vendor/autoload.php';
-
-   try {
-      $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
-      $badgesManager = $client->getBadgesManager();
-      $badgesManager->resetDoNotPossess($_SESSION['login']['loginId']);
-      return ['result' => true];
-   } catch(Exception $e) {
-      return ['result' => false, 'error' => $e->getMessage()];
-   }
-}
-
-
 if($request['action'] == 'getTeam') {
    die(json_encode(getTeam($request)));
 } elseif($request['action'] == 'createTeam') {
@@ -414,8 +398,6 @@ if($request['action'] == 'getTeam') {
    die(json_encode(removeTeamMember($request)));
 } elseif($request['action'] == 'leaveTeam') {
    die(json_encode(leaveTeam($request)));
-} elseif($request['action'] == 'resetDoNotPossess') {
-   die(json_encode(resetDoNotPossess($request)));
 } else {
    die(json_encode(['result' => false, 'error' => 'api_error']));
 }
