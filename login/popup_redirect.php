@@ -15,7 +15,7 @@ if(session_status() === PHP_SESSION_NONE) {
 }
 
 $auth_params = [
-    'locale' => $config->shared->domains['default']->defaultLanguage
+    'locale' => isset($_GET['locale']) ? $_GET['locale'] : $config->shared->domains['default']->defaultLanguage
 ];
 $groupCodeEnter = isset($_SESSION['groupCodeEnter']) ? $_SESSION['groupCodeEnter'] : null;
 if($_SESSION['login']['ID'] != $groupCodeEnter['idUser']) {
