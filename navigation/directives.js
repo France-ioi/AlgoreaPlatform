@@ -27,6 +27,7 @@ angular.module('algorea')
             scope.depth = scope.item && scope.item.breadCrumbsDepth ? scope.item.breadCrumbsDepth : 0;
             scope.visible = scope.item && !scope.item.bTransparentFolder;
             scope.active_tab=0;
+            scope.setItemIcon(scope.item);
             if (from == 'menu') {
                scope.lastClass = (scope.depth+1 == scope.pathParams.path.length) ? 'last' : 'not-last'; // IE8 doesn't support the :not(:last-child) selector...
                scope.active = (scope.depth+1 == scope.pathParams.selr);
@@ -37,7 +38,6 @@ angular.module('algorea')
                }
             } else {
                if (from == "parent") {
-                  scope.setItemIcon(scope.item);
                   scope.setItemAccessIcon(scope.item);
                   scope.setScore(scope.item);
                   scope.setPercentDone(scope.item);
@@ -61,6 +61,11 @@ angular.module('algorea')
                   scope.getPathParams();
                }
                scope.activityClass = (scope.pathParams.selr != 'r' && scope.item.ID == scope.pathParams.path[scope.pathParams.selr-1]) ? 'active' : 'inactive';
+            }
+         });
+         scope.$on('algorea.itemTriggered', function(event, itemId){
+            if (scope.item && itemId == scope.item.ID) {
+               scope.init(attrs.from);
             }
          });
          scope.$on('algorea.languageChanged', function() {
