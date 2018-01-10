@@ -110,7 +110,9 @@ angular.module('algorea')
                     group: $scope.$parent.group.sName
                 }
             }},
-            windowClass: 'groupAdmin-modal'
+            windowClass: 'groupAdmin-modal',
+            backdrop: 'static',
+            keyboard: false
         });
     };
 
