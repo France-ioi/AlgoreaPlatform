@@ -71,7 +71,11 @@ try {
             if(!$group_id) {
                 throw new Exception('Wrong grop id');
             }
-            $res = $manager->create($prefix, $amount);
+            $res = $manager->create([
+                'prefix' => $prefix,
+                'amount' => $amount,
+                'login_fixed' => true
+            ]);
             foreach($res as $external_user) {
                 $user_helper = new UserHelperClass($db);
                 $user = $user_helper->createUser($external_user);
@@ -79,7 +83,9 @@ try {
             }
             break;
         case 'delete':
-            $res = $manager->delete($prefix);
+            $res = $manager->delete([
+                'prefix' => $prefix
+            ]);
             deleteUsersByPrefix($prefix);
             break;
         default:
