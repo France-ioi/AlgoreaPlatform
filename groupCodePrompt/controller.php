@@ -36,7 +36,12 @@ function enterGroup($group) {
     if($_SESSION['login']['tempUser']) {
         $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
         $manager = $client->getAccountsManager();
-        $external_users = $manager->create(LOGIN_PREFIX, 1, true);
+        $external_users = $manager->create([
+            'prefix'=> LOGIN_PREFIX,
+            'amount' => 1,
+            'auto_login' => true,
+            'participation_code' => true
+        ]);
         $user = $user_helper->createUser($external_users[0]);
         $_SESSION['login']['ID'] = $user['ID'];
         $_SESSION['login']['idGroupSelf'] = $user['idGroupSelf'];
@@ -53,13 +58,20 @@ function enterGroup($group) {
             'idGroup' => $group['ID'],
             'idUser' => $user['ID']
         ];
-        return 'login_module_popup';
+        return [
+            'status' => 'account_created',
+            'participation_code' => $external_users[0]['participation_code'],
+            'redirect' => $group['sRedirectPath']
+        ];
     }
     $user_helper->addUserToGroup(
         $_SESSION['login']['idGroupSelf'],
         $group['ID']
     );
-    return 'entered';
+    return [
+        'status' => 'entered',
+        'redirect' => $group['sRedirectPath']
+    ];
 }
 
 

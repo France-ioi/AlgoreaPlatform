@@ -314,6 +314,8 @@
     "groupCodePrompt_validation_failed": "Validation failed",
     "groupCodePrompt_confirmation_request": "This group code will open {{sTitle}} and start your participation. Please confirm.",
     "groupCodePrompt_confirm": "Confirm",
+    "groupCodePrompt_participation_code": "Here is your participation code, so that you can come back later: {{participation_code}}. Please write it down and keep it safely.",
+    "groupCodePrompt_open_login_module": "Continue",
 
     "community": "Community",
     "community_accept": "accept",
