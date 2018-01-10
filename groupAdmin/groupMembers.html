@@ -59,6 +59,75 @@
                         <button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
                     </div>
                 </div>
+                <hr ng-if="formValues.hasPassword" />
+                <div class="flex-container" ng-if="formValues.hasPassword">
+                    <div class="left-col">
+                        <p><b ng-i18next="groupAdmin_code_expiration"></b></p>
+                    </div>
+                    <div class="right-col form-inline">
+                        <div class="checkboxSwitch">
+                            <input type="checkbox" ng-change="changeExpiration();" id="expirCheck" class="switch" ng-model="formValues.expirationTimer">
+                            <label for="expirCheck"><span></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container" ng-if="formValues.expirationTimer">
+                    <div class="left-col">
+                        <p ng-i18next="groupAdmin_code_expiration_timer"></p>
+                    </div>
+                    <div class="right-col form-inline">
+                        <div class="checkboxSwitch">
+                            <input type="text" id="expirLength" ng-change="saveGroup();" class="form-control" ng-model="group.sPasswordTimer">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container" ng-if="formValues.expirationTimer">
+                    <div class="left-col">
+                        <p ng-hide="group.sPasswordEnd" ng-i18next="groupAdmin_code_expiration_inactive"></p>
+                        <p ng-show="group.sPasswordEnd"><span ng-i18next="groupAdmin_code_expiration_active"></span> : {{ group.sPasswordEnd | date:'short' }}</p>
+                    </div>
+                    <div class="right-col form-inline">
+                        <button ng-if="group.sPasswordEnd" ng-click="refreshExpiration();" class="btn btn-primary" ng-i18next="reset"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="bloc-inscription">
+                <div class="flex-container">
+                    <div class="left-col">
+                        <div class="label-title label-list-item" ng-i18next="groupAdmin_redirect_title"></div>
+                        <p ng-i18next="groupAdmin_redirect_desc"></p>
+                    </div>
+                    <div class="right-col form-inline">
+                        <div class="checkboxSwitch">
+                            <input type="checkbox" ng-change="changeRedirect();" id="redirCheck" class="switch" ng-model="formValues.hasRedirect">
+                            <label for="redirCheck"><span></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="parcours-select" ng-if="formValues.hasRedirect">
+                    <span ng-i18next="groupAdmin_course"></span>
+                    <select ng-model="formValues.selectedBaseRedirection" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="redirectionBaseSelected()">
+                    </select>
+                    <select ng-repeat="(depth, selectedItem) in redirectionSelections" ng-if="depth != 0" ng-change="redirectionSelected(depth)" ng-model="redirectionSelectionsIDs[depth]">
+                        <option value=""></option>
+                        <option ng-repeat="child in redirectionSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == redirectionSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+                    </select>
+                    <select ng-if="redirectionSelections[redirectionSelections.length-1].children.length" ng-change="redirectionSelected(0)" ng-model="redirectionSelectionsIDs[redirectionSelections.length]">
+                        <option selected="selected" value=""></option>
+                        <option ng-repeat="child in redirectionSelections[redirectionSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+                    </select>
+                </div>
+                <div class="flex-container" ng-if="formValues.hasContest">
+                    <div class="left-col">
+                        <p ng-i18next="groupAdmin_redirect_contest"></p>
+                    </div>
+                    <div class="right-col form-inline">
+                        <div class="checkboxSwitch">
+                            <input type="checkbox" ng-change="saveGroup();" id="contestCheck" class="switch" ng-model="group.bOpenContest">
+                            <label for="contestCheck"><span></span></label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="bloc-inscription">
                 <div class="flex-container">
