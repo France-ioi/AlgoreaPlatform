@@ -144,7 +144,7 @@ angular.module('algorea')
    };
    $scope.lookup = function() {
       $scope.groups_error = null;
-      $http.post('/groupRequests/groupRequests.php', {action: 'getGroupsMatching', lookupString: $scope.pageData.lookupString}, {responseType: 'json'}).success(function(postRes) {
+      $http.post('/profile/groupRequests.php', {action: 'getGroupsMatching', lookupString: $scope.pageData.lookupString}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             console.error("got error from groupRequests handler: "+postRes.error);
             $scope.groups_error = postRes.error;
@@ -170,7 +170,7 @@ angular.module('algorea')
       $scope.groupsLoading = true;
       result.joinLog = "chargement...";
       $scope.passwordInfo = null;
-      $http.post('/groupRequests/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
+      $http.post('/profile/groupRequests.php', {action: 'joinGroup', ID: result.ID, password: result.password}, {responseType: 'json'}).success(function(postRes) {
          if (!postRes || !postRes.success) {
             var error = (postRes && postRes.error) ? postRes.error : $i18next.t('groupRequests_error_please_contact');
             console.error("got error from groupRequests handler: "+error);
