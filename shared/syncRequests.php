@@ -240,7 +240,7 @@ function getGroups ($params, &$requests) {
    //$requests['groups_groups']["model"]["fields"]["idGroupParent"]["groupBy"] = "`groups_groups`.`ID`";
    if (!$_SESSION['login']['tempUser']) {
       $requests['groups_groups']['filters']['descendantsRead'] = array('modes' => array('select' => true), 'values' => array('idGroupOwned' => $_SESSION['login']['idGroupOwned']));
-      $requests['groups_groups']["filters"]["sTypeExclude"] = ['values' => ['sType' => 'UserSelf']];
+      $requests['groups_groups']["filters"]["sTypeExclude"] = ['modes' => ['select' => true], 'values' => ['sType' => 'UserSelf']];
       $requests['groups_groups_invitations']['filters']['invitationsRead'] = array('modes' => array('select' => true), 'values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf']));
       //$requests['groups_groups']['filters']['invitationsAndDescendantsWrite'] = array('modes' => array('insert' => true, 'update' => true, 'delete' => true), 'values' => array('idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idRootSelf' => $idRootSelf, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']));
       // TODO: find a working write filter (commented one can't work due to triggers)

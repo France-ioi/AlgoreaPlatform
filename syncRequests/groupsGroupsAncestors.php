@@ -15,7 +15,7 @@ class groupsGroupsAncestors {
          "mode" => array("select" => true)
       );*/
       $request['filters']['ancestors'] = ['values' => ['idGroup' => $_SESSION['login']['idGroupSelf']]];
-      $request['filters']['sTypeExclude'] = ['values' => ['sType' => 'UserSelf']];
+      $request['filters']['sTypeExclude'] = ['modes' => ['select' => true], 'values' => ['sType' => 'UserSelf']];
       $request["debug"] = true;
       $request["requestSet"] = array("name" => "groupsGroupsAncestors");
       return array("groupsGroupsAncestors" => $request);
