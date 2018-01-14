@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('algorea')
-.controller('groupInvitationCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('groupInvitationCtrl', ['$scope', '$http', '$i18next', function($scope, $http, $i18next) {
    $scope.error = null;
    $scope.invitationError = null;
    $scope.newInvitationOpened = false;
@@ -49,7 +49,7 @@ angular.module('algorea')
             console.error("got error from invitation handler: "+postRes.error);
          } else {
             if (postRes.loginsNotFound.length) {
-               $scope.invitationError += i18nt('groupAdmin_logins_not_found')+' '+postRes.loginsNotFound.join(' ')+'. ';
+               $scope.invitationError += $i18next.t('groupAdmin_logins_not_found')+' '+postRes.loginsNotFound.join(' ')+'. ';
             }
             var alreadyInvitedLogins = [];
             var alreadyInvitedGroupIds = {};
@@ -71,7 +71,7 @@ angular.module('algorea')
                }
             });
             if (alreadyInvitedLogins.length) {
-               $scope.invitationError += i18nt('groupAdmin_logins_already_members')+' '+alreadyInvitedLogins.join(' ')+'. ';
+               $scope.invitationError += $i18next.t('groupAdmin_logins_already_members')+' '+alreadyInvitedLogins.join(' ')+'. ';
             }
          }
       })
