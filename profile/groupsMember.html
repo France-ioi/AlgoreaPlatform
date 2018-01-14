@@ -62,8 +62,16 @@
         <center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="groupRequests_loading"></strong></p></center>
     </div>
     <div class="">
-        <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_join"></h2>
-        <div ng-if="!loading">
+        <div ng-hide="loading">
+            <h2 class="groupRequest-title" ng-hide="loading" ng-i18next="groupRequests_title_join"></h2>
+            <div ng-if="groupRequestInfo" class="alert {{ groupRequestInfoClass }}">
+                {{ groupRequestInfo }}
+            </div>
+            <div ng-if="groupRequestConfirm" class="alert alert-info">
+                <p ng-if="!groupRequestConfirmOpen" ng-i18next="groupRequests_confirm_redirect"></p>
+                <p ng-if="groupRequestConfirmOpen" ng-i18next="groupRequests_confirm_redirect_open"></p>
+                <button type="button" class="btn btn-default" ng-click="joinConfirm()" ng-i18next="confirm"></button>
+            </div>
             <form class="form">
                 <label class="label-title" for="askedPassword"><span ng-i18next="groupRequests_join_code"></span><span class="label-description" ng-i18next="groupRequests_join_code_desc"></span></label>
                 <div class="form-group form-inline">
@@ -71,9 +79,6 @@
                     <button type="button" class="btn btn-default" ng-click="joinWithPassword()" ng-disabled="!pageData.askedPassword" ng-i18next="join"></button>
                 </div>
             </form>
-            <div ng-if="passwordInfo">
-                {{passwordInfo}}
-            </div>
             <form class="form">
                 <label class="label-title" for="lookupString"><span ng-i18next="groupRequests_search_name"></span><span class="label-description" ng-i18next="groupRequests_search_name_desc"></span></label>
                 <div class="form-group form-inline">
