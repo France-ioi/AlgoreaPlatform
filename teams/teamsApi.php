@@ -137,23 +137,16 @@ function checkRequirements($team, $idItem, $modGroup=null, $removing=false) {
    return ['result' => true];
 }
 
-
-// *** Functions handling requests
-
-function getTeam($request) {
-   // Send the team for the current item
+function getQualificationState($idItem) {
+   // Check whether an user is qualified, and if not, whether they can enter a
+   // team to participate
    global $db;
-   if(!isset($request['idItem']) || !$request['idItem']) {
-      return ['result' => false, 'error' => 'api_error'];
-   }
-   $team = getUserTeam($request['idItem'], true);
 
    $stmt = $db->prepare("SELECT * FROM items WHERE ID = :idItem;");
-   $stmt->execute(['idItem' => $request['idItem']]);
+   $stmt->execute(['idItem' => $idItem]);
    $item = $stmt->fetch();
 
    // Check qualification state
-   $canReset = false;
    if(!$item['idTeamInGroup'] || $item['sTeamMode'] == 'None') {
       // No qualification needed
       $qualState = 2;
@@ -166,12 +159,37 @@ function getTeam($request) {
       } else {
          // Not qualified; 0 means we can still enter a team  to participate, -1 means we can't
          $qualState = $item['sTeamMode'] == 'All' ? -1 : 0;
-         // TODO :: better criteria when we will have multiple badges
-         $canReset = count($_SESSION['login']['aBadges']) == 0;
       }
    }
+   return $qualState;
+}
 
-   return ['result' => true, 'team' => $team, 'qualificationState' => $qualState, 'canResetQualificationState' => $canReset];
+function canResetQualificationState() {
+   // Check whether an user can reset their qualification state
+   // TODO :: better criteria when we will have multiple badges
+   $canReset = true;
+   foreach($_SESSION['login']['aBadges'] as $badge) {
+      if($badge['url'] == 'https://badges.concours-alkindi.fr/qualification_tour2/2018') { $canReset = false; }
+   }
+   return $canReset;
+}
+
+
+// *** Functions handling requests
+
+function getTeam($request) {
+   // Send the team for the current item
+   global $db;
+   if(!isset($request['idItem']) || !$request['idItem']) {
+      return ['result' => false, 'error' => 'api_error'];
+   }
+   $team = getUserTeam($request['idItem'], true);
+
+   return [
+      'result' => true,
+      'team' => $team,
+      'qualificationState' => getQualificationState($request['idItem']),
+      'canResetQualificationState' => canResetQualificationState()];
 }
 
 
@@ -189,6 +207,16 @@ function createTeam($request) {
    }
    if(getUserTeam($request['idItem'])) {
       return ['result' => false, 'error' => 'teams_already_has_team'];
+   }
+
+   // Check user is qualified
+   if($item['idTeamInGroup'] && $item['sTeamMode'] != 'None') {
+      $stmt = $db->prepare("SELECT ID FROM groups_ancestors WHERE idGroupAncestor = :idGroupAncestor AND idGroupChild = :idGroupSelf;");
+      $stmt->execute(['idGroupAncestor' => $item['idTeamInGroup'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+      if(!$stmt->fetchColumn()) {
+         // Not qualified
+         return ['result' => false, 'error' => 'teams_needs_qualification'];
+      }
    }
 
    // Create new team
