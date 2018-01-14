@@ -65,6 +65,8 @@ $config->shared->domains['default']->assetsBaseUrl = "http://algorea.example.com
 $config->shared->domains['default']->animationHtmlFile = null;
 // Activate Forum
 $config->shared->domains['default']->usesForum = false;
+// Hide the groups (join/create) interfaces in the profile
+$config->shared->domains['default']->hideGroupsInterfaces = false;
 // Item IDs for the various base platform items; can be anything as long as
 // it's not already in use by another platform in the same database
 $config->shared->domains['default']->PlatformItemId = "4028";
