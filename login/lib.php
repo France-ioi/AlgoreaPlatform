@@ -93,7 +93,7 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
             $stmt = $db->prepare('insert into groups (ID, sName, sTextId, sDateCreated) values (:ID, :sName, :sTextId, NOW());');
             $stmt->execute(['ID' => $groupId, 'sName' => $groupName, 'sTextId' => $groupTextId]);
             if ($previousGroupId) {
-               $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+               $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`, `sStatusDate`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1, NOW()); unlock tables;');
                $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $groupId]);
             }
          }
@@ -136,7 +136,7 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
       $stmt->execute($groupInfo);
       $groupGroupId = $stmt->fetchColumn();
       if (!$groupGroupId) {
-         $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+         $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`, `sStatusDate`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1, NOW()); unlock tables;');
          $stmt->execute($groupInfo);
          $launchTriggers = true;
       }

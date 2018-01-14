@@ -104,7 +104,7 @@ function addUserToGroupHierarchy($idGroupSelf, $groupHierarchy, $role) {
          $stmt = $db->prepare('insert into groups (ID, sName, sDateCreated) values (:ID, :sName, NOW());');
          $stmt->execute(['ID' => $groupId, 'sName' => $groupName]);
          if ($previousGroupId) {
-            $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+            $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`, `sStatusDate`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1, NOW()); unlock tables;');
             $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $groupId]);
          }
       }
@@ -115,11 +115,12 @@ function addUserToGroupHierarchy($idGroupSelf, $groupHierarchy, $role) {
    $stmt->execute(['idGroupSelf' => $idGroupSelf, 'previousGroupId' => $previousGroupId]);
    $groupGroupId = $stmt->fetchColumn();
    if (!$groupGroupId) {
-      $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1); unlock tables;');
+      $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`, `sStatusDate`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1, NOW()); unlock tables;');
       $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $idGroupSelf]);
       $launchTriggers = true;
    }
    if ($launchTriggers) {
+      $stmt = null;
       Listeners::createNewAncestors($db, "groups", "Group");
    }
 
@@ -192,7 +193,11 @@ function assignRandom($idGroupSelf, $groupHierarchy) {
 
 
 function handleBadges($idUser, $idGroupSelf, $aBadges) {
+   global $config;
    foreach($aBadges as $badge) {
+      if (isset($config->shared->domains['current']->badgesTranslations) && isset($config->shared->domains['current']->badgesTranslations[$badge])) {
+         $badge = $config->shared->domains['current']->badgesTranslations[$badge];
+      }
       if (substr($badge, 0, 9) === 'groups://') {
          $splitGroups = explode('/', substr($badge, 9));
          $role = array_pop($splitGroups);
@@ -275,6 +280,7 @@ if ($action == 'login') {
    if (isset($params['aBadges'])) {
       handleBadges($_SESSION['login']['ID'], $_SESSION['login']['idGroupSelf'], $params['aBadges']);
    }
+   $_SESSION['login']['sLogin'] = $params['sLogin'];
    echo json_encode(array('result' => true, 'sLogin' => $params['sLogin'], 'ID' => $_SESSION['login']['ID'], 'loginData' => $_SESSION['login']));
 } else if ($action == 'notLogged') {
   // user is not logged through login platform, we create a temporary user here
