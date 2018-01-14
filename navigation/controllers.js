@@ -696,7 +696,7 @@ angular.module('algorea')
             }
          });
          if(newLocales.length) { $scope.locales = newLocales; }
-         $scope.filterLocales(noApply);
+         $scope.filterLocales(noApply === true);
          if(noApply !== true) {
             $scope.$apply();
          }
@@ -723,7 +723,7 @@ angular.module('algorea')
                $scope.locales.splice(i, 1);
             }
             if($scope.init && locale.id == config.domains.current.defaultLanguage) {
-               if(noApply) {
+               if(noApply === true) {
                   $scope.curLocale = locale;
                } else {
                   $scope.changeLocale(locale);
