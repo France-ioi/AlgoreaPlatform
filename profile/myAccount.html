@@ -11,7 +11,14 @@
                 <tr><td ng-i18next="models_users_fields_sEmail_label"></td><td>{{user.sEmail}}</td></tr>
                 <tr><td ng-i18next="models_users_fields_sFirstName_label"></td><td>{{user.sFirstName}}</td></tr>
                 <tr><td ng-i18next="models_users_fields_sLastName_label"></td><td>{{user.sLastName}}</td></tr>
-                <tr><td ng-i18next="models_users_fields_iGraduationYear_label"></td><td>{{user.iGraduationYear}}</td></tr>
+                <tr ng-if="user.iGrade != -1 && user.iGrade != null">
+                    <td ng-i18next="models_users_fields_iGraduationYear_label"></td>
+                    <td>{{user.iGraduationYear}}</td>
+                </tr>
+                <tr ng-if="user.iGrade != -1 && user.iGrade != null">
+                    <td ng-i18next="models_users_fields_iGrade_label"></td>
+                    <td ng-i18next="{{'models_users_fields_iGrade_values_' + user.iGrade + '_label'}}"></td>
+                </tr>
                 <tr><td ng-i18next="models_users_fields_sStudentId_label"></td><td>{{user.sStudentId}}</td></tr>
                 <tr><td ng-i18next="models_users_fields_sCountryCode_label"></td><td>{{user.sCountryCode}}</td></tr>
                 <tr><td ng-i18next="models_users_fields_sSex_label"></td><td>{{user.sSex}}</td></tr>

@@ -130,7 +130,7 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
       } else { // member role
          $groupInfo = array('idGroupParent' => $targetGroupId, 'idGroupChild' => $idGroupSelf);
       }
-   
+
       // Check the relation doesn't already exist
       $stmt = $db->prepare('select groups_groups.ID from groups_groups where groups_groups.idGroupChild = :idGroupChild and groups_groups.idGroupParent = :idGroupParent;');
       $stmt->execute($groupInfo);
@@ -260,6 +260,7 @@ function remapUserArray($user) {
         'sCountryCode' => 'country_code',
         'sBirthDate' => 'birthday',
         'iGraduationYear' => 'graduation_year',
+        'iGrade' => 'graduation_grade',
         'sAddress' => 'address',
         'sZipcode' => 'zipcode',
         'sCity' => 'city',
@@ -313,9 +314,9 @@ function createUpdateUser($db, $params) {
 
         $stmt = $db->prepare("
             insert into `users`
-            (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`, `sStudentId`, `sCountryCode`, `sBirthDate`, `iGraduationYear`, `sAddress`, `sZipcode`, `sCity`, `sLandLineNumber`, `sCellPhoneNumber`, `sDefaultLanguage`, `sFreeText`, `sWebSite`, `sLastIP`, `sSex`)
+            (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`, `sStudentId`, `sCountryCode`, `sBirthDate`, `iGraduationYear`, `iGrade`, `sAddress`, `sZipcode`, `sCity`, `sLandLineNumber`, `sCellPhoneNumber`, `sDefaultLanguage`, `sFreeText`, `sWebSite`, `sLastIP`, `sSex`)
             values
-            (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName, :sStudentId, :sCountryCode, :sBirthDate, :iGraduationYear, :sAddress, :sZipcode, :sCity, :sLandLineNumber, :sCellPhoneNumber, :sDefaultLanguage, :sFreeText, :sWebSite, :sLastIP, :sSex);
+            (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName, :sStudentId, :sCountryCode, :sBirthDate, :iGraduationYear, :iGrade, :sAddress, :sZipcode, :sCity, :sLandLineNumber, :sCellPhoneNumber, :sDefaultLanguage, :sFreeText, :sWebSite, :sLastIP, :sSex);
         ");
         $stmt->execute([
             'ID' => $userId,
@@ -330,6 +331,7 @@ function createUpdateUser($db, $params) {
             'sCountryCode' => ''.$params['sCountryCode'],
             'sBirthDate' => $params['sBirthDate'],
             'iGraduationYear' => 0+$params['iGraduationYear'],
+            'iGrade' => $params['iGrade'],
             'sAddress' => ''.$params['sAddress'],
             'sZipcode' => ''.$params['sZipcode'],
             'sCity' => ''.$params['sCity'],
@@ -358,6 +360,7 @@ function createUpdateUser($db, $params) {
                 `sCountryCode` = :sCountryCode,
                 `sBirthDate` = :sBirthDate,
                 `iGraduationYear` = :iGraduationYear,
+                `iGrade` = :iGrade,
                 `sAddress` = :sAddress,
                 `sZipcode` = :sZipcode,
                 `sCity` = :sCity,
@@ -379,6 +382,7 @@ function createUpdateUser($db, $params) {
             'sCountryCode' => ''.$params['sCountryCode'],
             'sBirthDate' => $params['sBirthDate'],
             'iGraduationYear' => 0+$params['iGraduationYear'],
+            'iGrade' => $params['iGrade'],
             'sAddress' => ''.$params['sAddress'],
             'sZipcode' => ''.$params['sZipcode'],
             'sCity' => ''.$params['sCity'],
