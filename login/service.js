@@ -161,22 +161,22 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
 
         function createHandler(handler) {
           return function(user) {
+            popup && popup.close();
             if(user.result) {
               handler(user);
             } else {
               console.error(user.error);
             }
-            popup && popup.close();
           }
         }
 
 
         function openLoginPopup(action) {
-            if(!action) { 
-              action = 'login'; 
+            if(!action) {
+              action = 'login';
             }
-            var url = config.domains.current.baseUrl + 
-              '/login/popup_redirect.php' + 
+            var url = config.domains.current.baseUrl +
+              '/login/popup_redirect.php' +
               '?action=' + action +
               '&locale=' + ($rootScope.sLocale || 'en');
             popup = window.open(url, "LoginModule", "menubar=no, status=no, scrollbars=yes, menubar=no, width=800, height=600");
