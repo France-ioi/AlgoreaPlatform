@@ -29,34 +29,35 @@
 
         <!-- delete accounts -->
         <div class="col-right">
-            <div class="groupAdmin-title"><span ng-i18next="groupAccountsManager_delete_title"></span></div>
-            <p ng-i18next="groupAccountsManager_delete_note"></p>
+            <div ng-if="$parent.group.login_prefixes.length">
+                <div class="groupAdmin-title"><span ng-i18next="groupAccountsManager_delete_title"></span></div>
+                <p ng-i18next="groupAccountsManager_delete_note"></p>
 
-            <div class="form-group">
-                <label ng-i18next="groupAccountsManager_prefix"></label>
-                <input class="form-control" ng-model="delete_params.prefix" ng-focus="delete_params.error=false"/>
+                <div class="form-group">
+                    <label ng-i18next="groupAccountsManager_prefix"></label>
+                    <input class="form-control" readonly ng-model="delete_params.prefix" ng-focus="delete_params.error=false"/>
+                </div>
+                <div class="form-group" ng-if="delete_params.prefix">
+                    <span ng-i18next="groupAccountsManager_example"></span>
+                    <strong>{{delete_params.prefix}}0123456789</strong>
+                </div>
+
+                <div class="alert alert-danger" ng-if="delete_params.error">{{delete_params.error}}</div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary" ng-click="deleteUsers()" ng-disabled="fetching" ng-i18next="groupAccountsManager_delete"></button>
+                </div>
+
+                <div class="form-group">
+                    <label ng-i18next="groupAccountsManager_exist_prefixes"></label>
+                    <p ng-i18next="groupAccountsManager_exist_prefixes_hint"></p>
+                    <ul class="list list-block list-groups">
+                        <li class="list-item" ng-repeat="login_prefix in $parent.group.login_prefixes">
+                            <a ng-click="selectPrefix(login_prefix.prefix)">{{login_prefix.prefix}}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="form-group" ng-if="delete_params.prefix">
-                <span ng-i18next="groupAccountsManager_example"></span>
-                <strong>{{user.loginModulePrefix}}_{{delete_params.prefix}}_0123456789</strong>
-            </div>
-
-            <div class="alert alert-danger" ng-if="delete_params.error">{{delete_params.error}}</div>
-
-            <div class="form-group">
-                <button class="btn btn-primary" ng-click="deleteUsers()" ng-disabled="fetching" ng-i18next="groupAccountsManager_delete"></button>
-            </div>
-
-            <div class="form-group" ng-if="$parent.group.login_prefixes.length">
-                <label ng-i18next="groupAccountsManager_exist_prefixes"></label>
-                <p ng-i18next="groupAccountsManager_exist_prefixes_hint"></p>
-                <ul class="list list-block list-groups">
-                    <li class="list-item" ng-repeat="login_prefix in $parent.group.login_prefixes">
-                        <a ng-click="selectPrefix(login_prefix.prefix)">{{login_prefix.prefix}}</a>
-                    </li>
-                </ul>
-            </div>
-
         </div>
     </div>
     <div class="alert alert-danger" ng-show="error">{{error}}</div>

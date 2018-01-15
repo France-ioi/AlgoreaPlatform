@@ -19,7 +19,7 @@ if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempU
 
 function deleteUsersByPrefix($prefix) {
     global $db;
-    $prefix = str_replace('_', '\_', $prefix).'\_%';
+    $prefix = str_replace('_', '\_', $prefix).'%';
     $prefix = $db->quote($prefix);
     $remover = new RemoveUsersClass($db, [
         'baseUserQuery' => 'FROM users WHERE sLogin LIKE '.$prefix,
@@ -29,7 +29,7 @@ function deleteUsersByPrefix($prefix) {
 }
 
 
-function getLoginModulePrefix($prefix) {
+function getUserPrefix() {
     global $db;
     $query = '
         select
@@ -41,11 +41,37 @@ function getLoginModulePrefix($prefix) {
     $stm->execute([
         'ID' => $_SESSION['login']['ID']
     ]);
-    $res = $stm->fetch();
-    if(!$res['loginModulePrefix']) {
+    return $stm->fetchColumn();
+}
+
+
+function prefixExists($prefix) {
+    global $db;
+    $query = '
+        select
+            count(*)
+        from
+            `groups_login_prefixes`
+        where
+            prefix = :prefix';
+    $stm = $db->prepare($query);
+    $stm->execute([
+        'prefix' => $prefix
+    ]);
+    return (bool) $stm->fetchColumn();
+}
+
+
+function getNewPrefix($prefix) {
+    $user_prefix = getUserPrefix();
+    if(!$user_prefix) {
         throw new Exception('Action not available, empty user.loginModulePrefix');
     }
-    return $res['loginModulePrefix'].'_'.$prefix.'_';
+    $full_prefix = $user_prefix.'_'.$prefix.'_';
+    if(prefixExists($full_prefix)) {
+        throw new Exception('Prefix already used');
+    }
+    return $full_prefix;
 }
 
 
@@ -57,12 +83,12 @@ try {
     if($prefix == '') {
         throw new Exception('Empty prefix');
     }
-    $prefix = getLoginModulePrefix($prefix);
     $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
     $manager = $client->getAccountsManager();
 
     switch($action) {
         case 'create':
+            $prefix = getNewPrefix($prefix);
             $amount = isset($request['amount']) ? (int) $request['amount'] : 0;
             if(!$amount || $amount > 50) {
                 throw new Exception('Number of users in group must be 1..50');
@@ -71,12 +97,15 @@ try {
             if(!$group_id) {
                 throw new Exception('Wrong grop id');
             }
-            $res = $manager->create([
+            $res = [
                 'prefix' => $prefix,
-                'amount' => $amount,
-                'login_fixed' => true
-            ]);
-            foreach($res as $external_user) {
+                'accounts' => $manager->create([
+                    'prefix' => $prefix,
+                    'amount' => $amount,
+                    'login_fixed' => true
+                ])
+            ];
+            foreach($res['accounts'] as $external_user) {
                 $user_helper = new UserHelperClass($db);
                 $user = $user_helper->createUser($external_user);
                 $user_helper->addUserToGroup($user['idGroupSelf'], $group_id);
