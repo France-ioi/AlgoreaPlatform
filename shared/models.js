@@ -411,6 +411,27 @@ var models = {
           sTimeZone: {type: "string", label: "models_users_fields_sTimeZone_label"},
           sBirthDate: {type: "string", label: "models_users_fields_sBirthDate_label"},
           iGraduationYear: {type: "int", label: "models_users_fields_iGraduationYear_label"},
+          iGrade: {
+            type: "enum",
+            label: "models_users_fields_iGrade_label",
+            defaultValue: null,
+            values: {
+                "-1": {label: "models_users_fields_iGrade_values_-1_label"},
+                "-2": {label: "models_users_fields_iGrade_values_-2_label", hidden: true},
+                "0" : {label: "models_users_fields_iGrade_values_0_label"},
+                "1" : {label: "models_users_fields_iGrade_values_1_label"},
+                "2" : {label: "models_users_fields_iGrade_values_2_label"},
+                "3" : {label: "models_users_fields_iGrade_values_3_label"},
+                "4" : {label: "models_users_fields_iGrade_values_4_label"},
+                "5" : {label: "models_users_fields_iGrade_values_5_label"},
+                "6" : {label: "models_users_fields_iGrade_values_6_label"},
+                "7" : {label: "models_users_fields_iGrade_values_7_label"},
+                "8" : {label: "models_users_fields_iGrade_values_8_label"},
+                "9" : {label: "models_users_fields_iGrade_values_9_label"},
+                "10": {label: "models_users_fields_iGrade_values_10_label"},
+                "11": {label: "models_users_fields_iGrade_values_11_label"}
+            }
+          },
           sStudentId: {type: "string", label: "models_users_fields_sStudentId_label"},
           sSex: {
              type: "enum",

@@ -958,6 +958,15 @@ angular.module('algorea')
       $scope.stopSync();
    });
 
+
+   $scope.$on('login.login', function(event, data) {
+    if (data.tempUser) {
+       $state.go('profile');
+    } else {
+       $state.go('profile', { section: 'groupsOwner'});
+    }
+ });
+
    $scope.loading = true;
    itemService.onNewLoad($scope.init);
 

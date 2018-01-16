@@ -82,13 +82,12 @@ angular.module('algorea')
         var params = getCreateParams()
         if(!params) return;
 
-        var item = ModelsManager.createRecord("groups_login_prefixes");
-        item.idGroup = $scope.$parent.group.ID;
-        item.prefix = params.prefix;
-        ModelsManager.insertRecord("groups_login_prefixes", item);
-
         accountsManagerRequest(params, function(data) {
-            showAccounts(data);
+            var item = ModelsManager.createRecord("groups_login_prefixes");
+            item.idGroup = $scope.$parent.group.ID;
+            item.prefix = data.prefix;
+            ModelsManager.insertRecord("groups_login_prefixes", item);
+            showAccounts(data.accounts);
             SyncQueue.planToSend(0);
         });
 
@@ -110,7 +109,9 @@ angular.module('algorea')
                     group: $scope.$parent.group.sName
                 }
             }},
-            windowClass: 'groupAdmin-modal'
+            windowClass: 'groupAdmin-modal',
+            backdrop: 'static',
+            keyboard: false
         });
     };
 
@@ -154,9 +155,8 @@ angular.module('algorea')
         var params = getDeleteParams()
         if(!params) return;
 
-        ModelsManager.deleteRecord('groups_login_prefixes', params.id);
-
         accountsManagerRequest(params, function(data) {
+            ModelsManager.deleteRecord('groups_login_prefixes', params.id);
             SyncQueue.planToSend(0);
         });
 

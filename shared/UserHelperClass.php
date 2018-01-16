@@ -16,17 +16,19 @@ class UserHelperClass {
         $id = getRandomID();
         $query = '
             insert into `users` (
-                `ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`
+                `ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `creatorID`
             ) values (
-                :ID, :idUser, :sLogin, \'0\', NOW(), :idGroupSelf, :idGroupOwned
+                :ID, :idUser, :sLogin, \'0\', NOW(), :idGroupSelf, :idGroupOwned, :creatorID
             )';
         $stmt = $this->db->prepare($query);
+        $creatorID = isset($_SESSION['login']) && is_array($_SESSION['login']) && $_SESSION['login']['ID'] ? $_SESSION['login']['ID'] : null;
         $values = [
             'ID' => $id,
             'idUser' => $external_user['id'],
             'sLogin' => $external_user['login'],
             'idGroupSelf' => $idGroupSelf,
             'idGroupOwned' => $idGroupOwned,
+            'creatorID' => $creatorID
         ];
         $stmt->execute($values);
         return $values;
