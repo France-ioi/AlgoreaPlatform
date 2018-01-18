@@ -252,7 +252,7 @@
     "groupAdmin_code_expiration_inactive": "Der Code ist nicht mehr gültig.",
     "groupAdmin_code_expiration_active": "Der Code verfällt am",
     "groupAdmin_redirect_title": "Neumitglieder weiterleiten",
-    "groupAdmin_redirect_desc": "Neumitglider auf einen Inhalt weiterleiten",
+    "groupAdmin_redirect_desc": "Neumitglieder auf einen Inhalt weiterleiten",
     "groupAdmin_redirect_contest": "Den zugehörigen Test direkt starten, sobald die Gruppe betreten wird",
     "groupAdmin_renew_code": "Code ändern",
     "groupAdmin_renew_code_msg": "Wollen Sie den Code wirklich ändern?",
