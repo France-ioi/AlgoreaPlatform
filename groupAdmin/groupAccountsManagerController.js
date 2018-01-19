@@ -50,9 +50,33 @@ angular.module('algorea')
     $scope.create_params = {
         prefix: '',
         amount: 1,
+        postfix_length: 3,
+        password_length: 6,
+        example_login: null,
         error: false
     }
     $scope.accounts = [];
+
+
+    $scope.refreshExampleLogin = function() {
+        if($scope.create_params.prefix == '') {
+            return null;
+        }
+        var l = parseInt($scope.create_params.postfix_length, 10);
+        if(l > 100 || l < 0) {
+            return null;
+        }
+        var postfix = '';
+        var c = "23456789abcdefghijkmnpqrstuvwxyz";
+        for(var i=0; i<$scope.create_params.postfix_length; i++) {
+            postfix += c.charAt(Math.floor(Math.random() * c.length));
+        }
+        $scope.create_params.example_login = ([
+            $scope.user.loginModulePrefix,
+            $scope.create_params.prefix,
+            postfix
+        ]).join('_');
+    }
 
 
     function getCreateParams() {
@@ -61,10 +85,20 @@ angular.module('algorea')
             action: 'create',
             prefix: $scope.create_params.prefix.trim(),
             amount: parseInt($scope.create_params.amount, 10) || 0,
+            postfix_length: parseInt($scope.create_params.postfix_length, 10) || 0,
+            password_length: parseInt($scope.create_params.password_length, 10) || 0,
             group_id: $scope.$parent.group.ID
         };
-        if(!res.prefix) {
+        if(res.prefix == '') {
             $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_prefix');
+            return;
+        }
+        if(res.postfix_length > 50 || res.postfix_length < 3) {
+            $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_postfix_length');
+            return;
+        }
+        if(res.password_length > 50 || res.password_length < 6) {
+            $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_password_length');
             return;
         }
         if(getPrefixId(res.prefix)) {
@@ -91,6 +125,7 @@ angular.module('algorea')
             SyncQueue.planToSend(0);
         });
 
+        $scope.create_params.example_login = null;
         $scope.create_params.prefix = '';
         $scope.create_params.amount = 1;
     }
