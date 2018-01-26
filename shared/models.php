@@ -35,6 +35,7 @@ $tablesModels = array (
          "bOpened" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bFreeAccess" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "idTeamItem" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "iTeamParticipating" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sPassword" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sPasswordTimer" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sPasswordEnd" => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
@@ -101,6 +102,7 @@ $tablesModels = array (
          "sTeamMode" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "idTeamInGroup" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "iTeamMaxMembers" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bHasAttempts" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sAccessOpenDate" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sDuration" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sEndContestDate" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
@@ -159,6 +161,45 @@ $tablesModels = array (
       )
    ),
 
+   "groups_attempts" => array(
+      "autoincrementID" => false,
+      "fields" => array(
+          "idGroup"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
+          "idItem"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
+          "idUserCreator"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
+          "iOrder"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
+          "iScore"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "iScoreComputed"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "iScoreReeval"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "iScoreDiffManual"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sScoreDiffComment"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "nbSubmissionsAttempts"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "nbTasksTried"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "nbChildrenValidated"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "bValidated"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "bFinished"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "bKeyObtained"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "nbTasksWithHelp"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sHintsRequested"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "nbHintsCached"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "nbCorrectionsRead"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "iPrecision"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "iAutonomy"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sValidationDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sLastAnswerDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sThreadStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sLastHintDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "sFinishDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sLastActivityDate"  => array("type" => "date", 'skipHistory' => true, "access" => array("write" => array("user"), "read" => array("user"))),
+          "sContestStartDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "bRanked"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sAllLangProg"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+      ),
+      "listeners" => array(
+         "after" => "Listeners::GroupsAttemptsAfter"
+      )
+   ),
    "groups_items" => array(
       "autoincrementID" => false,
       "fields" => array(
@@ -272,7 +313,10 @@ $tablesModels = array (
       "fields" => array(
           "idUser"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
           "idItem"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "idAttempt"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sType"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
           "sName"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+          "sState"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
           "sAnswer"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
           "sLangProg"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
           "sSubmissionDate"  => array("type" => "date", "access" => array("write" => array("user"), "read" => array("user"))),
@@ -286,6 +330,7 @@ $tablesModels = array (
       "fields" => array(
           "idUser"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
           "idItem"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("user"))),
+          "idAttemptActive"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
           "iScore"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "iScoreComputed"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "iScoreReeval"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
@@ -386,6 +431,7 @@ $viewsModels = array(
          "bOpened" => array(),
          "bFreeAccess" => array(),
          "idTeamItem" => array(),
+         "iTeamParticipating" => array(),
          "sPassword" => array(),
          "sPasswordTimer" => array(),
          "sPasswordEnd" => array(),
@@ -525,6 +571,7 @@ $viewsModels = array(
          "sTeamMode" => array(),
          "idTeamInGroup" => array(),
          "iTeamMaxMembers" => array(),
+         "bHasAttempts" => array(),
          "sAccessOpenDate" => array(),
          "sDuration" => array(),
          "sEndContestDate" => array(),
@@ -630,6 +677,72 @@ $viewsModels = array(
       ),
    ),
 
+   "groups_attempts" => array(
+      "mainTable" => "groups_attempts",
+      "adminOnly" => false,
+      "joins" => array(
+         "groups_items" =>  array("srcTable" => "groups_attempts", "srcField" => "idItem", "dstField" => "idItem"),
+         "items_ancestors" => array("srcTable" => "groups_attempts", "srcField" => "idItem", "dstField" => "idItemChild"),
+         "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
+         "selfGroupDescendants" => array("srcTable" => "groups_attempts", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupChild"),
+         "itemsDescendants" => array("srcTable" => "groups_attempts", "dstTable" => "items_ancestors", "srcField" => "idItem", "dstField" => "idItemChild"),
+         "team" => array("srcTable" => "groups_attempts", "dstTable" => "groups_groups", "srcField" => "idGroup", "dstField" => "idGroupParent")
+      ),
+      "fields" => array(
+          "idGroup"               => array('insertOnly' => true),
+          "idItem"                => array('insertOnly' => true),
+          "idUserCreator"         => array('insertOnly' => true),
+          "iOrder"                => array('insertOnly' => true),
+          "iScore"                => array('readOnly' => true),
+          "iScoreComputed"        => array('readOnly' => true),
+          "iScoreReeval"          => array('readOnly' => true),
+          "iScoreDiffManual"      => array('readOnly' => true),
+          "sScoreDiffComment"     => array('readOnly' => true),
+          "nbSubmissionsAttempts" => array('readOnly' => true),
+          "nbTasksTried"          => array('readOnly' => true),
+          "nbChildrenValidated"   => array('readOnly' => true),
+          "bValidated"            => array('readOnly' => true),
+          "bFinished"             => array('readOnly' => true),
+          "bKeyObtained"          => array('readOnly' => true),
+          "nbTasksWithHelp"       => array('readOnly' => true),
+          "sHintsRequested"       => array('readOnly' => true),
+          "nbHintsCached"         => array('readOnly' => true),
+          "nbCorrectionsRead"     => array('readOnly' => true),
+          "iPrecision"            => array('readOnly' => true),
+          "iAutonomy"             => array('readOnly' => true),
+          "sStartDate"            => array(),
+          "sValidationDate"       => array('readOnly' => true),
+          "sLastAnswerDate"       => array('readOnly' => true),
+          "sThreadStartDate"      => array('readOnly' => true),
+          "sLastHintDate"         => array('readOnly' => true),
+          "sContestStartDate"     => array('readOnly' => true),
+          "sFinishDate"           => array('readOnly' => true),
+          "sLastActivityDate"     => array(),
+          "bRanked"               => array('readOnly' => true),
+          "sAllLangProg"          => array()
+      ),
+      "filters" => array(
+         "accessible" => array(
+            "joins" => array("groups_items", "selfGroupAncestors", "selfGroupDescendants"),
+            "condition"  => '((`[PREFIX]groups_items`.`bCachedManagerAccess` = 1 OR `[PREFIX]groups_items`.`bOwnerAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1) AND (`[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf) AND (`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroupOwned))',
+         ),
+         "groupDescendants" => array(
+            "joins" => array("selfGroupDescendants", "users"),
+            "condition"  => '`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroup',
+         ),
+          "itemsDescendants" => array(
+            "joins" => array("itemsDescendants"),
+            "condition"  => '`[PREFIX]itemsDescendants`.`idItemAncestor` = :[PREFIX_FIELD]idItem',
+         ),
+         "idGroup" => array(
+            "joins" => array("team"),
+            "condition" => '`[PREFIX]team`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf',
+         ),
+         "idItem" => array(
+            "condition" => "`[PREFIX]groups_attempts`.`idItem` = :[PREFIX_FIELD]idItem"
+         ),
+      ),
+   ),
    "groups_items" => array(
       "mainTable" => "groups_items",
       "adminOnly" => false,
@@ -785,6 +898,9 @@ $viewsModels = array(
         "groupAncestersOwned" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupOwned", "srcTable" => "users", "dstTable" => "groups_ancestors"),
         "groupAncestorsSelf" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupSelf", "srcTable" => "users", "dstTable" => "groups_ancestors"),
         "groupInvitedSelf" => array("dstField" => "idGroupChild", "srcField" => "idGroupSelf", "srcTable" => "users", "dstTable" => "groups_groups"),
+        "groups_groups" => array("srcTable" => "users", "dstTable" => "groups_groups", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
+        "groups" => array("srcTable" => "groups_groups", "dstTable" => "groups", "srcField" => "idGroupParent", "dstField" => "ID"),
+        "myTeams" => array("srcTable" => "groups_groups", "dstTable" => "groups_groups", "srcField" => "idGroupParent", "dstField" => "idGroupParent"),
       ),
       "fields" => array(
           "sLogin"                => array(),
@@ -832,6 +948,10 @@ $viewsModels = array(
             "joins" => array("groupInvitedSelf"),
             "condition"  => '`[PREFIX]groupInvitedSelf`.`idGroupParent` = :[PREFIX_FIELD]idGroup',
          ),
+         "meAndTeams" => array(
+            "joins" => array("groups_groups", "groups", "myTeams"),
+            "condition" => "(`[PREFIX]myTeams`.`idGroupChild` = :[PREFIX_FIELD]idGroup AND `[PREFIX]groups`.`sType` = 'Team') OR `[PREFIX]users`.`ID` = :[PREFIX_FIELD]id",
+         ),            
       ),
    ),
    "users_answers" => array(
@@ -846,11 +966,16 @@ $viewsModels = array(
          "my_users_items" => array("srcTable" => "users_answers", "dstTable" => "users_items", "dstField" => "idItem", "srcField" => "idItem"),
          "other_users_items" => array("srcTable" => "users_answers", "dstTable" => "users_items", "dstField" => "idItem", "srcField" => "idItem"),
          "items" => array("srcTable" => "users_answers", "dstTable" => "items", "dstField" => "ID", "srcField" => "idItem"),
+         "groups_attempts" => array("srcTable" => "users_answers", "dstTable" => "groups_attempts", "srcField" => "idAttempt", "dstField" => "ID"),
+         "teamAttempts" => array("srcTable" => "groups_attempts", "dstTable" => "groups_groups", "srcField" => "idGroup", "dstField" => "idGroupParent")
       ),
       "fields" => array(
           "idUser"       => array(),
           "idItem"       => array(),
+          "idAttempt"    => array(),
+          "sType"        => array(),
           "sName"        => array(),
+          "sState"        => array(),
           "sAnswer"      => array(),
           "sLangProg"    => array(),
           "sSubmissionDate"    => array('readOnly' => true),
@@ -868,7 +993,8 @@ $viewsModels = array(
             "condition"  => '((`[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
          "accessible" => array(
-            "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser",
+            "joins" => array("groups_attempts", "teamAttempts"),
+            "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser OR `[PREFIX]teamAttempts`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf",
          ),
          "getMyUserItem" => array(
             "joins" => array("my_users_items"),
@@ -898,6 +1024,7 @@ $viewsModels = array(
       "fields" => array(
           "idUser"                => array('insertOnly' => true),
           "idItem"                => array('insertOnly' => true),
+          "idAttemptActive"       => array(),
           "iScore"                => array('readOnly' => true),
           "iScoreComputed"        => array('readOnly' => true),
           "iScoreReeval"          => array('readOnly' => true),

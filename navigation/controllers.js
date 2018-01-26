@@ -103,7 +103,7 @@ angular.module('algorea')
       // possible status: 'not visited', 'visited', 'validated', 'validated-ol' (in another language), 'failed', 'hintasked'
       $scope.item_status = function() {
          var user_item = itemService.getUserItem(this.item);
-         if (this.item.bGrayedAccess && !this.item.sDuration) {
+         if (this.item.bGrayedAccess && !this.item.sDuration && !this.item.sTeamMode) {
             return 'grayed';
          }
          if (!user_item || !user_item.sLastActivityDate || user_item.sLastActivityDate.getTime() == 0) {

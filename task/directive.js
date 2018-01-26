@@ -183,6 +183,7 @@ angular.module('algorea')
                      newAnswer.ID = postRes.answer.idUserAnswer;
                      newAnswer.idItem = postRes.answer.idItemLocal;
                      newAnswer.idUser = postRes.answer.idUser;
+                     newAnswer.idAttempt = postRes.answer.idAttempt;
                      newAnswer.sAnswer = postRes.answer.sAnswer;
                      newAnswer.sSubmissionDate = new Date();
                      //ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
@@ -221,7 +222,15 @@ angular.module('algorea')
             });
          }
       };
-      scope.taskParams = {minScore: 0, maxScore: 100, noScore: 0, readOnly: !!scope.readOnly, randomSeed: scope.user_item.idUser, options: {}, returnUrl: config.domains.current.baseUrl+'/task/task.php'};
+      scope.taskParams = {
+         minScore: 0,
+         maxScore: 100,
+         noScore: 0,
+         readOnly: !!scope.readOnly,
+         randomSeed: scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser,
+         options: {},   
+         returnUrl: config.domains.current.baseUrl+'/task/task.php'};
+      scope.curAttemptId = scope.user_item.attempt ? scope.user_item.attempt.ID : null;
       scope.platform.getTaskParams = function(key, defaultValue, success, error) {
          var res = scope.taskParams;
          if (key) {
@@ -360,6 +369,13 @@ angular.module('algorea')
          }
          if (!scope.taskName) {scope.taskName = name;}
          scope.taskIframe = elem;
+         scope.$on('algorea.attemptChanged', function(event) {
+            // Reload item after we select a new attempt
+            if (scope.user_item.attempt && scope.user_item.attempt.ID != scope.curAttemptId) {
+               scope.itemUrl = null; // Avoid considering it's the same URL as we're changing parameters
+               reinit();
+            }
+         });
          function initTask(sameUrl) {
             scope.currentView = null;
             // ID of the current instance, allows to avoid callbacks from old tasks
@@ -381,7 +397,13 @@ angular.module('algorea')
             $timeout(function() { loadTask(scope, elem, sameUrl);});
          }
          if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Course')) {
-            initTask(false);
+            if(scope.item.bHasAttempts && !scope.user_item.attempt) {
+               // Create an attempt first
+               scope.attemptAutoSelected = true;
+               scope.autoSelectAttempt();
+            } else {
+               initTask(false);
+            }
          }
          // function comparing two url, returning true if the iframe won't be reloaded
          // (= if the difference is only after #)
@@ -409,7 +431,8 @@ angular.module('algorea')
                scope.task.unload(function() {
                   scope.taskLoaded = false;
                   scope.canGetState = false;
-                  scope.currentView = null;
+                  // TODO :: did we really need that?
+//                  scope.currentView = null;
                   scope.task.unloaded = true;
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);

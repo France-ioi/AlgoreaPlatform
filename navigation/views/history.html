@@ -1,0 +1,29 @@
+<div>
+  <p>Voici l'historique des sauvegardes et soumissions des membres de votre équipe, pour la tentative courante.</p>
+  <div class="well">
+    <button class="btn btn-default" ng-disabled="manualSyncDisabled" ng-click="manualSync();">Rafraîchir l'historique</button>
+    <button class="btn btn-default" ng-disabled="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer" ng-click="keepState();">Sauvegarder la réponse courante</button> <i ng-show="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer">(aucune modification depuis la dernière sauvegarde)</i>
+    <table class="table">
+      <tr>
+        <th>Date/heure</th>
+        <th>Type</th>
+        <th>Utilisateur</th>
+        <th></th>
+      <tr>
+      <tr ng-show="!user_item.attempt.user_answers.length"><td colspan="4">(aucune réponse enregistrée pour cette tentative)</td></tr>
+      <tr ng-repeat="answer in user_item.attempt.user_answers | orderObjectBy:'sSubmissionDate':true">
+        <td>{{ answer.sSubmissionDate|date:'short' }}</td>
+        <td>
+          <span ng-if="answer.sType == 'Submission'">soumission (score {{answer.iScore}})</span>
+          <span ng-if="answer.sType == 'Saved'">sauvegarde</span>
+          <span ng-if="answer.sType == 'Current'">réponse courante</span>
+        </td>
+        <td>
+          {{ answer.user.sLogin }}
+          <span ng-if="answer.user.sFirstName || answer.user.sLastName">({{ answer.user.sFirstName }} {{ answer.user.sLastName }})</span> 
+        </td>
+        <td><button class="btn btn-default btn-sm" ng-click="loadAnswer(answer);">Recharger</button></td>
+      </tr>
+    </table>
+  </div>
+</div>

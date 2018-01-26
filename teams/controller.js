@@ -65,6 +65,10 @@ angular.module('algorea')
          $scope.apiRequest('joinTeam', {password: $scope.joinPassword}, true);
       };
 
+      $scope.startItem = function() {
+         $scope.apiRequest('startItem', {}, true);
+      };
+
       $scope.changeTeamPassword = function() {
          if(!$scope.team) { return; }
          var newPassword = '';

@@ -155,7 +155,7 @@
          <div uib-tabset justified="true" ng-show="taskLoaded" class="tabset-task">
             <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active"></li>
          </div>
-         <div ng-show="!showForum" include-task task-name="my-task"></div>
+         <div ng-show="showTask" include-task task-name="my-task"></div>
          <div ng-hide="taskLoaded" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: white; z-index: 10"><center><img src="images/spinner.gif" height="50px"><p style="margin-top:10px"><strong ng-i18next="forum_loading"></strong></p></center></div>
       </div>
    </div>

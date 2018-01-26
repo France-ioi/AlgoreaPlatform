@@ -105,6 +105,8 @@
     "teams_not_a_member": "Cet utilisateur n'appartient pas à cette équipe.",
     "teams_no_name": "Veuillez fournir un nom pour votre équipe.",
     "teams_creation_error": "Erreur lors de la création de l'équipe.",
+    "teams_start": "Démarrer l'épreuve",
+    "teams_started": "Votre équipe a commencé l'épreuve. Vous pouvez entrer en sélectionnant un des items de l'épreuve ci-dessus.", 
 
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",
@@ -444,10 +446,13 @@
     "navigation_task": "Exercice",
     "navigation_course": "Cours",
 
+    "task_attempts": "Tentative",
+    "task_history": "Historique",
     "task_statement": "Énoncé",
     "task_solve": "Résolution",
     "task_hints": "Indices",
     "task_solution": "Solution",
+    "task_help": "Aide",
     "task_communicate_error": "Impossible de communiquer avec l'exercice !",
     "task_load_error": "Impossible de charger l'exercice !",
     "task_slow_load": "L'exercice prend plus de temps que prévu à se charger...",

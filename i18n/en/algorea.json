@@ -429,10 +429,13 @@
     "navigation_task": "Task",
     "navigation_course": "Course",
 
+    "task_attempts": "Attempt",
+    "task_history": "History",
     "task_statement": "Statement",
     "task_solve": "Solve",
     "task_hints": "Hints",
     "task_solution": "Solution",
+    "task_help": "Help",
     "task_communicate_error": "Impossible to communicate with the task!",
     "task_load_error": "Impossible to load the task!",
     "task_slow_load": "The task is taking an unexpected long time to load...",

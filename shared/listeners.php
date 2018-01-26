@@ -32,7 +32,27 @@ class Listeners {
               * nbChildrenValidated as the sum of children with bValidated == 1
               * bValidated, depending on the items_items.sCategory and items.sValidationType
          */
+         $updateAttemptsQuery = "
+            UPDATE users_items
+            left join
+            (select attempt_user.ID as idUser, attempts.idItem as idItem, MAX(attempts.iScore) as iScore, MAX(attempts.bValidated) as bValidated
+               from users AS attempt_user
+               join groups_attempts AS attempts
+               join groups_groups AS attempt_group ON attempts.idGroup = attempt_group.idGroupParent AND attempt_user.idGroupSelf = attempt_group.idGroupChild
+               GROUP BY attempt_user.ID, attempts.idItem
+            ) AS attempts_data ON attempts_data.idUser = users_items.idUser AND attempts_data.idItem = users_items.idItem
+            SET users_items.iScore = GREATEST(users_items.iScore, IFNULL(attempts_data.iScore, 0)),
+                users_items.bValidated = GREATEST(users_items.bValidated, IFNULL(attempts_data.bValidated, 0))
+            WHERE users_items.sAncestorsComputationState = 'processing';";
+         $db->exec($updateAttemptsQuery);
          $stmtUpdateStr = 'update `users_items`
+                           left join
+                           (select attempt_user.ID as idUser, attempts.idItem as idItem, MAX(attempts.iScore) as iScore, MAX(attempts.bValidated) as bValidated
+                              from users AS attempt_user
+                              join groups_attempts AS attempts
+                              join groups_groups AS attempt_group ON attempts.idGroup = attempt_group.idGroupParent AND attempt_user.idGroupSelf = attempt_group.idGroupChild
+                              GROUP BY attempt_user.ID, attempts.idItem
+                           ) AS attempts_data ON attempts_data.idUser = users_items.idUser AND attempts_data.idItem = users_items.idItem
                            join
                            (select Max(children.sLastActivityDate) as sLastActivityDate, Sum(children.nbTasksTried) as nbTasksTried, Sum(children.nbTasksWithHelp) as nbTasksWithHelp, Sum(children.nbTasksSolved) as nbTasksSolved, Sum(bValidated) as nbChildrenValidated
                               from users_items as children
@@ -59,8 +79,7 @@ class Listeners {
                                                             if(task_children_data.nbChildrenNonValidated = 0, 1, 0)
                                                          ),
                                                          if(task_children_data.nbChildrenCategory = 0, 1, 0)
-                                                       )
-                                                       ),
+                                                       )),
                              users_items.sValidationDate = IFNULL(users_items.sValidationDate, IF(STRCMP(:sValidationType, \'Categories\'), task_children_data.maxValidationDate, task_children_data.maxValidationDateCategories))
                          where users_items.ID = :ID;';
          // query to only user_items with children
@@ -112,6 +131,23 @@ class Listeners {
       }
    }
 
+   public static function propagateAttempts($db) {
+      // Propagate the data from an attempt to the user_items
+      $queryPropagate = "
+         UPDATE users_items
+         JOIN groups_attempts ON groups_attempts.idItem = users_items.idItem
+         JOIN groups_groups ON groups_groups.idGroupParent = groups_attempts.idGroup
+         JOIN users ON users.ID = users_items.idUser AND users.idGroupSelf = groups_groups.idGroupChild
+         SET users_items.sAncestorsComputationState = 'todo'
+         WHERE groups_attempts.sAncestorsComputationState = 'todo';";
+      $db->exec($queryPropagate);
+      $queryEndPropagate = "
+         UPDATE groups_attempts
+         SET sAncestorsComputationState = 'done'
+         WHERE sAncestorsComputationState = 'todo';";
+      $db->exec($queryEndPropagate);
+   }
+
    public static function UserItemsAfter($db) {
       syncDebug('UserItemsAfter', 'begin');
       // the only case where a call to computeAllUserItems is relevant is
@@ -119,6 +155,14 @@ class Listeners {
       //Listeners::computeAllUserItems($db);
       syncDebug('UserItemsAfter', 'end');
    }
+   
+   public static function GroupsAttemptsAfter($db) {
+      syncDebug('GroupsAttemptsAfter', 'begin');
+      // same as above: task.php handles it
+      //Listeners::computeAllUserItems($db);
+      syncDebug('GroupsAttemptsAfter', 'end');
+   }
+
 
    public static function createNewAncestors($db, $objectName, $upObjectName, $tablePrefix='', $baseTablePrefix='') {
       //file_put_contents(__DIR__.'/../logs/'.$objectName.'_ancestors_listeners.log', "\n".date(DATE_RFC822)."\n", FILE_APPEND);

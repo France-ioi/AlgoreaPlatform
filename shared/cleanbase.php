@@ -56,9 +56,11 @@ function syncDebug() {}
 //Listeners::createNewAncestors($db, "items", "Item");
 //$db->exec('insert ignore into groups_items_propagate (ID, sPropagateAccess) select ID, \'self\' from groups_items;');
 
-Listeners::itemsItemsAfter($db);
-Listeners::groupsGroupsAfter($db);
-Listeners::groupsItemsAfter($db);
-Listeners::computeAllAccess($db);
+#Listeners::itemsItemsAfter($db);
+#Listeners::groupsGroupsAfter($db);
+#Listeners::groupsItemsAfter($db);
+Listeners::propagateAttempts($db);
+Listeners::computeAllUserItems($db);
+#Listeners::computeAllAccess($db);
 
 #require_once __DIR__.'/../commonFramework/modelsManager/cleanHistory.php';

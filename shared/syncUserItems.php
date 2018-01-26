@@ -33,6 +33,7 @@ function default_user_item_factory($idUser, $item, $insertId) {
       'bHintsAllowed' => $item['data']->bHintsAllowed,
       'bAccessSolutions' => $item['data']->bAccessSolutions,
       'bGrayedAccess' => $item['data']->bGrayedAccess,
+      'sAncestorsComputationState' => 'todo',
       'iVersion' => 0 // TODO: really?
    );
    return array(
@@ -97,6 +98,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
          $params['bSubmissionPossible'] = true;
       }
       $params['idUser'] = $userItem['data']->idUser;
+      $params['idAttempt'] = $userItem['data']->idAttemptActive;
       $params['sHintsRequested'] = $userItem['data']->sHintsRequested;
       $params['nbHintsGiven'] = $userItem['data']->nbHintsCached;
       $params['bHintPossible'] = true;
@@ -107,7 +109,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       $bAccessSolutions = ($userItem['data']->bAccessSolutions != '0' || $userItem['data']->bValidated != '0') ? '1': '0';
       $params['bAccessSolutions'] = $bAccessSolutions;
 
-      $params['randomSeed'] = 0;
+      $params['randomSeed'] = $userItem['data']->idAttemptActive ? $userItem['data']->idAttemptActive : $userItem['data']->idUser;
       $params['platformName'] = $config->platform->name;
 
       $token = $tokenGenerator->encodeJWS($params);

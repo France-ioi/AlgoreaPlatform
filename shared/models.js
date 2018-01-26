@@ -50,6 +50,7 @@ var models = {
          bOpened: {type: "boolean", label: "models_groups_fields_bOpened_label", defaultValue: true},
          bFreeAccess: {type: "boolean", label: "models_groups_fields_bFreeAccess_label"},
          idTeamItem: {type: "int", label: "models_groups_fields_idTeamItem_label", defaultValue: null},
+         iTeamParticipating: {type: "boolean", label: "models_groups_fields_iTeamParticipating_label", defaultValue: false},
          sPassword: {type: "string", label: "models_groups_fields_sPassword_label", defaultValue: ''},
          sPasswordTimer: {type: "duration", label: "models_groups_fields_sPasswordTimer_label", defaultValue: null},
          sPasswordEnd: {type: "string", label: "models_groups_fields_sPasswordEnd_label", defaultValue: null},
@@ -82,6 +83,48 @@ var models = {
          userOwned: {refModel: "users", key: "idGroupOwned", type: "direct"},
          userAccess: {refModel: "users", key: "idGroupAccess", type: "direct"},
          login_prefixes: {refModel: "groups_login_prefixes", key: "idGroup", type: "array"}
+      }
+   },
+
+   groups_attempts: {
+      fields: {
+          idGroup: {type: "key", label: "models_groups_attempts_fields_idGroup_label", refModel: "groups", link: "group"},
+          idItem: {type: "key", label: "models_groups_attempts_fields_idItem_label", refModel: "items", link: "item", invLink: "groups_attempts"},
+          idUserCreator: {type: "key", label: "models_groups_attempts_fields_idUserCreator_label", refModel: "users", link: "user"},
+          iOrder: {type: "int", label: "models_groups_attempts_fields_iOrder_label"},
+          iScore: {type: "float", label: "", readOnly: true},
+          iScoreComputed: {type: "float", label: "", readOnly: true},
+          iScoreReeval: {type: "float", label: "", readOnly: true},
+          iScoreDiffManual: {type: "float", label: "", readOnly: true},
+          sScoreDiffComment: {type: "string", label: "", readOnly: true},
+          nbSubmissionsAttempts: {type: "int", label: "", readOnly: true},
+          nbTasksTried: {type: "int", label: "", readOnly: true},
+          nbChildrenValidated: {type: "int", label: "", readOnly: true},
+          bValidated: {type: "boolean", label: "", readOnly: true},
+          bFinished: {type: "boolean", label: "", readOnly: true},
+          bKeyObtained: {type: "boolean", label: "", readOnly: true},
+          nbTasksWithHelp: {type: "int", label: "", readOnly: true},
+          sHintsRequested: {type: "string", label: "", readOnly: true},
+          nbHintsCached: {type: "int", label: "", readOnly: true},
+          nbCorrectionsRead: {type: "int", label: "", readOnly: true},
+          iPrecision: {type: "int", label: "", readOnly: true},
+          iAutonomy: {type: "int", label: "", readOnly: true},
+          sStartDate: {type: "jsdate", label: ""},
+          sValidationDate: {type: "jsdate", label: "", readOnly: true},
+          sLastAnswerDate: {type: "jsdate", label: "", readOnly: true},
+          sThreadStartDate: {type: "jsdate", label: "", readOnly: true},
+          sLastHintDate: {type: "jsdate", label: "", readOnly: true},
+          sFinishDate: {type: "jsdate", label: "", readOnly: true},
+          sLastActivityDate: {type: "jsdate", label: ""},
+          sContestStartDate: {type: "jsdate", label: "", readOnly: true},
+          bRanked: {type: "boolean", label: "", readOnly: true},
+          sAllLangProg: {type: "string", label: ""},
+          sState: {type: "string", label: ""},
+          sAnswer: {type: "string", label: ""},
+          sToken: {type: "string", label: "", readOnly: true}
+      },
+      links: {
+         user_answers: {refModel: "users_answers", key: "idItem", type: "array"}
       }
    },
 
@@ -213,6 +256,7 @@ var models = {
          },
          idTeamInGroup: {type: "int", label: "models_items_fields_idTeamInGroup_label", refModel: "groups", link: "teamInGroup", defaultValue: null},
          iTeamMaxMembers: {type: "int", label: "models_items_fields_iTeamMaxMembers_label"},
+         bHasAttempts: {type: "boolean", label: "models_items_fields_bHasAttempts_label", defaultValue: false},
          sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
          sDuration: {type: "duration", label: "models_items_fields_sDuration_label", defaultValue: null},
          sEndContestDate: {type: "jsdate", label: "models_items_fields_sEndContestDate_label"},
@@ -247,6 +291,7 @@ var models = {
          strings: {refModel: "items_strings", key: "idItem", type: "array"},
          user_answers: {refModel: "users_answers", key: "idItem", type: "array"},
          user_item: {refModel: "users_items", key: "idItem", type: "object"},
+         groups_attempts: {refModel: "groups_attempts", key: "idItem", type: "object"},
          threads: {refModel: "threads", key: "idItem", type: "object"},
          group_items: {refModel: "groups_items", key: "idItem", type: "array"} // array better ?
          //descendants: {refModel: "items_ancestors", key: "idItemAncestor", type: "object"}, // array better ?
@@ -485,9 +530,22 @@ var models = {
 
    users_answers: {
       fields: {
-          idUser: {type: "key", label: "models_users_answers_fields_idUser_label"},
+          idUser: {type: "key", label: "models_users_answers_fields_idUser_label", refModel: "users", link: "user"},
           idItem: {type: "key", label: "models_users_answers_fields_idItem_label", refModel: "items", link: "item", invLink: "user_answers"},
+          idAttempt: {type: "key", label: "models_users_answers_fields_idAttempt_label", refModel: "groups_attempts", link: "attempt", invLink: "user_answers"},
           sName: {type: "string", label: ""},
+          sType: {
+             type: "enum",
+             values: {
+                Submission: {label: "models_items_fields_sType_values_Submission_label"},
+                Saved: {label: "models_items_fields_sType_values_Saved_label"},
+                Current: {label: "models_items_fields_sType_values_Current_label"}
+             },
+             label: "models_items_fields_sType_label",
+             defaultValue: "Submission",
+             nullInvalid: true
+          },
+          sState: {type: "string", label: ""},
           sAnswer: {type: "string", label: ""},
           sSubmissionDate: {type: "jsdate", label: "", defaultValue: null},
           iScore: {type: "float", label: ""},
@@ -501,6 +559,7 @@ var models = {
       fields: {
           idUser: {type: "key", label: "models_users_items_fields_idUser_label", refModel: "users", link: "user"},
           idItem: {type: "key", label: "models_users_items_fields_idItem_label", refModel: "items", link: "item", invLink: "user_item"},
+          idAttemptActive: {type: "key", label: "models_users_items_fields_idAttemptActive_label", refModel: "groups_attempts", link: "attempt"},
           iScore: {type: "float", label: "", readOnly: true},
           iScoreComputed: {type: "float", label: "", readOnly: true},
           iScoreReeval: {type: "float", label: "", readOnly: true},

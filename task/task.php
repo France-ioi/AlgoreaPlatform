@@ -156,7 +156,7 @@ require_once(dirname(__FILE__)."/../shared/TokenGenerator.php");
 function createUserItemIfMissing($userItemId, $params) {
    global $db;
    if (!$userItemId) return;
-   $stmt = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`) VALUES (:ID, :idUser, :idItem);");
+   $stmt = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`, `sAncestorsComputationState`) VALUES (:ID, :idUser, :idItem, 'todo');");
    $stmt->execute(['ID' => $userItemId,'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']]);
 }
 
@@ -193,9 +193,9 @@ function askValidation($request, $db) {
    }
    createUserItemIfMissing($request['userItemId'], $params);
    $ID = getRandomID();
-   $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :sAnswer, NOW(), 0);";
+   $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `idAttempt`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :idAttempt, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
-   $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'sAnswer' => $request['sAnswer']));
+   $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'idAttempt' => $params['idAttempt'], 'sAnswer' => $request['sAnswer']));
    $query = "SELECT sHintsRequested, nbHintsCached FROM `users_items` WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
@@ -209,11 +209,12 @@ function askValidation($request, $db) {
       'sAnswer' => $request['sAnswer'],
       'idUser' => $_SESSION['login']['ID'],
       'idItem' => $params['idItem'],
+      'idAttempt' => $params['idAttempt'],
       'itemUrl' => $params['itemUrl'],
       'idItemLocal' => $params['idItemLocal'],
       'idUserAnswer' => $ID,
       'platformName' => $config->platform->name,
-      'randomSeed' => 0,
+      'randomSeed' => $params['randomSeed'],
       'sHintsRequested' => $hintsInfo['sHintsRequested'],
       'nbHintsGiven' => $hintsInfo['nbHintsCached']
    );
@@ -298,10 +299,10 @@ function graderResult($request, $db) {
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
 
    // Build query to update users_items
-   $query = "UPDATE `users_items` SET iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sLastActivityDate = NOW(), sLastAnswerDate = NOW()";
+   $baseQuery = "SET iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sLastActivityDate = NOW(), sLastAnswerDate = NOW()";
    if ($bValidated) {
       // Item was validated
-      $query .= ", sAncestorsComputationState = 'todo', bValidated = 1, bKeyObtained = 1, sValidationDate = IFNULL(sValidationDate,NOW())";
+      $baseQuery .= ", sAncestorsComputationState = 'todo', bValidated = 1, bKeyObtained = 1, sValidationDate = IFNULL(sValidationDate,NOW())";
       $bKeyObtained = true;
    } else {
       // Item wasn't validated, check if we unlocked something
@@ -311,13 +312,20 @@ function graderResult($request, $db) {
       if($item['idItemUnlocked'] && $score >= intval($item['iScoreMinUnlock'])) {
          $bKeyObtained = true;
          // Update sAncestorsComputationState only if we hadn't obtained the key before
-         $query .= ", sAncestorsComputationState = IF(bKeyObtained = 0, 'todo', sAncestorsComputationState), bKeyObtained = 1";
+         $baseQuery .= ", sAncestorsComputationState = IF(bKeyObtained = 0, 'todo', sAncestorsComputationState), bKeyObtained = 1";
       }
    }
-   $query .= " WHERE idUser = :idUser AND idItem = :idItem;";
-   $stmt = $db->prepare($query);
+   $userItemQuery = "UPDATE `users_items` " . $baseQuery . " WHERE idUser = :idUser AND idItem = :idItem;";
+   $stmt = $db->prepare($userItemQuery);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
+   if($params['idAttempt']) {
+      $attemptQuery = "UPDATE `groups_attempts` " . $baseQuery . " WHERE ID = :id;";
+      $stmt = $db->prepare($attemptQuery);
+      $res = $stmt->execute(array('id' => $params['idAttempt'], 'iScore' => $score));
+   }
+   $stmt = null;
    if ($bValidated || $bKeyObtained) {
+      Listeners::propagateAttempts($db);
       Listeners::computeAllUserItems($db);
    }
    $token = isset($request['sToken']) ? $request['sToken'] : $request['scoreToken'];
@@ -332,7 +340,7 @@ function graderResult($request, $db) {
 
 function getToken($request, $db) {
    global $config;
-   $query = 'select `users_items`.`sHintsRequested`, `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
+   $query = 'select `users_items`.`idAttemptActive`, `users_items`.`sHintsRequested`, `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
    'from `items` '.
    'join `groups_items` on `groups_items`.`idItem` = `items`.`ID` '.
    'join `users_items` on `users_items`.`idItem` = `items`.`ID` '.
@@ -349,9 +357,6 @@ function getToken($request, $db) {
       echo json_encode(array('result' => false, 'error' => 'you are not allowed to access this item', 'data' => $data, 'session' => $_SESSION));
       exit();
    }
-   $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']));
-   $data = $sth->fetch();
    $query = 'select * from `users_answers` where `idUser` = :idUser and `idItem` = :idItem';
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']));
@@ -370,9 +375,10 @@ function getToken($request, $db) {
       'idUser' => intval($_SESSION['login']['ID']),
       'idItemLocal' => $request['idItem'],
       'idItem' => $data['sTextId'],
+      'idAttempt' => $data['idAttemptActive'],
       'itemUrl' => $data['sUrl'],
       'sSupportedLangProg' => $data['sSupportedLangProg'],
-      'randomSeed' => 0,
+      'randomSeed' => $data['idAttemptActive'] ? $data['idAttemptActive'] : $_SESSION['login']['ID'],
       'platformName' => $config->platform->name
    );
    $tokenArgs['id'+$data['sType']] = $tokenArgs['idItem']; // TODO: should disapear
@@ -380,6 +386,82 @@ function getToken($request, $db) {
    $sToken = $tokenGenerator->encodeJWS($tokenArgs);
    echo json_encode(array('result' => true, 'sToken' => $stoken, 'tokenArgs' => $tokenArgs));
 }
+
+
+function getUserTeam($idItem, $idUserSelf, $db) {
+   // Find the team of an user for an item
+   $stmt = $db->prepare("
+      SELECT groups.ID FROM groups
+      JOIN groups_groups ON groups_groups.idGroupParent = groups.ID
+      JOIN items_ancestors ON items_ancestors.idItemAncestor = groups.idTeamItem
+      WHERE groups.sType = 'Team'
+         AND groups_groups.idGroupChild = :idUserSelf
+         AND (items_ancestors.idItemChild = :idItem OR groups.idTeamItem = :idItem);");
+   $stmt->execute(['idUserSelf' => $idUserSelf, 'idItem' => $idItem]);
+   return $stmt->fetchColumn();
+}
+
+
+function createAttempt($request, $db) {
+   // Create an attempt on an item
+
+   // Check the item has attempts activated
+   $stmt = $db->prepare('SELECT bHasAttempts FROM items WHERE ID = :id;');
+   $stmt->execute(['id' => $request['idItem']]);
+   if(!$stmt->fetchColumn()) {
+      return ['result' => false, 'error' => "This item doesn't support attempts."];
+   }
+
+   // Find the user's team for this item
+   $idGroup = getUserTeam($request['idItem'], $_SESSION['login']['idGroupSelf'], $db);
+   if(!$idGroup) {
+      return ['result' => false, 'error' => "No team found for this user"];
+   }
+
+   // Create the attempt
+   $newId = getRandomId();
+   $stmt = $db->prepare('LOCK TABLES groups_attempts WRITE; SET @maxIOrder = IFNULL((SELECT MAX(iOrder) FROM groups_attempts WHERE idGroup = :idGroup AND idItem = :idItem), 0); INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, @maxIOrder + 1); UNLOCK TABLES;');
+   $stmt->execute(['id' => $newId, 'idGroup' => $idGroup, 'idItem' => $request['idItem'], 'idUser' => $_SESSION['login']['ID']]);
+
+   return ['result' => true, 'attemptId' => $newId];
+}
+
+
+function autoSelectedAttempt($request, $db) {
+   // TODO :: temporary hook to update users_items
+   Listeners::computeAllUserItems($db);
+   return ['result' => true];
+}
+
+
+function keepState($request, $db) {
+   // Keep the current state/answer
+
+   if($request['isCurrent']) {
+      $stmt = $db->prepare("SELECT ID FROM users_answers WHERE idUser = :idUser AND idItem = :idItem AND idAttempt = :idAttempt AND sType = 'Current';");
+      $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem'], 'idAttempt' => $request['idAttempt']]);
+      if($ID = $stmt->fetchColumn()) {
+         $stmt = $db->prepare("UPDATE users_answers SET sState = :sState, sAnswer = :sAnswer, sSubmissionDate = NOW() WHERE ID = :id;");
+         $stmt->execute(['id' => $ID, 'sState' => $request['sState'], 'sAnswer' => $request['sAnswer']]);
+      } else {
+         $stmt = $db->prepare("INSERT INTO users_answers (ID, idUser, idItem, idAttempt, sType, sState, sAnswer, sSubmissionDate) VALUES (:id, :idUser, :idItem, :idAttempt, 'Current', :sState, :sAnswer, NOW());");
+         $stmt->execute(['id' => getRandomId(), 'idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem'], 'idAttempt' => $request['idAttempt'], 'sState' => $request['sState'], 'sAnswer' => $request['sAnswer']]);
+      }
+   } else {
+      $stmt = $db->prepare("SELECT ID FROM users_answers WHERE idItem = :idItem AND idAttempt = :idAttempt AND sState = :sState AND sAnswer = :sAnswer AND sType = 'Saved' ORDER BY sSubmissionDate DESC;");
+      $stmt->execute(['idItem' => $request['idItem'], 'idAttempt' => $request['idAttempt'], 'sState' => $request['sState'], 'sAnswer' => $request['sAnswer']]);
+      if($ID = $stmt->fetchColumn()) {
+         $stmt = $db->prepare("UPDATE users_answers SET sSubmissionDate = NOW() WHERE ID = :id;");
+         $stmt->execute(['id' => $ID]);
+      } else {
+         $stmt = $db->prepare("INSERT INTO users_answers (ID, idUser, idItem, idAttempt, sType, sState, sAnswer, sSubmissionDate) VALUES (:id, :idUser, :idItem, :idAttempt, 'Saved', :sState, :sAnswer, NOW());");
+         $stmt->execute(['id' => getRandomId(), 'idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem'], 'idAttempt' => $request['idAttempt'], 'sState' => $request['sState'], 'sAnswer' => $request['sAnswer']]);
+      }
+   }
+
+   return ['result' => true];
+}
+
 
 if ($request['action'] == 'askValidation') {
    askValidation($request, $db);
@@ -389,4 +471,10 @@ if ($request['action'] == 'askValidation') {
    graderResult($request, $db);
 } elseif ($request['action'] == 'getToken') {
    getToken($request, $db);
+} elseif ($request['action'] == 'createAttempt') {
+   echo json_encode(createAttempt($request, $db));
+} elseif ($request['action'] == 'autoSelectedAttempt') {
+   echo json_encode(autoSelectedAttempt($request, $db));
+} elseif ($request['action'] == 'keepState') {
+   echo json_encode(keepState($request, $db));
 }

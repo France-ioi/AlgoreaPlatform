@@ -1,0 +1,14 @@
+<div>
+  <p>Vous pouvez effectuer plusieurs tentatives sur ce sujet. Chaque tentative correspond à des paramètres différents du sujet. [À rédiger]</p>
+  <ul>
+    <li ng-repeat="attempt in item.groups_attempts | orderObjectBy:'iOrder'">
+      Tentative n°{{ attempt.iOrder }}, créée par
+      {{ attempt.user.sLogin }}
+      <span ng-if="attempt.user.sFirstName || attempt.user.sLastName">({{ attempt.user.sFirstName }} {{ attempt.user.sLastName }})</span>
+      <button ng-hide="attempt.ID == user_item.idAttemptActive" class="btn btn-default btn-xs" ng-click="selectAttempt(attempt.ID);">Sélectionner</button>
+      <b ng-show="attempt.ID == user_item.idAttemptActive">(active)</b>
+      <button ng-show="attempt.ID == user_item.idAttemptActive" class="btn btn-primary" ng-click="selectTab('task');">Accéder à l'énoncé</button>
+    </li>
+  </ul>
+  <p><button class="btn btn-default" ng-click="userCreateAttempt();">Démarrer une nouvelle tentative</button></p>
+</div>

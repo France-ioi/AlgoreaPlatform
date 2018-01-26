@@ -144,6 +144,9 @@ function getItemsFromAncestors ($params, &$requests, $db, $minServerVersion){
    $requests['users_items']['filters']['idUser'] = array(
       'values' => ['idUser' => $_SESSION['login']['ID']],
    );
+   $requests['groups_attempts']['filters']['idGroup'] = array(
+      'values' => ['idGroupSelf' => $_SESSION['login']['idGroupSelf']],
+   );
 
    $ancestors_condition = getAncestorsCondition($db, $params, '[PREFIX]', '[FIELD]');
 
@@ -321,6 +324,9 @@ function getAllLevels ($params, &$requests){
    $requests['users_items']['filters']['idUser'] = array(
       'values' => ['idUser' => $_SESSION['login']['ID']],
    );
+   $requests['groups_attempts']['filters']['idGroup'] = array(
+      'values' => ['idGroupSelf' => $_SESSION['login']['idGroupSelf']],
+   );
    $requests["items_strings"]["filters"]["getAllLevels"] = true;
    $requests["items"]["filters"]["getAllLevels"] = true;
    // groups_items slows everything down
@@ -329,23 +335,24 @@ function getAllLevels ($params, &$requests){
 
 // only fetch public infos if not self
 function filterUsers(&$requests) {
-   $requests['users']['model']['filters']['me'] = array(
+/*   $requests['users']['model']['filters']['me'] = array(
       "joins" => array(),
       "condition"  => "(`[PREFIX]users`.`ID` = :[PREFIX_FIELD]me)",
       "readOnly" => true
    );
-   $requests['users']['filters']['me'] = $_SESSION['login']['ID'];
+   $requests['users']['filters']['me'] = $_SESSION['login']['ID'];*/
+   $requests['users']['filters']['meAndTeams'] = ['values' => ['id' => $_SESSION['login']['ID'], 'idGroup' => $_SESSION['login']['idGroupSelf']]];
 # Uncomment if you want all users but keeping private things private
-#   static $privateFields = array('sEmail', 'sCountryCode', 'sTimeZone', 'sBirthDate', 'iGraduationYear', 'iGrade', 'sSex', 'sAddress', 'sZipcode', 'sCity', 'sLandLineNumber', 'sCellPhoneNumber', 'sDefaultLanguage', 'sFreeText', 'sWebSite', 'idUserGodfather');
-#   foreach($requests['users']['model']['fields'] as $fieldName => &$field) {
-#      if ($fieldName == 'sFirstName') {
-#            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicFirstName`, `sFirstName`, NULL)');
-#      } elseif ($fieldName == 'sLastName') {
-#            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicLastName`, `sLastName`, NULL)');
-#      } elseif(in_array($fieldName, $privateFields)) {
-#            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].', `'.$fieldName.'`, NULL)');
-#      }
-#   }
+   static $privateFields = array('sEmail', 'sCountryCode', 'sTimeZone', 'sBirthDate', 'iGraduationYear', 'iGrade', 'sSex', 'sAddress', 'sZipcode', 'sCity', 'sLandLineNumber', 'sCellPhoneNumber', 'sDefaultLanguage', 'sFreeText', 'sWebSite', 'idUserGodfather');
+   foreach($requests['users']['model']['fields'] as $fieldName => &$field) {
+      if ($fieldName == 'sFirstName') {
+            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicFirstName`, `sFirstName`, NULL)');
+      } elseif ($fieldName == 'sLastName') {
+            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicLastName`, `sLastName`, NULL)');
+      } elseif(in_array($fieldName, $privateFields)) {
+            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].', `users`.`'.$fieldName.'`, NULL)');
+      }
+   }
 }
 
 function setupExpandedItemsRequests($params, &$requests) {
@@ -375,6 +382,9 @@ function setupExpandedItemsRequests($params, &$requests) {
       $requests["users_items"]["model"]["joins"]["items_items"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
       $requests["users_items"]["filters"]["accessible"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
       $requests["users_items"]["model"]["fields"]["sType"]["groupBy"] = "`users_items`.`ID`";
+      $requests["groups_attempts"]["model"]["joins"]["items_items"] = array("srcTable" => "groups_items", "srcField" => "idItem", "dstField" => "idItemChild");
+      $requests["groups_attempts"]["filters"]["accessible"] = array('modes' => array('select' => true), "values" => array("idGroupSelf" => $_SESSION['login']['idGroupSelf'], "idGroupOwned" => $_SESSION['login']['idGroupOwned']));
+      $requests["groups_attempts"]["model"]["fields"]["sType"]["groupBy"] = "`groups_attempts`.`ID`";
       //$requests["groups_groups"]["debugLogFunction"] = myDebugFunction;
       //$requests["users_items"]["debugLogFunction"] = myDebugFunction;
    }
@@ -494,7 +504,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
          setupGroupsItemsRequests($requests);
          if(isset($requests['users_answers'])) {
             $requests["users_answers"]["filters"]["accessible"] = array(
-               'values' => array('idUser' => $_SESSION['login']['ID']),
+               'values' => array('idUser' => $_SESSION['login']['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']),
             );
          }
          $requests['users_answers']['readOnly'] = true;
@@ -559,6 +569,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
             //unset($requests['groups']);
             //unset($requests['groups_groups']);
             getItemsFromAncestors($params, $requests, $db, $minServerVersion);
+            error_log(json_encode(array_keys($requests)));
             unset($requests['groups_items']);
             break;
          case 'expandedItems':

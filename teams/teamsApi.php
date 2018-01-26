@@ -171,7 +171,8 @@ function canResetQualificationState() {
    foreach($_SESSION['login']['aBadges'] as $badge) {
       if($badge['url'] == 'https://badges.concours-alkindi.fr/qualification_tour2/2018') { $canReset = false; }
    }
-   return $canReset;
+   //return $canReset;
+   return false;
 }
 
 
@@ -208,6 +209,10 @@ function createTeam($request) {
    if(getUserTeam($request['idItem'])) {
       return ['result' => false, 'error' => 'teams_already_has_team'];
    }
+
+   $stmt = $db->prepare("SELECT * FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $request['idItem']]);
+   $item = $stmt->fetch();
 
    // Check user is qualified
    if($item['idTeamInGroup'] && $item['sTeamMode'] != 'None') {
@@ -262,9 +267,10 @@ function joinTeam($request) {
    if($res) {
       $team = getUserTeam($request['idItem'], true, $res['ID']);
       // Check requirements
-      // TODO :: check requirements only when contest is started
-//      $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
-//      if(!$req['result']) { return $req; }
+      if($res['iTeamParticipating']) {
+         $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
+         if(!$req['result']) { return $req; }
+      }
 
       // Add user as member
       $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
@@ -277,6 +283,37 @@ function joinTeam($request) {
    } else {
       return ['result' => false, 'error' => 'teams_invalid_password'];
    }
+}
+
+
+function startItem($request) {
+   // Get access to an item as a team
+   global $db;
+   if(!isset($request['idItem']) || !$request['idItem']) {
+      return ['result' => false, 'error' => 'api_error'];
+   }
+
+   $team = getUserTeam($request['idItem'], true);
+   if(!$team) {
+      return ['result' => false, 'error' => 'teams_no_team'];
+   }
+
+   // Check requirements
+   $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
+   if(!$req['result']) { return $req; }
+
+   // Grant access to the item
+   $stmt = $db->prepare('insert into groups_items (idGroup, idItem, sPartialAccessDate, sCachedPartialAccessDate, bCachedPartialAccess) values (:idGroup, :idItem, NOW(), NOW(), 1) on duplicate key update sPartialAccessDate = NOW(), sCachedPartialAccessDate = NOW(), bCachedPartialAccess = 1;');
+   $stmt->execute(['idItem' => $request['idItem'], 'idGroup' => $team['ID']]);
+   Listeners::groupsItemsAfter($db);
+
+   // Update team participation status
+   $stmt = $db->prepare('UPDATE groups SET iTeamParticipating = 1 WHERE ID = :id;');
+   $stmt->execute(['id' => $team['ID']]);
+
+   $team['iTeamParticipating'] = 1;
+
+   return ['result' => true, 'team' => $team];
 }
 
 
@@ -336,12 +373,16 @@ function removeTeamMember($request) {
    }
 
    // Check requirements
-   // TODO :: check requirements only when contest is started
-//   $req = checkRequirements($team, $request['idItem'], $request['idGroupChild'], true);
-//   if(!$req['result']) { return $req; }
+   if($team['iTeamParticipating']) {
+      // TODO :: temporary
+      return ['result' => false, 'error' => "Quitter une équipe après avoir démarré l'épreuve n'est pas possible pour le moment. Veuillez réessayer plus tard."];
+      $req = checkRequirements($team, $request['idItem'], $request['idGroupChild'], true);
+      if(!$req['result']) { return $req; }
+   }
 
    $stmt = $db->prepare("DELETE FROM groups_groups WHERE ID = :id;");
    $stmt->execute(['id' => $groupGroupID]);
+   Listeners::groupsGroupsAfter($db);
 
    $newChildren = [];
    foreach($team['children'] as $child) {
@@ -369,9 +410,11 @@ function leaveTeam($request) {
    }
 
    // Check requirements
-   // TODO :: check requirements only when contest is started
-//   $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf'], true);
-//   if(!$req['result']) { return $req; }
+   if($team['iTeamParticipating']) {
+      return ['result' => false, 'error' => "Quitter une équipe après avoir démarré l'épreuve n'est pas possible pour le moment. Veuillez réessayer plus tard."];
+      $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf'], true);
+      if(!$req['result']) { return $req; }
+   }
 
    // Get admin
    $stmt = $db->prepare("SELECT ID, idGroupParent FROM groups_groups WHERE idGroupChild = :idGroup AND sRole = 'owner';");
@@ -420,6 +463,8 @@ if($request['action'] == 'getTeam') {
    die(json_encode(createTeam($request)));
 } elseif($request['action'] == 'joinTeam') {
    die(json_encode(joinTeam($request)));
+} elseif($request['action'] == 'startItem') {
+   die(json_encode(startItem($request)));
 } elseif($request['action'] == 'changeTeamPassword') {
    die(json_encode(changeTeamPassword($request)));
 } elseif($request['action'] == 'removeTeamMember') {
