@@ -102,7 +102,7 @@ ALTER TABLE `items` ADD `bHasAttempts` TINYINT(1) NOT NULL DEFAULT '0' AFTER `iT
 ALTER TABLE `history_items` ADD `bHasAttempts` TINYINT(1) NOT NULL DEFAULT '0' AFTER `iTeamMaxMembers`;
 
 ALTER TABLE `users_answers` ADD `idAttempt` BIGINT(20) NULL DEFAULT NULL AFTER `idItem`, ADD `sType` ENUM('Submission','Saved','Current') NOT NULL DEFAULT 'Submission' AFTER `sName`, ADD `sState` MEDIUMTEXT NULL DEFAULT NULL AFTER `sType`;
-ALTER TABLE `history_users_answers` ADD `idAttempt` BIGINT(20) NULL DEFAULT NULL AFTER `idItem`;
+ALTER TABLE `history_users_answers` ADD `idAttempt` BIGINT(20) NULL DEFAULT NULL AFTER `idItem`, ADD `sType` ENUM('Submission','Saved','Current') NOT NULL DEFAULT 'Submission' AFTER `sName`, ADD `sState` MEDIUMTEXT NULL DEFAULT NULL AFTER `sType`;
 
 ALTER TABLE `users_answers` CHANGE `sName` `sName` VARCHAR(200) NULL DEFAULT NULL;
 ALTER TABLE `history_users_answers` CHANGE `sName` `sName` VARCHAR(200) NULL DEFAULT NULL;

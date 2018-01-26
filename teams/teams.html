@@ -51,9 +51,9 @@
       </table>
       <div>
         <span ng-if="team.checkRequirements.result">
-          <b ng-show="!team.iTeamParticipating" class="text-success" ng-i18next="teams_requirements_yes"></b>
-          <button ng-show="!team.iTeamParticipating" class="btn btn-primary" ng-click="startItem();" ng-i18next="teams_start"></button>
-          <b ng-show="team.iTeamParticipating" class="text-success" ng-i18next="teams_started"></b>
+          <b ng-show="team.iTeamParticipating == 0" class="text-success" ng-i18next="teams_requirements_yes"></b>
+          <button ng-show="team.iTeamParticipating == 0" class="btn btn-primary" ng-click="startItem();" ng-i18next="teams_start"></button>
+          <b ng-show="team.iTeamParticipating == 1" class="text-success" ng-i18next="teams_started"></b>
         </span>
         <b ng-if="!team.checkRequirements.result" class="text-warning">
           <span ng-i18next="teams_requirements_no"></span>
