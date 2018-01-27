@@ -77,6 +77,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       'idItem'               => null,
       'itemUrl'              => null,
       'idUser'               => null,
+      'idAttempt'            => null,
       'bIsAdmin'             => null,
       'bIsDefault'           => null,
       'sSupportedLangProg'   => null,

@@ -369,14 +369,15 @@ angular.module('algorea')
          }
          $scope.keepState();
       }
-      $scope.user_item.idAttemptActive = attemptId;
       if(!loadingState) {
          $scope.user_item.sState = '';
          $scope.user_item.sAnswer = '';
       }
-      ModelsManager.updated('users_items', $scope.user_item.ID);
-      SyncQueue.planToSend(0);
-      $rootScope.$broadcast('algorea.attemptChanged');
+      $scope.user_item.idAttemptActive = attemptId;
+      $scope.apiRequest('selectAttempt', {idAttempt: attemptId}, function(res) {
+         $scope.user_item.sToken = res.sToken;
+         $rootScope.$broadcast('algorea.attemptChanged');
+         }, true);
    };
 
    $scope.autoSelectAttempt = function() {
@@ -392,7 +393,6 @@ angular.module('algorea')
       } else {
          $scope.createAttempt();
       }
-      $scope.apiRequest('autoSelectedAttempt'); // TODO :: proper way to compute user_item
    };
 
    // Answers handling

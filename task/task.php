@@ -384,7 +384,7 @@ function getToken($request, $db) {
    $tokenArgs['id'+$data['sType']] = $tokenArgs['idItem']; // TODO: should disapear
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $sToken = $tokenGenerator->encodeJWS($tokenArgs);
-   echo json_encode(array('result' => true, 'sToken' => $stoken, 'tokenArgs' => $tokenArgs));
+   return array('result' => true, 'sToken' => $stoken, 'tokenArgs' => $tokenArgs);
 }
 
 
@@ -427,10 +427,28 @@ function createAttempt($request, $db) {
 }
 
 
-function autoSelectedAttempt($request, $db) {
-   // TODO :: temporary hook to update users_items
+function selectAttempt($request, $db) {
+   // Select an attempt
+   global $config;
+   $stmt = $db->prepare("UPDATE users_items SET idAttemptActive = :idAttempt WHERE idUser = :idUser AND idItem = :idItem;");
+   $stmt->execute(['idAttempt' => $request['idAttempt'], 'idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
    Listeners::computeAllUserItems($db);
-   return ['result' => true];
+
+   $stmt = $db->prepare("SELECT * FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $request['idItem']]);
+   $item = ['data' => (object)$stmt->fetch()];
+   $item['data']->bGrayedAccess = false;
+   
+   $stmt = $db->prepare("SELECT * FROM users_items WHERE idUser = :idUser AND idItem = :idItem;");
+   $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
+   $userItem = ['data' => (object)$stmt->fetch()];
+
+   require_once __DIR__.'/../shared/syncUserItems.php';
+   require_once __DIR__."/../shared/TokenGenerator.php";
+   $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+   @generateUserItemToken($userItem, $tokenGenerator, $item);
+
+   return ['result' => true, 'token' => $userItem['data']->sToken];
 }
 
 
@@ -470,11 +488,11 @@ if ($request['action'] == 'askValidation') {
 } elseif ($request['action'] == 'graderResult' || $request['action'] == 'graderReturn') {
    graderResult($request, $db);
 } elseif ($request['action'] == 'getToken') {
-   getToken($request, $db);
+   echo json_encode(getToken($request, $db));
 } elseif ($request['action'] == 'createAttempt') {
    echo json_encode(createAttempt($request, $db));
-} elseif ($request['action'] == 'autoSelectedAttempt') {
-   echo json_encode(autoSelectedAttempt($request, $db));
+} elseif ($request['action'] == 'selectAttempt') {
+   echo json_encode(selectAttempt($request, $db));
 } elseif ($request['action'] == 'keepState') {
    echo json_encode(keepState($request, $db));
 }
