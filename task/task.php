@@ -448,7 +448,7 @@ function selectAttempt($request, $db) {
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    @generateUserItemToken($userItem, $tokenGenerator, $item);
 
-   return ['result' => true, 'token' => $userItem['data']->sToken];
+   return ['result' => true, 'sToken' => $userItem['data']->sToken];
 }
 
 

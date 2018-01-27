@@ -374,6 +374,7 @@ angular.module('algorea')
          $scope.user_item.sAnswer = '';
       }
       $scope.user_item.idAttemptActive = attemptId;
+      ModelsManager.updated('users_items', $scope.user_item.ID, 'noSync');
       $scope.apiRequest('selectAttempt', {idAttempt: attemptId}, function(res) {
          $scope.user_item.sToken = res.sToken;
          $rootScope.$broadcast('algorea.attemptChanged');
