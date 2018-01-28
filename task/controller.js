@@ -436,6 +436,15 @@ angular.module('algorea')
          }, true);
    };
 
+   $scope.teamUsers = null;
+   $scope.getTeamUsers = function() {
+      if($scope.teamUsers || !$scope.item.bHasAttempts) { return; }
+      $scope.apiRequest('getTeamUsers', {}, function(res) {
+         $scope.teamUsers = res.teamUsers;
+         });
+   };
+   $scope.getTeamUsers();
+
    $scope.manualSync = function() {
       SyncQueue.planToSend(0);
       $scope.manualSyncDisabled = true;

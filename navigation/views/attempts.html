@@ -3,8 +3,8 @@
   <ul>
     <li ng-repeat="attempt in item.groups_attempts | orderObjectBy:'iOrder'">
       Tentative n°{{ attempt.iOrder }}, créée par
-      {{ attempt.user.sLogin }}
-      <span ng-if="attempt.user.sFirstName || attempt.user.sLastName">({{ attempt.user.sFirstName }} {{ attempt.user.sLastName }})</span>
+      {{ teamUsers[attempt.idUserCreator].sLogin }}
+      <span ng-if="teamUsers[attempt.idUserCreator].sFirstName || teamUsers[attempt.idUserCreator].sLastName">({{ teamUsers[attempt.idUserCreator].sFirstName }} {{ teamUsers[attempt.idUserCreator].sLastName }})</span>
       <button ng-hide="attempt.ID == user_item.idAttemptActive" class="btn btn-default btn-xs" ng-click="selectAttempt(attempt.ID);">Sélectionner</button>
       <b ng-show="attempt.ID == user_item.idAttemptActive">(active)</b>
       <button ng-show="attempt.ID == user_item.idAttemptActive" class="btn btn-primary" ng-click="selectTab('task');">Accéder à l'énoncé</button>

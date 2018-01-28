@@ -335,24 +335,24 @@ function getAllLevels ($params, &$requests){
 
 // only fetch public infos if not self
 function filterUsers(&$requests) {
-/*   $requests['users']['model']['filters']['me'] = array(
+   $requests['users']['model']['filters']['me'] = array(
       "joins" => array(),
       "condition"  => "(`[PREFIX]users`.`ID` = :[PREFIX_FIELD]me)",
       "readOnly" => true
    );
-   $requests['users']['filters']['me'] = $_SESSION['login']['ID'];*/
-   $requests['users']['filters']['meAndTeams'] = ['values' => ['id' => $_SESSION['login']['ID'], 'idGroup' => $_SESSION['login']['idGroupSelf']]];
+   $requests['users']['filters']['me'] = $_SESSION['login']['ID'];
+#   $requests['users']['filters']['meAndTeams'] = ['values' => ['id' => $_SESSION['login']['ID'], 'idGroup' => $_SESSION['login']['idGroupSelf']]];
 # Uncomment if you want all users but keeping private things private
-   static $privateFields = array('sEmail', 'sCountryCode', 'sTimeZone', 'sBirthDate', 'iGraduationYear', 'iGrade', 'sSex', 'sAddress', 'sZipcode', 'sCity', 'sLandLineNumber', 'sCellPhoneNumber', 'sDefaultLanguage', 'sFreeText', 'sWebSite', 'idUserGodfather');
-   foreach($requests['users']['model']['fields'] as $fieldName => &$field) {
-      if ($fieldName == 'sFirstName') {
-            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicFirstName`, `sFirstName`, NULL)');
-      } elseif ($fieldName == 'sLastName') {
-            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicLastName`, `sLastName`, NULL)');
-      } elseif(in_array($fieldName, $privateFields)) {
-            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].', `users`.`'.$fieldName.'`, NULL)');
-      }
-   }
+#   static $privateFields = array('sEmail', 'sCountryCode', 'sTimeZone', 'sBirthDate', 'iGraduationYear', 'iGrade', 'sSex', 'sAddress', 'sZipcode', 'sCity', 'sLandLineNumber', 'sCellPhoneNumber', 'sDefaultLanguage', 'sFreeText', 'sWebSite', 'idUserGodfather');
+#   foreach($requests['users']['model']['fields'] as $fieldName => &$field) {
+#      if ($fieldName == 'sFirstName') {
+#            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicFirstName`, `sFirstName`, NULL)');
+#      } elseif ($fieldName == 'sLastName') {
+#            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].' OR `bPublicLastName`, `sLastName`, NULL)');
+#      } elseif(in_array($fieldName, $privateFields)) {
+#            $field = array('sql' => 'IF (`users`.`ID` = '.$_SESSION['login']['ID'].', `users`.`'.$fieldName.'`, NULL)');
+#      }
+#   }
 }
 
 function setupExpandedItemsRequests($params, &$requests) {

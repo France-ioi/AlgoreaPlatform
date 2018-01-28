@@ -19,8 +19,8 @@
           <span ng-if="answer.sType == 'Current'">réponse courante</span>
         </td>
         <td>
-          {{ answer.user.sLogin }}
-          <span ng-if="answer.user.sFirstName || answer.user.sLastName">({{ answer.user.sFirstName }} {{ answer.user.sLastName }})</span> 
+          {{ teamUsers[answer.idUser].sLogin }}
+          <span ng-if="teamUsers[answer.idUser].sFirstName || teamUsers[answer.idUser].sLastName">({{ teamUsers[answer.idUser].sFirstName }} {{ teamUsers[answer.idUser].sLastName }})</span> 
         </td>
         <td><button class="btn btn-default btn-sm" ng-click="loadAnswer(answer);">Recharger</button></td>
       </tr>

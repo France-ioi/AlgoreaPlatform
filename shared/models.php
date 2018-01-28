@@ -898,9 +898,6 @@ $viewsModels = array(
         "groupAncestersOwned" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupOwned", "srcTable" => "users", "dstTable" => "groups_ancestors"),
         "groupAncestorsSelf" => array("dstField" => "idGroupAncestor", "srcField" => "idGroupSelf", "srcTable" => "users", "dstTable" => "groups_ancestors"),
         "groupInvitedSelf" => array("dstField" => "idGroupChild", "srcField" => "idGroupSelf", "srcTable" => "users", "dstTable" => "groups_groups"),
-        "groups_groups" => array("srcTable" => "users", "dstTable" => "groups_groups", "srcField" => "idGroupSelf", "dstField" => "idGroupChild"),
-        "groups" => array("srcTable" => "groups_groups", "dstTable" => "groups", "srcField" => "idGroupParent", "dstField" => "ID"),
-        "myTeams" => array("srcTable" => "groups_groups", "dstTable" => "groups_groups", "srcField" => "idGroupParent", "dstField" => "idGroupParent"),
       ),
       "fields" => array(
           "sLogin"                => array(),
@@ -948,10 +945,6 @@ $viewsModels = array(
             "joins" => array("groupInvitedSelf"),
             "condition"  => '`[PREFIX]groupInvitedSelf`.`idGroupParent` = :[PREFIX_FIELD]idGroup',
          ),
-         "meAndTeams" => array(
-            "joins" => array("groups_groups", "groups", "myTeams"),
-            "condition" => "(`[PREFIX]myTeams`.`idGroupChild` = :[PREFIX_FIELD]idGroup AND `[PREFIX]groups`.`sType` = 'Team') OR `[PREFIX]users`.`ID` = :[PREFIX_FIELD]id",
-         ),            
       ),
    ),
    "users_answers" => array(

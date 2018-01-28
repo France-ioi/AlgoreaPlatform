@@ -481,6 +481,23 @@ function keepState($request, $db) {
 }
 
 
+function getTeamUsers($request, $db) {
+   // Get users belonging to a team in common
+   $stmt = $db->prepare("
+      SELECT users.ID, users.sLogin, users.sFirstName, users.sLastName
+      FROM users
+      JOIN groups_groups ON groups_groups.idGroupChild = users.idGroupSelf
+      JOIN (SELECT gt.ID FROM groups AS gt JOIN groups_groups AS ggteams ON gt.ID = ggteams.idGroupParent WHERE ggteams.idGroupChild = :idGroupSelf AND gt.sType = 'Team') AS teams ON teams.ID = groups_groups.idGroupParent");
+   $stmt->execute(['idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+
+   $users = [];
+   while($user = $stmt->fetch()) {
+      $users[$user['ID']] = $user;
+   }
+   return ['result' => true, 'teamUsers' => $users];
+}
+
+
 if ($request['action'] == 'askValidation') {
    askValidation($request, $db);
 } elseif ($request['action'] == 'askHint') {
@@ -495,4 +512,6 @@ if ($request['action'] == 'askValidation') {
    echo json_encode(selectAttempt($request, $db));
 } elseif ($request['action'] == 'keepState') {
    echo json_encode(keepState($request, $db));
+} elseif ($request['action'] == 'getTeamUsers') {
+   echo json_encode(getTeamUsers($request, $db));
 }
