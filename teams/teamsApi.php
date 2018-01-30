@@ -175,6 +175,38 @@ function canResetQualificationState() {
    return false;
 }
 
+function generateUserItems($team) {
+   // Generate all user_items for a team
+   global $db;
+
+   // Set all users_items to be computed for this team
+   $stmt = $db->prepare("
+      UPDATE users_items
+      JOIN users ON users_items.idUser = users.ID
+      JOIN groups_groups ON groups_groups.idGroupChild = users.idGroupSelf
+      JOIN items_ancestors ON users_items.idItem = items_ancestors.idItemChild
+      SET sAncestorsComputationState = 'todo'
+      WHERE groups_groups.idGroupParent = :idGroup AND items_ancestors.idItemAncestor = :idItem;");
+   $stmt->execute(['idGroup' => $team['ID'], 'idItem' => $team['idTeamItem']]);
+
+   $stmt = $db->prepare("
+      SELECT users.ID as idUser, items_ancestors.idItemChild as idItem
+      FROM users
+      JOIN groups_groups ON groups_groups.idGroupChild = users.idGroupSelf
+      JOIN items_ancestors
+      WHERE groups_groups.idGroupParent = :idGroup AND items_ancestors.idItemAncestor = :idItem;");
+   $stmt->execute(['idGroup' => $team['ID'], 'idItem' => $team['idTeamItem']]);
+
+   while($res = $stmt->fetch()) {
+      // Pretty inefficient but necessary because of getRandomID()
+      $stmt2 = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`, `sAncestorsComputationState`) VALUES (:ID, :idUser, :idItem, 'todo');");
+      $stmt2->execute(['ID' => getRandomID(), 'idUser' => $res['idUser'], 'idItem' => $res['idItem']]);
+   }
+
+   Listeners::computeAllUserItems($db);
+}
+
+
 
 // *** Functions handling requests
 
@@ -267,7 +299,7 @@ function joinTeam($request) {
    if($res) {
       $team = getUserTeam($request['idItem'], true, $res['ID']);
       // Check requirements
-      if($res['iTeamParticipating']) {
+      if($team['iTeamParticipating']) {
          $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
          if(!$req['result']) { return $req; }
       }
@@ -277,6 +309,8 @@ function joinTeam($request) {
       $stmt->execute(['idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idGroup' => $team['ID']]);
 
       Listeners::groupsGroupsAfter($db);
+
+      generateUserItems($team);
 
       // Send back information about the team
       return ['result' => true, 'team' => getUserTeam($request['idItem'], true)];
@@ -299,7 +333,7 @@ function startItem($request) {
    }
 
    // Check requirements
-   $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
+   $req = checkRequirements($team, $request['idItem']);
    if(!$req['result']) { return $req; }
 
    // Grant access to the item
@@ -310,8 +344,9 @@ function startItem($request) {
    // Update team participation status
    $stmt = $db->prepare('UPDATE groups SET iTeamParticipating = 1 WHERE ID = :id;');
    $stmt->execute(['id' => $team['ID']]);
-
    $team['iTeamParticipating'] = 1;
+
+   generateUserItems($team);
 
    return ['result' => true, 'team' => $team];
 }
