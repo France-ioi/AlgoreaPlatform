@@ -271,9 +271,15 @@ function askHint($request, $db) {
    }
 
    // Update users_items with the hint request
-   $query = "UPDATE `users_items` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
-   $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested)));
+   $query = "UPDATE `users_items` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem";
+   if($params['idAttempt']) {
+      $query .= " AND idAttemptActive = :idAttempt";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested), 'idAttempt' => $params['idAttempt']));
+   } else {
+      $stmt = $db->prepare($query);
+      $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested)));
+   }
    unset($stmt);
 
    Listeners::GroupsAttemptsAfter($db);
