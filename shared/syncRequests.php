@@ -569,7 +569,6 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
             //unset($requests['groups']);
             //unset($requests['groups_groups']);
             getItemsFromAncestors($params, $requests, $db, $minServerVersion);
-            error_log(json_encode(array_keys($requests)));
             unset($requests['groups_items']);
             break;
          case 'expandedItems':

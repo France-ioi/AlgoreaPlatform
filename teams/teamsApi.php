@@ -179,6 +179,36 @@ function generateUserItems($team) {
    // Generate all user_items for a team
    global $db;
 
+   // * Generate missing attempts
+   // Fetch attempts
+   $attemptsIds = [];
+   $stmt = $db->prepare("SELECT ID, idItem FROM groups_attempts WHERE idGroup = :idGroup;");
+   $stmt->execute(['idGroup' => $team['ID']]);
+   while($res = $stmt->fetch()) {
+      $attemptsIds[$res['idItem']] = $res['ID'];
+   }
+
+   // Fetch list of items which have attempts
+   $stmt = $db->prepare("
+      SELECT items.ID
+      FROM items
+      JOIN items_ancestors ON items_ancestors.idItemChild = items.ID
+      WHERE items.bHasAttempts = 1 AND items_ancestors.idItemAncestor = :idItem;");
+   $stmt->execute(['idItem' => $team['idTeamItem']]);
+
+   // Generate missing attempts
+   while($res = $stmt->fetch()) {
+      if(!isset($attemptsIds[$res['ID']])) {
+         // Attempt is missing, create one
+         $newId = getRandomId();
+         $stmt2 = $db->prepare("INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, 1);");
+         $stmt2->execute(['id' => $newId, 'idGroup' => $team['ID'], 'idItem' => $res['ID'], 'idUser' => $_SESSION['login']['ID']]);
+         $attemptsIds[$res['ID']] = $newId;
+      }
+   }
+
+
+   // * Generate missing users_items
    // Set all users_items to be computed for this team
    $stmt = $db->prepare("
       UPDATE users_items
@@ -189,6 +219,7 @@ function generateUserItems($team) {
       WHERE groups_groups.idGroupParent = :idGroup AND items_ancestors.idItemAncestor = :idItem;");
    $stmt->execute(['idGroup' => $team['ID'], 'idItem' => $team['idTeamItem']]);
 
+   // Create missing user_items
    $stmt = $db->prepare("
       SELECT users.ID as idUser, items_ancestors.idItemChild as idItem
       FROM users
@@ -199,13 +230,12 @@ function generateUserItems($team) {
 
    while($res = $stmt->fetch()) {
       // Pretty inefficient but necessary because of getRandomID()
-      $stmt2 = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`, `sAncestorsComputationState`) VALUES (:ID, :idUser, :idItem, 'todo');");
-      $stmt2->execute(['ID' => getRandomID(), 'idUser' => $res['idUser'], 'idItem' => $res['idItem']]);
+      $stmt2 = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`, `idAttemptActive`, `sAncestorsComputationState`) VALUES (:ID, :idUser, :idItem, :idAttempt, 'todo');");
+      $stmt2->execute(['ID' => getRandomID(), 'idUser' => $res['idUser'], 'idItem' => $res['idItem'], 'idAttempt' => $attemptsIds[$res['idItem']]]);
    }
 
    Listeners::computeAllUserItems($db);
 }
-
 
 
 // *** Functions handling requests

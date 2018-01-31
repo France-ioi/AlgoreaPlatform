@@ -397,7 +397,7 @@ angular.module('algorea')
             $timeout(function() { loadTask(scope, elem, sameUrl);});
          }
          if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Course')) {
-            if(scope.item.bHasAttempts && !scope.user_item.attempt) {
+            if(scope.item.bHasAttempts && !scope.user_item.idAttemptActive) {
                // Create an attempt first
                scope.attemptAutoSelected = true;
                scope.autoSelectAttempt();
