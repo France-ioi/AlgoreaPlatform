@@ -45,14 +45,12 @@ class Listeners {
                 users_items.bValidated = GREATEST(users_items.bValidated, IFNULL(attempts_data.bValidated, 0))
             WHERE users_items.sAncestorsComputationState = 'processing';";
          $db->exec($updateAttemptsQuery);
+         $updateActiveAttemptQuery = "
+            UPDATE users_items
+            JOIN groups_attempts ON groups_attempts.ID = users_items.idAttemptActive
+            SET users_items.sHintsRequested = groups_attempts.sHintsRequested;";
+         $db->exec($updateActiveAttemptQuery);
          $stmtUpdateStr = 'update `users_items`
-                           left join
-                           (select attempt_user.ID as idUser, attempts.idItem as idItem, MAX(attempts.iScore) as iScore, MAX(attempts.bValidated) as bValidated
-                              from users AS attempt_user
-                              join groups_attempts AS attempts
-                              join groups_groups AS attempt_group ON attempts.idGroup = attempt_group.idGroupParent AND attempt_user.idGroupSelf = attempt_group.idGroupChild
-                              GROUP BY attempt_user.ID, attempts.idItem
-                           ) AS attempts_data ON attempts_data.idUser = users_items.idUser AND attempts_data.idItem = users_items.idItem
                            join
                            (select Max(children.sLastActivityDate) as sLastActivityDate, Sum(children.nbTasksTried) as nbTasksTried, Sum(children.nbTasksWithHelp) as nbTasksWithHelp, Sum(children.nbTasksSolved) as nbTasksSolved, Sum(bValidated) as nbChildrenValidated
                               from users_items as children
@@ -159,7 +157,8 @@ class Listeners {
    public static function GroupsAttemptsAfter($db) {
       syncDebug('GroupsAttemptsAfter', 'begin');
       // same as above: task.php handles it
-      //Listeners::computeAllUserItems($db);
+      Listeners::propagateAttempts($db);
+      Listeners::computeAllUserItems($db);
       syncDebug('GroupsAttemptsAfter', 'end');
    }
 

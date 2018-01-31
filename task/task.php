@@ -237,8 +237,13 @@ function askHint($request, $db) {
    createUserItemIfMissing($request['userItemId'], $params);
 
    // Get the previours hints requested JSON data
-   $stmt = $db->prepare("SELECT sHintsRequested FROM `users_items` WHERE idUser = :idUser AND idItem = :idItem;");
-   $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
+   if($params['idAttempt']) {
+      $stmt = $db->prepare("SELECT sHintsRequested FROM `groups_attempts` WHERE ID = :idAttempt;");
+      $stmt->execute(array('idAttempt' => $params['idAttempt']));
+   } else {
+      $stmt = $db->prepare("SELECT sHintsRequested FROM `users_items` WHERE idUser = :idUser AND idItem = :idItem;");
+      $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
+   }
    if($hintsRequested = $stmt->fetchColumn()) {
       try {
          $hintsRequested = json_decode($hintsRequested, true);
@@ -259,11 +264,19 @@ function askHint($request, $db) {
       $hintsRequested[] = $params['askedHint'];
    }
 
+   // Update groups_attempts with the hint request
+   if($params['idAttempt']) {
+      $stmt = $db->prepare("UPDATE `groups_attempts` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE ID = :idAttempt;");
+      $stmt->execute(array('idAttempt' => $params['idAttempt'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested)));
+   }
+
    // Update users_items with the hint request
    $query = "UPDATE `users_items` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested)));
    unset($stmt);
+
+   Listeners::GroupsAttemptsAfter($db);
    Listeners::UserItemsAfter($db);
 
    // Generate a new token
@@ -430,7 +443,7 @@ function createAttempt($request, $db) {
 function selectAttempt($request, $db) {
    // Select an attempt
    global $config;
-   $stmt = $db->prepare("UPDATE users_items SET idAttemptActive = :idAttempt WHERE idUser = :idUser AND idItem = :idItem;");
+   $stmt = $db->prepare("UPDATE users_items JOIN groups_attempts ON groups_attempts.ID = :idAttempt SET users_items.idAttemptActive = :idAttempt, users_items.sHintsRequested = groups_attempts.sHintsRequested, users_items.nbHintsCached = groups_attempts.nbHintsCached WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem;");
    $stmt->execute(['idAttempt' => $request['idAttempt'], 'idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
    Listeners::computeAllUserItems($db);
 
