@@ -48,7 +48,8 @@ class Listeners {
          $updateActiveAttemptQuery = "
             UPDATE users_items
             JOIN groups_attempts ON groups_attempts.ID = users_items.idAttemptActive
-            SET users_items.sHintsRequested = groups_attempts.sHintsRequested;";
+            SET users_items.sHintsRequested = groups_attempts.sHintsRequested
+            WHERE users_items.sAncestorsComputationState = 'processing';";
          $db->exec($updateActiveAttemptQuery);
          $stmtUpdateStr = 'update `users_items`
                            join
