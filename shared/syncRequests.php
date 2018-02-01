@@ -504,7 +504,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
          setupGroupsItemsRequests($requests);
          if(isset($requests['users_answers'])) {
             $requests["users_answers"]["filters"]["accessible"] = array(
-               'values' => array('idUser' => $_SESSION['login']['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']),
+               'values' => array('idUser' => $_SESSION['login']['ID']),
             );
          }
          $requests['users_answers']['readOnly'] = true;

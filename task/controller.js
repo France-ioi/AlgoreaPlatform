@@ -181,6 +181,9 @@ angular.module('algorea')
          this.showForum = (platformView == 'forum');
          this.showAttempts = (platformView == 'attempts');
          this.showHistory = (platformView == 'history');
+         if(this.showHistory) {
+            $scope.getHistory();
+         }
          if(this.showTask) {
             // View offered by the task
             var callbackFun = $scope.firstViewLoaded ? function() {} : $scope.load_answer_and_sync;
@@ -376,6 +379,7 @@ angular.module('algorea')
       $scope.user_item.idAttemptActive = attemptId;
       ModelsManager.updated('users_items', $scope.user_item.ID, 'noSync');
       $scope.apiRequest('selectAttempt', {idAttempt: attemptId}, function(res) {
+         $scope.getHistory();
          $scope.user_item.sToken = res.sToken;
          $rootScope.$broadcast('algorea.attemptChanged');
          }, true);
@@ -397,9 +401,18 @@ angular.module('algorea')
    };
 
    // Answers handling
-   $scope.getAnswers = function() {
-      $scope.apiRequest('getAnswers', {}, function(res) {
+   $scope.users_answers = {};
+   $scope.lastFetchedHistory = {};
+   $scope.getHistory = function(manual) {
+      var idAttempt = $scope.user_item.idAttemptActive;
+      if(!idAttempt ||
+         (!manual && $scope.lastFetchedHistory[idAttempt] && (new Date() - $scope.lastFetchedHistory[idAttempt]) < 300000)) {
+         // One non-manual refresh per 5 minutes
          return;
+      }
+      $scope.apiRequest('getHistory', {idAttempt: idAttempt}, function(res) {
+         $scope.users_answers[idAttempt] = res.history;
+         $scope.lastFetchedHistory[idAttempt] = new Date();
          });
    };
 
@@ -446,6 +459,7 @@ angular.module('algorea')
    $scope.getTeamUsers();
 
    $scope.manualSync = function() {
+      // TODO :: deprecated?
       SyncQueue.planToSend(0);
       $scope.manualSyncDisabled = true;
       $timeout(function() {

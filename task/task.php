@@ -500,6 +500,16 @@ function keepState($request, $db) {
 }
 
 
+function getHistory($request, $db) {
+   $stmt = $db->prepare("
+      SELECT users_answers.*
+      FROM users_answers
+      WHERE users_answers.idAttempt = :idAttempt");
+   $stmt->execute(['idAttempt' => $request['idAttempt']]);
+   return ['result' => true, 'history' => $stmt->fetchAll()];
+}
+
+
 function getTeamUsers($request, $db) {
    // Get users belonging to a team in common
    $stmt = $db->prepare("
@@ -531,6 +541,8 @@ if ($request['action'] == 'askValidation') {
    echo json_encode(selectAttempt($request, $db));
 } elseif ($request['action'] == 'keepState') {
    echo json_encode(keepState($request, $db));
+} elseif ($request['action'] == 'getHistory') {
+   echo json_encode(getHistory($request, $db));
 } elseif ($request['action'] == 'getTeamUsers') {
    echo json_encode(getTeamUsers($request, $db));
 }

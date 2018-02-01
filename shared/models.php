@@ -959,8 +959,6 @@ $viewsModels = array(
          "my_users_items" => array("srcTable" => "users_answers", "dstTable" => "users_items", "dstField" => "idItem", "srcField" => "idItem"),
          "other_users_items" => array("srcTable" => "users_answers", "dstTable" => "users_items", "dstField" => "idItem", "srcField" => "idItem"),
          "items" => array("srcTable" => "users_answers", "dstTable" => "items", "dstField" => "ID", "srcField" => "idItem"),
-         "groups_attempts" => array("srcTable" => "users_answers", "dstTable" => "groups_attempts", "srcField" => "idAttempt", "dstField" => "ID"),
-         "teamAttempts" => array("srcTable" => "groups_attempts", "dstTable" => "groups_groups", "srcField" => "idGroup", "dstField" => "idGroupParent")
       ),
       "fields" => array(
           "idUser"       => array(),
@@ -986,8 +984,8 @@ $viewsModels = array(
             "condition"  => '((`[PREFIX]groups_items`.`bCachedPartialAccess` = 1 OR `[PREFIX]groups_items`.`bCachedFullAccess` = 1 OR `[PREFIX]groups_items`.`bCachedAccessSolutions` = 1) AND `[PREFIX]selfGroupAncestors`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf)',
          ),
          "accessible" => array(
-            "joins" => array("groups_attempts", "teamAttempts"),
-            "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser OR `[PREFIX]teamAttempts`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf",
+            "joins" => array(),
+            "condition"  => "`[PREFIX]users_answers`.`idUser` = :[PREFIX_FIELD]idUser",
          ),
          "getMyUserItem" => array(
             "joins" => array("my_users_items"),
