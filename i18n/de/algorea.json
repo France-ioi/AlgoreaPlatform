@@ -329,6 +329,8 @@
     "groupCodePrompt_validation_failed": "Prüfung fehlgeschlagen",
     "groupCodePrompt_confirmation_request": "Dieser Gruppencode wird {{sTitle}} öffnen und deine Teilnahme direkt beginnen. Bitte bestätigen.",
     "groupCodePrompt_confirm": "Bestätigen",
+    "groupCodePrompt_participation_code": "Hier ist dein Teilnahmecode, mit dem du dich später erneut einloggen kannst: {{participation_code}}. Bitte schreibe den Teilnahmecode auf und bewahre ihn auf.",
+    "groupCodePrompt_open_login_module": "Fortfahren",
 
     "community": "Community",
     "community_accept": "Annehmen",
