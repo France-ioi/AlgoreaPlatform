@@ -84,15 +84,15 @@ angular.module('algorea')
          if(suffix == '-children-list') {
             return this.viewsBaseUrl+'children-list.html';
          }
-         if (type+suffix == 'task' || type+suffix=='course') {
-            var user_item = itemService.getUserItem(this.item);
-            if(this.item.groupCodeEnter) {
-                  return $rootScope.templatesPrefix+'groupCodePrompt/dialog.html';
-            } else {
-                  return this.viewsBaseUrl+'taskcourse.html';
-            }
+
+         var ts = type+suffix;
+         if (this.item.groupCodeEnter && (ts == 'task' || ts == 'course' || ts == 'chapter')) {
+            return $rootScope.templatesPrefix+'groupCodePrompt/dialog.html';
          }
-         return this.viewsBaseUrl+type+suffix+'.html';
+         if (ts == 'task' || ts == 'course') {
+            return this.viewsBaseUrl+'taskcourse.html';
+         }
+         return this.viewsBaseUrl+ts+'.html';
       };
       $scope.getSref = function(view) {
          return pathService.getSref(this.panel, this.depth, this.pathParams, this.relativePath, view);
