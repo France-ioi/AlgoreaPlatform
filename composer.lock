@@ -53,16 +53,16 @@
         },
         {
             "name": "beberlei/assert",
-            "version": "v2.8.1",
+            "version": "v2.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/assert.git",
-                "reference": "fd8dc8f6de4645ccf4d1a0b38a6b8fdaf2e8b337"
+                "reference": "2d555f72f3f4ff9e72a7bc17cb8a53c86737c8a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/assert/zipball/fd8dc8f6de4645ccf4d1a0b38a6b8fdaf2e8b337",
-                "reference": "fd8dc8f6de4645ccf4d1a0b38a6b8fdaf2e8b337",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/2d555f72f3f4ff9e72a7bc17cb8a53c86737c8a0",
+                "reference": "2d555f72f3f4ff9e72a7bc17cb8a53c86737c8a0",
                 "shasum": ""
             },
             "require": {
@@ -104,7 +104,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2017-11-30 13:25:15"
+            "time": "2018-01-25 13:33:16"
         },
         {
             "name": "fgrosse/phpasn1",
@@ -383,29 +383,29 @@
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.2.1",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "313250eab923e673a5c0c8f463f443ee79f4383f"
+                "reference": "aa2e3df188f0bfd87f7880cc880e906e99923580"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/313250eab923e673a5c0c8f463f443ee79f4383f",
-                "reference": "313250eab923e673a5c0c8f463f443ee79f4383f",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/aa2e3df188f0bfd87f7880cc880e906e99923580",
+                "reference": "aa2e3df188f0bfd87f7880cc880e906e99923580",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.0",
                 "paragonie/random_compat": "^1|^2",
-                "php": ">=5.6.0"
+                "php": "^5.6|^7.0"
             },
             "require-dev": {
                 "eloquent/liberator": "^2.0",
-                "eloquent/phony": "^0.14.1",
-                "jakub-onderka/php-parallel-lint": "~0.9",
-                "phpunit/phpunit": "^5.0",
-                "squizlabs/php_codesniffer": "^2.0"
+                "eloquent/phony-phpunit": "^1.0|^3.0",
+                "jakub-onderka/php-parallel-lint": "^0.9.2",
+                "phpunit/phpunit": "^5.7|^6.0",
+                "squizlabs/php_codesniffer": "^2.3|^3.0"
             },
             "type": "library",
             "extra": {
@@ -446,7 +446,7 @@
                 "oauth2",
                 "single sign on"
             ],
-            "time": "2017-04-25 14:43:14"
+            "time": "2018-01-13 05:27:58"
         },
         {
             "name": "mdanter/ecc",
@@ -1013,16 +1013,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296"
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/78be803ce01e55d3491c1397cf1c64beb9c1b63b",
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b",
                 "shasum": ""
             },
             "require": {
@@ -1034,7 +1034,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
@@ -1068,7 +1068,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-10-11 12:05:26"
+            "time": "2018-01-30 19:27:44"
         }
     ],
     "packages-dev": [],

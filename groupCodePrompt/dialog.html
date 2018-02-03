@@ -14,7 +14,9 @@
         <button ng-click="enter()" ng-diabled="loading" class="btn btn-default" ng-i18next="groupCodePrompt_confirm"></button>
     </div>
     <div ng-if="code.valid && account.created" class="form">
-        <p ng-i18next="[i18next]({participation_code: account.participation_code})groupCodePrompt_participation_code"></p>
+        <p ng-i18next="groupCodePrompt_participation_code"></p>
+        <h2>{{account.participation_code}}</h2>
+        <p ng-i18next="groupCodePrompt_participation_code_note"></p>
         <button ng-click="openLoginModule()" ng-diabled="loading" class="btn btn-default" ng-i18next="groupCodePrompt_open_login_module"></button>
     </div>
     <div class="alert alert-danger" ng-if="error">{{error}}</div>
