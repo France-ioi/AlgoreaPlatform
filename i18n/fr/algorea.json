@@ -331,6 +331,9 @@
     "groupCodePrompt_validation_failed": "Validation échouée",
     "groupCodePrompt_confirmation_request": "Ce code de groupe va ouvrir {{sTitle}} et démarrer votre participation. Veuillez confirmer.",
     "groupCodePrompt_confirm": "Confirmer",
+    "groupCodePrompt_participation_code": "Here is your participation code, so that you can come back later:",
+    "groupCodePrompt_participation_code_note": "Please write it down and keep it safely.",
+    "groupCodePrompt_open_login_module": "Continue",
 
     "community": "Communauté",
     "community_accept": "accepter",

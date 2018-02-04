@@ -90,31 +90,45 @@ try {
         case 'create':
             $prefix = getNewPrefix($prefix);
             $amount = isset($request['amount']) ? (int) $request['amount'] : 0;
-            if(!$amount || $amount > 50) {
-                throw new Exception('Number of users in group must be 1..50');
-            }
+            $postfix_length = isset($request['postfix_length']) ? (int) $request['postfix_length'] : 0;
+            $password_length = isset($request['password_length']) ? (int) $request['password_length'] : 0;
             $group_id = isset($request['group_id']) ? (int) $request['group_id'] : 0;
             if(!$group_id) {
                 throw new Exception('Wrong grop id');
             }
-            $res = [
+            $res = $manager->create([
                 'prefix' => $prefix,
-                'accounts' => $manager->create([
+                'amount' => $amount,
+                'login_fixed' => true,
+                'postfix_length' => $postfix_length,
+                'password_length' => $password_length
+            ]);
+            if($res && $res['success']) {
+                foreach($res['data'] as $external_user) {
+                    $user_helper = new UserHelperClass($db);
+                    $user = $user_helper->createUser($external_user);
+                    $user_helper->addUserToGroup($user['idGroupSelf'], $group_id);
+                }
+                $res = [
                     'prefix' => $prefix,
-                    'amount' => $amount,
-                    'login_fixed' => true
-                ])
-            ];
-            foreach($res['accounts'] as $external_user) {
-                $user_helper = new UserHelperClass($db);
-                $user = $user_helper->createUser($external_user);
-                $user_helper->addUserToGroup($user['idGroupSelf'], $group_id);
+                    'accounts' => $res['data']
+                ];
+            } else {
+                throw new Exception(
+                    $res && isset($res['error']) ? $res['error'] : 'Login module not responding'
+                );
             }
             break;
         case 'delete':
             $res = $manager->delete([
                 'prefix' => $prefix
             ]);
+            if(!$res || !$res['success']) {
+                throw new Exception(
+                    $res && isset($res['error']) ? $res['error'] : 'Login module not responding'
+                );
+            }
+            $res = null;
             deleteUsersByPrefix($prefix);
             break;
         default:
@@ -125,7 +139,7 @@ try {
         'data' => $res
     ]);
 } catch(Exception $e) {
-    http_response_code(400);
+    //http_response_code(400);
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()

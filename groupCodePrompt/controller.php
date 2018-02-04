@@ -36,12 +36,19 @@ function enterGroup($group) {
     if($_SESSION['login']['tempUser']) {
         $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
         $manager = $client->getAccountsManager();
-        $external_users = $manager->create([
+        $res = $manager->create([
             'prefix'=> LOGIN_PREFIX,
+            'postfix_length' => 8,
             'amount' => 1,
             'auto_login' => true,
             'participation_code' => true
         ]);
+        //print_r($external_users);die();
+        if(!$res || !$res['success']) {
+            throw new Exception('Server error');
+        }
+        $external_users = $res['data'];
+
         $user = $user_helper->createUser($external_users[0]);
         $_SESSION['login']['ID'] = $user['ID'];
         $_SESSION['login']['idGroupSelf'] = $user['idGroupSelf'];
