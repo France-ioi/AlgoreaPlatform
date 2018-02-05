@@ -18,10 +18,6 @@ $auth_params = [
     'locale' => isset($_GET['locale']) ? $_GET['locale'] : $config->shared->domains['default']->defaultLanguage
 ];
 $groupCodeEnter = isset($_SESSION['groupCodeEnter']) ? $_SESSION['groupCodeEnter'] : null;
-if($_SESSION['login']['ID'] != $groupCodeEnter['idUser']) {
-    unset($_SESSION['groupCodeEnter']);
-    $groupCodeEnter = null;
-}
 if($groupCodeEnter && is_array($groupCodeEnter['login_module_params'])) {
     $auth_params = array_merge($auth_params, $groupCodeEnter['login_module_params']);
 }

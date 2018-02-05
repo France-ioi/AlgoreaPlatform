@@ -12,9 +12,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $groupCodeEnter = isset($_SESSION['groupCodeEnter']) ? $_SESSION['groupCodeEnter'] : null;
 unset($_SESSION['groupCodeEnter']);
-if(isset($_SESSION['login']) && is_array($_SESSION['login']) && $_SESSION['login']['ID'] != $groupCodeEnter['idUser']) {
-    $groupCodeEnter = null;
-}
 
 ob_start();
 
@@ -26,7 +23,7 @@ try {
     $params = remapUserArray($user);
     createUpdateUser($db, $params);
     $user_helper = new UserHelperClass($db);
-    if($groupCodeEnter) {
+    if($groupCodeEnter && $_SESSION['login']['loginId'] == $groupCodeEnter['idUser']) {
         $user_helper->addUserToGroup(
             $_SESSION['login']['idGroupSelf'],
             $groupCodeEnter['idGroup']

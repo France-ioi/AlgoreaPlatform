@@ -43,19 +43,10 @@ function enterGroup($group) {
             'auto_login' => true,
             'participation_code' => true
         ]);
-        //print_r($external_users);die();
         if(!$res || !$res['success']) {
             throw new Exception('Server error');
         }
         $external_users = $res['data'];
-
-        $user = $user_helper->createUser($external_users[0]);
-        $_SESSION['login']['ID'] = $user['ID'];
-        $_SESSION['login']['idGroupSelf'] = $user['idGroupSelf'];
-        $_SESSION['login']['idGroupOwned'] = $user['idGroupOwned'];
-        $_SESSION['login']['bIsAdmin'] = false;
-        $_SESSION['login']['tempUser'] = 0;
-        $_SESSION['login']['loginId'] = $external_users[0]['id'];
 
         $_SESSION['groupCodeEnter'] = [
             'login_module_params' => [
@@ -63,7 +54,7 @@ function enterGroup($group) {
                 'auto_login_token' => $external_users[0]['auto_login_token']
             ],
             'idGroup' => $group['ID'],
-            'idUser' => $user['ID']
+            'idUser' => $external_users[0]['id']
         ];
         return [
             'status' => 'account_created',

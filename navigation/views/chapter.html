@@ -7,4 +7,5 @@
     <div ng-if="!item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-list.html'"></div>
     <div ng-if="item.sTeamMode" style="height: 48px;"></div>
     <div ng-if="item.sTeamMode" ng-include="templatesPrefix+'teams/teams.html'"></div>
+    <div ng-if="item.groupCodeEnter" ng-include="templatesPrefix+'groupCodePrompt/dialog.html'"></div>
 </div>

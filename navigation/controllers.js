@@ -86,9 +86,6 @@ angular.module('algorea')
          }
 
          var ts = type+suffix;
-         if (this.item.groupCodeEnter && (ts == 'task' || ts == 'course' || ts == 'chapter')) {
-            return $rootScope.templatesPrefix+'groupCodePrompt/dialog.html';
-         }
          if (ts == 'task' || ts == 'course') {
             return this.viewsBaseUrl+'taskcourse.html';
          }

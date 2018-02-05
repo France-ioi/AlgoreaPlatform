@@ -81,7 +81,9 @@ angular.module('algorea')
         ).success(function(res) {
             $scope.loading = false;
             if(res.status == 'entered') {
-                location.href = res.redirect;
+                if(res.redirect) {
+                    location.href = res.redirect;
+                }
             } else if(res.status == 'account_created') {
                 $scope.account = {
                     created: true,
