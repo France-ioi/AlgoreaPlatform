@@ -208,13 +208,28 @@ function getGroups ($params, &$requests) {
       'modes' => array('insert' => true, 'update' => true, 'delete' => true),
    );
    $requests["groups"]['model']['fields']['idUser'] = array('readOnly' => true, 'modes' => array('select' => true), 'joins' => array('users'), 'sql' => '`users`.`ID`');
+
+   // Duplicate request to groups
+   $requests["groups_invitations_left"] = $requests["groups"];
+
    $requests["groups"]["model"]["filters"]["Mine"] = array(
       "joins" => array("myInvitationsLeft"),
-      "condition"  => "(`[PREFIX]myInvitationsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupSelf)",
+      "condition"  => "(`[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupOwned OR `[PREFIX]groups`.`ID` = :[PREFIX_FIELD]idGroupSelf)",
    );
    $requests["groups"]["filters"]["Mine"] = array(
       'values' => array(
          'idGroupOwned' => $_SESSION['login']['idGroupOwned'], // TODO: vérifier pour les tempUsers
+         'idGroupSelf'  => $_SESSION['login']['idGroupSelf'],
+      ),
+      'modes' => array('select' => true),
+   );
+
+   $requests["groups_invitations_left"]["model"]["filters"]["Mine"] = array(
+      "joins" => array("myInvitationsLeft"),
+      "condition"  => "`[PREFIX]myInvitationsLeft`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf",
+   );
+   $requests["groups_invitations_left"]["filters"]["Mine"] = array(
+      'values' => array(
          'idGroupSelf'  => $_SESSION['login']['idGroupSelf'],
       ),
       'modes' => array('select' => true),
