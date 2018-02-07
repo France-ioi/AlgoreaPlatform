@@ -38,6 +38,7 @@ function enterGroup($group) {
         $manager = $client->getAccountsManager();
         $res = $manager->create([
             'prefix'=> LOGIN_PREFIX,
+            'password_length' => 8,
             'postfix_length' => 8,
             'amount' => 1,
             'auto_login' => true,

@@ -160,10 +160,13 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
 
 
         function createHandler(handler) {
-          return function(user) {
+          return function(user, params) {
             popup && popup.close();
             if(user.result) {
               handler(user);
+              if(params && 'redirect' in params) {
+                location.href = params.redirect;
+              }
             } else {
               console.error(user.error);
             }
