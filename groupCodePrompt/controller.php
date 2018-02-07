@@ -38,12 +38,12 @@ function enterGroup($group) {
         $manager = $client->getAccountsManager();
         $res = $manager->create([
             'prefix'=> LOGIN_PREFIX,
+            'password_length' => 8,
             'postfix_length' => 8,
             'amount' => 1,
             'auto_login' => true,
             'participation_code' => true
         ]);
-        //print_r($external_users);die();
         if(!$res || !$res['success']) {
             throw new Exception('Server error');
         }

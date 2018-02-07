@@ -11,25 +11,45 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $groupCodeEnter = isset($_SESSION['groupCodeEnter']) ? $_SESSION['groupCodeEnter'] : null;
+$idGroup = $groupCodeEnter['idGroup'];
 unset($_SESSION['groupCodeEnter']);
 if(isset($_SESSION['login']) && is_array($_SESSION['login']) && $_SESSION['login']['ID'] != $groupCodeEnter['idUser']) {
-    $groupCodeEnter = null;
+    $idGroup = null;
 }
+$groupCodeEnter = null;
+
+
+function findGroupByCode($code) {
+    global $db;
+    $query = 'select * from `groups` where `sPassword` = :code limit 1';
+    $stmt = $db->prepare($query);
+    $stmt->execute([ 'code' => $code ]);
+    $group = $stmt->fetchObject();
+    return $group ? (array) $group : null;
+}
+
 
 ob_start();
 
+$onLoginParams = [];
 try {
     $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
     $authorization_helper = $client->getAuthorizationHelper();
     $authorization_helper->handleRequestParams($_GET);
     $user = $authorization_helper->queryUser();
+    $group = null;
+    if(!$idGroup && isset($user['platform_group_code'])) {
+        $group = findGroupByCode($user['platform_group_code']);
+        $idGroup = $group['ID'];
+        $onLoginParams['redirect'] = $group['sRedirectPath'];
+    }
     $params = remapUserArray($user);
     createUpdateUser($db, $params);
     $user_helper = new UserHelperClass($db);
-    if($groupCodeEnter) {
+    if($idGroup) {
         $user_helper->addUserToGroup(
             $_SESSION['login']['idGroupSelf'],
-            $groupCodeEnter['idGroup']
+            $idGroup
         );
     }
 } catch(Exception $e) {
@@ -41,7 +61,6 @@ try {
 
 $json_result = ob_get_contents();
 ob_end_clean();
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -49,7 +68,7 @@ ob_end_clean();
     <script type="text/javascript">
         var platform = window.opener ? window.opener : parent;
         if(platform && platform['__LoginModuleOnLogin']) {
-            platform.__LoginModuleOnLogin(<?=$json_result?>);
+            platform.__LoginModuleOnLogin(<?=$json_result?>,<?=json_encode($onLoginParams)?>);
         }
         window.close();
         if(!platform || platform === window) {
