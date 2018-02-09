@@ -233,14 +233,14 @@ angular.module('algorea')
             win.print();
             win.close();
             $scope.printing = false;
-        }, 10);
+        }, 50);
 
         setTimeout(function() {
             if(!interval) return;
             clearInterval(interval);
             $scope.printing = false;
             console.error('Print popup readyState error');
-        }, 2000);
+        }, 5000);
     }
 
     $scope.close = function () {

@@ -23,7 +23,8 @@ function deleteUsersByPrefix($prefix) {
     $prefix = $db->quote($prefix);
     $remover = new RemoveUsersClass($db, [
         'baseUserQuery' => 'FROM users WHERE sLogin LIKE '.$prefix,
-        'output' => false
+        'output' => false,
+        'delete_history' => false
     ]);
     $remover->execute();
 }
