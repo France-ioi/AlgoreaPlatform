@@ -8,7 +8,8 @@ class RemoveUsersClass {
         'baseUserQuery' => 'FROM users WHERE 0',
         'mode' => 'delete',
         'displayOnly' => false,
-        'output' => true
+        'output' => true,
+        'delete_history' => true
     ];
 
     public function __construct($db, $options) {
@@ -88,14 +89,17 @@ class RemoveUsersClass {
         $this->executeQuery("FROM `groups` WHERE ID IN (SELECT ID FROM $this->tmp_table)");
         $this->executeQuery($this->options['baseUserQuery']);
 
-        $this->removeHistory("users_threads");
-        $this->removeHistory("users_answers");
-        $this->removeHistory("users_items");
-        $this->removeHistory("groups_items");
-        $this->removeHistory("groups_groups");
-        $this->removeHistory("groups_ancestors");
-        $this->removeHistory("groups");
-        $this->removeHistory("users");
+        if($this->options['delete_history']) {
+            $this->removeHistory("users_threads");
+            $this->removeHistory("users_answers");
+            $this->removeHistory("users_items");
+            $this->removeHistory("groups_items");
+            $this->removeHistory("groups_groups");
+            $this->removeHistory("groups_ancestors");
+            $this->removeHistory("groups");
+            $this->removeHistory("users");
+        }
+
     }
 
 }
