@@ -23,8 +23,7 @@ function deleteUsersByPrefix($prefix) {
     $prefix = $db->quote($prefix);
     $remover = new RemoveUsersClass($db, [
         'baseUserQuery' => 'FROM users WHERE sLogin LIKE '.$prefix,
-        'output' => false,
-        'delete_history' => false
+        'output' => false
     ]);
     $remover->execute();
 }
@@ -89,6 +88,9 @@ try {
 
     switch($action) {
         case 'create':
+            if(preg_match("/^[a-z0-9-]+$/", $prefix) !== 1) {
+                throw new Exception('Prefix contain wrong character(s)');
+            }
             $prefix = getNewPrefix($prefix);
             $amount = isset($request['amount']) ? (int) $request['amount'] : 0;
             $postfix_length = isset($request['postfix_length']) ? (int) $request['postfix_length'] : 0;

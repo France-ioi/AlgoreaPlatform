@@ -9,7 +9,8 @@ require_once __DIR__."/RemoveUsersClass.php";
 $options = [
     'baseUserQuery' => "FROM users WHERE sLogin NOT IN ('usera', 'userb')",
     'mode' => 'count', // change this to 'delete' to start deletion
-    'displayOnly' => false
+    'displayOnly' => false,
+    'delete_history' => true
 ];
 /*** End of options ***/
 

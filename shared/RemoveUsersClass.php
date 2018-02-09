@@ -9,7 +9,7 @@ class RemoveUsersClass {
         'mode' => 'delete',
         'displayOnly' => false,
         'output' => true,
-        'delete_history' => true
+        'delete_history' => false
     ];
 
     public function __construct($db, $options) {
