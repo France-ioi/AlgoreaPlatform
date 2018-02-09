@@ -439,8 +439,6 @@ function removeTeamMember($request) {
 
    // Check requirements
    if($team['iTeamParticipating']) {
-      // TODO :: temporary
-      return ['result' => false, 'error' => "Quitter une équipe après avoir démarré l'épreuve n'est pas possible pour le moment. Veuillez réessayer plus tard."];
       $req = checkRequirements($team, $request['idItem'], $request['idGroupChild'], true);
       if(!$req['result']) { return $req; }
    }
@@ -449,6 +447,12 @@ function removeTeamMember($request) {
    $stmt->execute(['id' => $groupGroupID]);
    Listeners::groupsGroupsAfter($db);
 
+   // Handle groups_attempts, users_answers and users_items
+   $stmt = $db->prepare("SELECT ID FROM users WHERE idGroupSelf = :idGroup;");
+   $stmt->execute(['idGroup' => $request['idGroupChild']]);
+   removeMemberData($team, $stmt->fetchColumn(), $_SESSION['login']['ID']);
+
+   // Return new state of team
    $newChildren = [];
    foreach($team['children'] as $child) {
       if($child['idGroupChild'] != $request['idGroupChild']) {
@@ -462,6 +466,31 @@ function removeTeamMember($request) {
    return ['result' => true, 'team' => $team];
 }
 
+function removeMemberData($team, $oldUserId, $newUserId) {
+   // Unlink data when a member leaves a team
+   global $db;
+
+   // Delete users_items from the user
+   $stmt = $db->prepare("
+      DELETE users_items FROM users_items
+      JOIN items_ancestors ON users_items.idItem = items_ancestors.idItemChild
+      WHERE idUser = :idUser AND (users_items.idItem = :idItem OR items_ancestors.idItemAncestor = :idItem);");
+   $stmt->execute(['idUser' => $oldUserId, 'idItem' => $team['idTeamItem']]);
+
+   // Link groups_attempts and users_answers to the team leader
+   $stmt = $db->prepare("
+      UPDATE groups_attempts
+      SET idUserCreator = :idUserNew
+      WHERE idUserCreator = :idUserOld AND idGroup = :idGroup;");
+   $stmt->execute(['idUserOld' => $oldUserId, 'idUserNew' => $newUserId, 'idGroup' => $team['ID']]);
+
+   $stmt = $db->prepare("
+      UPDATE users_answers
+      JOIN items_ancestors ON users_answers.idItem = items_ancestors.idItemChild
+      SET idUser = :idUserNew
+      WHERE idUser = :idUserOld AND (users_answers.idItem = :idItem OR items_ancestors.idItemAncestor = :idItem);");
+   $stmt->execute(['idUserOld' => $oldUserId, 'idUserNew' => $newUserId, 'idItem' => $team['idTeamItem']]);
+}
 
 function leaveTeam($request) {
    // Leave a team
@@ -476,7 +505,6 @@ function leaveTeam($request) {
 
    // Check requirements
    if($team['iTeamParticipating']) {
-      return ['result' => false, 'error' => "Quitter une équipe après avoir démarré l'épreuve n'est pas possible pour le moment. Veuillez réessayer plus tard."];
       $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf'], true);
       if(!$req['result']) { return $req; }
    }
@@ -489,13 +517,13 @@ function leaveTeam($request) {
    $deleteGroupAfter = false;
    if($adminGroupGroup['idGroupParent'] == $_SESSION['login']['idGroupOwned']) {
       // User is owner of this group 
-      $stmt = $db->prepare("SELECT users.idGroupOwned FROM users JOIN groups_groups ON idGroupChild = users.idGroupSelf WHERE users.idGroupOwned != :idCurrentOwner and groups_groups.idGroupParent = :idGroup ORDER BY groups_groups.sStatusDate ASC LIMIT 1;");
+      $stmt = $db->prepare("SELECT users.ID, users.idGroupOwned FROM users JOIN groups_groups ON idGroupChild = users.idGroupSelf WHERE users.idGroupOwned != :idCurrentOwner and groups_groups.idGroupParent = :idGroup ORDER BY groups_groups.sStatusDate ASC LIMIT 1;");
       $stmt->execute(['idCurrentOwner' => $_SESSION['login']['idGroupOwned'], 'idGroup' => $team['ID']]);
-      $res = $stmt->fetch();
-      if($res) {
+      $newAdmin = $stmt->fetch();
+      if($newAdmin) {
          // Assign next oldest member as owner
-         $stmt = $db->prepare("INSERT IGNORE INTO groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroupOwned, :idGroup, 0, 'direct', 'owner', NOW());");
-         $stmt->execute(['idGroupOwned' => $_SESSION['login']['idGroupOwned'], 'idGroup' => $idGroup]);
+         $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroupOwned, :idGroup, 0, 'direct', 'owner', NOW());");
+         $stmt->execute(['idGroupOwned' => $newAdmin['idGroupOwned'], 'idGroup' => $team['ID']]);
       } else {
          // Last member leaving the team, delete the team
          $deleteGroupAfter = true;
@@ -514,6 +542,14 @@ function leaveTeam($request) {
       // Delete team
       $stmt = $db->prepare("DELETE FROM groups WHERE ID = :id;");
       $stmt->execute(['id' => $team['ID']]);
+   } else {
+      // Unlink data from us
+      if(!isset($newAdmin)) {
+         $stmt = $db->prepare("SELECT ID FROM users WHERE idGroupOwned = :idGroupOwned;");
+         $stmt->execute(['idGroupOwned' => $adminGroupGroup['idGroupParent']]);
+         $newAdmin = $stmt->fetch();
+      }
+      removeMemberData($team, $_SESSION['login']['ID'], $newAdmin['ID']);
    }
 
    Listeners::groupsGroupsAfter($db);

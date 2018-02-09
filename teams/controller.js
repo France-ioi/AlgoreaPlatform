@@ -89,7 +89,7 @@ angular.module('algorea')
 
       $scope.leaveTeam = function() {
          if(!confirm($i18next.t('teams_confirm_leave'))) { return; }
-         $scope.apiRequest('leaveTeam', null, false, function() {
+         $scope.apiRequest('leaveTeam', null, true, function() {
             $scope.team = null;
          });
       };
