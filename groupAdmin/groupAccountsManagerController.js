@@ -116,6 +116,7 @@ angular.module('algorea')
         var params = getCreateParams()
         if(!params) return;
 
+        $scope.error = null;
         accountsManagerRequest(params, function(data) {
             var item = ModelsManager.createRecord("groups_login_prefixes");
             item.idGroup = $scope.$parent.group.ID;
@@ -190,6 +191,7 @@ angular.module('algorea')
         var params = getDeleteParams()
         if(!params) return;
 
+        $scope.error = null;
         accountsManagerRequest(params, function(data) {
             ModelsManager.deleteRecord('groups_login_prefixes', params.id);
             SyncQueue.planToSend(0);
