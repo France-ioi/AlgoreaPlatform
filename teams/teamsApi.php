@@ -225,7 +225,8 @@ function generateUserItems($team) {
       FROM users
       JOIN groups_groups ON groups_groups.idGroupChild = users.idGroupSelf
       JOIN items_ancestors
-      WHERE groups_groups.idGroupParent = :idGroup AND items_ancestors.idItemAncestor = :idItem;");
+      JOIN items ON items_ancestors.idItemChild = items.ID
+      WHERE groups_groups.idGroupParent = :idGroup AND items_ancestors.idItemAncestor = :idItem AND items.bHasAttempts = 1;");
    $stmt->execute(['idGroup' => $team['ID'], 'idItem' => $team['idTeamItem']]);
 
    while($res = $stmt->fetch()) {
