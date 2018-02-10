@@ -8,6 +8,10 @@ class Listeners {
       $hasChanges = true;
       $groupsItemsChanged = false;
       while ($hasChanges) {
+         // Use a lock so that we don't execute the listener multiple times in parallel
+         $stmt = $db->query("SELECT GET_LOCK('listener_computeAllUserItems', 1);");
+         if($stmt->fetchColumn() != 1) { break; }
+
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
          $query = "UPDATE `users_items` as `parent`
             JOIN  (
@@ -51,6 +55,7 @@ class Listeners {
             SET users_items.sHintsRequested = groups_attempts.sHintsRequested
             WHERE users_items.sAncestorsComputationState = 'processing';";
          $db->exec($updateActiveAttemptQuery);
+
          $stmtUpdateStr = 'update `users_items`
                            join
                            (select Max(children.sLastActivityDate) as sLastActivityDate, Sum(children.nbTasksTried) as nbTasksTried, Sum(children.nbTasksWithHelp) as nbTasksWithHelp, Sum(children.nbTasksSolved) as nbTasksSolved, Sum(bValidated) as nbChildrenValidated
@@ -122,6 +127,9 @@ class Listeners {
          // Objects marked as 'processing' are now marked as 'done'
          $query = "UPDATE `users_items` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
          $hasChanges = ($db->exec($query) > 0);
+
+         // Release the lock
+         $db->query("SELECT RELEASE_LOCK('listener_computeAllUserItems');")->fetchColumn();
       }
 
       // If items have been unlocked, need to recompute access
@@ -132,6 +140,15 @@ class Listeners {
 
    public static function propagateAttempts($db) {
       // Propagate the data from an attempt to the user_items
+      // We use WRITE locks everywhere as MySQL doesn't propagate locks to
+      // triggers unless it's WRITE (even though the documentation says the
+      // opposite)
+      $db->exec("LOCK TABLES
+         users_items WRITE,
+         groups_attempts WRITE,
+         groups_groups WRITE,
+         users WRITE
+         ");
       $queryPropagate = "
          UPDATE users_items
          JOIN groups_attempts ON groups_attempts.idItem = users_items.idItem
@@ -145,6 +162,7 @@ class Listeners {
          SET sAncestorsComputationState = 'done'
          WHERE sAncestorsComputationState = 'todo';";
       $db->exec($queryEndPropagate);
+      $db->exec("UNLOCK TABLES");
    }
 
    public static function UserItemsAfter($db) {
