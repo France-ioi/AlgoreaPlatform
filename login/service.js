@@ -164,7 +164,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
             popup && popup.close();
             if(user.result) {
               handler(user);
-              if(params && 'redirect' in params) {
+              if(params && params['redirect']) {
                 location.href = params.redirect;
               }
             } else {
