@@ -41,7 +41,10 @@ try {
     if(!$idGroup && isset($user['platform_group_code'])) {
         $group = findGroupByCode($user['platform_group_code']);
         $idGroup = $group['ID'];
-        $onLoginParams['redirect'] = $group['sRedirectPath'];
+        $onLoginParams['redirect'] = $group['sRedirectPath'] ?
+            $group['sRedirectPath']
+            :
+            $config->shared->domains['current']->groupCodeAuthRedirect;
     }
     $params = remapUserArray($user);
     createUpdateUser($db, $params);

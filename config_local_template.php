@@ -78,6 +78,8 @@ $config->shared->domains['default']->ProgressRootItemId = "4026";
 $config->shared->domains['default']->OfficialContestRootItemId = "4006";
 // Default path when we arrive on the platform
 $config->shared->domains['default']->defaultPath = "/contents/4026/4020";
+// Default redirect path for group code auth (when groups.sRedirectPath is empty)
+$config->shared->domains['default']->groupCodeAuthRedirect = null;
 
 // Tabs on top of the UI
 // Each tab is an array with:
