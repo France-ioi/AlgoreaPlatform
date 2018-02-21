@@ -327,14 +327,14 @@
     "groupSubgroups_incorrect_names_array": "1..20 Untergruppennamen eingeben",
     "groupSubgroups_create_btn": "Erstellen",
 
-    "groupCodePrompt_auth_required": "Bitte log dich zunächst ein, falls du bereits einen Account hast!",
-    "groupCodePrompt_label": "Um dieses Element zu beginnen, kannst du einen Gruppencode eingeben, den du von deinem Lehrer bekommen hast.",
+    "groupCodePrompt_auth_required": "Falls du schon einen Account hast, logge dich bitte zuerst ein (oben rechts)!",
+    "groupCodePrompt_label": "Falls du einen Gruppencode von deiner Lehrerin oder deinem Lehrer bekommen hast, gib ihn hier ein. Danach wird dir ein Teilnahmecode angezeigt – den musst du dir unbedingt aufschreiben und aufheben!",
     "groupCodePrompt_validate": "Gruppencode prüfen",
     "groupCodePrompt_validation_failed": "Prüfung fehlgeschlagen",
     "groupCodePrompt_confirmation_request": "Dieser Gruppencode wird {{sTitle}} öffnen und deine Teilnahme direkt beginnen. Bitte bestätigen.",
     "groupCodePrompt_confirm": "Bestätigen",
     "groupCodePrompt_participation_code": "Hier ist dein Teilnahmecode, mit dem du dich später erneut einloggen kannst:",
-    "groupCodePrompt_participation_code_note": "Bitte schreibe den Teilnahmecode auf und bewahre ihn auf.",
+    "groupCodePrompt_participation_code_note": "Bitte schreibe den Teilnahmecode auf und bewahre ihn auf. Du benötigst ihn später, um deine Ergebnisse sehen zu können und um an den weiteren Runden des Wettbewerbs teilnehmen zu können.",
     "groupCodePrompt_open_login_module": "Fortfahren",
 
     "community": "Community",
