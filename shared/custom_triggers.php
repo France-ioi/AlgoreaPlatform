@@ -82,11 +82,15 @@ function addCustomTriggers(&$triggers) {
       "AND NEW.`bManagerAccess` <=> OLD.`bManagerAccess`".
       "AND NEW.`sAccessReason` <=> OLD.`sAccessReason`)".
       "THEN ".
-      "INSERT IGNORE INTO `groups_items_propagate` (ID, sPropagateAccess) VALUES(NEW.ID, 'self') ON DUPLICATE KEY UPDATE sPropagateAccess='self'; ".
+      "SET NEW.`sPropagateAccess` = 'self'; ".
       "END IF";
    $triggers["groups_items"]["BEFORE UPDATE"][] = $queryResetAccessNew;
    $triggers["groups_items"]["AFTER DELETE"][] = "DELETE FROM groups_items_propagate where ID = OLD.ID ";
+   // Can't use this trigger as some queries use groups_items_propagate when triggering an INSERT in groups_items
    //$triggers["groups_items"]["AFTER INSERT"][] = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, `sPropagateAccess`) VALUES (NEW.`ID`, 'self') ON DUPLICATE KEY UPDATE `sPropagateAccess`='self' ";
+   // So instead we use this one to make sure sPropagateAccess is at the right value
+   $triggers["groups_items"]["BEFORE INSERT"][] = "SET NEW.`sPropagateAccess`='self' ";
+
    $triggers["groups"]["AFTER DELETE"][] = "DELETE FROM groups_propagate where ID = OLD.ID ";
    $triggers["groups"]["AFTER INSERT"][] = "INSERT IGNORE INTO `groups_propagate` (`ID`, `sAncestorsComputationState`) VALUES (NEW.`ID`, 'todo') ";
    $triggers["items"]["AFTER DELETE"][] = "DELETE FROM items_propagate where ID = OLD.ID ";

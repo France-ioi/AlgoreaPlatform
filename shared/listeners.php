@@ -270,8 +270,11 @@ class Listeners {
       $queryInsertMissingPropagate = "INSERT IGNORE INTO `groups_items_propagate` (`ID`, `sPropagateAccess`) ".
                                     "SELECT `groups_items`.`ID`, 'self' as `sPropagateAccess` ".
                                     "FROM `groups_items` ".
-                                    "LEFT JOIN `groups_items_propagate` on `groups_items`.`ID` = `groups_items_propagate`.`ID` ".
-                                    "WHERE `groups_items_propagate`.`ID` IS NULL;";
+                                    "WHERE `sPropagateAccess`='self'".
+                                    "ON DUPLICATE KEY UPDATE `sPropagateAccess`='self';";
+
+      // Set groups_items as set up for propagation
+      $queryUpdatePropagateAccess = "UPDATE `groups_items` SET `sPropagateAccess`='done' WHERE `sPropagateAccess`='self';";
 
       // inserting missing children of groups_items marked as 'children'
       $queryInsertMissingChildren = "INSERT IGNORE INTO `groups_items` (`idGroup`, `idItem`, `idUserCreated`, `sCachedAccessReason`, `sAccessReason`) ".
@@ -346,6 +349,7 @@ class Listeners {
          $db->exec($queryLockTables);
          $res = $db->exec($queryInsertMissingChildren);
          $res = $db->exec($queryInsertMissingPropagate);
+         $res = $db->exec($queryUpdatePropagateAccess);
          $res = $db->exec($queryMarkDoNotPropagate);
          $res = $db->exec($queryMarkExistingChildren);
          $res = $db->exec($queryMarkFinishedItems);
