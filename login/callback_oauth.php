@@ -41,7 +41,7 @@ try {
     if(!$idGroup && isset($user['platform_group_code'])) {
         $group = findGroupByCode($user['platform_group_code']);
         $idGroup = $group['ID'];
-        $onLoginParams['redirect'] = $group['sRedirectPath'] ?
+        $onLoginParams['redirectPath'] = $group['sRedirectPath'] ?
             $group['sRedirectPath']
             :
             $config->shared->domains['current']->groupCodeAuthRedirect;
