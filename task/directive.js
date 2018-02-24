@@ -178,24 +178,6 @@ angular.module('algorea')
                   } else if (validateUserItemID != scope.user_item.ID) {
                      error('got validate from another task');
                   } else if (scope.item.sValidationType != 'Manual') {
-                     // Create the user_answer corresponding to this submission
-                     var newAnswer = ModelsManager.createRecord('users_answers');
-                     newAnswer.ID = postRes.answer.idUserAnswer;
-                     newAnswer.idItem = postRes.answer.idItemLocal;
-                     newAnswer.idUser = postRes.answer.idUser;
-                     newAnswer.idAttempt = postRes.answer.idAttempt;
-                     newAnswer.sAnswer = postRes.answer.sAnswer;
-                     newAnswer.sSubmissionDate = new Date();
-                     //ModelsManager.curData.users_answers[postRes.answer.idUserAnswer] = newAnswer;
-                     ModelsManager.insertRecord('users_answers', newAnswer, 'noSync');
-                     scope.user_answer = newAnswer;
-
-                     // Save the last_answer for reload if we come back to the item
-                     // We could also push it to item.user_answers (which is
-                     // not reloaded from ModelsManager) but then we would need
-                     // to change the sSubmissionDate to ModelsManager.now()
-                     scope.item.last_answer = newAnswer;
-
                      // Grade the task
                      scope.gradeTask(answer, postRes.sAnswerToken, validateUserItemID, function(validated) {
                         if (success) { success(); }
@@ -290,7 +272,6 @@ angular.module('algorea')
                   scope.user_item.bValidated = true;
                   scope.user_item.bKeyObtained = true;
                   scope.user_item.sValidationDate = new Date();
-                  scope.user_answer.sGradingDate = new Date();
                   if (config.domains.current.useMap) {
                      mapService.updateSteps();
                   }

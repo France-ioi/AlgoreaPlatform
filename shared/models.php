@@ -310,6 +310,7 @@ $tablesModels = array (
    ),
    "users_answers" => array(
       "autoincrementID" => true,
+      "hasHistory" => false,
       "fields" => array(
           "idUser"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
           "idItem"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),

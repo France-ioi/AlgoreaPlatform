@@ -517,12 +517,12 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       //unset($requests["groups_items"]);
       if ( ! $admin) {
          setupGroupsItemsRequests($requests);
-         if(isset($requests['users_answers'])) {
+/*         if(isset($requests['users_answers'])) {
             $requests["users_answers"]["filters"]["accessible"] = array(
                'values' => array('idUser' => $_SESSION['login']['ID']),
             );
          }
-         $requests['users_answers']['readOnly'] = true;
+         $requests['users_answers']['readOnly'] = true;*/
          $requests["filters"]["filters"]["accessible"] = array(
                'values' => array('idUser' => $_SESSION['login']['ID']),
             );
@@ -561,7 +561,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
       } else {
          //unset($requests["users_items"]);
          unset($requests["filters"]);
-         unset($requests["users_answers"]);
+//         unset($requests["users_answers"]);
          unset($requests["users_threads"]);
          unset($requests["threads"]);
          unset($requests["messages"]);
@@ -610,6 +610,7 @@ function getSyncRequests($params, $minServerVersion) {
    $contestData = adjustContestAndGetData();
    //echo json_encode($contestData);
    $requests = syncGetTablesRequests(null, false);
+   unset($requests['users_answers']);
    $requests['messages']['lowPriority'] = true;
    $requests['users_threads']['lowPriority'] = true;
    $requests['groups_groups']['lowPriority'] = true;

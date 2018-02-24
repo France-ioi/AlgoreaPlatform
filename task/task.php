@@ -527,6 +527,66 @@ function getTeamUsers($request, $db) {
 }
 
 
+function getUsersAnswers($request, $db) {
+   $thread = null;
+   if(isset($request['idThread']) && $request['idThread']) {
+      $stmt = $db->prepare("SELECT ID, idItem, idUserCreated FROM threads WHERE ID = :id;");
+      $stmt->execute(['id' => $request['idThread']]);
+      $thread = $stmt->fetch();
+      if(!$thread) {
+         return ['result' => false];
+      }
+      $idUser = $thread['idUserCreated'];
+      $idItem = $thread['idItem'];
+   } else {
+      $idUser = $request['idUser'];
+      $idItem = $request['idItem'];
+   }
+
+   if($idUser != $_SESSION['login']['ID']) {
+      if(!$thread) {
+         // Check user is admin of a group with that user
+         $query = "select groups_ancestors.ID from groups_ancestors join users on groups_ancestors.idGroupChild = users.idGroupSelf where groups_ancestors.idGroupAncestor = :idGroupOwned and users.ID = :idUser;";
+         $stmt = $db->prepare($query);
+         $stmt->execute([
+            'idGroupOwned' => $_SESSION['login']['idGroupOwned'],
+            'idUser' => $idUser
+         ]);
+         $test = $stmt->fetchColumn();
+         if (!$test) {
+            error_log('warning: user '.$_SESSION['login']['ID'].' tried to access users_answers for user '.$idUser.' without permission.');
+            return [];
+         }
+      }
+
+      // Checking if user can access this item; TODO :: maybe check descendants of groupOwned too?
+      $query = "SELECT users_items.ID, users_items.bValidated as bValidated, MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions
+      FROM users_items
+      JOIN groups_items on groups_items.idItem = :idItem
+      JOIN groups_ancestors as selfGroupAncestors on selfGroupAncestors.idGroupAncestor = groups_items.idGroup
+      WHERE users_items.idItem = :idItem and users_items.idUser = :idUser
+            AND (`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1 OR groups_items.bOwnerAccess = 1 OR groups_items.bManagerAccess = 1)
+            AND `selfGroupAncestors`.`idGroupChild` = :idGroupSelf
+      group by users_items.ID;";
+      $stmt = $db->prepare($query);
+      $stmt->execute([
+         'idUser' => $_SESSION['login']['ID'],
+         'idItem' => $idItem,
+         'idGroupSelf' => $_SESSION['login']['idGroupSelf']
+      ]);
+      $test = $stmt->fetch();
+      if (!$test || (!$test['bValidated'] && !$test['bAccessSolutions'])) {
+         error_log('warning: user '.$_SESSION['login']['ID'].' tried to access users_answers for item '.$idItem.' without permission.');
+         error_log(json_encode($test));
+         return ['result' => false];
+      }
+   }
+   $stmt = $db->prepare("SELECT * FROM users_answers WHERE idUser = :idUser AND idItem = :idItem;");
+   $stmt->execute(['idUser' => $idUser, 'idItem' => $idItem]);
+   return ['result' => true, 'usersAnswers' => $stmt->fetchAll()];
+}
+
+
 if ($request['action'] == 'askValidation') {
    askValidation($request, $db);
 } elseif ($request['action'] == 'askHint') {
@@ -545,4 +605,6 @@ if ($request['action'] == 'askValidation') {
    echo json_encode(getHistory($request, $db));
 } elseif ($request['action'] == 'getTeamUsers') {
    echo json_encode(getTeamUsers($request, $db));
+} elseif ($request['action'] == 'getUsersAnswers') {
+   echo json_encode(getUsersAnswers($request, $db));
 }

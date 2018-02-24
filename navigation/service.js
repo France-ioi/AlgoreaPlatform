@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .service('itemService', ['$rootScope', '$timeout', 'loginService', '$i18next', function($rootScope, $timeout, loginService, $i18next) {
+   .service('itemService', ['$rootScope', '$timeout', '$interval', '$http', 'loginService', '$i18next', function($rootScope, $timeout, $interval, $http, loginService, $i18next) {
     /*
      * Simple service providing items.
      */
@@ -16,6 +16,8 @@ angular.module('algorea')
       var newLogin = null;
       var intervalIsSet = false;
       var firstSyncFailed = false; // case of first sync without session, before login
+      var usersAnswers = {}; // Stores users_answers per item
+
       function setSyncInterval() {
          if (!intervalIsSet) {
             intervalIsSet = true;
@@ -138,13 +140,20 @@ angular.module('algorea')
       }
       SyncQueue.addSyncEndListeners("ItemsService", syncEndListener);
       SyncQueue.addSyncStartListeners("ItemsService", syncStartListener);
-      // return a relevant name for the name of the listener in sync:
-      function getThreadSyncName(idThread, idItem, idUser) {
+      // SyncThread intervals
+      var syncThreadIntervals = {}; 
+      function stopThreadInterval(idThread, idItem, idUser) {
+         // Stop a syncThread interval and return the name
          if (idThread) {
-            return 'thread-'+idThread;
+            var name = 'thread-'+idThread;
          } else {
-            return 'usersAnswers-'+idItem+'-'+idUser;
+            var name = 'usersAnswers-'+idItem+'-'+idUser;
          }
+         if(syncThreadIntervals[name]) {
+            $interval.cancel(syncThreadIntervals[name]);
+            syncThreadIntervals[name] = null;
+         }
+         return name;
       }
       return {
          getItem: function(ID) {
@@ -228,14 +237,12 @@ angular.module('algorea')
             return result_user_item;
          },
          getCurrentAnswer: function(item, idUser) {
-            if(item.last_answer) {
-               return item.last_answer;
-            }
             var result_user_answer = null;
             if (!idUser) {
                idUser = $rootScope.myUserID;
             }
-            angular.forEach(item.user_answers, function(user_answer) {
+            if(!usersAnswers[item.ID]) { return; }
+            angular.forEach(usersAnswers[item.ID], function(user_answer) {
                if ((!result_user_answer || result_user_answer.sSubmissionDate < user_answer.sSubmissionDate) && user_answer.idUser == idUser) {
                   result_user_answer = user_answer;
                }
@@ -247,7 +254,7 @@ angular.module('algorea')
             if (!idUser) {
                idUser = $rootScope.myUserID;
             }
-            angular.forEach(item.user_answers, function(user_answer) {
+            angular.forEach(usersAnswers[item.ID], function(user_answer) {
                if (user_answer.idUser == idUser) {
                   result.push(user_answer);
                }
@@ -355,22 +362,44 @@ angular.module('algorea')
             return typeStr;
          },
          syncThread: function(idThread, idItem, idUser, callback) {
-            var endListenerName = getThreadSyncName(idThread, idItem, idUser);
+            // Start synchronizing some users_answers
+            // We stop the current syncThread to restart it directly
+            var intervalName = stopThreadInterval(idThread, idItem, idUser);
+            var syncFunc = function() {
+               $http.post('/task/task.php', {action: 'getUsersAnswers', idThread: idThread, idItem: idItem, idUser: idUser}).success(function(res) {
+                  if(res.result) {
+                     // Add new usersAnswers
+                     angular.forEach(res.usersAnswers, function(user_answer) {
+                        if(!usersAnswers[user_answer.idItem]) {
+                           usersAnswers[user_answer.idItem] = {};
+                        }
+                        usersAnswers[user_answer.idItem][user_answer.ID] = user_answer;
+                     });
+                  }
+                  if(callback) {
+                     callback();
+                     callback = null;
+                  }
+               });
+            };
+            syncFunc(callback);
+            syncThreadIntervals[intervalName] = $interval(syncFunc, 300000);
+
             if (idThread) {
-               SyncQueue.requestSets[endListenerName] = {minVersion: 0, name: 'getThread', idThread: idThread};
-            } else {
-               SyncQueue.requestSets[endListenerName] = {minVersion: 0, name: 'getUserAnswers', idItem: idItem, idUser: idUser};
+               // Use getThread to fetch other data such as messages
+               SyncQueue.requestSets[intervalName] = {minVersion: 0, name: 'getThread', idThread: idThread};
+               SyncQueue.addSyncEndListeners(intervalName, function() {
+                  SyncQueue.removeSyncEndListeners(intervalName);
+                  delete(SyncQueue.requestSets[intervalName].minVersion);
+                  callback();
+               }, false, true);
+               SyncQueue.planToSend(0);
             }
-            SyncQueue.addSyncEndListeners(endListenerName, function() {
-               SyncQueue.removeSyncEndListeners(endListenerName);
-               delete(SyncQueue.requestSets[endListenerName].minVersion);
-               callback();
-            }, false, true);
-            SyncQueue.planToSend(0);
+
          },
          unsyncThread:function(idThread, idItem, idUser) {
-            var endListenerName = getThreadSyncName(idThread, idItem, idUser);
-            delete(SyncQueue.requestSets[endListenerName]);
+            var intervalName = stopThreadInterval(idThread, idItem, idUser);
+            delete(SyncQueue.requestSets[intervalName]);
          }
       };
    }]);

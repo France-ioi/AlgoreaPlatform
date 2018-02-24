@@ -8,9 +8,8 @@ class getThread {
          return [];
       }
 
-      $requests = syncGetTablesRequests(array('messages' => true, 'users_answers' => true, 'users_items' => true), false);
+      $requests = syncGetTablesRequests(array('messages' => true, 'users_items' => true), false);
       $requests['messages']["requestSet"] = array("name" => "getThread");
-      $requests['users_answers']["requestSet"] = array("name" => "getThread");
       $requests['users_items']["requestSet"] = array("name" => "getThread");
       $requests['my_users_items'] = $requests['users_items'];
       $requests['other_users_items'] = $requests['users_items'];
@@ -20,7 +19,6 @@ class getThread {
          $minVersion = intval($requestSet["minVersion"]);
       }
       $requests['messages']["minVersion"] = $minVersion;
-      $requests['users_answers']["minVersion"] = $minVersion;
       $requests['my_users_items']["minVersion"] = $minVersion;
       $requests['other_users_items']["minVersion"] = $minVersion;
 
@@ -65,20 +63,14 @@ class getThread {
 
          // the idea here is to fetch some values from users's user_item and other user's user_item
          // so that we can build a token once we get the results
-         // $requests['users_answers']['filters']['getMyUserItem'] = array('values' => array('idUser' => $_SESSION['login']['ID']));
-         // $requests['users_answers']['filters']['getOtherUserItem'] = array('values' => array('idUser' => $thread['idUser']));
-         $requests['users_answers']['filters']['idItem'] = array('values' => array('idItem' => $idItem));
-         $requests['users_answers']['filters']['accessible'] = array('values' => array('idUser' => $thread['idUserCreated']));
 
          //$requests["users_items"]['model']["fields"]['bAccessSolutions'] = array('sql' => 'MAX(`groups_items`.`bCachedAccessSolutions`)');
          return [
             'threadMessages' => $requests['messages'], 
-            'threadAnswers' => $requests['users_answers'],
             //'threadMyUserItem' => $requests['my_users_items'], not useful for now
             'threadOtherUserItem' => $requests['other_users_items']
          ];
       } else {
-         unset($requests['users_answers']);
          unset($requests['my_users_items']);
          unset($requests['other_users_items']);
          //print_r($requests['messages']);

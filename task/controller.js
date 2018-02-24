@@ -51,13 +51,11 @@ angular.module('algorea')
    $scope.hideSolution = function() {
       delete platformViews.solution;
    };
-   $scope.user_answer = null;
    $scope.load_answer_and_sync = function() {
       if ($scope.loadedUserItemID != $scope.user_item.ID) {
          return;
       }
       $scope.firstViewLoaded = true;
-      $scope.user_answer = itemService ? itemService.getCurrentAnswer($scope.item, $scope.user_item.idUser) : '';
       // Default states and answer are the empty strings
       var state = $scope.user_item.sState ? $scope.user_item.sState : '';
       var answer = $scope.user_item.sAnswer ? $scope.user_item.sAnswer : '';
