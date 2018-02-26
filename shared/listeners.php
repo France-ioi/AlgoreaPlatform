@@ -3,8 +3,16 @@
 class Listeners {
    public static function computeAllUserItems($db) {
       // We mark as 'todo' all ancestors of objects marked as 'todo'
+      $db->exec("LOCK TABLES
+        users_items as ancestors WRITE,
+        users_items as descendants WRITE,
+        history_users_items WRITE,
+        items_ancestors READ,
+        history_items_ancestors READ;
+        ");
       $query = "UPDATE `users_items` as `ancestors` JOIN `items_ancestors` ON (`ancestors`.`idItem` = `items_ancestors`.`idItemAncestor` AND `items_ancestors`.`idItemAncestor` != `items_ancestors`.`idItemChild`) JOIN `users_items` as `descendants` ON (`descendants`.`idItem` = `items_ancestors`.`idItemChild` AND `descendants`.`idUser` = `ancestors`.`idUser`) SET `ancestors`.`sAncestorsComputationState` = 'todo' WHERE `descendants`.`sAncestorsComputationState` = 'todo';";
       $db->exec($query);
+      $db->exec("UNLOCK TABLES;");
       $hasChanges = true;
       $groupsItemsChanged = false;
       while ($hasChanges) {
