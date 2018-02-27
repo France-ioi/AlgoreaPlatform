@@ -610,7 +610,11 @@ function getSyncRequests($params, $minServerVersion) {
    $contestData = adjustContestAndGetData();
    //echo json_encode($contestData);
    $requests = syncGetTablesRequests(null, false);
+
+   // No sync for users_answers
    unset($requests['users_answers']);
+   unset($requests['groups_login_prefixes']);
+
    $requests['messages']['lowPriority'] = true;
    $requests['users_threads']['lowPriority'] = true;
    $requests['groups_groups']['lowPriority'] = true;

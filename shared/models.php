@@ -471,12 +471,16 @@ $viewsModels = array(
    "groups_login_prefixes" => array(
       "mainTable" => "groups_login_prefixes",
       "adminOnly" => false,
+      "joins" => array(),
       "fields" => array(
          "idGroup" => array(),
          "prefix" => array()
       ),
-      "joins" => array(),
-      "filters" => array()
+      "filters" => array(
+         "group" => array(
+            "condition" => '`[PREFIX]groups_login_prefixes`.`idGroup` = :[PREFIX_FIELD]idGroup',
+         ),
+      ),
    ),
    "groups_groups" => array(
       "mainTable" => "groups_groups",

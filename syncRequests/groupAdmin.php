@@ -3,7 +3,7 @@
 class groupAdmin {
    public static function getSyncRequests($requestSet, $minServerVersion) {
       global $db;
-      $baseRequests = syncGetTablesRequests(array('groups' => true, 'groups_groups' => true, 'users' => true, 'users_items' => true, 'threads' => true), false);
+      $baseRequests = syncGetTablesRequests(array('groups' => true, 'groups_groups' => true, 'users' => true, 'users_items' => true, 'threads' => true, 'groups_login_prefixes' => true), false);
 
       $groupId = $requestSet['groupId'];
       $itemId = $requestSet['itemId'];
@@ -36,6 +36,7 @@ class groupAdmin {
       $requests['groupAdminUsersDescendants'] = $baseRequests['users'];
       $requests['groupAdminUsersInvited'] = $baseRequests['users'];
       $requests['groupAdminUsersItemsDescendants'] = $baseRequests['users_items'];
+      $requests['groupAdminGroupsLoginPrefixes'] = $baseRequests['groups_login_prefixes'];
 
       foreach($requests as $requestName => &$request) {
          $request['requestSet'] = ['name' => 'groupAdmin'];
@@ -59,6 +60,7 @@ class groupAdmin {
       $requests['groupAdminUsersInvited']["filters"]["invited"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminUsersItemsDescendants']["filters"]["groupDescendants"] = ['values' => ['idGroup' => $groupId]];
       $requests['groupAdminUsersItemsDescendants']["filters"]["itemsDescendants"] = ['values' => ['idItem' => $itemId]];
+      $requests['groupAdminGroupsLoginPrefixes']['filters']['group'] = ['values' => ['idGroup' => $groupId]];
       return $requests;
    }
 }
