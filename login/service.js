@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
-     .service('loginService', ['$state', '$http', '$rootScope', '$sce', '$uibModal', function ($state, $http, $rootScope, $sce, $uibModal) {
+     .service('loginService', ['$injector', '$http', '$rootScope', '$sce', '$uibModal', function ($injector, $http, $rootScope, $sce, $uibModal) {
         var state = 'not-ready';
         var tempUser = false;
         var userID = null;
@@ -166,7 +166,10 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
               handler(user);
               if(params && params['redirectPath']) {
                 var sell = params.redirectPath.split('/').length-1;
-                $state.go('contents', {path: params.redirectPath, sell: sell, selr: sell+1});
+                if($injector.has('$state')) {
+                  $state = $injector.get('$state');
+                  $state.go('contents', {path: params.redirectPath, sell: sell, selr: sell+1});
+                }
               }
             } else {
               console.error(user.error);
