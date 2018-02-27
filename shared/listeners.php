@@ -2,6 +2,10 @@
 
 class Listeners {
    public static function computeAllUserItems($db) {
+      // Use a lock so that we don't execute the listener multiple times in parallel
+      $stmt = $db->query("SELECT GET_LOCK('listener_computeAllUserItems', 1);");
+      if($stmt->fetchColumn() != 1) { return; }
+
       // We mark as 'todo' all ancestors of objects marked as 'todo'
       $db->exec("LOCK TABLES
         users_items as ancestors WRITE,
@@ -16,10 +20,6 @@ class Listeners {
       $hasChanges = true;
       $groupsItemsChanged = false;
       while ($hasChanges) {
-         // Use a lock so that we don't execute the listener multiple times in parallel
-         $stmt = $db->query("SELECT GET_LOCK('listener_computeAllUserItems', 1);");
-         if($stmt->fetchColumn() != 1) { break; }
-
          // We mark as "processing" all objects that were marked as 'todo' and that have no children not marked as 'done'
          $query = "UPDATE `users_items` as `parent`
             JOIN  (
@@ -135,10 +135,10 @@ class Listeners {
          // Objects marked as 'processing' are now marked as 'done'
          $query = "UPDATE `users_items` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
          $hasChanges = ($db->exec($query) > 0);
-
-         // Release the lock
-         $db->query("SELECT RELEASE_LOCK('listener_computeAllUserItems');")->fetchColumn();
       }
+
+      // Release the lock
+      $db->query("SELECT RELEASE_LOCK('listener_computeAllUserItems');")->fetchColumn();
 
       // If items have been unlocked, need to recompute access
       if($groupsItemsChanged) {

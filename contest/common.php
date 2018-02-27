@@ -91,8 +91,14 @@ function closeContest($idItem) {
 	// TODO: remove partial access if other access were present
 	$stmt = $db->prepare('update groups_items set sPartialAccessDate = null, sCachedPartialAccessDate = null, bCachedPartialAccess = 0 where idItem = :idItem and idGroup = :idGroupSelf and bManagerAccess = 0;');
 	$stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+    $db->exec("LOCK TABLES
+        groups_items WRITE,
+        history_groups_items WRITE,
+        items_ancestors READ,
+        history_items_ancestors READ;");
 	$stmt = $db->prepare('delete groups_items from groups_items join items_ancestors on groups_items.idItem = items_ancestors.idItemChild where items_ancestors.idItemAncestor = :idItem and groups_items.idGroup = :idGroupSelf and bCachedFullAccess = 0 and bOwnerAccess = 0 and bManagerAccess = 0;');
 	$stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+    $db->exec("UNLOCK TABLES;");
 	require_once __DIR__.'/../shared/listeners.php';
 	Listeners::groupsItemsAfter($db);
 }
