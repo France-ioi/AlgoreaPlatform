@@ -4,7 +4,7 @@ angular.module('algorea').
   filter('groupsOnly', function() {
     return function(items) {
       return _.filter(items, function(item) {
-        return item.sRole == 'owner' && item.parent.sType !== 'UserAdmin';
+        return item.child.sType != 'UserSelf' && item.parent.sType != 'UserAdmin';
       })
     };
   });

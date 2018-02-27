@@ -28,7 +28,7 @@
             <div ng-if="show_parents">
                 <label ng-i18next="groupSubgroups_parents"></label>
                 <ul class="list list-block list-groups">
-                    <li class="list-item" ng-repeat="group_group in group.parents | groupsgroupsChildrenNameSort">
+                    <li class="list-item" ng-repeat="group_group in group.parents | groupsOnly | groupsgroupsChildrenNameSort">
                         <a ng-click="openGroup(group_group.idGroupParent);">{{group_group.parent.sName}}</a>
                     </li>
                 </ul>
