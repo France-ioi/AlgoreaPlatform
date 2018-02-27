@@ -337,7 +337,7 @@ $tablesModels = array (
           "iScoreReeval"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "iScoreDiffManual"  => array("type" => "float", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "sScoreDiffComment"  => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
-          "nbSubmissionsAttempts"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
+          "nbSubmissionsAttempts"  => array("type" => "int", "skipHistory" => true, "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "nbTasksTried"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "nbChildrenValidated"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),
           "bValidated"  => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user")), 'readOnly' => true),

@@ -200,7 +200,7 @@ function askValidation($request, $db) {
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
    $hintsInfo = $stmt->fetch(PDO::FETCH_ASSOC);
-   $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1, sAncestorsComputationState = 'todo' WHERE idUser = :idUser AND idItem = :idItem;";
+   $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1 WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
    unset($stmt);
