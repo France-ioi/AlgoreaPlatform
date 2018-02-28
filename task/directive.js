@@ -7,7 +7,7 @@ angular.module('algorea')
       scope: false,
       template: function(elem, attrs) {
         var userItemVarStr = attrs.userItemVar ? 'user-item-var="'+attrs.userItemVar+'"' : '';
-        return '<span ng-show="loadingError">{{loadingError}}</span><iframe ng-hide="loadingError" ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen></iframe>';
+        return '<span ng-show="loadingError">{{loadingError}}</span><iframe ng-hide="loadingError" ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen allow="microphone"></iframe>';
       },
       link: function(scope, elem, attrs) {
          // user-item-var can be used to take a variable other than
