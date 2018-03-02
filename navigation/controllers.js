@@ -89,6 +89,9 @@ angular.module('algorea')
          if (ts == 'task' || ts == 'course') {
             return this.viewsBaseUrl+'taskcourse.html';
          }
+         if(ts == 'task-parent' && this.item.bDisplayDetailsInParent) {
+            return this.viewsBaseUrl + 'chapter-parent.html';
+         }
          return this.viewsBaseUrl+ts+'.html';
       };
       $scope.getSref = function(view) {
