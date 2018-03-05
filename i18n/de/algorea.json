@@ -147,7 +147,7 @@
     "admin_access_edit": "Zugang bearbeiten",
     "admin_no_access_removal": "Sie können den Zugriff zu diesem Item für diese Gruppe nicht einschränken, da es einen direkten Zugriff auf ein Unter-Item gibt",
     "admin_select_item_group_access": "Wählen Sie zunächst das Item und die Gruppe für welche Sie den Zugriff konfigurieren wollen.",
-    "admin_zip_export": "Allen Einsendungen als ZIP-Datei exportieren",
+    "admin_zip_export": "Alle Einsendungen als ZIP-Datei exportieren",
     "admin_warning": "Achtung:",
     "admin_warning_readonly": "Sie haben keine Schreibrechte für dieses Item",
     "admin_select_exercise": "Sie müssen eine Aufgabe oder einen Kurs auswählen um ihn anzuzeigen.",
