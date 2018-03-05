@@ -857,6 +857,8 @@ angular.module('algorea')
    }
 
    $scope.levelSelected = function() {
+      $scope.zip_message = null;
+      $scope.zip_url = null;
       $scope.itemSelected($scope.formValues.selectedLevel);
       $scope.dropdownSelections = [$scope.formValues.selectedLevel];
       $scope.dropdownSelectionsIDs = [$scope.formValues.selectedLevel.ID];
@@ -926,6 +928,7 @@ angular.module('algorea')
    $scope.zipExport = function(itemId, groupId) {
       $scope.zip_btn_disabled = true;
       $scope.zip_message = 'Please wait...';
+      $scope.zip_url = null;
       $.ajax({
          type: 'GET',
          url: '/admin/zip_export.php',
@@ -936,9 +939,8 @@ angular.module('algorea')
          success: function(res) {
             $scope.zip_btn_disabled = false;
             if(res && res.file) {
-               $scope.zip_message = false;
-               window.open(res.file, 'zip_download_window', 'toolbar=0,location=no,directories=0,status=0,scrollbars=0,resizeable=0,width=1,height=1,top=0,left=0');
-               window.focus();
+               $scope.zip_message = '';
+               $scope.zip_url = res.file;
             } else {
                $scope.zip_message = res;
             }
@@ -950,6 +952,9 @@ angular.module('algorea')
       });
    }
 
+   $scope.zipDownload = function() {
+      if($scope.zip_url) { window.location = $scope.zip_url; }
+   };
 
    $scope.init = function() {
       $scope.loading = true;

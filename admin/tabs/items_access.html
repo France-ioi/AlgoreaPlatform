@@ -3,8 +3,9 @@
       <b ng-i18next="admin_select_item_group_access"></b>
    </p>
    <div ng-if="item_item && group_group">
-    <button ng-i18next="admin_zip_export" ng-click="zipExport(item_item.idItemChild, group_group.idGroupChild)" ng-disabled="zip_btn_disabled"></button>
+    <button class="btn btn-primary" ng-i18next="admin_zip_export" ng-click="zipExport(item_item.idItemChild, group_group.idGroupChild)" ng-disabled="zip_btn_disabled"></button>
     <span ng-if="zip_message">{{ zip_message }}</span>
+    <span ng-if="zip_url"><button class="btn btn-success" ng-click="zipDownload()" ng-i18next="download"></button></span>
    </div>
    <h2 ng-i18next="admin_manage_access"></h2>
    <p ng-i18next="admin_manage_access_desc"></p>

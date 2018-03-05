@@ -215,9 +215,10 @@ function write_files(&$db, &$user_information, &$item_information) {
       $stmt = $db->prepare("SELECT sAnswer, iScore, ID FROM users_answers WHERE idUser = :userId AND idItem = :itemId order by sSubmissionDate asc;");
 
       foreach($user_information as $userId => $user_info) {
-         if ($user_info["lastname"] == "") $user_info["lastname"] = "Nom non renseigné";
-         if ($user_info["firstname"] == "") $user_info["firstname"] = "Prénom non renseigné";
-         fwrite($csv,$user_info["login"]);
+         fwrite($csv, $user_info["login"]);
+         if($user_info['firstname'] != '' || $user_info['lastname'] != '') {
+            fwrite($csv, ' ('.$user_info['firstname'].' '.$user_info['lastname'].')');
+         }
          foreach($item_information as $itemId => $item_info) {
             $directory = $item_info["directory"] . "/" . $user_info["login"] . "/";
             mkdir($directory);

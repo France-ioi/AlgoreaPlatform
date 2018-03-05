@@ -37,8 +37,9 @@
         </select>
     </div>
     <p class="dl-link">
-        <button ng-i18next="admin_zip_export" ng-click="zipExport(dropdownSelections[dropdownSelections.length-1].ID, group.ID)" ng-disabled="zip_btn_disabled"></button>
+        <button class="btn btn-primary" ng-i18next="admin_zip_export" ng-click="zipExport(dropdownSelections[dropdownSelections.length-1].ID, group.ID)" ng-disabled="zip_btn_disabled"></button>
         <span ng-if="zip_message">{{ zip_message }}</span>
+        <span ng-if="zip_url"><button class="btn btn-success" ng-click="zipDownload()" ng-i18next="download"></button></span>
     </p>
 
     <div ng-if="formValues.progressionType != 'collective'" class="flex-container view-chrono">
