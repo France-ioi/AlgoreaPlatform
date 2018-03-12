@@ -50,7 +50,7 @@ angular.module('algorea')
 
       $scope.genPassword = function() {
          var newPassword = '';
-         var stringOfAllowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+         var stringOfAllowedChars = '3456789abcdefghijkmnpqrstuvwxy';
          for (var i = 0; i < 10;  i++) {
             newPassword += stringOfAllowedChars.charAt(Math.floor(Math.random()*stringOfAllowedChars.length));
          }

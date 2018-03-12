@@ -502,7 +502,7 @@ angular.module('algorea')
 
    $scope.generatePassword = function() {
       var string = '';
-      var stringOfAllowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      var stringOfAllowedChars = '3456789abcdefghijkmnpqrstuvwxy';
       for (var i = 0; i < 10;  i++) {
          string += stringOfAllowedChars.charAt(Math.floor(Math.random()*stringOfAllowedChars.length));
       }
