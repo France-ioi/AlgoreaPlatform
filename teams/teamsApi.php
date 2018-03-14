@@ -85,7 +85,7 @@ function checkRequirements($team, $idItem, $modGroup=null, $removing=false) {
    // adding or removing a member
    global $db;
 
-   $stmt = $db->prepare("SELECT sTeamMode, idTeamInGroup, iTeamMaxMembers from items WHERE ID = :idItem;");
+   $stmt = $db->prepare("SELECT sTeamMode, bTeamsEditable, idTeamInGroup, iTeamMaxMembers from items WHERE ID = :idItem;");
    $stmt->execute(['idItem' => $idItem]);
    $item = $stmt->fetch();
    if(!$item || !$item['sTeamMode']) {
@@ -277,6 +277,11 @@ function createTeam($request) {
    $stmt->execute(['idItem' => $request['idItem']]);
    $item = $stmt->fetch();
 
+   // Check item allows team modifications
+   if(!$item['bTeamsEditable']) {
+      return ['result' => false, 'error' => 'teams_not_editable'];
+   }
+
    // Check user is qualified
    if($item['idTeamInGroup'] && $item['sTeamMode'] != 'None') {
       $stmt = $db->prepare("SELECT ID FROM groups_ancestors WHERE idGroupAncestor = :idGroupAncestor AND idGroupChild = :idGroupSelf;");
@@ -320,6 +325,14 @@ function joinTeam($request) {
    }
    if(getUserTeam($request['idItem'])) {
       return ['result' => false, 'error' => 'teams_already_have_team'];
+   }
+
+   $stmt = $db->prepare("SELECT bTeamsEditable FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $request['idItem']]);
+   $item = $stmt->fetch();
+   // Check item allows team modifications
+   if(!$item['bTeamsEditable']) {
+      return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
    // Get team
@@ -390,6 +403,14 @@ function changeTeamPassword($request) {
       return ['result' => false, 'error' => 'api_error'];
    }
 
+   $stmt = $db->prepare("SELECT bTeamsEditable FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $request['idItem']]);
+   $item = $stmt->fetch();
+   // Check item allows team modifications
+   if(!$item['bTeamsEditable']) {
+      return ['result' => false, 'error' => 'teams_not_editable'];
+   }
+
    $team = getUserTeam($request['idItem'], true);
    if(!$team) {
       return ['result' => false, 'error' => 'teams_no_team'];
@@ -415,6 +436,14 @@ function removeTeamMember($request) {
    }
    if(!isset($request['idGroupChild']) || !$request['idGroupChild']) {
       return ['result' => false, 'error' => 'api_error'];
+   }
+
+   $stmt = $db->prepare("SELECT bTeamsEditable FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $request['idItem']]);
+   $item = $stmt->fetch();
+   // Check item allows team modifications
+   if(!$item['bTeamsEditable']) {
+      return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
    if($request['idGroupChild'] == $_SESSION['login']['idGroupSelf']) {
@@ -502,6 +531,14 @@ function leaveTeam($request) {
    $team = getUserTeam($request['idItem'], true);
    if(!$team) {
       return ['result' => false, 'error' => 'teams_no_team'];
+   }
+
+   $stmt = $db->prepare("SELECT bTeamsEditable FROM items WHERE ID = :idItem;");
+   $stmt->execute(['idItem' => $request['idItem']]);
+   $item = $stmt->fetch();
+   // Check item allows team modifications
+   if(!$item['bTeamsEditable']) {
+      return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
    // Check requirements

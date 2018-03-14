@@ -94,6 +94,7 @@
     "teams_join_code": "Join a team with the code :",
     "teams_create": "Create a team named :",
     "teams_max_members_reached": "Maximum number of members reached for this team.",
+    "teams_not_editable": "Teams for this contest are not editable.",
     "teams_qualified_one": "At least one member must be qualified.",
     "teams_qualified_half": "At least half of the members must be qualified.",
     "teams_qualified_all": "All members must be qualified.",

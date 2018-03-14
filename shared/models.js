@@ -254,6 +254,7 @@ var models = {
             label: "models_items_fields_sTeamMode_label",
             defaultValue: null
          },
+         bTeamsEditable: {type: "boolean", label: "models_items_fields_bTeamsEditable_label"},
          idTeamInGroup: {type: "int", label: "models_items_fields_idTeamInGroup_label", refModel: "groups", link: "teamInGroup", defaultValue: null},
          iTeamMaxMembers: {type: "int", label: "models_items_fields_iTeamMaxMembers_label"},
          bHasAttempts: {type: "boolean", label: "models_items_fields_bHasAttempts_label", defaultValue: false},

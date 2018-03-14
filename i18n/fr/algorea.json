@@ -96,6 +96,7 @@
     "teams_requirements_yes": "Votre équipe peut participer à l'épreuve.",
     "teams_requirements_no": "Votre équipe ne remplit pas les conditions pour participer à l'épreuve :",
     "teams_max_members_reached": "Nombre maximum de membres atteint pour cette équipe.",
+    "teams_not_editable": "Les équipes pour cette épreuve ne sont plus modifiables.",
     "teams_qualified_one": "Au moins un membre doit être qualifié.",
     "teams_qualified_half": "Au moins la moitié des membres doivent être qualifiés.",
     "teams_qualified_all": "Tous les membres doivent être qualifiés.",
@@ -332,8 +333,8 @@
     "groupCodePrompt_validation_failed": "Validation échouée",
     "groupCodePrompt_confirmation_request": "Ce code de groupe va ouvrir {{sTitle}} et démarrer votre participation. Veuillez confirmer.",
     "groupCodePrompt_confirm": "Confirmer",
-    "groupCodePrompt_participation_code": "Here is your participation code, so that you can come back later:",
-    "groupCodePrompt_participation_code_note": "Please write it down and keep it safely.",
+    "groupCodePrompt_participation_code": "Voici votre code de participation, vous permettant de vous reconnecter plus tard :",
+    "groupCodePrompt_participation_code_note": "Veuillez le noter et le conserver.",
     "groupCodePrompt_open_login_module": "Continue",
 
     "community": "Communauté",
