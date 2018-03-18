@@ -109,6 +109,8 @@
     "teams_creation_error": "Erreur lors de la création de l'équipe.",
     "teams_start": "Démarrer l'épreuve",
     "teams_started": "Votre équipe a commencé l'épreuve. Vous pouvez entrer en sélectionnant un des items de l'épreuve ci-dessus.", 
+    "teams_time_limit": "Attention : cette épreuve se déroule en temps limité.",
+    "teams_time_over": "Votre équipe a déjà participé à cette épreuve en temps limité.",
 
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",

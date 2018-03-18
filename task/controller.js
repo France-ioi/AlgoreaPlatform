@@ -447,6 +447,10 @@ angular.module('algorea')
          }, true);
    };
 
+   $scope.startItem = function() {
+      $scope.apiRequest('startItem');
+   };
+
    $scope.teamUsers = null;
    $scope.getTeamUsers = function() {
       if($scope.teamUsers || !$scope.item.bHasAttempts) { return; }

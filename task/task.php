@@ -421,6 +421,18 @@ function getUserTeam($idItem, $idUserSelf, $db) {
 }
 
 
+function startItem($request, $db) {
+    // Set the start date on an item
+    $stmt = $db->prepare('UPDATE users_items SET sStartDate = IFNULL(sStartDate, NOW()) WHERE idUser = :idUser AND idItem = :idItem;');
+    $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
+
+    $stmt = $db->prepare('UPDATE groups_attempts JOIN users_items ON users_items.idAttemptActive = groups_attempts.ID SET groups_attempts.sStartDate = IFNULL(groups_attempts.sStartDate, NOW()) WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem;');
+    $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
+
+    return ['result' => true];
+}
+
+
 function createAttempt($request, $db) {
    // Create an attempt on an item
 
@@ -439,7 +451,7 @@ function createAttempt($request, $db) {
 
    // Create the attempt
    $newId = getRandomId();
-   $stmt = $db->prepare('LOCK TABLES groups_attempts WRITE; SET @maxIOrder = IFNULL((SELECT MAX(iOrder) FROM groups_attempts WHERE idGroup = :idGroup AND idItem = :idItem), 0); INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, @maxIOrder + 1); UNLOCK TABLES;');
+   $stmt = $db->prepare('LOCK TABLES groups_attempts WRITE; SET @maxIOrder = IFNULL((SELECT MAX(iOrder) FROM groups_attempts WHERE idGroup = :idGroup AND idItem = :idItem), 0); INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, NOW(), @maxIOrder + 1); UNLOCK TABLES;');
    $stmt->execute(['id' => $newId, 'idGroup' => $idGroup, 'idItem' => $request['idItem'], 'idUser' => $_SESSION['login']['ID']]);
 
    return ['result' => true, 'attemptId' => $newId];
@@ -595,6 +607,8 @@ if ($request['action'] == 'askValidation') {
    graderResult($request, $db);
 } elseif ($request['action'] == 'getToken') {
    echo json_encode(getToken($request, $db));
+} elseif ($request['action'] == 'startItem') {
+   echo json_encode(startItem($request, $db));
 } elseif ($request['action'] == 'createAttempt') {
    echo json_encode(createAttempt($request, $db));
 } elseif ($request['action'] == 'selectAttempt') {

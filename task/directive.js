@@ -383,6 +383,7 @@ angular.module('algorea')
                scope.attemptAutoSelected = true;
                scope.autoSelectAttempt();
             } else {
+               scope.startItem();
                initTask(false);
             }
          }

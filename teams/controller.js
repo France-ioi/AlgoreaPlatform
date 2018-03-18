@@ -1,8 +1,9 @@
 angular.module('algorea')
-   .controller('teamsController', ['$scope', '$rootScope', '$http', '$i18next', 'loginService', function ($scope, $rootScope, $http, $i18next, loginService) {
+   .controller('teamsController', ['$scope', '$rootScope', '$http', '$i18next', 'loginService', 'itemService', 'contestTimerService', function ($scope, $rootScope, $http, $i18next, loginService, itemService, contestTimerService) {
       $scope.newTeamName = '';
       $scope.joinPassword = '';
       $scope.isLogged = true;
+      $scope.user_item = itemService.getUserItem($scope.item);
 
       $scope.updateTeam = function(data) {
          // Update scope data from a request answer
@@ -66,7 +67,17 @@ angular.module('algorea')
       };
 
       $scope.startItem = function() {
-         $scope.apiRequest('startItem', {}, true);
+         $scope.apiRequest('startItem', {}, true, function(res) {
+            if(res.startTime) {
+               config.contestData = {endTime: res.endTime, startTime: res.startTime, duration: res.duration, idItem: $scope.item.ID};
+               contestTimerService.startContest($scope.item.ID, res.duration);
+               // for some reason, sync doesn't work in this case
+               SyncQueue.sentVersion = 0;
+               SyncQueue.serverVersion = 0;
+               SyncQueue.resetSync = true;
+               SyncQueue.planToSend(0);
+            }
+         });
       };
 
       $scope.changeTeamPassword = function() {

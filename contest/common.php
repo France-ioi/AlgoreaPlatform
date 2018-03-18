@@ -46,6 +46,17 @@ function getContestEndTime($sContestStartDate, $duration) {
 
 function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
 	global $db;
+
+    // If it's a team item, use the team openContest
+    $stmt = $db->prepare('SELECT sTeamMode FROM items WHERE idItem = :idItem;');
+    $stmt->execute(['idItem' => $idItem]);
+    if($stmt->fetchColumn()) {
+        require_once __DIR__.'/../teams/teamsCommon.php';
+        $res = openContestTeam($idItem);
+        $res['success'] = $res['result'];
+        return $res;
+    }
+
 	$stmt = $db->prepare('select NOW() as now, items.*, users_items.*, TIME_TO_SEC(items.sDuration) as duration, max(groups_items.bCachedFullAccess) as fullAccess from items
 		left join users_items on users_items.idItem = items.ID and users_items.idUser = :idUser
 		JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
@@ -86,6 +97,17 @@ function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
 
 function closeContest($idItem) {
 	global $db;
+
+    // If it's a team item, use the team closeContest
+    $stmt = $db->prepare('SELECT sTeamMode FROM items WHERE ID = :idItem;');
+    $stmt->execute(['idItem' => $idItem]);
+    if($stmt->fetchColumn()) {
+        require_once __DIR__.'/../teams/teamsCommon.php';
+        $res = closeContestTeam($idItem);
+        $res['success'] = $res['result'];
+        return $res;
+    }
+
 	$stmt = $db->prepare('update users_items set sFinishDate = NOW() where idItem = :idItem and idUser = :idUser;');
 	$stmt->execute(['idItem' => $idItem, 'idUser' => $_SESSION['login']['ID']]);
 	// TODO: remove partial access if other access were present

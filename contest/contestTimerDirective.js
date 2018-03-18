@@ -21,15 +21,18 @@ angular.module('algorea')
       		scope.$applyAsync(function() {scope.timerStr = newTimerStr;});
       	};
       	var contestOverCallback = function() {
-      		scope.$applyAsync(function() {
-      			scope.timerStr = '';
-      			alert(i18next.t('contest_ended'));
-            SyncQueue.planToSend(0);
-
-						var pathParams = pathService.getPathParams();
-						var sell = Math.min(pathParams.path.length - 1, pathParams.sell);
-						var path = pathParams.path.slice(0, sell).join('/');
-						$state.go('contents', {path: path, sell: sell, selr: null});
+            scope.$applyAsync(function() {
+               scope.timerStr = '';
+               alert(i18next.t('contest_ended'));
+                // for some reason, sync doesn't work in this case
+                SyncQueue.sentVersion = 0;
+                SyncQueue.serverVersion = 0;
+                SyncQueue.resetSync = true;
+                SyncQueue.planToSend(0);
+                var pathParams = pathService.getPathParams();
+                var sell = Math.min(pathParams.path.length - 1, pathParams.sell);
+                var path = pathParams.path.slice(0, sell).join('/');
+                $state.go('contents', {path: path, sell: sell, selr: null});
       		});
       	};
       	contestTimerService.connect(updateCallback, contestOverCallback);
