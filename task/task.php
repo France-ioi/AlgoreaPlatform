@@ -318,7 +318,9 @@ function graderResult($request, $db) {
    $test = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'bValidated' => $bValidated, 'iScore' => $score, 'idUserAnswer' => $idUserAnswer));
 
    // Build query to update users_items
-   $baseQuery = "SET iScore = GREATEST(:iScore, `iScore`), nbTasksTried = 1, sLastActivityDate = NOW(), sLastAnswerDate = NOW()";
+   // The iScore is set towards the end, so that the IF condition on
+   // sBestAnswerDate is computed before iScore is updated
+   $baseQuery = "SET nbTasksTried = 1, sLastActivityDate = NOW(), sBestAnswerDate = IF(:iScore > `iScore`, NOW(), `sBestAnswerDate`), sLastAnswerDate = NOW(), iScore = GREATEST(:iScore, `iScore`)";
    if ($bValidated) {
       // Item was validated
       $baseQuery .= ", sAncestorsComputationState = 'todo', bValidated = 1, bKeyObtained = 1, sValidationDate = IFNULL(sValidationDate,NOW())";
@@ -451,7 +453,7 @@ function createAttempt($request, $db) {
 
    // Create the attempt
    $newId = getRandomId();
-   $stmt = $db->prepare('LOCK TABLES groups_attempts WRITE; SET @maxIOrder = IFNULL((SELECT MAX(iOrder) FROM groups_attempts WHERE idGroup = :idGroup AND idItem = :idItem), 0); INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, NOW(), @maxIOrder + 1); UNLOCK TABLES;');
+   $stmt = $db->prepare('LOCK TABLES groups_attempts WRITE; SET @maxIOrder = IFNULL((SELECT MAX(iOrder) FROM groups_attempts WHERE idGroup = :idGroup AND idItem = :idItem), 0); INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, sStartDate, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, NOW(), @maxIOrder + 1); UNLOCK TABLES;');
    $stmt->execute(['id' => $newId, 'idGroup' => $idGroup, 'idItem' => $request['idItem'], 'idUser' => $_SESSION['login']['ID']]);
 
    return ['result' => true, 'attemptId' => $newId];

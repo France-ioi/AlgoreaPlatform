@@ -1,14 +1,32 @@
 <div>
-  <p>Vous pouvez effectuer plusieurs tentatives sur ce sujet. Chaque tentative correspond à des paramètres différents du sujet. [À rédiger]</p>
-  <ul>
-    <li ng-repeat="attempt in item.groups_attempts | orderObjectBy:'iOrder'">
-      Tentative n°{{ attempt.iOrder }}, créée par
-      {{ teamUsers[attempt.idUserCreator].sLogin }}
-      <span ng-if="teamUsers[attempt.idUserCreator].sFirstName || teamUsers[attempt.idUserCreator].sLastName">({{ teamUsers[attempt.idUserCreator].sFirstName }} {{ teamUsers[attempt.idUserCreator].sLastName }})</span>
-      <button ng-hide="attempt.ID == user_item.idAttemptActive" class="btn btn-default btn-xs" ng-click="selectAttempt(attempt.ID);">Sélectionner</button>
-      <b ng-show="attempt.ID == user_item.idAttemptActive">(active)</b>
-      <button ng-show="attempt.ID == user_item.idAttemptActive" class="btn btn-primary" ng-click="selectTab('task');">Accéder à l'énoncé</button>
-    </li>
-  </ul>
+  <p>Vous pouvez effectuer plusieurs tentatives sur ce sujet. Chaque tentative correspond à des paramètres différents du sujet.</p>
+  <div class="well">
+    <table class="table">
+      <tr>
+        <th>Tentative</th>
+        <th>Meilleur score</th>
+        <th>Créée par</th>
+        <th></th>
+      </tr>
+      <tr ng-repeat="attempt in item.groups_attempts | orderObjectBy:'iOrder'">
+        <td>
+          N°{{ attempt.iOrder }}
+          <b ng-show="attempt.ID == user_item.idAttemptActive">(active)</b>
+        </td>
+        <td>
+          {{ attempt.iScore }}%
+          <span ng-if="attempt.iScore > 0 && attempt.sBestAnswerDate">en {{ ((attempt.sBestAnswerDate - attempt.sStartDate) / 60000)|number:0 }}min&nbsp;{{ ((attempt.sBestAnswerDate - attempt.sStartDate) / 1000 % 60) }}s</span>
+        </td>
+        <td>
+          {{ teamUsers[attempt.idUserCreator].sLogin }}
+          <span ng-if="teamUsers[attempt.idUserCreator].sFirstName || teamUsers[attempt.idUserCreator].sLastName">({{ teamUsers[attempt.idUserCreator].sFirstName }} {{ teamUsers[attempt.idUserCreator].sLastName }})</span>
+        </td>
+        <td>
+          <button ng-hide="attempt.ID == user_item.idAttemptActive" class="btn btn-default btn-sm" ng-click="selectAttempt(attempt.ID);">Sélectionner</button>
+          <button ng-show="attempt.ID == user_item.idAttemptActive" class="btn btn-primary" ng-click="selectTab('task');">Accéder à l'énoncé</button>
+        </td>
+      </tr>
+    </table>
+  </div>
   <p><button class="btn btn-default" ng-click="userCreateAttempt();">Démarrer une nouvelle tentative</button></p>
 </div>
