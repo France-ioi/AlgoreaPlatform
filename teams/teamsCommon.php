@@ -10,13 +10,13 @@ require_once __DIR__."/../commonFramework/modelsManager/modelsTools.inc.php"; //
 function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
    // Get the team on some item for the current user
    // Returns either the group information, either null if no team was found
-   global $db;
+   global $db, $loginData;
    if($idTeam) {
       $stmt = $db->prepare("SELECT groups.* FROM groups WHERE ID = :id;");
       $stmt->execute(['id' => $idTeam]);
    } else {
       $stmt = $db->prepare("SELECT groups.* FROM groups JOIN groups_groups ON idGroupParent = groups.ID WHERE idTeamItem = :idItem AND idGroupChild = :idGroupSelf;");
-      $stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+      $stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $loginData['idGroupSelf']]);
    }
    $team = $stmt->fetch();
    if($team && $getExtra) {
@@ -28,7 +28,7 @@ function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
          WHERE idGroupChild = :idTeam AND sRole = 'owner';");
       $stmt->execute(['idTeam' => $team['ID']]);
       $adminInfo = $stmt->fetch();
-      $team['isAdmin'] = ($adminInfo['idGroupParent'] == $_SESSION['login']['idGroupOwned']);
+      $team['isAdmin'] = ($adminInfo['idGroupParent'] == $loginData['idGroupOwned']);
 
       // Get other members
       $stmt = $db->prepare("
@@ -47,7 +47,7 @@ function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
       foreach($children as $child) {
          $child['qualified'] = ($child['qualified'] == '1');
          $child['isAdmin'] = ($child['idGroupChild'] == $adminInfo['idGroupSelf']);
-         if($child['idGroupChild'] == $_SESSION['login']['idGroupSelf']) {
+         if($child['idGroupChild'] == $loginData['idGroupSelf']) {
             $team['user'] = $child;
          }
          if($child['isAdmin']) {
@@ -67,7 +67,7 @@ function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
 function checkRequirements($team, $idItem, $modGroup=null, $removing=false) {
    // Check whether a team still fulfills the requirements of the item after
    // adding or removing a member
-   global $db;
+   global $db, $loginData;
 
    $stmt = $db->prepare("SELECT sTeamMode, bTeamsEditable, idTeamInGroup, iTeamMaxMembers from items WHERE ID = :idItem;");
    $stmt->execute(['idItem' => $idItem]);
@@ -124,7 +124,7 @@ function checkRequirements($team, $idItem, $modGroup=null, $removing=false) {
 function getQualificationState($idItem) {
    // Check whether an user is qualified, and if not, whether they can enter a
    // team to participate
-   global $db;
+   global $db, $loginData;
 
    $stmt = $db->prepare("SELECT * FROM items WHERE ID = :idItem;");
    $stmt->execute(['idItem' => $idItem]);
@@ -136,7 +136,7 @@ function getQualificationState($idItem) {
       $qualState = 2;
    } else {
       $stmt = $db->prepare("SELECT ID FROM groups_ancestors WHERE idGroupAncestor = :idGroupAncestor AND idGroupChild = :idGroupSelf;");
-      $stmt->execute(['idGroupAncestor' => $item['idTeamInGroup'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+      $stmt->execute(['idGroupAncestor' => $item['idTeamInGroup'], 'idGroupSelf' => $loginData['idGroupSelf']]);
       if($stmt->fetchColumn()) {
          // Qualified
          $qualState = 1;
@@ -151,8 +151,10 @@ function getQualificationState($idItem) {
 function canResetQualificationState() {
    // Check whether an user can reset their qualification state
    // TODO :: better criteria when we will have multiple badges
+   global $loginData;
+
    $canReset = true;
-   foreach($_SESSION['login']['aBadges'] as $badge) {
+   foreach($loginData['aBadges'] as $badge) {
       if($badge['url'] == 'https://badges.concours-alkindi.fr/qualification_tour2/2018') { $canReset = false; }
    }
    //return $canReset;
@@ -161,7 +163,7 @@ function canResetQualificationState() {
 
 function generateUserItems($team) {
    // Generate all user_items for a team
-   global $db;
+   global $db, $loginData;
 
    // * Generate missing attempts
    // Fetch attempts
@@ -186,7 +188,7 @@ function generateUserItems($team) {
          // Attempt is missing, create one
          $newId = getRandomId();
          $stmt2 = $db->prepare("INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, 1);");
-         $stmt2->execute(['id' => $newId, 'idGroup' => $team['ID'], 'idItem' => $res['ID'], 'idUser' => $_SESSION['login']['ID']]);
+         $stmt2->execute(['id' => $newId, 'idGroup' => $team['ID'], 'idItem' => $res['ID'], 'idUser' => $loginData['ID']]);
          $attemptsIds[$res['ID']] = $newId;
       }
    }
@@ -233,7 +235,7 @@ function generateUserItems($team) {
 
 function openContestTeam($idItem) {
    // Open a contest for the team
-   global $db;
+   global $db, $loginData;
 
    $team = getUserTeam($idItem, true);
    if(!$team) {
@@ -249,7 +251,7 @@ function openContestTeam($idItem) {
        JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
        JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items.ID
        WHERE items.ID = :idItem AND (`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1) group by items.ID;');
-   $stmt->execute(['idItem' => $idItem, 'idUser' => $_SESSION['login']['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+   $stmt->execute(['idItem' => $idItem, 'idUser' => $loginData['ID'], 'idGroupSelf' => $loginData['idGroupSelf']]);
    $contestData = $stmt->fetch();
    if (!$contestData) {
        return ['success' => false, 'error' => "le concours n'existe pas ou vous n'y avez pas accès"];
@@ -300,7 +302,7 @@ function openContestTeam($idItem) {
 
 function closeContestTeam($idItem) {
    // Close a contest for the team
-   global $db;
+   global $db, $loginData;
    $team = getUserTeam($idItem, true);
 
    // Set contest as finished
