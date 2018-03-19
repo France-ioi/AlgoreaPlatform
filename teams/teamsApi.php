@@ -47,7 +47,7 @@ function getTeam($request) {
 
 function createTeam($request) {
    // Create a team
-   global $db, $loginData;
+   global $db, $loginData, $teamsApiBypass;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -104,7 +104,7 @@ function createTeam($request) {
 
 function joinTeam($request) {
    // Join a team with a password
-   global $db, $loginData;
+   global $db, $loginData, $teamsApiBypass;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -184,7 +184,7 @@ function startItem($request) {
 
 function changeTeamPassword($request) {
    // Change the password for a team
-   global $db, $loginData;
+   global $db, $loginData, $teamsApiBypass;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -216,7 +216,7 @@ function changeTeamPassword($request) {
 
 function removeTeamMember($request) {
    // Remove a member from a team
-   global $db, $loginData;
+   global $db, $loginData, $teamsApiBypass;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -284,7 +284,7 @@ function removeTeamMember($request) {
 
 function removeMemberData($team, $oldUserId, $newUserId) {
    // Unlink data when a member leaves a team
-   global $db, $loginData;
+   global $db;
 
    // Delete users_items from the user
    $stmt = $db->prepare("
@@ -310,7 +310,7 @@ function removeMemberData($team, $oldUserId, $newUserId) {
 
 function leaveTeam($request) {
    // Leave a team
-   global $db, $loginData;
+   global $db, $loginData, $teamsApiBypass;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
