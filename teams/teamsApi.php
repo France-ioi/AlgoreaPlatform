@@ -1,10 +1,12 @@
 <?php
-// json request parsing
-$postdata = file_get_contents("php://input");
-$request = (array) json_decode($postdata);
+if(!isset($teamsApiBypass)) {
+    // json request parsing
+    $postdata = file_get_contents("php://input");
+    $request = (array) json_decode($postdata);
 
-if (session_status() === PHP_SESSION_NONE){session_start();}
-header('Content-Type: application/json');
+    if (session_status() === PHP_SESSION_NONE){session_start();}
+    header('Content-Type: application/json');
+}
 
 if (!isset($request['action'])) {
    echo json_encode(array('result' => false, 'error' => 'api_error'));
@@ -13,6 +15,9 @@ if (!isset($request['action'])) {
 if (!isset($_SESSION['login']) || $_SESSION['login']['tempUser']) {
    echo json_encode(array('result' => false, 'error' => 'api_needs_login'));
    exit();
+}
+if(!isset($teamsApiBypass)) {
+    $loginData = $_SESSION['login'];
 }
 
 if(!function_exists('syncDebug')) { function syncDebug($type, $b_or_e, $subtype='') {} }
@@ -42,7 +47,7 @@ function getTeam($request) {
 
 function createTeam($request) {
    // Create a team
-   global $db;
+   global $db, $loginData;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -61,14 +66,14 @@ function createTeam($request) {
    $item = $stmt->fetch();
 
    // Check item allows team modifications
-   if(!$item['bTeamsEditable']) {
+   if(!$item['bTeamsEditable'] && !isset($teamsApiBypass)) {
       return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
    // Check user is qualified
    if($item['idTeamInGroup'] && $item['sTeamMode'] != 'None') {
       $stmt = $db->prepare("SELECT ID FROM groups_ancestors WHERE idGroupAncestor = :idGroupAncestor AND idGroupChild = :idGroupSelf;");
-      $stmt->execute(['idGroupAncestor' => $item['idTeamInGroup'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+      $stmt->execute(['idGroupAncestor' => $item['idTeamInGroup'], 'idGroupSelf' => $loginData['idGroupSelf']]);
       if(!$stmt->fetchColumn()) {
          // Not qualified
          return ['result' => false, 'error' => 'teams_needs_qualification'];
@@ -85,11 +90,11 @@ function createTeam($request) {
 
    // Add user as owner
    $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroupOwned, :idGroup, 0, 'direct', 'owner', NOW());");
-   $stmt->execute(['idGroupOwned' => $_SESSION['login']['idGroupOwned'], 'idGroup' => $idGroup]);
+   $stmt->execute(['idGroupOwned' => $loginData['idGroupOwned'], 'idGroup' => $idGroup]);
 
    // Add user as member too
    $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
-   $stmt->execute(['idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idGroup' => $idGroup]);
+   $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $idGroup]);
 
    Listeners::groupsGroupsAfter($db);
 
@@ -99,7 +104,7 @@ function createTeam($request) {
 
 function joinTeam($request) {
    // Join a team with a password
-   global $db;
+   global $db, $loginData;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -114,7 +119,7 @@ function joinTeam($request) {
    $stmt->execute(['idItem' => $request['idItem']]);
    $item = $stmt->fetch();
    // Check item allows team modifications
-   if(!$item['bTeamsEditable']) {
+   if(!$item['bTeamsEditable'] && !isset($teamsApiBypass)) {
       return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
@@ -127,13 +132,13 @@ function joinTeam($request) {
       $team = getUserTeam($request['idItem'], true, $res['ID']);
       // Check requirements
       if($team['iTeamParticipating']) {
-         $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf']);
+         $req = checkRequirements($team, $request['idItem'], $loginData['idGroupSelf']);
          if(!$req['result']) { return $req; }
       }
 
       // Add user as member
       $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
-      $stmt->execute(['idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'idGroup' => $team['ID']]);
+      $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $team['ID']]);
 
       Listeners::groupsGroupsAfter($db);
 
@@ -149,7 +154,7 @@ function joinTeam($request) {
 
 function startItem($request) {
    // Get access to an item as a team
-   global $db;
+   global $db, $loginData;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -179,7 +184,7 @@ function startItem($request) {
 
 function changeTeamPassword($request) {
    // Change the password for a team
-   global $db;
+   global $db, $loginData;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -188,7 +193,7 @@ function changeTeamPassword($request) {
    $stmt->execute(['idItem' => $request['idItem']]);
    $item = $stmt->fetch();
    // Check item allows team modifications
-   if(!$item['bTeamsEditable']) {
+   if(!$item['bTeamsEditable'] && !isset($teamsApiBypass)) {
       return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
@@ -211,7 +216,7 @@ function changeTeamPassword($request) {
 
 function removeTeamMember($request) {
    // Remove a member from a team
-   global $db;
+   global $db, $loginData;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -223,11 +228,11 @@ function removeTeamMember($request) {
    $stmt->execute(['idItem' => $request['idItem']]);
    $item = $stmt->fetch();
    // Check item allows team modifications
-   if(!$item['bTeamsEditable']) {
+   if(!$item['bTeamsEditable'] && !isset($teamsApiBypass)) {
       return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
-   if($request['idGroupChild'] == $_SESSION['login']['idGroupSelf']) {
+   if($request['idGroupChild'] == $loginData['idGroupSelf']) {
       // Removing oneself is handled by leaveTeam
       return leaveTeam($request);
    }
@@ -261,7 +266,7 @@ function removeTeamMember($request) {
    // Handle groups_attempts, users_answers and users_items
    $stmt = $db->prepare("SELECT ID FROM users WHERE idGroupSelf = :idGroup;");
    $stmt->execute(['idGroup' => $request['idGroupChild']]);
-   removeMemberData($team, $stmt->fetchColumn(), $_SESSION['login']['ID']);
+   removeMemberData($team, $stmt->fetchColumn(), $loginData['ID']);
 
    // Return new state of team
    $newChildren = [];
@@ -279,7 +284,7 @@ function removeTeamMember($request) {
 
 function removeMemberData($team, $oldUserId, $newUserId) {
    // Unlink data when a member leaves a team
-   global $db;
+   global $db, $loginData;
 
    // Delete users_items from the user
    $stmt = $db->prepare("
@@ -305,7 +310,7 @@ function removeMemberData($team, $oldUserId, $newUserId) {
 
 function leaveTeam($request) {
    // Leave a team
-   global $db;
+   global $db, $loginData;
    if(!isset($request['idItem']) || !$request['idItem']) {
       return ['result' => false, 'error' => 'api_error'];
    }
@@ -318,13 +323,13 @@ function leaveTeam($request) {
    $stmt->execute(['idItem' => $request['idItem']]);
    $item = $stmt->fetch();
    // Check item allows team modifications
-   if(!$item['bTeamsEditable']) {
+   if(!$item['bTeamsEditable'] && !isset($teamsApiBypass)) {
       return ['result' => false, 'error' => 'teams_not_editable'];
    }
 
    // Check requirements
    if($team['iTeamParticipating']) {
-      $req = checkRequirements($team, $request['idItem'], $_SESSION['login']['idGroupSelf'], true);
+      $req = checkRequirements($team, $request['idItem'], $loginData['idGroupSelf'], true);
       if(!$req['result']) { return $req; }
    }
 
@@ -334,10 +339,10 @@ function leaveTeam($request) {
    $adminGroupGroup = $stmt->fetch();
 
    $deleteGroupAfter = false;
-   if($adminGroupGroup['idGroupParent'] == $_SESSION['login']['idGroupOwned']) {
+   if($adminGroupGroup['idGroupParent'] == $loginData['idGroupOwned']) {
       // User is owner of this group 
       $stmt = $db->prepare("SELECT users.ID, users.idGroupOwned FROM users JOIN groups_groups ON idGroupChild = users.idGroupSelf WHERE users.idGroupOwned != :idCurrentOwner and groups_groups.idGroupParent = :idGroup ORDER BY groups_groups.sStatusDate ASC LIMIT 1;");
-      $stmt->execute(['idCurrentOwner' => $_SESSION['login']['idGroupOwned'], 'idGroup' => $team['ID']]);
+      $stmt->execute(['idCurrentOwner' => $loginData['idGroupOwned'], 'idGroup' => $team['ID']]);
       $newAdmin = $stmt->fetch();
       if($newAdmin) {
          // Assign next oldest member as owner
@@ -355,7 +360,7 @@ function leaveTeam($request) {
 
    // Remove user
    $stmt = $db->prepare("DELETE FROM groups_groups WHERE idGroupParent = :idGroup AND idGroupChild = :idGroupSelf;");
-   $stmt->execute(['idGroup' => $team['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
+   $stmt->execute(['idGroup' => $team['ID'], 'idGroupSelf' => $loginData['idGroupSelf']]);
 
    if($deleteGroupAfter) {
       // Delete team
@@ -368,7 +373,7 @@ function leaveTeam($request) {
          $stmt->execute(['idGroupOwned' => $adminGroupGroup['idGroupParent']]);
          $newAdmin = $stmt->fetch();
       }
-      removeMemberData($team, $_SESSION['login']['ID'], $newAdmin['ID']);
+      removeMemberData($team, $loginData['ID'], $newAdmin['ID']);
    }
 
    Listeners::groupsGroupsAfter($db);
@@ -376,8 +381,9 @@ function leaveTeam($request) {
    return ['result' => true];
 }
 
-
-if($request['action'] == 'getTeam') {
+if(isset($teamsApiBypass) && $teamsApiBypass) {
+   // Do nothing
+} elseif($request['action'] == 'getTeam') {
    die(json_encode(getTeam($request)));
 } elseif($request['action'] == 'createTeam') {
    die(json_encode(createTeam($request)));
