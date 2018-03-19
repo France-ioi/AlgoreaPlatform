@@ -68,6 +68,7 @@ body {width: 800px;margin-left:auto;margin-right:auto;margin-top:50px;}
       <option>getTeam</option>
       <option>createTeam</option>
       <option>joinTeam</option>
+      <option>changeTeamPassword</option>
       <option>startItem</option>
       <option value="removeTeamMember">removeTeamMember (only another member)</option>
       <option>leaveTeam</option>
@@ -83,7 +84,7 @@ foreach($selectItems as $si) {
     </select>
   </p>
   <p>Name (createTeam) : <input type="text" name="name" /></p>
-  <p>Password (createTeam, joinTeam) : <input type="text" name="password" /></p>
+  <p>Password (createTeam, joinTeam, changeTeamPassword) : <input type="text" name="password" /></p>
   <p>idGroupChild (removeTeamMember) : <input type="text" name="idGroupChild" /></p>
   </div>
   </form>
