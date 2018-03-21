@@ -45,13 +45,14 @@ function getContestEndTime($sContestStartDate, $duration) {
 }
 
 function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
-	global $db;
+	global $db, $loginData;
 
     // If it's a team item, use the team openContest
-    $stmt = $db->prepare('SELECT sTeamMode FROM items WHERE idItem = :idItem;');
+    $stmt = $db->prepare('SELECT sTeamMode FROM items WHERE ID = :idItem;');
     $stmt->execute(['idItem' => $idItem]);
     if($stmt->fetchColumn()) {
         require_once __DIR__.'/../teams/teamsCommon.php';
+        $loginData = $_SESSION['login'];
         $res = openContestTeam($idItem);
         $res['success'] = $res['result'];
         return $res;
@@ -96,13 +97,14 @@ function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
 }
 
 function closeContest($idItem) {
-	global $db;
+	global $db, $loginData;
 
     // If it's a team item, use the team closeContest
     $stmt = $db->prepare('SELECT sTeamMode FROM items WHERE ID = :idItem;');
     $stmt->execute(['idItem' => $idItem]);
     if($stmt->fetchColumn()) {
         require_once __DIR__.'/../teams/teamsCommon.php';
+        $loginData = $_SESSION['login'];
         $res = closeContestTeam($idItem);
         $res['success'] = $res['result'];
         return $res;

@@ -5,6 +5,7 @@ require_once __DIR__."/../shared/connect.php";
 require_once __DIR__."/../shared/listeners.php";
 require_once __DIR__."/../commonFramework/modelsManager/modelsTools.inc.php"; // for getRandomID
 
+
 // *** Helper functions for teams
 
 function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
@@ -67,7 +68,11 @@ function getUserTeam($idItem, $getExtra=false, $idTeam=null) {
 function checkRequirements($team, $idItem, $modGroup=null, $removing=false) {
    // Check whether a team still fulfills the requirements of the item after
    // adding or removing a member
-   global $db, $loginData;
+   global $db, $loginData, $teamsApiBypass;
+
+   if(isset($teamsApiBypass)) {
+      return ['result' => true];
+   }
 
    $stmt = $db->prepare("SELECT sTeamMode, bTeamsEditable, idTeamInGroup, iTeamMaxMembers from items WHERE ID = :idItem;");
    $stmt->execute(['idItem' => $idItem]);

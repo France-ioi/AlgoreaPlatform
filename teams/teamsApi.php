@@ -166,6 +166,12 @@ function startItem($request) {
       return openContestTeam($request['idItem']);
    }
 
+   // Get team
+   $team = getUserTeam($request['idItem'], true);
+   if(!$team) {
+      return ['result' => false, 'error' => 'teams_no_team'];
+   }
+
    // Grant access to the item
    $stmt = $db->prepare('insert into groups_items (idGroup, idItem, sPartialAccessDate, sCachedPartialAccessDate, bCachedPartialAccess) values (:idGroup, :idItem, NOW(), NOW(), 1) on duplicate key update sPartialAccessDate = NOW(), sCachedPartialAccessDate = NOW(), bCachedPartialAccess = 1;');
    $stmt->execute(['idItem' => $request['idItem'], 'idGroup' => $team['ID']]);
