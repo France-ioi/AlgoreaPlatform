@@ -1,5 +1,5 @@
 <div ng-if="isMobileLayout && hasSidebarLeft && !layout.navTopIsOpen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control main-titlebar-item' />
-<div class="main-titlebar-icon main-titlebar-item material-icons">{{ mainIconName }}</div>
+<div class="main-titlebar-icon main-titlebar-item material-icons {{ mainIconClass }}">{{ mainIconName }}</div>
 <div class="main-titlebar-titles main-titlebar-item">
   <div class="main-titlebar-title1">{{strings.sTitle}}</div>
   <span class="menubar-userinfos" ng-if="showUserInfos">{{userInfos}}</span>
