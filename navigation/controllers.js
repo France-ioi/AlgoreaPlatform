@@ -722,19 +722,34 @@ angular.module('algorea')
                // Filter locales depending on the config
                $scope.locales.splice(i, 1);
             }
-            if($scope.init && locale.id == config.domains.current.defaultLanguage) {
+            for(var j=0; j < $scope.targets.length; j++) {
+               // If there are target languages, see if one got available
+               if(locale.id != $scope.targets[j]) continue;
                if(noApply === true) {
                   $scope.curLocale = locale;
                } else {
                   $scope.changeLocale(locale);
                }
-               $scope.init = false;
+               $scope.targets.splice(j, $scope.targets.length - j);
             }
          };
       };
 
       $scope.curLocale = $scope.locales[0];
-      $scope.init = true; // Did we find the defaultLanguage yet?
+
+      // Target languages by order of importance
+      $scope.targets = [];
+      var acceptLanguages = config.acceptLanguage ? config.acceptLanguage.split(',') : [];
+      for(var i=0; i < acceptLanguages.length; i++) {
+         if(acceptLanguages[i] && $scope.targets.indexOf(acceptLanguages[i].substr(0, 2)) < 0) {
+            $scope.targets.push(acceptLanguages[i].substr(0, 2));
+         }
+      }
+      if(config.domains.current.forceDefaultLanguage) {
+         $scope.targets.splice(0, 0, config.domains.current.defaultLanguage);
+      } else {
+         $scope.targets.push(config.domains.current.defaultLanguage);
+      }
 
       $scope.updateLocales(true);
       $scope.changeLocale($scope.curLocale, true);
