@@ -574,7 +574,7 @@ function getUsersAnswers($request, $db) {
       }
 
       // Checking if user can access this item; TODO :: maybe check descendants of groupOwned too?
-      $query = "SELECT users_items.ID, users_items.bValidated as bValidated, MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions
+      $query = "SELECT users_items.ID, users_items.bValidated as bValidated, MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions, MAX(`groups_items`.`bCachedManagerAccess`) as bManagerAccess
       FROM users_items
       JOIN groups_items on groups_items.idItem = :idItem
       JOIN groups_ancestors as selfGroupAncestors on selfGroupAncestors.idGroupAncestor = groups_items.idGroup
@@ -589,7 +589,7 @@ function getUsersAnswers($request, $db) {
          'idGroupSelf' => $_SESSION['login']['idGroupSelf']
       ]);
       $test = $stmt->fetch();
-      if (!$test || (!$test['bValidated'] && !$test['bAccessSolutions'])) {
+      if (!$test || (!$test['bValidated'] && !$test['bAccessSolutions'] && !$test['bManagerAccess'])) {
          error_log('warning: user '.$_SESSION['login']['ID'].' tried to access users_answers for item '.$idItem.' without permission.');
          error_log(json_encode($test));
          return ['result' => false];
