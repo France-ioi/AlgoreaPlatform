@@ -160,7 +160,6 @@ angular.module('algorea')
 
 
         $scope.addNewItem = function() {
-            //console.log($scope.item);return
             var item = createItem();
             addItem(item)
         }
@@ -169,16 +168,25 @@ angular.module('algorea')
 
         $scope.clipboard = null;
         $scope.copyItem = function(item) {
-            console.log(item)
             $scope.clipboard = {
                 ID: item.ID,
-                title: $scope.item.strings[0].sTitle
+                title: item.strings[0].sTitle
             }
         }
 
 
-        $scope.cutItem = function() {
+        $scope.cutItem = function(item) {
+            $scope.clipboard = {
+                ID: item.ID,
+                title: item.strings[0].sTitle
+            }
+            deleteItem(item)
+        }
 
+
+        $scope.pasteItem = function() {
+            var item = ModelsManager.getRecord('items', $scope.clipboard.ID);
+            addItem(item)
         }
 
 

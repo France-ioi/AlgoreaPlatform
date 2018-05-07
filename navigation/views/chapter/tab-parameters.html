@@ -1,41 +1,43 @@
-<form class="form-horizontal">
-    <!--
-    <div class="form-group">
-        <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
-        <div class="col-xs-8">
-            <select ng-model="item.sType" class="form-control">
-                <option ng-value="key" ng-repeat="(key, value) in models.items.fields.sType.values" ng-selected="item.sType == key" ng-if="key != 'Root'">{{value.label}}</option>
-            </select>
+<div class="content-wrapper">
+    <form class="form-horizontal">
+        <!--
+        <div class="form-group">
+            <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
+            <div class="col-xs-8">
+                <select ng-model="item.sType" class="form-control">
+                    <option ng-value="key" ng-repeat="(key, value) in models.items.fields.sType.values" ng-selected="item.sType == key" ng-if="key != 'Root'">{{value.label}}</option>
+                </select>
+            </div>
         </div>
-    </div>
-    -->
-    <div ng-if="item.sType=='Task' || item.sType=='Course'">
-        <field model="item" field="items.sUrl" />
-        <field model="item" field="items.bUsesAPI" />
-    </div>
+        -->
+        <div ng-if="item.sType=='Task' || item.sType=='Course'">
+            <field model="item" field="items.sUrl" />
+            <field model="item" field="items.bUsesAPI" />
+        </div>
 
-    <field model="item" field="items.bReadOnly" />
-    <field model="item" field="items.sFullScreen" />
-    <field model="item" field="items.sTextId" />
-    <field model="item" field="items.bShowSource" />
-    <field model="item" field="items.idItemUnlocked" />
-    <field model="item" field="items.iScoreMinUnlock" />
-    <field model="item" field="items.sSupportedLangProg" />
-    <div class="form-group row">
-        <label class="control-label col-xs-4" ng-i18next="models_items_fields_idDefaultLanguage_label"></label>
-        <div class="col-xs-8">
-            <select class="form-control" ng-model="item.idDefaultLanguage" ng-options="is.language.ID as is.language.sName for is in item.strings"></select>
+        <field model="item" field="items.bReadOnly" />
+        <field model="item" field="items.sFullScreen" />
+        <field model="item" field="items.sTextId" />
+        <field model="item" field="items.bShowSource" />
+        <field model="item" field="items.idItemUnlocked" />
+        <field model="item" field="items.iScoreMinUnlock" />
+        <field model="item" field="items.sSupportedLangProg" />
+        <div class="form-group row">
+            <label class="control-label col-xs-4" ng-i18next="models_items_fields_idDefaultLanguage_label"></label>
+            <div class="col-xs-8">
+                <select class="form-control" ng-model="item.idDefaultLanguage" ng-options="is.language.ID as is.language.sName for is in item.strings"></select>
+            </div>
         </div>
-    </div>
-    <field model="item" field="items.sDuration"/>
-    <field model="item" field="items.bNoScore" />
-    <field model="item" field="items.bTitleBarVisible" />
-    <field model="item" field="items.bDisplayDetailsInParent" />
-    <field model="item" field="items.bDisplayChildrenAsTabs" />
-    <field model="item" field="items.bHasAttempts" />
-    <field model="item" field="items.groupCodeEnter" />
-    <p>
-        <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="reset"></a>
-        <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="save"></a>
-    </p>
-</form>
+        <field model="item" field="items.sDuration"/>
+        <field model="item" field="items.bNoScore" />
+        <field model="item" field="items.bTitleBarVisible" />
+        <field model="item" field="items.bDisplayDetailsInParent" />
+        <field model="item" field="items.bDisplayChildrenAsTabs" />
+        <field model="item" field="items.bHasAttempts" />
+        <field model="item" field="items.groupCodeEnter" />
+        <p>
+            <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="reset"></a>
+            <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="save"></a>
+        </p>
+    </form>
+</div>
