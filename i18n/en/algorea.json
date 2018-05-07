@@ -458,6 +458,17 @@
     "userInfos_info_email": "Email address :",
     "userInfos_change_password": "Change my password",
 
+    "chapterEditor_content": "Content",
+    "chapterEditor_strings": "Strings",
+    "chapterEditor_parameters": "Parameters",
+    "chapterEditor_remove_item": "Remove this item from this chapter",
+    "chapterEditor_destroy_item": "Destroy item completely",
+    "chapterEditor_delete_cancel": "Cancel",
+    "chapterEditor_add_existing_item": "Add an existing item to this chapter",
+    "chapterEditor_add_new_item": "Create a new item and add it to this chapter",
+    "chapterEditor_paste_item": "Add %s to this chapter",
+    "chapterEditor_new_item_title": "New item",
+
     "models_filters_fields_idUser_label": "User ID",
     "models_filters_fields_sName_label": "Filter name",
     "models_filters_fields_bSelected_label": "Selected",

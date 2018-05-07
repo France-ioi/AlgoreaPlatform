@@ -23,7 +23,9 @@
     "ng-i18next": "^1.0.3",
     "i18next-xhr-backend": "^1.2.0",
     "js-md5": "md5#^0.6.0",
-    "bowser": "latest"
+    "bowser": "latest",
+    "angular-ui-sortable": "^0.19.0",
+    "i18next-sprintf-postprocessor": "^0.2.2"
   },
   "resolutions": {
     "jschannel": "01f53a1"

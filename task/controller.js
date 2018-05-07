@@ -269,8 +269,8 @@ angular.module('algorea')
       $scope.showView($scope.askedView);
    };
    $scope.isActive = function(view) {
-     if ($scope.inForum || $scope.taskName == 'task-editor') { 
-         return (view == 'editor'); 
+     if ($scope.inForum || $scope.taskName == 'task-editor') {
+         return (view == 'editor');
      }
      return (view == this.pathParams.viewr);
    };

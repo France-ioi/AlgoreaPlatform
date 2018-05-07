@@ -1,0 +1,16 @@
+<div class="chapter-editor">
+    <div class="main-titlebar chapter-titlebar" ng-if="item.bTitleBarVisible" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
+    <div class="main-area main-area-normal">
+        <uib-tabset>
+            <uib-tab heading="{{'chapterEditor_content'|i18next}}">
+                <div ng-include="templatesPrefix+'/navigation/views/chapter/tab-content.html'"></div>
+            </uib-tab>
+            <uib-tab heading="{{'chapterEditor_strings'|i18next}}">
+                <div ng-include="templatesPrefix+'/navigation/views/chapter/tab-strings.html'"></div>
+            </uib-tab>
+            <uib-tab heading="{{'chapterEditor_parameters'|i18next}}">
+                <div ng-include="templatesPrefix+'/navigation/views/chapter/tab-parameters.html'"></div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

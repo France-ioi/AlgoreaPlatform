@@ -229,6 +229,23 @@ body {
   flex-direction: column;
 }
 
+.material-btn {
+  cursor: pointer;
+}
+
+.chapter-editor .drag-ctrl {
+  cursor: move;
+}
+
+.chapter-editor .children-item-row {
+  vertical-align: baseline;
+  line-height: 1em;
+}
+
+.chapter-editor .children-item {
+  display: inline-block;
+}
+
 .forum-in-task {
    width:800px;
    margin-left:auto;
@@ -252,3 +269,5 @@ body {
    margin-left:auto;
    margin-right:auto;
 }
+
+

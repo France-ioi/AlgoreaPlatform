@@ -1,0 +1,28 @@
+<div class="content-wrapper">
+    <div class="children-list-container">
+        <div class="children-list-left-margin"></div>
+        <div class="children-list" ui-sortable="sortableOptions" ng-model="items">
+            <div ng-repeat="item in items track by item.ID" class="children-item-row">
+                <i class="material-icons material-btn drag-ctrl">ic_drag_handle</i>
+                <div display-item from="parent" class="children-item"></div>
+                <i class="material-icons material-btn" ng-click="copyItem(item)">content_copy</i>
+                <i class="material-icons material-btn" ng-click="cutItem(item)">content_cut</i>
+                <i class="material-icons material-btn" ng-click="removeItem(item)">remove_circle</i>
+            </div>
+        </div>
+        <div class="children-list-right-margin"></div>
+    </div>
+</div>
+
+<a ng-click="addExistingItem()" href="#">
+    <i class="material-icons material-btn">ic_add_circle</i>
+    <span ng-i18next="chapterEditor_add_existing_item"></span>
+</a>
+<a ng-click="addNewItem()" href="#">
+    <i class="material-icons material-btn">ic_add_circle</i>
+    <span ng-i18next="chapterEditor_add_new_item"></span>
+</a>
+<a ng-click="pasteItem()" href="#" ng-if="clipboard">
+    <i class="material-icons material-btn">ic_content_paste</i>
+    <span ng-i18next="({sprintf:[clipboard.title]})chapterEditor_paste_item"></span>
+</a>

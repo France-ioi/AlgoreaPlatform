@@ -56,7 +56,7 @@ function createMissingUserItems($db, &$serverChanges, $type) {
    if (count($diff)) {
       $first = true;
       foreach ($diff as $nothing => $idItem) {
-         if (!$first) {$request .= ",";}
+         //if (!$first) {$request .= ",";}
          $ID = getRandomID();
          $first = false;
          $serverChanges['users_items'][$type][$ID] = default_user_item_factory($userId, $serverChanges['items'][$type][$idItem], $ID);
