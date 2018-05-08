@@ -1,0 +1,17 @@
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>
+<div class="content-wrapper">
+
+    <div>
+        <i class="material-icons material-btn" ng-click="openParent()" ng-if="item.item_item_ID">ic_arrow_upward</i>
+        {{item.strings[0].sTitle}}
+    </div>
+
+    <div class="children-list">
+        <div class="children-item-row" ng-repeat="child in children track by child.ID">
+            <div>
+                <a href="#" ng-click="openItem(child)">{{child.strings[0].sTitle}} </a>
+                <i class="material-icons material-btn" ng-click="select(child)">ic_add_circle</i>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,14 +2,21 @@
 
 angular.module('algorea')
 .controller('chapterController', [
-    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService',
-    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService) {
+    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService', '$timeout',
+    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, $timeout) {
 
-        var that = this;
-
-        $scope.models = models;
-        $scope.sortable_options = {
-            handle: '.drag-ctrl'
+        $scope.sortableOptions = {
+            handle: '.drag-ctrl',
+            stop: function(event, ui) {
+                var iChildOrder = {}
+                $.each($scope.items, function(idx, item) {
+                    iChildOrder[item.ID] = idx + 1;
+                });
+                $.each($scope.item.children, function(idx, itemItem) {
+                    itemItem.iChildOrder = iChildOrder[itemItem.idItemChild];
+                    ModelsManager.updated('items_items', itemItem.ID);
+                });
+            }
         }
 
         // sync does not work without this
@@ -57,6 +64,12 @@ angular.module('algorea')
         $scope.item_strings = $scope.item.strings[0];
         $scope.item_strings_compare = null;
         $scope.items = itemService.getChildren($scope.item);
+
+        $scope.$on('algorea.reloadView', function(event, view) {
+            if(view == 'right') {
+                $scope.items = itemService.getChildren($scope.item);
+            }
+        });
 
 
         $scope.checkSaveItem = function() {
@@ -131,13 +144,14 @@ angular.module('algorea')
             itemItem.idItemParent = $scope.item.ID;
             itemItem.idItemChild = item.ID;
             var iChildOrder = 0;
-            for(var k in $scope.item.children) {
-                if($scope.item.children[k].iChildOrder > iChildOrder) {
-                    iChildOrder = $scope.item.children[k].iChildOrder;
+            angular.forEach($scope.item.children, function(child) {
+                if(child.iChildOrder > iChildOrder) {
+                    iChildOrder = child.iChildOrder;
                 }
-            }
+            })
             itemItem.iChildOrder = iChildOrder + 1;
             ModelsManager.insertRecord("items_items", itemItem);
+            $rootScope.$broadcast('algorea.reloadView', 'right');
         }
 
 
@@ -151,12 +165,15 @@ angular.module('algorea')
             });
             var iChildOrder = item_item['iChildOrder'];
             if(destroy) {
+                if($scope.clipboard && $scope.clipboard.ID == item.ID) {
+                    $scope.clipboard = null;
+                }
                 ModelsManager.deleteRecord('items', item_item.idItemChild);
             }
             ModelsManager.deleteRecord('items_items', item_item.ID);
-            that.changeChildrenOrderBetween($scope.item, -1, iChildOrder + 1);
+            //changeChildrenOrderBetween($scope.item, -1, iChildOrder + 1);
+            $rootScope.$broadcast('algorea.reloadView', 'right');
         }
-
 
 
         $scope.addNewItem = function() {
@@ -165,6 +182,28 @@ angular.module('algorea')
         }
 
 
+
+        $scope.addExistingItem = function() {
+            $uibModal.open({
+                templateUrl: '/navigation/views/chapter/browse-items-dialog.html',
+                controller: 'chapterEditorBrowserController',
+                resolve: {
+                    callback: function() {
+                        return function(item) {
+                            console.log(item)
+                            addItem(item)
+                        }
+                    },
+                    startItem: function() {
+                        return $scope.item
+                    }
+                },
+                backdrop: 'static',
+                keyboard: false
+            });
+        }
+
+        // clipboard
 
         $scope.clipboard = null;
         $scope.copyItem = function(item) {
@@ -190,6 +229,8 @@ angular.module('algorea')
         }
 
 
+
+
         $scope.removeItem = function(item) {
             $uibModal.open({
                 templateUrl: '/navigation/views/chapter/delete-dialog.html',
@@ -212,16 +253,14 @@ angular.module('algorea')
         },
 
 
-        this.changeChildrenOrderBetween = function(object, delta, beginOrder, endOrder) {
-            if(this.childrenFixedRanksName && object[this.childrenFixedRanksName]) {
-               return;
-            }
-            var that = this;
+        /// need it ???
+        /*
+        function changeChildrenOrderBetween(object, delta, beginOrder, endOrder) {
             var maxOrder = 0;
             var minOrder = 1000000000;
             var iRelation, relation;
             $.each(object.children, function(iRelation, relation) {
-               var relationOrder = relation[that.iChildOrderFieldName];
+               var relationOrder = relation['iChildOrder'];
                if (relationOrder > maxOrder) {
                   maxOrder = relationOrder;
                }
@@ -236,14 +275,14 @@ angular.module('algorea')
                beginOrder = minOrder;
             }
             $.each(object.children, function(iRelation, relation) {
-               var prevOrder = relation[that.iChildOrderFieldName];
+               var prevOrder = relation['iChildOrder'];
                if ((prevOrder >= beginOrder) && (prevOrder < endOrder)) {
-                  relation[that.iChildOrderFieldName] = relation[that.iChildOrderFieldName]+delta;
-                  ModelsManager.updated(that.relationsModelName, relation.ID);
+                  relation['iChildOrder'] = relation['iChildOrder']+delta;
+                  ModelsManager.updated('items_items', relation.ID);
                }
             });
         },
-
+        */
 
         // strings
 
@@ -281,9 +320,42 @@ angular.module('algorea')
                 $scope.item_strings = $scope.item.strings[0];
             }
         };
+    }
+]);
 
 
 
 
+angular.module('algorea')
+.controller('chapterEditorBrowserController', [
+    '$scope', 'itemService', '$uibModalInstance', 'startItem', 'callback',
+    function($scope, itemService, $uibModalInstance, startItem, callback) {
+
+        $scope.openItem = function(item) {
+            $scope.item = item;
+            $scope.children = itemService.getChildren(item);
+        }
+
+
+        $scope.openParent = function() {
+            console.log($scope.item.item_item_ID)
+            var itemItem = ModelsManager.getRecord('items_items', $scope.item.item_item_ID);
+            var item = ModelsManager.getRecord('items', itemItem.idItemParent);
+            $scope.openItem(item)
+        }
+
+
+        $scope.select = function(item) {
+            $uibModalInstance.dismiss('cancel');
+            callback(item);
+        }
+
+
+        $scope.close = function() {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+
+        $scope.openItem(startItem);
     }
 ]);

@@ -231,6 +231,8 @@ body {
 
 .material-btn {
   cursor: pointer;
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 .chapter-editor .drag-ctrl {

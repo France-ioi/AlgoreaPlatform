@@ -1,6 +1,5 @@
 <div class="content-wrapper">
     <form class="form-horizontal">
-        <!--
         <div class="form-group">
             <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
             <div class="col-xs-8">
@@ -9,7 +8,6 @@
                 </select>
             </div>
         </div>
-        -->
         <div ng-if="item.sType=='Task' || item.sType=='Course'">
             <field model="item" field="items.sUrl" />
             <field model="item" field="items.bUsesAPI" />
@@ -32,9 +30,12 @@
         <field model="item" field="items.bNoScore" />
         <field model="item" field="items.bTitleBarVisible" />
         <field model="item" field="items.bDisplayDetailsInParent" />
-        <field model="item" field="items.bDisplayChildrenAsTabs" />
+
+        <div ng-if="item.sType!='Task' && item.sType!='Course'">
+            <field model="item" field="items.bDisplayChildrenAsTabs" />
+            <field model="item" field="items.groupCodeEnter" />
+        </div>
         <field model="item" field="items.bHasAttempts" />
-        <field model="item" field="items.groupCodeEnter" />
         <p>
             <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="reset"></a>
             <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="save"></a>
