@@ -159,7 +159,7 @@ angular.module('algorea')
       var groupItem = itemService.getGroupItem(item);
       if((my_user_item && my_user_item.bValidated)
           || item.bAccessSolutions || item.bOwnerAccess || item.bManagerAccess
-          || (groupItem && (groupItem.bCachedAccessSolutions || groupItem.bCachedManagerAccess))) {
+          || (groupItem && (groupItem.bCachedAccessSolutions || groupItem.bCachedManagerAccess || groupItem.bManagerAccess || groupItem.bOwnerAccess))) {
          var popupData = {
                user_item: user_item,
                thread: thread,
