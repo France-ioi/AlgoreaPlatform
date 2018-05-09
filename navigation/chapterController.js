@@ -33,14 +33,13 @@ angular.module('algorea')
         })
 
 
-        //TODO:
         $scope.editable = function() {
-            // TODO: test access
-            return true;
-
+            var groupItem = itemService.getGroupItem($scope.item);
+            if(!groupItem) return false;
+            return groupItem.bOwnerAccess || groupItem.bManagerAccess;
         }
         $scope.mode = 'view';
-//$scope.mode = 'edit'; // testing
+
 
         $scope.setMode = function(mode) {
             $scope.mode = $scope.editable ? mode : false;
