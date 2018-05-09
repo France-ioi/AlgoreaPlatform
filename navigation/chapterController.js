@@ -2,8 +2,8 @@
 
 angular.module('algorea')
 .controller('chapterController', [
-    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService', '$timeout',
-    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, $timeout) {
+    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService', 'pathService',
+    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, pathService) {
 
 
         $scope.sortableOptions = {
@@ -59,8 +59,7 @@ angular.module('algorea')
         $scope.item_strings_compare = null;
 
         function refresh() {
-            var itemItem = ModelsManager.getRecord('items_items', $scope.item.item_item_ID);
-            var parent = ModelsManager.getRecord('items', itemItem.idItemParent);
+            var parent = ModelsManager.getRecord('items', pathService.getPathParams('right').parentItemID);
             $scope.allowReorder = !parent.bFixedRanks;
             $scope.items = itemService.getChildren($scope.item);
         }
@@ -195,12 +194,14 @@ angular.module('algorea')
                 resolve: {
                     callback: function() {
                         return function(item) {
-                            console.log(item)
-                            addItem(item)
+                            addItem(item);
                         }
                     },
                     startItem: function() {
-                        return $scope.item
+                        return $scope.item;
+                    },
+                    startPath: function() {
+                        return pathService.getPathParams('right').path;
                     }
                 },
                 backdrop: 'static',
@@ -316,19 +317,36 @@ angular.module('algorea')
 
 angular.module('algorea')
 .controller('chapterEditorBrowserController', [
-    '$scope', 'itemService', '$uibModalInstance', 'startItem', 'callback',
-    function($scope, itemService, $uibModalInstance, startItem, callback) {
+    '$scope', 'itemService', '$uibModalInstance', 'startItem', 'startPath', 'callback',
+    function($scope, itemService, $uibModalInstance, startItem, startPath, callback) {
 
-        $scope.openItem = function(item) {
+
+
+        var path = startPath.slice();
+        path.pop();
+
+
+        $scope.openItem = function(item, path_skip) {
+            if($scope.item && !path_skip) {
+                path.push($scope.item.ID);
+            }
             $scope.item = item;
             $scope.children = itemService.getChildren(item);
         }
 
 
+
+        $scope.haveParent = function() {
+            return $scope.item && $scope.item.ID != path[0];
+        }
+
+
         $scope.openParent = function() {
-            var itemItem = ModelsManager.getRecord('items_items', $scope.item.item_item_ID);
-            var item = ModelsManager.getRecord('items', itemItem.idItemParent);
-            $scope.openItem(item)
+            var parentId = path.pop();
+            if(parentId) {
+                var parent = ModelsManager.getRecord('items', parentId);
+                $scope.openItem(parent, true);
+            }
         }
 
 
