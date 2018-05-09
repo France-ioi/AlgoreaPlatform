@@ -129,12 +129,16 @@ angular.module('algorea')
             groupItem.idUserCreated = user.ID;
             groupItem.sPropagateAccess = 'self'; //TODO: remove
             ModelsManager.insertRecord("groups_items", groupItem);
-
             var itemStrings = ModelsManager.createRecord("items_strings");
             itemStrings.idItem = item.ID;
             itemStrings.idLanguage = 1; // TODO: handle this
             itemStrings.sTitle = $i18next.t('chapterEditor_new_item_title');
             ModelsManager.insertRecord("items_strings", itemStrings);
+
+            var userItem = ModelsManager.createRecord("users_items");
+            userItem.idUser = user.ID;
+            userItem.idItem = item.ID;
+            ModelsManager.insertRecord("users_items", userItem);
             return item;
         }
 
