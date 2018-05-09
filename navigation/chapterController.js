@@ -5,19 +5,14 @@ angular.module('algorea')
     '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService', '$timeout',
     function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, $timeout) {
 
+
         $scope.sortableOptions = {
             handle: '.drag-ctrl',
             stop: function(event, ui) {
-                var iChildOrder = {}
-                $.each($scope.items, function(idx, item) {
-                    iChildOrder[item.ID] = idx + 1;
-                });
-                $.each($scope.item.children, function(idx, itemItem) {
-                    itemItem.iChildOrder = iChildOrder[itemItem.idItemChild];
-                    ModelsManager.updated('items_items', itemItem.ID);
-                });
+                recalculateItemsOrder();
             }
         }
+
 
         // sync does not work without this
         SyncQueue.requests = {
@@ -62,11 +57,19 @@ angular.module('algorea')
         // common
         $scope.item_strings = $scope.item.strings[0];
         $scope.item_strings_compare = null;
-        $scope.items = itemService.getChildren($scope.item);
+
+        function refresh() {
+            var itemItem = ModelsManager.getRecord('items_items', $scope.item.item_item_ID);
+            var parent = ModelsManager.getRecord('items', itemItem.idItemParent);
+            $scope.allowReorder = !parent.bFixedRanks;
+            $scope.items = itemService.getChildren($scope.item);
+        }
+        refresh();
+
 
         $scope.$on('algorea.reloadView', function(event, view) {
             if(view == 'right') {
-                $scope.items = itemService.getChildren($scope.item);
+                refresh();
             }
         });
 
@@ -166,7 +169,6 @@ angular.module('algorea')
                     item_item = ii;
                 }
             });
-            var iChildOrder = item_item['iChildOrder'];
             if(destroy) {
                 if($scope.clipboard && $scope.clipboard.ID == item.ID) {
                     $scope.clipboard = null;
@@ -174,14 +176,14 @@ angular.module('algorea')
                 ModelsManager.deleteRecord('items', item_item.idItemChild);
             }
             ModelsManager.deleteRecord('items_items', item_item.ID);
-            //changeChildrenOrderBetween($scope.item, -1, iChildOrder + 1);
+            recalculateItemsOrder();
             $rootScope.$broadcast('algorea.reloadView', 'right');
         }
 
 
         $scope.addNewItem = function() {
             var item = createItem();
-            addItem(item)
+            addItem(item);
         }
 
 
@@ -222,13 +224,13 @@ angular.module('algorea')
                 ID: item.ID,
                 title: item.strings[0].sTitle
             }
-            deleteItem(item)
+            deleteItem(item, false);
         }
 
 
         $scope.pasteItem = function() {
             var item = ModelsManager.getRecord('items', $scope.clipboard.ID);
-            addItem(item)
+            addItem(item);
         }
 
 
@@ -253,39 +255,22 @@ angular.module('algorea')
                 backdrop: 'static',
                 keyboard: false
             });
-        },
+        }
 
 
-        /// need it ???
-        /*
-        function changeChildrenOrderBetween(object, delta, beginOrder, endOrder) {
-            var maxOrder = 0;
-            var minOrder = 1000000000;
-            var iRelation, relation;
-            $.each(object.children, function(iRelation, relation) {
-               var relationOrder = relation['iChildOrder'];
-               if (relationOrder > maxOrder) {
-                  maxOrder = relationOrder;
-               }
-               if (relationOrder < minOrder) {
-                  minOrder = relationOrder;
-               }
-            });
-            if (endOrder == undefined) {
-               endOrder = maxOrder + 1;
+        function recalculateItemsOrder() {
+            if(!$scope.allowReorder) {
+                return;
             }
-            if (beginOrder == undefined) {
-               beginOrder = minOrder;
-            }
-            $.each(object.children, function(iRelation, relation) {
-               var prevOrder = relation['iChildOrder'];
-               if ((prevOrder >= beginOrder) && (prevOrder < endOrder)) {
-                  relation['iChildOrder'] = relation['iChildOrder']+delta;
-                  ModelsManager.updated('items_items', relation.ID);
-               }
+            var iChildOrder = {}
+            $.each($scope.items, function(idx, item) {
+                iChildOrder[item.ID] = idx + 1;
             });
-        },
-        */
+            $.each($scope.item.children, function(idx, itemItem) {
+                itemItem.iChildOrder = iChildOrder[itemItem.idItemChild];
+                ModelsManager.updated('items_items', itemItem.ID);
+            });
+        }
 
         // strings
 
@@ -341,7 +326,6 @@ angular.module('algorea')
 
 
         $scope.openParent = function() {
-            console.log($scope.item.item_item_ID)
             var itemItem = ModelsManager.getRecord('items_items', $scope.item.item_item_ID);
             var item = ModelsManager.getRecord('items', itemItem.idItemParent);
             $scope.openItem(item)
