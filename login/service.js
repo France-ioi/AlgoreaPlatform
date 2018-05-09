@@ -15,24 +15,29 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
         var popup = null;
         function getLoginData(callback) {
            if (loginDone) {
-             callback({
-               'ID': userID,
-               'sLogin': userLogin,
-               'idGroupSelf': userSelfGroup,
-               'idGroupOwned': userOwnedGroup,
-               'tempUser': tempUser
-            });
-         } else {
-            callbacks.push(function() {
-               callback({
+              var retval = {
                  'ID': userID,
                  'sLogin': userLogin,
                  'idGroupSelf': userSelfGroup,
                  'idGroupOwned': userOwnedGroup,
                  'tempUser': tempUser
-              });
-            });
-         }
+              }
+              if(callback) { callback(retval); }
+              return retval;
+           } else {
+              if(callback) {
+                 callbacks.push(function() {
+                    callback({
+                       'ID': userID,
+                       'sLogin': userLogin,
+                       'idGroupSelf': userSelfGroup,
+                       'idGroupOwned': userOwnedGroup,
+                       'tempUser': tempUser
+                    });
+                 });
+              }
+              return null;
+           }
         }
         function setLocalLoginData(loginData) {
           if (!loginDone) {

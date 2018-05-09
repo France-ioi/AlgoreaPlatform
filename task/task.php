@@ -574,12 +574,19 @@ function getUsersAnswers($request, $db) {
       }
 
       // Checking if user can access this item; TODO :: maybe check descendants of groupOwned too?
-      $query = "SELECT users_items.ID, users_items.bValidated as bValidated, MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions
+      $query = "SELECT users_items.ID, users_items.bValidated as bValidated,
+                       MAX(`groups_items`.`bCachedAccessSolutions`) as bAccessSolutions,
+                       MAX(`groups_items`.`bCachedManagerAccess`) as bManagerAccess,
+                       MAX(`groups_items`.`bOwnerAccess`) as bOwnerAccess
       FROM users_items
       JOIN groups_items on groups_items.idItem = :idItem
       JOIN groups_ancestors as selfGroupAncestors on selfGroupAncestors.idGroupAncestor = groups_items.idGroup
       WHERE users_items.idItem = :idItem and users_items.idUser = :idUser
-            AND (`groups_items`.`bCachedGrayedAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1 OR `groups_items`.`bCachedFullAccess` = 1 OR groups_items.bOwnerAccess = 1 OR groups_items.bManagerAccess = 1)
+            AND (`groups_items`.`bCachedGrayedAccess` = 1
+                 OR `groups_items`.`bCachedPartialAccess` = 1
+                 OR `groups_items`.`bCachedFullAccess` = 1
+                 OR `groups_items`.`bOwnerAccess` = 1
+                 OR `groups_items`.`bManagerAccess` = 1)
             AND `selfGroupAncestors`.`idGroupChild` = :idGroupSelf
       group by users_items.ID;";
       $stmt = $db->prepare($query);
@@ -589,7 +596,7 @@ function getUsersAnswers($request, $db) {
          'idGroupSelf' => $_SESSION['login']['idGroupSelf']
       ]);
       $test = $stmt->fetch();
-      if (!$test || (!$test['bValidated'] && !$test['bAccessSolutions'])) {
+      if (!$test || (!$test['bValidated'] && !$test['bAccessSolutions'] && !$test['bManagerAccess'] && !$test['bOwnerAccess'])) {
          error_log('warning: user '.$_SESSION['login']['ID'].' tried to access users_answers for item '.$idItem.' without permission.');
          error_log(json_encode($test));
          return ['result' => false];

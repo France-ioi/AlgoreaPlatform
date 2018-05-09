@@ -27,6 +27,7 @@ angular.module('algorea')
       SyncQueue.planToSend(0);
       setSyncInterval();
       function syncStartListener(data) {
+         SyncQueue.requestSets['groupsItemsAncestors'] = {name: 'groupsItemsAncestors'};
          if (!lastSyncLogin && data && data.changes && data.changes.loginData && data.changes.loginData.sLogin) {
             // case of the first sync, before any login is done, this relies on the local session
             lastSyncLogin = data.changes.loginData.sLogin;
@@ -218,6 +219,20 @@ angular.module('algorea')
                }
             }
             return strings;
+         },
+         getGroupItem: function(item, idGroup) {
+            if(!item) return null;
+            if(!idGroup) {
+               var loginData = loginService.getLoginData();
+               if(!loginData) return null;
+               idGroup = loginData.idGroupSelf;
+            }
+            for(var i = 0; i < item.group_items.length; i++) {
+               if(item.group_items[i].idGroup == idGroup) {
+                  return item.group_items[i];
+               }
+            }
+            return null;
          },
          getUserItem: function(item, idUser) {
             if (!item) return null;
