@@ -4,6 +4,7 @@ angular.module('algorea')
 .controller('chapterController', [
     '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService', 'pathService',
     function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, pathService) {
+        $scope.itemService = itemService;
 
         $scope.sortableOptions = {
             handle: '.drag-ctrl',
@@ -57,11 +58,22 @@ angular.module('algorea')
         $scope.item_strings_compare = null;
 
         function refresh() {
-            var parent = ModelsManager.getRecord('items', pathService.getPathParams('right').parentItemID);
-            $scope.allowReorder = !parent.bFixedRanks;
+            $scope.allowReorder = $scope.item.bFixedRanks;
             $scope.items = itemService.getChildren($scope.item);
         }
         refresh();
+
+        function getItemItem(item) {
+            // Get the item_item between the current item and the argument
+            var item_item = null;
+            angular.forEach(item.parents, function(ii) {
+                if(ii.idItemParent == $scope.item.ID) {
+                    item_item = ii;
+                }
+            });
+            return item_item;
+        }
+
 
 
         $scope.$on('algorea.reloadView', function(event, view) {
@@ -116,7 +128,9 @@ angular.module('algorea')
         function createItem() {
             var item = ModelsManager.createRecord("items");
             item.bOwnerAccess = true;
+            item.sType = 'Chapter';
             ModelsManager.insertRecord("items", item);
+
             var groupItem = ModelsManager.createRecord("groups_items");
             groupItem.idItem = item.ID;
             groupItem.idGroup = user.idGroupSelf;
@@ -128,6 +142,7 @@ angular.module('algorea')
             groupItem.idUserCreated = user.ID;
             groupItem.sPropagateAccess = 'self'; //TODO: remove
             ModelsManager.insertRecord("groups_items", groupItem);
+
             var itemStrings = ModelsManager.createRecord("items_strings");
             itemStrings.idItem = item.ID;
             itemStrings.idLanguage = 1; // TODO: handle this
@@ -159,22 +174,23 @@ angular.module('algorea')
 
 
 
-        function deleteItem(item, destroy) {
-            var item_item = null;
-            angular.forEach(item.parents, function(ii) {
-                if(ii.idItemParent == $scope.item.ID) {
-                    item_item = ii;
-                }
-            });
-            if(destroy) {
-                if($scope.clipboard && $scope.clipboard.ID == item.ID) {
-                    $scope.clipboard = null;
-                }
-                ModelsManager.deleteRecord('items', item_item.idItemChild);
-            }
+        function deleteItemItem(item_item) {
+            // Delete an item_item link
+            if(!item_item) { return; }
             ModelsManager.deleteRecord('items_items', item_item.ID);
-            recalculateItemsOrder();
+            recalculateItemsOrder(item_item.parent);
             $rootScope.$broadcast('algorea.reloadView', 'right');
+        }
+
+
+        function destroyItem(item) {
+            // Delete an item from the database
+            // TODO :: delete all links and associated data
+            if(!item) { return; }
+            if(itemService.getClipboard().ID == item.ID) {
+                itemService.setClipboard(null);
+            }
+            ModelsManager.deleteRecord('items', item_item.idItemChild);
         }
 
 
@@ -210,35 +226,40 @@ angular.module('algorea')
             });
         }
 
-        // clipboard
-
-        $scope.clipboard = null;
+        // Clipboard
         $scope.copyItem = function(item) {
-            $scope.clipboard = {
+            itemService.setClipboard({
                 ID: item.ID,
                 title: item.strings[0].sTitle
-            }
+            });
         }
 
 
         $scope.cutItem = function(item) {
-            $scope.clipboard = {
+            itemService.setClipboard({
                 ID: item.ID,
-                title: item.strings[0].sTitle
-            }
-            deleteItem(item, false);
+                title: item.strings[0].sTitle,
+                cut: getItemItem(item) // Remove this item_item when we paste
+            });
         }
 
 
         $scope.pasteItem = function() {
-            var item = ModelsManager.getRecord('items', $scope.clipboard.ID);
+            var clipboard = itemService.getClipboard();
+            if(!clipboard) { return; }
+
+            var item = ModelsManager.getRecord('items', clipboard.ID);
             addItem(item);
+            if(clipboard.cut) {
+                // Item was cut, remove former link
+                deleteItemItem(clipboard.cut);
+            }
         }
 
 
-
-
         $scope.removeItem = function(item) {
+            // Show popup to remove an item
+            var item_item = getItemItem(item);
             $uibModal.open({
                 templateUrl: '/navigation/views/chapter/delete-dialog.html',
                 controller: function($scope) {
@@ -246,11 +267,11 @@ angular.module('algorea')
                         $scope.$close();
                     };
                     $scope.removeItem = function () {
-                        deleteItem(item, false);
+                        deleteItemItem(item_item);
                         $scope.$close();
                     };
                     $scope.destroyItem = function () {
-                        deleteItem(item, true);
+                        destroyItem(item);
                         $scope.$close();
                     };
                 },
@@ -260,16 +281,14 @@ angular.module('algorea')
         }
 
 
-        function recalculateItemsOrder() {
-            if(!$scope.allowReorder) {
+        function recalculateItemsOrder(parentItem) {
+            // Recalculate the order for parentItem's children
+            if(parentItem.bFixedRanks) {
                 return;
             }
             var iChildOrder = {}
-            $.each($scope.items, function(idx, item) {
-                iChildOrder[item.ID] = idx + 1;
-            });
-            $.each($scope.item.children, function(idx, itemItem) {
-                itemItem.iChildOrder = iChildOrder[itemItem.idItemChild];
+            $.each(parentItem.children, function(idx, itemItem) {
+                itemItem.iChildOrder = idx+1;
                 ModelsManager.updated('items_items', itemItem.ID);
             });
         }

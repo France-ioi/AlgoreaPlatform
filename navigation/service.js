@@ -17,6 +17,7 @@ angular.module('algorea')
       var intervalIsSet = false;
       var firstSyncFailed = false; // case of first sync without session, before login
       var usersAnswers = {}; // Stores users_answers per item
+      var chapterClipboard = null;
 
       function setSyncInterval() {
          if (!intervalIsSet) {
@@ -372,6 +373,12 @@ angular.module('algorea')
                typeStr = $i18next.t('navigation_course');
             }
             return typeStr;
+         },
+         getClipboard: function() {
+            return chapterClipboard ? chapterClipboard : {};
+         },
+         setClipboard: function(newClip) {
+            chapterClipboard = newClip;
          },
          syncThread: function(idThread, idItem, idUser, callback) {
             // Start synchronizing some users_answers

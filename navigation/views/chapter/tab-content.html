@@ -34,9 +34,9 @@
             <span class="material-icons material-btn">keyboard</span>
             <span ng-i18next="chapterEditor_add_new_item"></span>
         </button>
-        <button ng-click="pasteItem()" class="btn btn-primary" ng-if="clipboard">
+        <button ng-click="pasteItem()" class="btn btn-primary" ng-if="itemService.getClipboard().ID">
             <i class="material-icons material-btn">ic_content_paste</i>
-            <span ng-i18next="({sprintf:[clipboard.title]})chapterEditor_paste_item"></span>
+            <span ng-i18next="({sprintf:[itemService.getClipboard().title]})chapterEditor_paste_item"></span>
         </button>
     </div>
 </div>
