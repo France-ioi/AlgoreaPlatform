@@ -14,15 +14,29 @@
     </div>
 </div>
 
-<a ng-click="addExistingItem()" href="#">
-    <i class="material-icons material-btn">ic_add_circle</i>
-    <span ng-i18next="chapterEditor_add_existing_item"></span>
-</a>
-<a ng-click="addNewItem()" href="#">
-    <i class="material-icons material-btn">ic_add_circle</i>
-    <span ng-i18next="chapterEditor_add_new_item"></span>
-</a>
-<a ng-click="pasteItem()" href="#" ng-if="clipboard">
-    <i class="material-icons material-btn">ic_content_paste</i>
-    <span ng-i18next="({sprintf:[clipboard.title]})chapterEditor_paste_item"></span>
-</a>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <i class="material-icons material-btn">ic_add_circle</i>
+            <b ng-i18next="chapterEditor_add_title"></b>
+        </h4>
+    </div>
+    <div class="panel-body">
+        <button ng-click="addExistingItem()" class="btn btn-default">
+            <span class="material-icons material-btn">content_copy</span>
+            <span ng-i18next="chapterEditor_add_existing_item"></span>
+        </button>
+        <button ng-click="addNewChapter()" class="btn btn-default">
+            <span class="material-icons material-btn">folder</span>
+            <span ng-i18next="chapterEditor_add_new_chapter"></span>
+        </button>
+        <button ng-click="addNewTask()" class="btn btn-default">
+            <span class="material-icons material-btn">keyboard</span>
+            <span ng-i18next="chapterEditor_add_new_item"></span>
+        </button>
+        <button ng-click="pasteItem()" class="btn btn-primary" ng-if="clipboard">
+            <i class="material-icons material-btn">ic_content_paste</i>
+            <span ng-i18next="({sprintf:[clipboard.title]})chapterEditor_paste_item"></span>
+        </button>
+    </div>
+</div>

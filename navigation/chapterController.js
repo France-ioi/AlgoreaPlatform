@@ -5,7 +5,6 @@ angular.module('algorea')
     '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService', 'pathService',
     function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, pathService) {
 
-
         $scope.sortableOptions = {
             handle: '.drag-ctrl',
             stop: function(event, ui) {
@@ -15,10 +14,9 @@ angular.module('algorea')
 
 
         // sync does not work without this
-        SyncQueue.requests = {
-           algorea: {
-              admin: true
-           }
+        if(!SyncQueue.requests) { SyncQueue.requests = {}; }
+        SyncQueue.requests.algorea = {
+           admin: true
         };
 
 
@@ -180,11 +178,14 @@ angular.module('algorea')
         }
 
 
-        $scope.addNewItem = function() {
+        $scope.addNewChapter = function() {
             var item = createItem();
             addItem(item);
         }
 
+        $scope.addNewTask = function() {
+            // TODO :: interface
+        }
 
 
         $scope.addExistingItem = function() {
