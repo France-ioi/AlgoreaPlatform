@@ -304,6 +304,8 @@
     "groupAccountsManager_create_title": "Créer des utilisateurs pour ce groupe",
     "groupAccountsManager_create_note": "Cet outil vous permet de créer des ensembles d'utilisateurs et mots de passe à distribuer aux étudiants. Les utilisateurs créés de cette manière seront automatiquement ajoutés au groupe.",
     "groupAccountsManager_prefix": "Préfixe utilisateur",
+    "groupAccountsManager_postfix_length": "Longueur du suffixe unique",
+    "groupAccountsManager_password_length": "Longueur du mot de passe",
     "groupAccountsManager_wrong_prefix": "Valeur de préfixe incorrecte",
     "groupAccountsManager_used_prefix": "Préfixe déjà utilisé",
     "groupAccountsManager_nonexistent_prefix": "Préfixe non-existant",
