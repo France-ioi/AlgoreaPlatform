@@ -63,6 +63,9 @@ body {
 .task-tab.task-tab-selected {
    cursor: default;
 }
+.task-tab.task-tab-disabled {
+   cursor: not-allowed;
+}
 
 .main-titlebar {
    display:-webkit-flex;

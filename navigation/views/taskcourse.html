@@ -3,14 +3,16 @@
    <div class="first-task" style="position: relative;">
      <div ng-if="itemType == 'Task'" ng-show="taskLoaded || !showTask" id="task-tabs" class="task-tabs">
        <div class="task-tabs-inner">
-         <div ng-repeat="view in views" ng-click="$parent.selectTab(view.name)" class="task-tab" ng-class="{true: 'task-tab-selected'}[view.active]" id="view.id" ng-hide="view.name === 'editor' && layout.separateEditorOK" ng-i18next="{{view.string}}">
+         <div ng-repeat="view in views" ng-click="!view.disabled && $parent.selectTab(view.name)" class="task-tab" ng-class="{'task-tab-selected': view.active, 'task-tab-disabled': view.disabled}" id="view.id" ng-hide="view.name === 'editor' && layout.separateEditorOK" ng-i18next="[title]{{getTabTitle(view)}};{{view.string}}">
          </div>
        </div>
      </div>
 
-     <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
-     <div ng-include="templatesPrefix+'navigation/views/attempts.html'" ng-if="showAttempts"></div>
-     <div ng-include="templatesPrefix+'navigation/views/history.html'" ng-if="showHistory"></div>
+     <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="currentView == 'forum'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
+     <div ng-include="templatesPrefix+'navigation/views/attempts.html'" ng-if="currentView == 'attempts'"></div>
+     <div ng-include="templatesPrefix+'navigation/views/history.html'" ng-if="currentView == 'history'"></div>
+     <div ng-include="templatesPrefix+'navigation/views/modify.html'" ng-if="currentView == 'modify'"></div>
+     <div ng-include="templatesPrefix+'navigation/views/settings.html'" ng-if="currentView == 'settings'"></div>
      <!-- the task is still rendered while loaded, as some elements, such as Blockly, glitch when they are loaded while on display: none -->
      <!-- TODO :: it's possible that it's not needed anymore as quickAlgo has fixes for that -->
      <div ng-show="showTask" include-task read-only="{{ item.bReadOnly }}" class="task-container" style="position: relative;"></div>

@@ -227,6 +227,10 @@ header {
   border: 1px solid #ddd;
   border-bottom-color: transparent;
 }
+.task-tab.task-tab-disabled {
+  color: #bbbbbb;
+  background-color: transparent;
+}
 
 
 .children-item {

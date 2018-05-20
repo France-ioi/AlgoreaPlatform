@@ -23,22 +23,38 @@ angular.module('algorea')
    // Last saved state/answer
    $scope.lastSave = {sState: '', sAnswer: ''};
 
+   $scope.canEdit = function() {
+      var groupItem = itemService.getGroupItem($scope.item);
+      if(!groupItem) return false;
+      return groupItem.bOwnerAccess || groupItem.bManagerAccess;
+   };
+
    // platformView = 1 view that the platform wants
    // taskView = view avaible on the task
    // 1 platformView can be several taskViews, for instance, platform wants
    // to show help + forum (2 taskViews) in one tab (1 platformView)
    var platformViews = {};
-   var initPlatformViews = function() {
+   var initPlatformViews = function(platformOnly) {
       platformViews = {
          'attempts': {tabString: 'task_attempts'},
          'task': {tabString: 'task_statement', taskViews: {'task': true}},
          'editor': {tabString: 'task_solve', taskViews: {'editor': true}},
          'hints': {tabString: 'task_hints', taskViews: {'hints': true}},
          'history': {tabString: 'task_history'},
+         'modify': {tabString: 'task_modify'},
+         'settings': {tabString: 'task_settings'}
       };
-      if(!$scope.item.bHasAttempts) {
+      if(platformOnly || !$scope.item.bHasAttempts) {
          delete(platformViews.attempts);
          delete(platformViews.history);
+      }
+      if(!$scope.canEdit()) {
+         delete(platformViews.modify);
+         delete(platformViews.settings);
+      }
+      if(platformOnly) {
+         delete(platformViews.editor);
+         delete(platformViews.hints);
       }
    };
    initPlatformViews();
@@ -173,16 +189,16 @@ angular.module('algorea')
          return;
       }
       if (platformView != $scope.currentView) {
-         this.showTask = !!platformViews[platformView].taskViews;
+         if((platformView == 'modify' || platformView == 'settings') && !$scope.canEdit()) {
+            // Avoid displaying the view if the user doesn't have the rights
+            return;
+         }
          // Views offered by the platform
-         // TODO :: simplify
-         this.showForum = (platformView == 'forum');
-         this.showAttempts = (platformView == 'attempts');
-         this.showHistory = (platformView == 'history');
-         if(this.showHistory) {
+         if(platformView == 'history') {
             $scope.getHistory();
          }
-         if(this.showTask) {
+         $scope.showTask = !!(platformViews[platformView].taskViews && $scope.item.sUrl);
+         if($scope.showTask) {
             // View offered by the task
             var callbackFun = $scope.firstViewLoaded ? function() {} : $scope.load_answer_and_sync;
             $scope.task.showViews(platformViews[platformView].taskViews, callbackFun, function(){});
@@ -217,9 +233,9 @@ angular.module('algorea')
          delete platformViews.solution;
       }
    };
-   $scope.setTabs = function (taskViews) {
+   $scope.setTabs = function (taskViews, platformOnly) {
       $scope.firstViewLoaded = false;
-      initPlatformViews();
+      initPlatformViews(platformOnly);
       if (!this.inForum && this.useForum) {
          platformViews.forum = {tabString: 'task_help'};
       }
@@ -260,6 +276,8 @@ angular.module('algorea')
             // Show attempts view if it's our first time on this task
             $scope.askedView = 'attempts';
             $scope.attemptAutoSelected = false;
+         } else if($scope.canEdit() && !$scope.item.sUrl) {
+            $scope.askedView = 'modify';
          } else {
             $scope.askedView = 'task';
          }
@@ -278,8 +296,43 @@ angular.module('algorea')
      if (!$scope.inForum && this.panel=='left' && this.pathParams.itemsOnBothSides && view == $scope.resolutionViewName) {
         return true;
      }
+     if(view == 'task' && !$scope.item.sUrl) {
+        return true;
+     }
      return false;
    };
+   $scope.updateModifyTab = function() {
+     if($scope.viewsIndex && $scope.viewsIndex['modify']) {
+       $scope.views[$scope.viewsIndex['modify']].disabled = !$scope.modifyUrl;
+     }
+   };
+   $scope.getTabTitle = function(view) {
+     if(view.name == 'modify' && view.disabled) {
+       return 'task_modify_disabled';
+     } else {
+       return '';
+     }
+   };
+
+   $scope.hasObjectChanged = function(modelName, record) {
+      if (!record) {
+         return false;
+      }
+      return ModelsManager.hasRecordChanged(modelName, record.ID);
+   };
+
+   $scope.saveObject = function(modelName, record) {
+      if (record) {
+         ModelsManager.updated(modelName, record.ID);
+      }
+   };
+
+   $scope.resetObjectChanges = function(modelName, record) {
+      if (record) {
+         ModelsManager.resetRecordChanges(modelName, record.ID);
+      }
+   };
+
    $scope.openSeparateEditor = function() {
       $scope.showEditor = true;
    };
