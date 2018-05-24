@@ -4,10 +4,22 @@ angular.module('algorea')
     .controller('groupAccountsManagerController', ['$scope', '$http', '$i18next', '$uibModal', 'loginService', function($scope, $http, $i18next, $uibModal, loginService) {
 
 
+    function collectGroups(group) {
+        var res = {}
+        res[group.ID] = group.sName;
+        for(var i=0; i<group.children.length; i++) {
+            Object.assign(res, collectGroups(group.children[i].child));
+        }
+        return res;
+    }
+
+
     $scope.user = {}
     $scope.error = null;
     $scope.fetching = false;
     $scope.available = false;
+    $scope.prefixes = null;
+
 
     loginService.getLoginData(function(res) {
         $scope.user = ModelsManager.getRecord('users', res.ID);
@@ -37,10 +49,20 @@ angular.module('algorea')
     }
 
 
+    // prefixes
+    accountsManagerRequest({
+        action: 'get_prefixes',
+        group_id: $scope.$parent.group.ID
+    }, function(prefixes) {
+        $scope.prefixes = prefixes;
+    });
+
+
+
     function getPrefixId(prefix) {
-        var l = $scope.$parent.group.login_prefixes;
-        for(var i=0; i<l.length; l++) {
-            if(l[i].prefix === prefix) return l[i].ID;
+        if($scope.prefixes === null) return false;
+        for(var i=0; i<$scope.prefixes.length; i++) {
+            if($scope.prefixes[i].prefix === prefix) return $scope.prefixes[i].ID;
         }
         return false;
     }
@@ -52,6 +74,7 @@ angular.module('algorea')
         amount: 1,
         postfix_length: 3,
         password_length: 6,
+        create_in_subgroups: false,
         example_login: null,
         error: false
     }
@@ -86,8 +109,7 @@ angular.module('algorea')
             prefix: $scope.create_params.prefix.trim(),
             amount: parseInt($scope.create_params.amount, 10) || 0,
             postfix_length: parseInt($scope.create_params.postfix_length, 10) || 0,
-            password_length: parseInt($scope.create_params.password_length, 10) || 0,
-            group_id: $scope.$parent.group.ID
+            password_length: parseInt($scope.create_params.password_length, 10) || 0
         };
         if(res.prefix == '') {
             $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_prefix');
@@ -109,6 +131,11 @@ angular.module('algorea')
             $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_number_of_users');
             return;
         }
+        if($scope.create_params.create_in_subgroups) {
+            res.groups = Object.keys(collectGroups($scope.$parent.group)).join(';');
+        } else {
+            res.groups = $scope.$parent.group.ID;
+        }
         return res;
     }
 
@@ -118,12 +145,8 @@ angular.module('algorea')
 
         $scope.error = null;
         accountsManagerRequest(params, function(data) {
-            var item = ModelsManager.createRecord("groups_login_prefixes");
-            item.idGroup = $scope.$parent.group.ID;
-            item.prefix = data.prefix;
-            ModelsManager.insertRecord("groups_login_prefixes", item);
+            $scope.prefixes = data.prefixes;
             showAccounts(data.accounts);
-            SyncQueue.planToSend(0);
         });
 
         $scope.create_params.example_login = null;
@@ -142,7 +165,7 @@ angular.module('algorea')
             resolve: { data: function () {
                 return {
                     accounts: accounts,
-                    group: $scope.$parent.group.sName
+                    groups: collectGroups($scope.$parent.group)
                 }
             }},
             windowClass: 'groupAdmin-modal',
@@ -193,13 +216,12 @@ angular.module('algorea')
 
         $scope.error = null;
         accountsManagerRequest(params, function(data) {
-            ModelsManager.deleteRecord('groups_login_prefixes', params.id);
-            SyncQueue.planToSend(0);
+            $scope.prefixes = $scope.prefixes.filter(function(v) {
+                return v.prefix !== params.prefix;
+            });
         });
-
         $scope.delete_params.prefix = '';
     }
-
 }]);
 
 
@@ -210,7 +232,7 @@ angular.module('algorea')
    .controller('groupAccountsCreatePopupController', ['$scope', '$uibModalInstance', 'data', function ($scope, $uibModalInstance, data) {
    'use strict';
 
-    $scope.group = data.group;
+    $scope.groups = data.groups;
     $scope.accounts = data.accounts;
     $scope.printing = false;
 
