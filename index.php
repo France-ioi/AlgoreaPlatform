@@ -201,6 +201,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('states.js') ?>"></script>
   <script src="<?= includeFile('task/controller.js') ?>"></script>
   <script src="<?= includeFile('task/directive.js') ?>"></script>
+  <script src="<?= includeFile('task/modifyController.js') ?>"></script>
 
   <script src="<?= includeFile('profile/profileController.js') ?>"></script>
   <script src="<?= includeFile('profile/myAccountController.js') ?>"></script>

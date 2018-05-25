@@ -40,6 +40,11 @@ angular.module('algorea')
     }
 
    function loadTask(scope, elem, sameUrl) {
+      if(!scope.item.sUrl) {
+         scope.setTabs({}, true);
+         scope.taskLoaded = true;
+         return;
+      }
       scope.loadingError = false;
       if (scope.item.sType == 'Task') {
          elem.addClass('iframe-task');
@@ -323,6 +328,8 @@ angular.module('algorea')
             } else {
                elem.removeClass('task-auto-height');
             }
+            scope.modifyUrl = metaData.editorUrl ? $sce.trustAsResourceUrl(metaData.editorUrl) : null;
+            scope.updateModifyTab();
             $rootScope.$broadcast('layout.taskLayoutChange');
          });
          $timeout(function () {
@@ -371,8 +378,6 @@ angular.module('algorea')
                   scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
                   scope.itemUrl = null;
                }
-            } else {
-               console.error('item has no url!');
             }
             elem[0].src = scope.taskUrl;
             $timeout(function() { loadTask(scope, elem, sameUrl);});
@@ -395,7 +400,7 @@ angular.module('algorea')
             var baseNewItemUrl = newItemUrl.indexOf('#') == -1 ? newItemUrl : newItemUrl.substr(0, newItemUrl.indexOf('#'));
             return baseNewItemUrl == baseOldItemUrl;
          }
-         function reinit() {
+         function reinit(force) {
             // New task selected
 
             // Resynchronise changes to users_items
@@ -408,7 +413,7 @@ angular.module('algorea')
                $interval.cancel(interval);
             });
             scope.intervals = {};
-            var sameUrl = isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
+            var sameUrl = !force && isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (scope.task && !scope.task.unloaded) {
                scope.task.unload(function() {
                   scope.taskLoaded = false;
@@ -444,16 +449,13 @@ angular.module('algorea')
          scope.$on('admin.groupSelected', function() {
             reinit();
          });
-         scope.$on('algorea.reloadView', function(event, viewName){
+         scope.$on('algorea.reloadView', function(event, viewName, force) {
             if (viewName == scope.panel) {
-               reinit();
+               reinit(force);
             }
          });
          scope.$on('algorea.languageChanged', function(event) {
-            if (scope.itemUrl) {
-               scope.itemUrl = null; // Avoid considering it's the same URL as we just changed language
-               reinit();
-            }
+            reinit(true);
          });
       },
     };

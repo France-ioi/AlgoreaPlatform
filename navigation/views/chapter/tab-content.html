@@ -9,6 +9,13 @@
                 <i class="material-icons material-btn" ng-click="cutItem(item)">content_cut</i>
                 <i class="material-icons material-btn" ng-click="removeItem(item)">remove_circle</i>
             </div>
+            <div ng-show="creating">
+                <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">ic_drag_handle</i>
+                <span class="material-icons material-btn">{{ creating.icon }}</span>
+                <input type="text" placeholder="{{ creating.placeholder }}" ng-model="creating.name"></input>
+                <button class="btn btn-primary" ng-i18next="create" ng-click="create();"></button>
+                <button class="btn btn-danger" ng-i18next="cancel" ng-click="cancelCreate();"></button>
+            </div>
         </div>
         <div class="children-list-right-margin"></div>
     </div>
