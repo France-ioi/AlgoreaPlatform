@@ -5,6 +5,7 @@ angular.module('algorea')
     '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', 'loginService', 'pathService',
     function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, pathService) {
         $scope.itemService = itemService;
+        $scope.models = models;
 
         $scope.sortableOptions = {
             handle: '.drag-ctrl',
@@ -13,16 +14,19 @@ angular.module('algorea')
             }
         }
 
+
         // sync does not work without this
         if(!SyncQueue.requests) { SyncQueue.requests = {}; }
         SyncQueue.requests.algorea = {
            admin: true
         };
 
+
         var user = null;
         loginService.getLoginData(function(res) {
             user = res;
         })
+
 
         $scope.editable = function() {
             var groupItem = itemService.getGroupItem($scope.item);
@@ -30,6 +34,7 @@ angular.module('algorea')
             return groupItem.bOwnerAccess || groupItem.bManagerAccess;
         }
         $scope.mode = 'view';
+
 
         $scope.setMode = function(mode) {
             $scope.mode = $scope.editable ? mode : false;
@@ -45,6 +50,7 @@ angular.module('algorea')
         $scope.isMode = function(mode) {
             return $scope.getMode() == mode;
         }
+
 
 
 
@@ -68,6 +74,7 @@ angular.module('algorea')
             });
             return item_item;
         }
+
 
 
         $scope.$on('algorea.reloadView', function(event, view) {
@@ -95,7 +102,9 @@ angular.module('algorea')
         };
 
 
+
         // params
+
         $scope.hasObjectChanged = function(modelName, record) {
             if(!record) return;
             return ModelsManager.hasRecordChanged(modelName, record.ID);
@@ -114,11 +123,13 @@ angular.module('algorea')
         };
 
 
+
         // children items
-        function createItem(sType, sTitle) {
+
+        function createItem() {
             var item = ModelsManager.createRecord("items");
             item.bOwnerAccess = true;
-            item.sType = sType;
+            item.sType = 'Chapter';
             ModelsManager.insertRecord("items", item);
 
             var groupItem = ModelsManager.createRecord("groups_items");
@@ -130,12 +141,13 @@ angular.module('algorea')
             groupItem.bCachedFullAccess = true;
             groupItem.bOwnerAccess = true;
             groupItem.idUserCreated = user.ID;
+            groupItem.sPropagateAccess = 'self'; //TODO: remove
             ModelsManager.insertRecord("groups_items", groupItem);
 
             var itemStrings = ModelsManager.createRecord("items_strings");
             itemStrings.idItem = item.ID;
             itemStrings.idLanguage = 1; // TODO: handle this
-            itemStrings.sTitle = sTitle;
+            itemStrings.sTitle = $i18next.t('chapterEditor_new_item_title');
             ModelsManager.insertRecord("items_strings", itemStrings);
 
             var userItem = ModelsManager.createRecord("users_items");
@@ -144,6 +156,7 @@ angular.module('algorea')
             ModelsManager.insertRecord("users_items", userItem);
             return item;
         }
+
 
         function addItem(item) {
             var itemItem = ModelsManager.createRecord("items_items");
@@ -160,6 +173,8 @@ angular.module('algorea')
             $rootScope.$broadcast('algorea.reloadView', 'right');
         }
 
+
+
         function deleteItemItem(item_item) {
             // Delete an item_item link
             if(!item_item) { return; }
@@ -167,6 +182,7 @@ angular.module('algorea')
             recalculateItemsOrder(item_item.parent);
             $rootScope.$broadcast('algorea.reloadView', 'right');
         }
+
 
         function destroyItem(item) {
             // Delete an item from the database
@@ -180,33 +196,14 @@ angular.module('algorea')
 
 
         $scope.addNewChapter = function() {
-            $scope.creating = {
-                sType: 'Task',
-                icon: 'folder',
-                placeholder: 'New chapter',
-                name: ''
-                }
+            var item = createItem();
+            addItem(item);
         }
 
         $scope.addNewTask = function() {
-            $scope.creating = {
-                sType: 'Task',
-                icon: 'keyboard',
-                placeholder: 'New task',
-                name: ''
-                }
+            // TODO :: interface
         }
 
-        $scope.create = function() {
-            if(!$scope.creating || !$scope.creating.name) { return; }
-            var item = createItem($scope.creating.sType, $scope.creating.name);
-            addItem(item);
-            $scope.creating = null;
-        }
-
-        $scope.cancelCreate = function() {
-            $scope.creating = null;
-        }
 
         $scope.addExistingItem = function() {
             $uibModal.open({
