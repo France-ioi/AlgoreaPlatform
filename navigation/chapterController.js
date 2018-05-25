@@ -341,9 +341,20 @@ angular.module('algorea')
     function($scope, itemService, $uibModalInstance, startItem, startPath, callback) {
 
 
-
         var path = startPath.slice();
         path.pop();
+
+        var icons = {
+            Root: 'list',
+            Task: 'keyboard',
+            Chapter: 'folder',
+            Course: 'assignment'
+        }
+
+        $scope.getItemIcon = function(item) {
+            console.log(item.sType, icons[item.sType]);
+            return item.sType in icons ? icons[item.sType] : 'folder';
+        }
 
 
         $scope.openItem = function(item, path_skip) {

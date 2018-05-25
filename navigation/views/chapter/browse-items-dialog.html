@@ -9,7 +9,14 @@
     <div class="children-list">
         <div class="children-item-row" ng-repeat="child in children track by child.ID">
             <div>
-                <a href="#" ng-click="openItem(child)">{{child.strings[0].sTitle}} </a>
+                <span ng-if="child.sType != 'Chapter'">
+                    <span class="material-icons">{{getItemIcon(child)}}</span>
+                    {{child.strings[0].sTitle}}
+                </span>
+                <a href="#" ng-click="openItem(child)" ng-if="child.sType == 'Chapter'">
+                    <span class="material-icons">{{getItemIcon(child)}}</span>
+                    {{child.strings[0].sTitle}}
+                </a>
                 <i class="material-icons material-btn" ng-click="select(child)">ic_add_circle</i>
             </div>
         </div>
