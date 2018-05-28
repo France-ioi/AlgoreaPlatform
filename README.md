@@ -2,7 +2,7 @@
 
 ## Documentation
 
-A [developer documentation](https://docs.google.com/document/d/1QV9RhYjtPfiTLJAOBRYtBtrOeUSclCKGjvtvJmVEdX0/edit?usp=sharing) of the architecture of this platform is available.
+A [https://docs.google.com/document/d/1_veke2ezLHNhiUjZpFvA572n18qol3WldLz5F-mnqiI/edit#heading=h.s0aj64ixvarm) of the architecture of this platform is available.
 
 ## Dependencies
 
