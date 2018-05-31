@@ -5,45 +5,19 @@ require_once __DIR__.'/../../config.php';
 
 session_start();
 
-function getUserId() {
-    if(isset($_SESSION['login']) &&
-        $_SESSION['login']['tempUser'] === 0 &&
-        $_SESSION['login']['ID']) {
-        return $_SESSION['login']['ID'];
-    }
-    return null;
+$logged_user_id = null;
+if(isset($_SESSION['login']) &&
+    $_SESSION['login']['tempUser'] === 0 &&
+    $_SESSION['login']['ID']) {
+        $logged_user_id = $_SESSION['login']['idUser'];
 }
 
-
-
-function readTable($table, $idUser) {
-    global $db;
-    $query = 'select * from `'.$table.'` where `idUser` = :idUser';
-    $stmt = $db->prepare($query);
-    $stmt->execute(['idUser' => $idUser]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+$requested_user_id = isset($_REQUEST['user_id']) ? (int) $_REQUEST['user_id'] : false;
+if(!$requested_user_id) {
+    die('Missed user_id param.');
 }
-
-
-function printTable($table, $rows) {
-    if(!count($rows)) return;
-    echo '<h2>'.$table.'</h2><table>';
-    $head_printed = false;
-    foreach($rows as $row) {
-        if(!$head_printed) {
-            $head_printed = true;
-            echo '<tr><th>'.implode('</th><th>', array_keys($row)).'</th></tr>';
-        }
-        echo '<tr><td>'.implode('</td><td>', array_values($row)).'</td></tr>';
-    }
-    echo '</table>';
-}
-
-
-
-$idUser = getUserId();
-if($idUser === null) {
-    // not logged - redirect back to LM and do auth
+if($logged_user_id !== $requested_user_id) {
+    session_destroy();
     try {
         $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
         $authorization_helper = $client->getAuthorizationHelper();
@@ -58,26 +32,6 @@ if($idUser === null) {
     die();
 }
 
-
-$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
-switch($action) {
-    case 'summary':
-        echo '<a href="'.$config->login_module_client['base_url'].'/collected_data">Back to login module</a>';
-        $rows = readTable('badges', $idUser);
-        printTable('badges', $rows);
-        break;
-    case 'export':
-        $data = [
-            'badges' => readTable('badges', $idUser)
-        ];
-        header('Content-disposition: attachment; filename=algorea-profile-export.json');
-        header('Content-type: application/json');
-        die(json_encode($data));
-        break;
-    case 'delete':
-        die('delete');
-        break;
-    default:
-        die('Action param missed');
-        break;
-}
+$url = $config->shared->domains['default']->baseUrl.'/profile/myAccount#collected_data_controls';
+header('Location: '.$url);
+die();

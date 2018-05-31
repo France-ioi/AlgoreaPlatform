@@ -28,6 +28,7 @@ function verifyCode() {
     }
 }
 
+header('Content-Type: application/json');
 try {
     $action = isset($_POST['action']) ? $_POST['action'] : null;
     switch($action) {

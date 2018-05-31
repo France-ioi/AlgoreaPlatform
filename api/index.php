@@ -13,6 +13,7 @@ try {
     }
     require_once($file);
 } catch(Exception $e) {
+    header('Content-Type: application/json');
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()
