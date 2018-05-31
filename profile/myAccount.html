@@ -1,6 +1,8 @@
 <div ng-controller="myAccountController" class="groupRequest-tabContent">
     <div>
         <button class="btn btn-default" ng-click="openPopup('profile')" ng-i18next="userInfos_btn_profile"></button>
+        <button ng-if="collected_data_controls" class="btn btn-default" ng-click="exportData()" ng-i18next="userInfos_btn_export" confirm="test()"></button>
+        <button ng-if="collected_data_controls" class="btn btn-danger" ng-click="deleteAccount()" ng-i18next="userInfos_btn_delete"></button>
 <!--                    <button class="btn btn-default" ng-click="openPopup('auth_methods')" ng-i18next="userInfos_btn_auth_methods"></button>-->
     </div>
     <h2 class="groupRequest-title" ng-i18next="userInfos_title_infos"></h2>

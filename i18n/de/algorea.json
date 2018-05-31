@@ -465,7 +465,11 @@
     "userInfos_btn_profile": "Profil bearbeiten",
     "userInfos_btn_auth_methods": "Authentifizierungsmethoden",
     "userInfos_btn_password": "Passwort ändern",
-
+    "userInfos_btn_export": "Export all data",
+    "userInfos_btn_delete": "Delete account",
+    "userInfos_delete_confirmation": "Delete all data about user",
+    "userInfos_delete_cb1": "I confirm that I request for all the data stored about me on the platform to be deleted.",
+    "userInfos_delete_cb2": "I understand that this operation can’t be cancelled, and that everything I did on this platform will be deleted without any way for me to recover it.",
     "models_filters_fields_idUser_label": "Nutzer-ID",
     "models_filters_fields_sName_label": "Filtername",
     "models_filters_fields_bSelected_label": "Ausgewählt",

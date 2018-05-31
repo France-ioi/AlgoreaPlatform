@@ -8,7 +8,7 @@ session_start();
 $logged_user_id = null;
 if(isset($_SESSION['login']) &&
     $_SESSION['login']['tempUser'] === 0 &&
-    $_SESSION['login']['ID']) {
+    $_SESSION['login']['idUser']) {
         $logged_user_id = $_SESSION['login']['idUser'];
 }
 

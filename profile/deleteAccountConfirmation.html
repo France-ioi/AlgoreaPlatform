@@ -1,0 +1,19 @@
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>
+<div class="content-wrapper">
+    <div>
+        <i class="material-icons">warning</i>
+        <span ng-i18next="userInfos_delete_confirmation"></span>
+    </div>
+    <div class="checkboxSwitch">
+        <input type="checkbox" class="switch" ng-model="checked.cb1">
+        <label for="switchView" ng-click="checked.cb1=!checked.cb1"><span></span></label>
+        <span ng-i18next="userInfos_delete_cb1"></span>
+    </div>
+    <div class="checkboxSwitch">
+        <input type="checkbox" class="switch" ng-model="checked.cb2">
+        <label for="switchView" ng-click="checked.cb2=!checked.cb2"><span></span></label>
+        <span ng-i18next="userInfos_delete_cb2"></span>
+    </div>
+    <button ng-if="checked.cb1 && checked.cb2" class="btn btn-danger" ng-click="confirm()" ng-i18next="userInfos_btn_delete"></button>
+    <button class="btn btn-default" ng-click="close()" ng-i18next="cancel"></button>
+</div>
