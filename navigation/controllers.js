@@ -9,6 +9,30 @@ angular.module('algorea')
       if (config.domains.current.useMap) {
          mapService = $injector.get('mapService');
       }
+
+      $scope.editable = function() {
+         var groupItem = itemService.getGroupItem(this.item);
+         if(!groupItem) return false;
+         return groupItem.bOwnerAccess || groupItem.bManagerAccess;
+      }
+      $scope.editState = {mode: 'view'};
+
+      $scope.setEditMode = function(mode) {
+         this.editState.mode = this.editable() ? mode : false;
+         $rootScope.$broadcast('algorea.reloadTabs');
+      }
+
+      $scope.getEditMode = function() {
+         if(!this.editable()) {
+             this.editState.mode = 'view';
+         }
+         return this.editState.mode;
+      }
+
+      $scope.isEditMode = function(mode) {
+         return this.getEditMode() == mode;
+      }
+
       $scope.getChildren = function() {
          this.setPercentDone(this.item);
          return itemService.getChildren(this.item);

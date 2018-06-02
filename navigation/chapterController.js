@@ -28,32 +28,6 @@ angular.module('algorea')
         })
 
 
-        $scope.editable = function() {
-            var groupItem = itemService.getGroupItem($scope.item);
-            if(!groupItem) return false;
-            return groupItem.bOwnerAccess || groupItem.bManagerAccess;
-        }
-        $scope.mode = 'view';
-
-
-        $scope.setMode = function(mode) {
-            $scope.mode = $scope.editable ? mode : false;
-        }
-
-        $scope.getMode = function() {
-            if(!$scope.editable()) {
-                $scope.mode = 'view';
-            }
-            return $scope.mode;
-        }
-
-        $scope.isMode = function(mode) {
-            return $scope.getMode() == mode;
-        }
-
-
-
-
         // common
         $scope.item_strings = $scope.item.strings[0];
         $scope.item_strings_compare = null;
@@ -126,10 +100,10 @@ angular.module('algorea')
 
         // children items
 
-        function createItem() {
+        function createItem(sType, sTitle) {
             var item = ModelsManager.createRecord("items");
             item.bOwnerAccess = true;
-            item.sType = 'Chapter';
+            item.sType = sType;
             ModelsManager.insertRecord("items", item);
 
             var groupItem = ModelsManager.createRecord("groups_items");
@@ -141,13 +115,12 @@ angular.module('algorea')
             groupItem.bCachedFullAccess = true;
             groupItem.bOwnerAccess = true;
             groupItem.idUserCreated = user.ID;
-            groupItem.sPropagateAccess = 'self'; //TODO: remove
             ModelsManager.insertRecord("groups_items", groupItem);
 
             var itemStrings = ModelsManager.createRecord("items_strings");
             itemStrings.idItem = item.ID;
             itemStrings.idLanguage = 1; // TODO: handle this
-            itemStrings.sTitle = $i18next.t('chapterEditor_new_item_title');
+            itemStrings.sTitle = sTitle;
             ModelsManager.insertRecord("items_strings", itemStrings);
 
             var userItem = ModelsManager.createRecord("users_items");
@@ -196,14 +169,42 @@ angular.module('algorea')
 
 
         $scope.addNewChapter = function() {
-            var item = createItem();
-            addItem(item);
+            $scope.creating = {
+                sType: 'Chapter',
+                icon: 'folder',
+                placeholder: $i18next.t('chapterEditor_new_chapter_title'),
+                name: ''
+                }
         }
 
         $scope.addNewTask = function() {
-            // TODO :: interface
+            $scope.creating = {
+                sType: 'Task',
+                icon: 'keyboard',
+                placeholder: $i18next.t('chapterEditor_new_task_title'),
+                name: ''
+                }
         }
 
+        $scope.addNewCourse = function() {
+            $scope.creating = {
+                sType: 'Course',
+                icon: 'assignment',
+                placeholder: $i18next.t('chapterEditor_new_course_title'),
+                name: ''
+                }
+        }
+
+        $scope.create = function() {
+            if(!$scope.creating || !$scope.creating.name) { return; }
+            var item = createItem($scope.creating.sType, $scope.creating.name);
+            addItem(item);
+            $scope.creating = null;
+        }
+
+        $scope.cancelCreate = function() {
+            $scope.creating = null;
+        }
 
         $scope.addExistingItem = function() {
             $uibModal.open({

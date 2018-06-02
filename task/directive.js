@@ -454,6 +454,11 @@ angular.module('algorea')
                reinit(force);
             }
          });
+         scope.$on('algorea.reloadTabs', function() {
+            if(scope.lastTaskViews) {
+               scope.setTabs(scope.lastTaskViews);
+            }
+         });
          scope.$on('algorea.languageChanged', function(event) {
             reinit(true);
          });

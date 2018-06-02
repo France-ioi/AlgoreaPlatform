@@ -23,16 +23,11 @@ angular.module('algorea')
    // Last saved state/answer
    $scope.lastSave = {sState: '', sAnswer: ''};
 
-   $scope.canEdit = function() {
-      var groupItem = itemService.getGroupItem($scope.item);
-      if(!groupItem) return false;
-      return groupItem.bOwnerAccess || groupItem.bManagerAccess;
-   };
-
    // platformView = 1 view that the platform wants
    // taskView = view avaible on the task
    // 1 platformView can be several taskViews, for instance, platform wants
    // to show help + forum (2 taskViews) in one tab (1 platformView)
+   $scope.lastTaskViews = {};
    var platformViews = {};
    var initPlatformViews = function(platformOnly) {
       platformViews = {
@@ -48,7 +43,7 @@ angular.module('algorea')
          delete(platformViews.attempts);
          delete(platformViews.history);
       }
-      if(!$scope.canEdit()) {
+      if(!$scope.isEditMode('edit')) {
          delete(platformViews.modify);
          delete(platformViews.settings);
       }
@@ -189,7 +184,7 @@ angular.module('algorea')
          return;
       }
       if (platformView != $scope.currentView) {
-         if((platformView == 'modify' || platformView == 'settings') && !$scope.canEdit()) {
+         if((platformView == 'modify' || platformView == 'settings') && !$scope.editable()) {
             // Avoid displaying the view if the user doesn't have the rights
             return;
          }
@@ -234,6 +229,7 @@ angular.module('algorea')
       }
    };
    $scope.setTabs = function (taskViews, platformOnly) {
+      $scope.lastTaskViews = taskViews;
       $scope.firstViewLoaded = false;
       initPlatformViews(platformOnly);
       if (!this.inForum && this.useForum) {
@@ -270,13 +266,14 @@ angular.module('algorea')
       $scope.views = scopeViews;
       $scope.viewsIndex = scopeViewsIndex;
 
-      if (!$scope.askedView) {
+      if (!$scope.askedView || !$scope.viewsIndex[$scope.askedView]) {
          // Set default view
          if($scope.attemptAutoSelected || ($scope.item.bHasAttempts && $scope.user_item && !$scope.user_item.idAttemptActive)) {
             // Show attempts view if it's our first time on this task
             $scope.askedView = 'attempts';
             $scope.attemptAutoSelected = false;
-         } else if($scope.canEdit() && !$scope.item.sUrl) {
+         } else if($scope.editable() && !$scope.item.sUrl) {
+            $scope.setEditMode('edit');
             $scope.askedView = 'modify';
          } else {
             $scope.askedView = 'task';

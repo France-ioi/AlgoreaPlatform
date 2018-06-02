@@ -4,8 +4,8 @@
   <div class="main-titlebar-title1">
       {{strings.sTitle}}
       <span ng-if="editable()">
-        <i class="material-icons material-btn" ng-click="setMode('edit')" ng-if="isMode('view')">mode_edit</i>
-        <i class="material-icons material-btn" ng-click="setMode('view')" ng-if="isMode('edit')">remove_red_eye</i>
+        <i class="material-icons material-btn" ng-click="setEditMode('edit')" ng-if="isEditMode('view')">mode_edit</i>
+        <i class="material-icons material-btn" ng-click="setEditMode('view')" ng-if="isEditMode('edit')">remove_red_eye</i>
       </span>
   </div>
   <span class="menubar-userinfos" ng-if="showUserInfos">{{userInfos}}</span>

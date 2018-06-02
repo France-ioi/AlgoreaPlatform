@@ -222,7 +222,7 @@ angular.module('algorea')
             return strings;
          },
          getGroupItem: function(item, idGroup) {
-            if(!item) return null;
+            if(!item || !item.group_items) return null;
             if(!idGroup) {
                var loginData = loginService.getLoginData();
                if(!loginData) return null;
