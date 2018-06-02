@@ -51,7 +51,7 @@ angular.module('algorea')
                scope.depth = (scope.depth === undefined) ? 0 : scope.depth + 1;
             }
          };
-         scope.init(attrs.from);
+         scope.$watch('item.ID', function() { scope.init(attrs.from); });
          scope.$on('algorea.reloadView', function(event, viewName){
             if (viewName == 'breadcrumbs' && scope.panel=='menu' || viewName == scope.panel) {
                scope.localInit();

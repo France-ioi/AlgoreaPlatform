@@ -15,7 +15,7 @@
         </td>
         <td>
           {{ attempt.iScore }}%
-          <span ng-if="attempt.iScore > 0 && attempt.sBestAnswerDate">en {{ ((attempt.sBestAnswerDate - attempt.sStartDate) / 60000)|number:0 }}min&nbsp;{{ ((attempt.sBestAnswerDate - attempt.sStartDate) / 1000 % 60) }}s</span>
+          <span ng-if="attempt.iScore > 0 && attempt.sBestAnswerDate">en {{ Math.floor((attempt.sBestAnswerDate - attempt.sStartDate) / 60000)|number:0 }}min&nbsp;{{ ((attempt.sBestAnswerDate - attempt.sStartDate) / 1000 % 60) }}s</span>
         </td>
         <td>
           {{ teamUsers[attempt.idUserCreator].sLogin }}

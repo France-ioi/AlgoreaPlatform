@@ -5,6 +5,7 @@ angular.module('algorea')
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
       $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
+      $scope.itemService = itemService;
       var mapService = null;
       if (config.domains.current.useMap) {
          mapService = $injector.get('mapService');
@@ -597,9 +598,11 @@ angular.module('algorea')
          angular.forEach($scope.pathParams.path, function(ID, index) {
             $scope.items.push({ID: 0});
             itemService.getAsyncRecord('items', ID, function(item) {
-               $scope.items[index] = item;
-               if (item) {
+               if(item) {
                   item.breadCrumbsDepth = index;
+                  for(var prop in item) {
+                     $scope.items[index][prop] = item[prop];
+                  }
                }
             });
          });
