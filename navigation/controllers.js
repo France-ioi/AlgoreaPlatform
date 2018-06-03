@@ -399,7 +399,8 @@ angular.module('algorea')
          }
 
          // Right link
-         if (nextID) {
+         var nextItem = nextID ? itemService.getItem(nextID) : null;
+         if (nextItem && !nextItem.bGrayedAccess) {
             $scope.rightImmediateLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
             $scope.rightLink = $scope.rightImmediateLink;
          } else {
@@ -425,7 +426,8 @@ angular.module('algorea')
          }
 
          // Left link
-         if (previousID) {
+         var previousItem = previousID ? itemService.getItem(previousID) : null;
+         if (previousItem && !previousItem.bGrayedAccess) {
             $scope.leftLink = {sref: pathService.getSrefFunction(basePath+'/'+previousID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+previousID, selr: null, viewr: null}};
          } else {
             $scope.leftLink = null;
