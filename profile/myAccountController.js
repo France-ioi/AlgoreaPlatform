@@ -14,27 +14,36 @@ angular.module('algorea').controller('myAccountController', [
 
 
     $scope.collected_data_controls = window.location.hash === '#collected_data_controls';
+    if($scope.collected_data_controls) {
+        $scope.loading = true;
+        $scope.delete_locks = [];
+        request({
+            action: 'get_delete_locks'
+        }, function(res) {
+            $scope.loading = false;
+            $scope.delete_locks = res;
+        });
+    }
+
+
     $scope.exportData = function() {
 
     }
 
 
-    function deleteAccountRequest() {
+    function request(data, callback) {
         $.ajax({
             type: 'POST',
             url: '/profile/account.php',
-            data: {
-               'action': 'delete'
-            },
+            data: data,
             timeout: 60000,
-            success: function(res) {
-                location.href = res.redirect;
-            },
+            success: callback,
             error: function(request, status, err) {
                 console.error(err)
             }
         });
     }
+
 
 
     $scope.deleteAccount = function() {
@@ -43,7 +52,13 @@ angular.module('algorea').controller('myAccountController', [
             controller: 'deleteAccountConfirmationController',
             resolve: {
                 callback: function() {
-                    return deleteAccountRequest;
+                    return function() {
+                        request({
+                            action: 'delete'
+                        }, function(res) {
+                            location.href = res.redirect;
+                        });
+                    }
                 }
             },
             backdrop: 'static',

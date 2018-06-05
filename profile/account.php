@@ -11,6 +11,28 @@ if(session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+function getLocks() {
+    global $db;
+    $q = '
+        SELECT
+            g.lockUserDeletionDate,
+            g.sName
+        FROM
+            groups_groups as gg
+        LEFT JOIN
+            groups as g
+        ON
+            gg.idGroupParent = g.ID
+        WHERE
+            gg.idGroupChild = :idGroupSelf AND
+            g.lockUserDeletionDate >= NOW()';
+    $stmt = $db->prepare($q);
+    $stmt->execute([
+        'idGroupSelf' => $_SESSION['login']['idGroupSelf']
+    ]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 function deleteAccount() {
     global $db, $config;
@@ -39,8 +61,13 @@ try {
 
     $action = isset($_POST['action']) ? $_POST['action'] : null;
     switch($action) {
+        case 'get_delete_locks':
+            $res = getLocks();
+            break;
         case 'delete':
-            deleteAccount();
+            if(count(getLocks()) == 0) {
+                deleteAccount();
+            }
             $res = [
                 'redirect' => $config->login_module_client['base_url'].'/collected_data'
             ];

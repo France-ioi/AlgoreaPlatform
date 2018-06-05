@@ -2,8 +2,19 @@
     <div>
         <button class="btn btn-default" ng-click="openPopup('profile')" ng-i18next="userInfos_btn_profile"></button>
         <button ng-if="collected_data_controls" class="btn btn-default" ng-click="exportData()" ng-i18next="userInfos_btn_export" confirm="test()"></button>
-        <button ng-if="collected_data_controls" class="btn btn-danger" ng-click="deleteAccount()" ng-i18next="userInfos_btn_delete"></button>
+        <button ng-if="collected_data_controls && !loading && delete_locks.length == 0" class="btn btn-danger" ng-click="deleteAccount()" ng-i18next="userInfos_btn_delete"></button>
+        <span ng-if="loading" ng-i18next="loading"></span>
 <!--                    <button class="btn btn-default" ng-click="openPopup('auth_methods')" ng-i18next="userInfos_btn_auth_methods"></button>-->
+    </div>
+    <div class="alert alert-info" ng-if="delete_locks.length > 0">
+        <strong ng-i18next="userInfos_deletion_locked"></strong>
+        <ul>
+            <li ng-repeat="l in delete_locks">
+                {{l.sName}}
+                <span ng-i18next="userInfos_locked_until"></span>
+                {{l.lockUserDeletionDate}}
+            </li>
+        </ul>
     </div>
     <h2 class="groupRequest-title" ng-i18next="userInfos_title_infos"></h2>
     <div>

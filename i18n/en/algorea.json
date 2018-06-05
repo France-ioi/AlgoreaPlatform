@@ -458,6 +458,8 @@
     "userInfos_delete_confirmation": "Delete all data about user",
     "userInfos_delete_cb1": "I confirm that I request for all the data stored about me on the platform to be deleted.",
     "userInfos_delete_cb2": "I understand that this operation can’t be cancelled, and that everything I did on this platform will be deleted without any way for me to recover it.",
+    "userInfos_deletion_locked": "Account deletion not available because you are part of the locked group(s):",
+    "userInfos_locked_until": "until",
 
     "userInfos_info_first": "Firstname :",
     "userInfos_info_last": "Lastname :",
