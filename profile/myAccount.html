@@ -1,7 +1,7 @@
 <div ng-controller="myAccountController" class="groupRequest-tabContent">
     <div>
         <button class="btn btn-default" ng-click="openPopup('profile')" ng-i18next="userInfos_btn_profile"></button>
-        <button ng-if="collected_data_controls" class="btn btn-default" ng-click="exportData()" ng-i18next="userInfos_btn_export" confirm="test()"></button>
+        <a ng-if="collected_data_controls" class="btn btn-default" target="_blank" download="algorea-account-export.json" ng-i18next="userInfos_btn_export" href="/profile/account.php?action=export"></a>
         <button ng-if="collected_data_controls && !loading && delete_locks.length == 0" class="btn btn-danger" ng-click="deleteAccount()" ng-i18next="userInfos_btn_delete"></button>
         <span ng-if="loading" ng-i18next="loading"></span>
 <!--                    <button class="btn btn-default" ng-click="openPopup('auth_methods')" ng-i18next="userInfos_btn_auth_methods"></button>-->

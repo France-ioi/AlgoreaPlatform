@@ -26,10 +26,6 @@ angular.module('algorea').controller('myAccountController', [
     }
 
 
-    $scope.exportData = function() {
-
-    }
-
 
     function request(data, callback) {
         $.ajax({

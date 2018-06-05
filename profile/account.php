@@ -11,6 +11,9 @@ if(session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+
+
+// locks
 function getLocks() {
     global $db;
     $q = '
@@ -34,6 +37,35 @@ function getLocks() {
 }
 
 
+// export
+function exportTable($table, $id) {
+    global $db;
+    $q = 'SELECT * FROM '.$table.' WHERE idUser = :id';
+    $stmt = $db->prepare($q);
+    $stmt->execute(['id' => $id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+function getData() {
+    $id = $_SESSION['login']['ID'];
+    return [
+        //'user' => $user,
+        'badges' => exportTable('badges', $id),
+        'filters' => exportTable('filters', $id),
+        'messages' => exportTable('messages', $id),
+        'users_answers' => exportTable('users_answers', $id),
+        'users_items' => exportTable('users_answers', $id),
+        'users_threads' => exportTable('users_answers', $id),
+        //'owned_groups' => getOwnedGroups(),
+        //'joined_groups' => getJoinedGroups(),
+    ];
+}
+
+
+
+// delete
 function deleteAccount() {
     global $db, $config;
     $remover = new RemoveUsersClass($db, [
@@ -59,13 +91,16 @@ try {
     }
 
 
-    $action = isset($_POST['action']) ? $_POST['action'] : null;
+    $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
     switch($action) {
         case 'get_delete_locks':
             $res = getLocks();
             break;
+        case 'export':
+            $res = getData();
+            break;
         case 'delete':
-            if(count(getLocks()) == 0) {
+            if($_SERVER['REQUEST_METHOD'] == 'POST' && count(getLocks()) == 0) {
                 deleteAccount();
             }
             $res = [
