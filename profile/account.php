@@ -21,13 +21,13 @@ function getLocks() {
             g.lockUserDeletionDate,
             g.sName
         FROM
-            groups_groups as gg
-        LEFT JOIN
+            groups_ancestors as ga
+        JOIN
             groups as g
         ON
-            gg.idGroupParent = g.ID
+            ga.idGroupAncestor = g.ID
         WHERE
-            gg.idGroupChild = :idGroupSelf AND
+            ga.idGroupChild = :idGroupSelf AND
             g.lockUserDeletionDate >= NOW()';
     $stmt = $db->prepare($q);
     $stmt->execute([
