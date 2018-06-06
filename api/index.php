@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 
 try {
     $module = isset($_REQUEST['module']) ? $_REQUEST['module'] : null;
