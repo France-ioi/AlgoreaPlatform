@@ -321,9 +321,9 @@ function createUpdateUser($db, $params) {
 
         $stmt = $db->prepare("
             insert into `users`
-            (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`, `sStudentId`, `sCountryCode`, `sBirthDate`, `iGraduationYear`, `iGrade`, `sAddress`, `sZipcode`, `sCity`, `sLandLineNumber`, `sCellPhoneNumber`, `sDefaultLanguage`, `sFreeText`, `sWebSite`, `sLastIP`, `sSex`)
+            (`ID`, `loginID`, `sLogin`, `tempUser`, `sRegistrationDate`, `idGroupSelf`, `idGroupOwned`, `sEmail`, `sFirstName`, `sLastName`, `sStudentId`, `sCountryCode`, `sBirthDate`, `iGraduationYear`, `iGrade`, `sAddress`, `sZipcode`, `sCity`, `sLandLineNumber`, `sCellPhoneNumber`, `sDefaultLanguage`, `sFreeText`, `sWebSite`, `sLastLoginDate`, `sLastIP`, `sSex`)
             values
-            (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName, :sStudentId, :sCountryCode, :sBirthDate, :iGraduationYear, :iGrade, :sAddress, :sZipcode, :sCity, :sLandLineNumber, :sCellPhoneNumber, :sDefaultLanguage, :sFreeText, :sWebSite, :sLastIP, :sSex);
+            (:ID, :idUser, :sLogin, '0', NOW(), :userSelfGroupId, :userAdminGroupId, :sEmail, :sFirstName, :sLastName, :sStudentId, :sCountryCode, :sBirthDate, :iGraduationYear, :iGrade, :sAddress, :sZipcode, :sCity, :sLandLineNumber, :sCellPhoneNumber, :sDefaultLanguage, :sFreeText, :sWebSite, NOW(), :sLastIP, :sSex);
         ");
         $stmt->execute([
             'ID' => $userId,
@@ -376,6 +376,7 @@ function createUpdateUser($db, $params) {
                 `sDefaultLanguage` = :sDefaultLanguage,
                 `sFreeText` = :sFreeText,
                 `sWebSite` = :sWebSite,
+                `sLastLoginDate` = NOW(),
                 `sLastIP` = :sLastIP,
                 `sSex` = :sSex
             where ID = :ID;");
