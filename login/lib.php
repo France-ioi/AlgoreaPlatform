@@ -269,7 +269,7 @@ function remapUserArray($user) {
         'sDefaultLanguage' => 'language',
         'sFreeText' => 'presentation',
         'sWebSite' => 'website',
-        'sLastIP' => 'ip',
+//        'sLastIP' => 'ip', -- we fetch the IP address locally
         'aBadges' => 'badges'
     ];
     $res = [];
@@ -298,16 +298,23 @@ function createUpdateUser($db, $params) {
         return;
     }
 
+    // Get IP address locally
+    if(!isset($params['sLastIP'])) {
+        $params['sLastIP'] = $_SERVER['REMOTE_ADDR'];
+    }
+
     foreach ($params as $param_k => $param_v) {
         $_SESSION['login'][$param_k] = $param_v;
     }
     //$_SESSION['login']['sToken'] = $request['token'];
     $_SESSION['login']['tempUser'] = 0;
     $_SESSION['login']['loginId'] = $params['idUser'];
+
     $query = 'select ID, idGroupSelf, idGroupOwned, bIsAdmin from users where `loginID`= :idUser ;';
     $stm = $db->prepare($query);
     $stm->execute(array('idUser' => $params['idUser']));
     $res = $stm->fetch();
+
     if(!$res) {
         list($userAdminGroupId, $userSelfGroupId) = createGroupsFromLogin($db, $params['sLogin']);
         $userId = getRandomID();
