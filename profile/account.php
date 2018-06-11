@@ -1,11 +1,9 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
 require_once __DIR__.'/../config.php';
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__."/../shared/connect.php";
 require_once __DIR__.'/../shared/RemoveUsersClass.php';
+
 
 if(session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -34,33 +32,6 @@ function getLocks() {
         'idGroupSelf' => $_SESSION['login']['idGroupSelf']
     ]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
-// export
-function exportTable($table, $id) {
-    global $db;
-    $q = 'SELECT * FROM '.$table.' WHERE idUser = :id';
-    $stmt = $db->prepare($q);
-    $stmt->execute(['id' => $id]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
-
-function getData() {
-    $id = $_SESSION['login']['ID'];
-    return [
-        //'user' => $user,
-        'badges' => exportTable('badges', $id),
-        'filters' => exportTable('filters', $id),
-        'messages' => exportTable('messages', $id),
-        'users_answers' => exportTable('users_answers', $id),
-        'users_items' => exportTable('users_answers', $id),
-        'users_threads' => exportTable('users_answers', $id),
-        //'owned_groups' => getOwnedGroups(),
-        //'joined_groups' => getJoinedGroups(),
-    ];
 }
 
 
@@ -95,9 +66,6 @@ try {
     switch($action) {
         case 'get_delete_locks':
             $res = getLocks();
-            break;
-        case 'export':
-            $res = getData();
             break;
         case 'delete':
             if($_SERVER['REQUEST_METHOD'] == 'POST' && count(getLocks()) == 0) {
