@@ -4,7 +4,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__."/../shared/connect.php";
 require_once __DIR__.'/../shared/RemoveUsersClass.php';
 
-//header('Content-disposition: attachment; filename=user-data-algorea.json');
+header('Content-disposition: attachment; filename=user-data-algorea.json');
 header('Content-type: application/json');
 
 if(session_status() === PHP_SESSION_NONE) {
