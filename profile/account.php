@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__.'/../config.php';
 require_once __DIR__.'/../vendor/autoload.php';
-require_once __DIR__."/../shared/connect.php";
+require_once __DIR__.'/../shared/connect.php';
 require_once __DIR__.'/../shared/RemoveUsersClass.php';
-
+require_once __DIR__.'/../shared/TokenGenerator.php';
 
 if(session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -36,6 +36,56 @@ function getLocks() {
 
 
 
+// platforms
+function getPlatforms() {
+    global $db, $config;
+    $q = '
+        SELECT DISTINCT
+            p.sName,
+            p.sBaseUrl as url
+        FROM
+            users_items as ui
+        JOIN
+            items as i
+        ON
+            i.ID = ui.idItem
+        JOIN
+            platforms as p
+        ON
+            p.ID = i.idPlatform
+        WHERE
+            ui.idUser = :idUser AND
+            p.sBaseUrl IS NOT NULL';
+    $stmt = $db->prepare($q);
+    $stmt->execute([
+        'idUser' => $_SESSION['login']['ID']
+    ]);
+    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+/*
+//TODO: remove test
+$res = [
+    [
+        'sName' => 'test',
+        'url' => 'http://task-platform.test'
+    ]
+];
+*/
+    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
+    foreach($res as &$row) {
+        $token = [
+            'idUser' => $_SESSION['login']['ID']
+        ];
+        $p = [
+            'sToken' => $tokenGenerator->encodeJWS($token),
+            'sPlatform' => $config->platform->name
+        ];
+        $row['url'] = rtrim($row['url'], '/').'/profile/account.php?'.http_build_query($p);
+    }
+    return $res;
+}
+
+
 // delete
 function deleteAccount() {
     global $db, $config;
@@ -64,8 +114,11 @@ try {
 
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
     switch($action) {
-        case 'get_delete_locks':
-            $res = getLocks();
+        case 'get_account_data_info':
+            $res = [
+                'locks' => getLocks(),
+                'platforms' => getPlatforms()
+            ];
             break;
         case 'delete':
             if($_SERVER['REQUEST_METHOD'] == 'POST' && count(getLocks()) == 0) {

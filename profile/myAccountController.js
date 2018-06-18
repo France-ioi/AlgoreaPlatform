@@ -17,14 +17,28 @@ angular.module('algorea').controller('myAccountController', [
     if($scope.collected_data_controls) {
         $scope.loading = true;
         $scope.delete_locks = [];
+        $scope.linked_platforms = [];
         request({
-            action: 'get_delete_locks'
+            action: 'get_account_data_info'
         }, function(res) {
             $scope.loading = false;
-            $scope.delete_locks = res;
+            $scope.delete_locks = res.locks;
+            $scope.linked_platforms = res.platforms;
         });
     }
 
+
+    $scope.deleteAccountAvailable = function() {
+        return $scope.collected_data_controls &&
+            !$scope.loading &&
+            $scope.delete_locks.length === 0 &&
+            $scope.linked_platforms.length === 0;
+    }
+
+
+    $scope.platformUrl = function(platform) {
+        return platform.sBaseUrl.replace(/\/$/g, '') + '/profile/account.php';
+    }
 
 
     function request(data, callback) {
