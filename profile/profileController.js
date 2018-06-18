@@ -25,8 +25,6 @@ angular.module('algorea')
         loginService.getLoginData(function(data) {
             $scope.tempUser = data.tempUser;
             $scope.loading = false;
-            var user = ModelsManager.getRecord('users', data.ID);
-            $scope.$broadcast('onUserLoaded', user);
         });
     }
 
