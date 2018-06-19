@@ -11,7 +11,7 @@ angular.module('algorea')
          mapService = $injector.get('mapService');
       }
       $scope.getChildren = function() {
-         this.setPercentDone(this.item);
+         this.setScore(this.item);
          return itemService.getChildren(this.item);
       };
       if (config.domains.current.additionalCssUrl) {
@@ -220,8 +220,28 @@ angular.module('algorea')
 
       $scope.setScore = function (item) {
          var user_item = itemService.getUserItem(item);
-         if (user_item) {
+         if(user_item) {
             this.iScore = user_item.iScore;
+         }
+         if(item.sType == 'Chapter') {
+            var children = itemService.getChildren(this.item);
+            var total = 0;
+            var totalScore = 0;
+            angular.forEach(children, function(child) {
+               if (child.sType != 'Course' && child.bNoScore == 0) {
+                  var childUserItem = itemService.getUserItem(child);
+                  if(childUserItem) {
+                     if(childUserItem.bValidated) {
+                        totalScore += 100;
+                     } else {
+                        totalScore += childUserItem.iScore;
+                     }
+                  }
+                  total = total + 1;
+               }
+            });
+            this.percentDone = total > 0 ? Math.floor(totalScore / total) : 0;
+            this.iScore = total > 0 ? this.percentDone : this.iScore;
          }
       };
       $scope.setScore($scope.item);
@@ -266,43 +286,6 @@ angular.module('algorea')
             }
          });
       };
-
-      $scope.setPercentDone = function(item) {
-         var user_item = itemService.getUserItem(item);
-         if (!user_item) {
-            this.percentDone = 0;
-            return;
-         }
-         var children = itemService.getChildren(this.item);
-         var total = 0;
-         var totalScore = 0;
-         angular.forEach(children, function(child) {
-            if (child.sType != 'Course' && child.bNoScore == 0) {
-               var childUserItem = itemService.getUserItem(child);
-               if(childUserItem) {
-                  if(childUserItem.bValidated) {
-                     totalScore += 100;
-                  } else {
-                     totalScore += childUserItem.iScore;
-                  }
-               }
-               total = total + 1;
-            }
-         });
-         if (total > 0) {
-            this.percentDone = Math.floor(totalScore / total);
-            return;
-         }
-         this.percentDone = 0;
-/*         if ( ! user_item.bValidated && user_item.nbTaskTried && this.item.sType == 'task') {
-            return 'failed';
-         }
-         if (user_item.nbTaskWithHelp && this.item.sType == 'task') {
-            return 'hint asked';
-         }
-         return 'visited';*/
-      };
-      $scope.setPercentDone($scope.item);
 
       $scope.get_formatted_date = function(date) {
          return $filter('date')(date, 'fullDate');
