@@ -40,6 +40,8 @@ angular.module('algorea')
     }
 
    function loadTask(scope, elem, sameUrl) {
+      scope.item_strings = scope.item.strings[0];
+      scope.item_strings_compare = null;
       if(!scope.item.sUrl) {
          scope.setTabs({}, true);
          scope.taskLoaded = true;

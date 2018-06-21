@@ -6,6 +6,7 @@ angular.module('algorea')
     function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, loginService, pathService) {
         $scope.itemService = itemService;
         $scope.models = models;
+        $scope.tab = 'content';
 
         $scope.sortableOptions = {
             handle: '.drag-ctrl',
@@ -13,7 +14,6 @@ angular.module('algorea')
                 recalculateItemsOrder();
             }
         }
-
 
         // sync does not work without this
         if(!SyncQueue.requests) { SyncQueue.requests = {}; }
@@ -29,12 +29,15 @@ angular.module('algorea')
 
 
         // common
-        $scope.item_strings = $scope.item.strings[0];
-        $scope.item_strings_compare = null;
+        $scope.availableLocales = ModelsManager.getRecords('languages');
+        // TODO :: Why is that happening?
+        if($scope.availableLocales[0]) { delete $scope.availableLocales[0]; }
 
         function refresh() {
-            $scope.allowReorder = $scope.item.bFixedRanks;
+            $scope.allowReorder = !$scope.item.bFixedRanks;
             $scope.items = itemService.getChildren($scope.item);
+            $scope.item_strings = $scope.item.strings[0];
+            $scope.item_strings_compare = null;
         }
         refresh();
 
@@ -58,14 +61,24 @@ angular.module('algorea')
         });
 
 
+        $scope.selectTab = function(tab) {
+            $scope.tab = tab;
+        }
+
+        $scope.getItemIcon = itemService.getItemIcon;
+
+        $scope.getChildSref = function(item) {
+            return pathService.getSref($scope.panel, typeof $scope.depth != 'undefined' ? $scope.depth + 1 : 0, $scope.pathParams, '/' + item.ID);
+        };
+
         $scope.checkSaveItem = function() {
             var hasChanged = false;
-            hasChanged |= $scope.hasObjectChanged("items_items", $scope.item_item);
+//            hasChanged |= $scope.hasObjectChanged("items_items", $scope.item_item);
             hasChanged |= $scope.hasObjectChanged("items", $scope.item);
             hasChanged |= $scope.hasObjectChanged("items_strings", $scope.item_strings);
             if (hasChanged) {
                if (confirm($i18next.t('groupAdmin_confirm_unsaved'))) {
-                  $scope.resetObjectChanges("items_items", $scope.item_item);
+//                  $scope.resetObjectChanges("items_items", $scope.item_item);
                   $scope.resetObjectChanges("items", $scope.item);
                   $scope.resetObjectChanges("items_strings", $scope.item_strings);
                } else {
@@ -285,6 +298,7 @@ angular.module('algorea')
 
         function recalculateItemsOrder(parentItem) {
             // Recalculate the order for parentItem's children
+            if(!parentItem) { parentItem = $scope.item; }
             if(parentItem.bFixedRanks) {
                 return;
             }
@@ -344,19 +358,10 @@ angular.module('algorea')
 
 
         var path = startPath.slice();
-        path.pop();
+        var pathDepth = path.indexOf(startItem.ID);
+        if(pathDepth > -1) { path.splice(pathDepth); }
 
-        var icons = {
-            Root: 'list',
-            Task: 'keyboard',
-            Chapter: 'folder',
-            Course: 'assignment'
-        }
-
-        $scope.getItemIcon = function(item) {
-            console.log(item.sType, icons[item.sType]);
-            return item.sType in icons ? icons[item.sType] : 'folder';
-        }
+        $scope.getItemIcon = itemService.getItemIcon;
 
 
         $scope.openItem = function(item, path_skip) {

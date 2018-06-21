@@ -37,7 +37,8 @@ angular.module('algorea')
          'hints': {tabString: 'task_hints', taskViews: {'hints': true}},
          'history': {tabString: 'task_history'},
          'modify': {tabString: 'task_modify'},
-         'settings': {tabString: 'task_settings'}
+         'settings': {tabString: 'task_settings'},
+         'strings': {tabString: 'task_strings'}
       };
       if(platformOnly || !$scope.item.bHasAttempts) {
          delete(platformViews.attempts);
@@ -46,6 +47,7 @@ angular.module('algorea')
       if(!$scope.isEditMode('edit')) {
          delete(platformViews.modify);
          delete(platformViews.settings);
+         delete(platformViews.strings);
       }
       if(platformOnly) {
          delete(platformViews.editor);
@@ -184,7 +186,7 @@ angular.module('algorea')
          return;
       }
       if (platformView != $scope.currentView) {
-         if((platformView == 'modify' || platformView == 'settings') && !$scope.editable()) {
+         if((platformView == 'modify' || platformView == 'settings' || platformView == 'strings') && !$scope.editable()) {
             // Avoid displaying the view if the user doesn't have the rights
             return;
          }
@@ -231,6 +233,10 @@ angular.module('algorea')
    $scope.setTabs = function (taskViews, platformOnly) {
       $scope.lastTaskViews = taskViews;
       $scope.firstViewLoaded = false;
+      // TODO :: find how to make it work
+      if($scope.currentView == 'modify' || $scope.currentView == 'strings' || $scope.currentView == 'parameters') {
+         $scope.setEditMode('edit');
+      }
       initPlatformViews(platformOnly);
       if (!this.inForum && this.useForum) {
          platformViews.forum = {tabString: 'task_help'};

@@ -1,16 +1,13 @@
 <div class="chapter-editor">
     <div class="main-titlebar chapter-titlebar" ng-if="item.bTitleBarVisible" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
     <div class="main-area main-area-normal">
-        <uib-tabset>
-            <uib-tab heading="{{'chapterEditor_content'|i18next}}">
-                <div ng-include="templatesPrefix+'/navigation/views/chapter/tab-content.html'"></div>
-            </uib-tab>
-            <uib-tab heading="{{'chapterEditor_strings'|i18next}}">
-                <div ng-include="templatesPrefix+'/navigation/views/chapter/tab-strings.html'"></div>
-            </uib-tab>
-            <uib-tab heading="{{'chapterEditor_parameters'|i18next}}">
-                <div ng-include="templatesPrefix+'/navigation/views/chapter/tab-parameters.html'"></div>
-            </uib-tab>
-        </uib-tabset>
+        <div class="task-tabs-inner">
+            <div ng-click="selectTab('content')" class="task-tab" ng-class="{content: 'task-tab-selected'}[tab]" ng-i18next="chapterEditor_content"></div>
+            <div ng-click="selectTab('parameters')" class="task-tab" ng-class="{parameters: 'task-tab-selected'}[tab]" ng-i18next="chapterEditor_parameters"></div>
+            <div ng-click="selectTab('strings')" class="task-tab" ng-class="{strings: 'task-tab-selected'}[tab]" ng-i18next="chapterEditor_strings"></div>
+        </div>
+        <div ng-if="tab == 'content'" ng-include="templatesPrefix+'/navigation/views/chapter/tab-content.html'"></div>
+        <div ng-if="tab == 'parameters'" ng-include="templatesPrefix+'/navigation/views/parameters.html'"></div>
+        <div ng-if="tab == 'strings'" ng-include="templatesPrefix+'/navigation/views/strings.html'"></div>
     </div>
 </div>

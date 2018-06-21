@@ -161,6 +161,15 @@ angular.module('algorea')
          getItem: function(ID) {
             return ModelsManager.getRecord('items', ID);
          },
+         getItemIcon: function(item) {
+            var icons = {
+               Root: 'list',
+               Task: 'keyboard',
+               Chapter: 'folder',
+               Course: 'assignment'
+            }
+            return item.sType in icons ? icons[item.sType] : 'folder';
+         },
          getAsyncUser: function(callback) {
             if (syncDone) {
                callback(getUser());
@@ -193,11 +202,17 @@ angular.module('algorea')
             if (syncDone) {
                callback();
             } else {
-               if (! callbacks.general) {
+               if (!callbacks.general) {
                   callbacks.general = {0: []};
                }
-               callbacks.general[0].push(callback);
-               // TODO: remove callback once called
+               // Self-delete from callbacks once executed
+               var cb = null;
+               cb = function() {
+                  callback();
+                  var idx = callbacks.general[0].indexOf(cb);
+                  if(idx > -1) { callbacks.general[0].splice(idx, 1); }
+               };
+               callbacks.general[0].push(cb);
             }
          },
          saveRecord: function(model, ID) {
