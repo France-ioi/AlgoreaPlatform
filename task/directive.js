@@ -375,7 +375,14 @@ angular.module('algorea')
                console.error('item has no url!');
             }
             elem[0].src = scope.taskUrl;
-            $timeout(function() { loadTask(scope, elem, sameUrl);});
+            var timeout = $timeout(function() {
+                loadTask(scope, elem, sameUrl);
+                }, 3000);
+            elem[0].onload = function() {
+               if($timeout.cancel(timeout)) {
+                  loadTask(scope, elem, sameUrl);
+               }
+            };
          }
          if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Course')) {
             if(scope.item.bHasAttempts && !scope.user_item.idAttemptActive) {
@@ -425,6 +432,14 @@ angular.module('algorea')
                         initTask(sameUrl);
                      });
                   }
+               }, function() {
+                  // Failed
+                  scope.taskLoaded = false;
+                  scope.canGetState = false;
+                  scope.task.unloaded = true;
+                  TaskProxyManager.deleteTaskProxy(scope.taskName);
+                  elem[0].src = '';
+                  $timeout(function() {initTask();});
                });
                
             } else {
