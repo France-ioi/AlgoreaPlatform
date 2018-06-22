@@ -41,6 +41,7 @@ function getPlatforms() {
     global $db, $config;
     $q = '
         SELECT DISTINCT
+            p.ID,
             p.sName,
             p.sBaseUrl as url
         FROM
@@ -55,7 +56,8 @@ function getPlatforms() {
             p.ID = i.idPlatform
         WHERE
             ui.idUser = :idUser AND
-            p.sBaseUrl IS NOT NULL';
+            p.sBaseUrl IS NOT NULL AND
+            ui.bPlatformDataRemoved = 0';
     $stmt = $db->prepare($q);
     $stmt->execute([
         'idUser' => $_SESSION['login']['ID']
@@ -66,6 +68,7 @@ function getPlatforms() {
 //TODO: remove test
 $res = [
     [
+        'ID' => 1,
         'sName' => 'test',
         'url' => 'http://task-platform.test'
     ]
@@ -78,9 +81,11 @@ $res = [
         ];
         $p = [
             'sToken' => $tokenGenerator->encodeJWS($token),
-            'sPlatform' => $config->platform->name
+            'sPlatform' => $config->platform->name,
+            'sCancelUrl' => rtrim($config->shared->domains['current']->baseUrl, '/').'/profile/myAccount#collected_data_controls',
+            'sCallbackUrl' => rtrim($config->shared->domains['current']->baseUrl, '/').'/platformCallback.php?idPlatform='.$row['ID']
         ];
-        $row['url'] = rtrim($row['url'], '/').'/profile/account.php?'.http_build_query($p);
+        $row['url'] = rtrim($row['url'], '/').'/profile/?'.http_build_query($p);
     }
     return $res;
 }
