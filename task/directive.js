@@ -7,7 +7,7 @@ angular.module('algorea')
       scope: false,
       template: function(elem, attrs) {
         var userItemVarStr = attrs.userItemVar ? 'user-item-var="'+attrs.userItemVar+'"' : '';
-        return '<span ng-show="loadingError">{{loadingError}}</span><iframe ng-hide="loadingError" ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' build-task allowfullscreen allow="microphone"></iframe>';
+        return '<span ng-show="loadingError">{{loadingError}}</span><span build-task><iframe ng-if="taskUrl && !loadingError" ng-src="{{taskUrl}}" class="iframe-task" id="{{taskName}}" '+userItemVarStr+' allowfullscreen allow="microphone"></iframe></span>';
       },
       link: function(scope, elem, attrs) {
          // user-item-var can be used to take a variable other than
@@ -340,7 +340,7 @@ angular.module('algorea')
     return {
       restrict: 'EA',
       scope: false,
-      link:function(scope, elem, attrs){
+      link: function(scope, elem, attrs){
          if (attrs.userItemVar) {
             scope.user_item = scope[attrs.userItemVar];
          }
@@ -349,7 +349,6 @@ angular.module('algorea')
             name = 'task-'+Math.floor((Math.random() * 10000) + 1);// could be better...
          }
          if (!scope.taskName) {scope.taskName = name;}
-         scope.taskIframe = elem;
          scope.$on('algorea.attemptChanged', function(event) {
             // Reload item after we select a new attempt
             if (scope.user_item.attempt && scope.user_item.attempt.ID != scope.curAttemptId) {
@@ -374,13 +373,17 @@ angular.module('algorea')
             } else {
                console.error('item has no url!');
             }
-            elem[0].src = scope.taskUrl;
+            $timeout(function() { initIframe(sameUrl); });
+         }
+         function initIframe(sameUrl) {
+            scope.taskIframe = elem.find('iframe');
+            scope.taskIframe[0].src = scope.taskUrl;
             var timeout = $timeout(function() {
-                loadTask(scope, elem, sameUrl);
+                loadTask(scope, scope.taskIframe, sameUrl);
                 }, 3000);
-            elem[0].onload = function() {
+            scope.taskIframe[0].onload = function() {
                if($timeout.cancel(timeout)) {
-                  loadTask(scope, elem, sameUrl);
+                  loadTask(scope, scope.taskIframe, sameUrl);
                }
             };
          }
@@ -425,7 +428,7 @@ angular.module('algorea')
                   scope.task.unloaded = true;
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);
-                     elem[0].src = '';
+                     scope.taskUrl = '';
                      $timeout(function() {initTask(sameUrl);});
                   } else {
                      scope.task.updateToken(scope.user_item.sToken, function() {
@@ -438,7 +441,7 @@ angular.module('algorea')
                   scope.canGetState = false;
                   scope.task.unloaded = true;
                   TaskProxyManager.deleteTaskProxy(scope.taskName);
-                  elem[0].src = '';
+                  scope.taskUrl = '';
                   $timeout(function() {initTask();});
                });
                
@@ -448,7 +451,7 @@ angular.module('algorea')
                scope.currentView = null;
                if (!sameUrl) {
                   TaskProxyManager.deleteTaskProxy(scope.taskName);
-                  elem[0].src = '';
+                  scope.taskUrl = '';
                }
                $timeout(function() {initTask(sameUrl);});
             }
