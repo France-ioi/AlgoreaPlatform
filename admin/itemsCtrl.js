@@ -286,6 +286,7 @@ angular.module('algorea')
          itemItem.idItemChild = item.ID;
          itemItem.iChildOrder = $scope.itemsTreeView1.firstAvailableOrder(parentItem);
          ModelsManager.insertRecord("items_items", itemItem);
+         $scope.itemsTreeView1.cleanupOrders(parentItem);
 
          // angular.forEach(parentItem.group_items, function(group_item) {
          //    group_item.sPropagateAccess = 'children';
