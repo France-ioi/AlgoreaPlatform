@@ -1,0 +1,14 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h4 ng-i18next="chapterEditor_sync_results"></h4>
+  </div>
+  <div class="panel-body">
+    <ul>
+      <li ng-repeat="result in syncResults">
+        <span ng-if="result.done"><span class="material-icons">done</span> <span ng-i18next="chapterEditor_sync_done"></span></span>
+        <span ng-if="!result.done"><span class="material-icons">{{ result.icon }}</span> <span ng-i18next="{{ result.msg }}"></span>, {{ result.params.task }} <span class="material-icons">compare_arrows</span> <a ui-sref="{{ getChildSref(result.item) }}" target="_blank">{{ result.item.strings[0].sTitle }}</a></span>
+      </li>
+    </ul>
+  </div>
+</div>
+<iframe ng-if="repositoryUrl" ng-src="{{ repositoryUrl }}" id="iframe-editor" class="iframe-task" style="width: 100%;"></iframe>
