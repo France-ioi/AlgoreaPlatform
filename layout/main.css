@@ -243,12 +243,22 @@ body {
 }
 
 .chapter-editor .children-item-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chapter-editor .children-item-div {
+  display: inline-block;
   vertical-align: baseline;
   line-height: 1em;
 }
 
-.chapter-editor .children-item {
-  display: inline-block;
+.chapter-editor .children-item-more {
+  margin-left: 24px;
+}
+
+.chapter-editor .children-item-links {
+  font-size: 14px;
 }
 
 .forum-in-task {

@@ -2,13 +2,34 @@
     <div class="children-list-container">
         <div class="children-list-left-margin"></div>
         <div class="children-list" ui-sortable="sortableOptions" ng-model="items">
-            <div ng-repeat="item in items track by item.ID" class="children-item-row">
-                <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">drag_handle</i>
-                <span class="material-icons material-btn">{{ getItemIcon(item); }}</span>
-                <a ui-sref="{{ getChildSref(item) }}">{{item.strings[0].sTitle}}</a>
-                <i class="material-icons material-btn" ng-click="copyItem(item)">content_copy</i>
-                <i class="material-icons material-btn" ng-click="cutItem(item)">content_cut</i>
-                <i class="material-icons material-btn" ng-click="removeItem(item)">remove_circle</i>
+            <div ng-repeat="item in items track by item.ID" class="children-item-div">
+                <div class="children-item-row">
+                    <div>
+                        <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">drag_handle</i>
+                        <span class="material-icons material-btn">{{ getItemIcon(item); }}</span>
+                        <a ui-sref="{{ getChildSref(item) }}">{{item.strings[0].sTitle}}</a>
+                    </div>
+                    <div>
+                        <i class="material-icons material-btn" ng-show="canMore(item)" ng-click="toggleMore(item)">more_vert</i>
+                        <i class="material-icons material-btn" ng-click="copyItem(item)">content_copy</i>
+                        <i class="material-icons material-btn" ng-click="cutItem(item)">content_cut</i>
+                        <i class="material-icons material-btn" ng-click="removeItem(item)">remove_circle</i>
+                    </div>
+                </div>
+                <div class="children-item-more" ng-show="showMore[item.ID]">
+                    <div style="float: right; margin-top: 8px;">
+                        <button class="btn btn-default btn-xs">
+                            <span class="material-icons material-btn" ng-click="copyItem(item)">get_app</span>
+                            <span ng-i18next="chapterEditor_zip_download"></span>
+                        </button>
+                    </div>
+                    <span class="material-icons">link</span> <span ng-i18next="chapterEditor_links_title"></span> :
+                    <ul class="children-item-links">
+                        <li><span ng-i18next="chapterEditor_links_task"></span>&nbsp;:&nbsp;<a href="{{ item.sUrl }}">{{ item.sUrl }}</a></li>
+                        <li ng-repeat="link in links[item.ID]">{{ link.title }}&nbsp;:&nbsp;<a href="{{ link.url }}">{{ link.url }}</a></li>
+                    </ul>
+                    <div style="clear: both;"></div>
+                </div>
             </div>
             <div ng-show="creating">
                 <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">drag_handle</i>
@@ -49,6 +70,24 @@
         <button ng-click="pasteItem()" class="btn btn-primary" ng-if="itemService.getClipboard().ID">
             <i class="material-icons material-btn">content_paste</i>
             <span ng-i18next="({sprintf:[itemService.getClipboard().title]})chapterEditor_paste_item"></span>
+        </button>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <i class="material-icons material-btn">apps</i>
+            <b ng-i18next="chapterEditor_actions_title"></b>
+        </h4>
+    </div>
+    <div class="panel-body">
+        <button ng-click="toggleMoreAll()" class="btn btn-default">
+            <span class="material-icons material-btn">more_vert</span>
+            <span ng-i18next="chapterEditor_actions_more"></span>
+        </button>
+        <button ng-click="" class="btn btn-default">
+            <span class="material-icons material-btn">get_app</span>
+            <span ng-i18next="chapterEditor_zip_all"></span>
         </button>
     </div>
 </div>

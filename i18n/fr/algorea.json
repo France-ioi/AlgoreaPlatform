@@ -491,6 +491,13 @@
     "chapterEditor_new_task_title": "Nouvelle tâche",
     "chapterEditor_new_course_title": "Nouveau cours",
     "chapterEditor_browser_title": "Copier un item existant",
+    "chapterEditor_links_title": "Liens pour cette tâche",
+    "chapterEditor_links_task": "Lien direct",
+    "chapterEditor_links_lti": "Lien LTI",
+    "chapterEditor_zip_download": "Télécharger au format ZIP",
+    "chapterEditor_zip_all": "Télécharger le chapitre au format ZIP",
+    "chapterEditor_actions_title": "Actions sur ce chapitre",
+    "chapterEditor_actions_more": "Afficher plus d'informations",
 
     "models_filters_fields_idUser_label": "id de l'utilisateur",
     "models_filters_fields_sName_label": "Nom du filtre",

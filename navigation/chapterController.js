@@ -8,6 +8,9 @@ angular.module('algorea')
         $scope.models = models;
         $scope.tab = 'content';
 
+        $scope.links = {};
+        $scope.showMore = {};
+
         $scope.sortableOptions = {
             handle: '.drag-ctrl',
             stop: function(event, ui) {
@@ -307,6 +310,40 @@ angular.module('algorea')
                 itemItem.iChildOrder = idx+1;
                 ModelsManager.updated('items_items', itemItem.ID);
             });
+        }
+
+        $scope.getLinks = function(item) {
+            if(!item.sUrl || item.sType != 'Task') { return []; }
+            var links = [];
+            links.push({
+                title: $i18next.t('chapterEditor_links_lti'),
+                url: 'https://lti.algorea.org/?taskUrl=' + encodeURIComponent(item.sUrl)
+                });
+            return links;
+        };
+
+        $scope.canMore = function(item) {
+            return item.sUrl && (item.sType == 'Task' || item.sType == 'Course');
+        };
+
+        $scope.toggleMore = function(item, force) {
+            if(!$scope.canMore(item)) { return; }
+            if(!$scope.showMore[item.ID]) {
+                $scope.links[item.ID] = $scope.getLinks(item);
+            }
+            if(typeof force !== 'undefined') {
+                $scope.showMore[item.ID] = force;
+            } else {
+                $scope.showMore[item.ID] = !$scope.showMore[item.ID];
+            }
+        }
+
+        $scope.toggleMoreAll = function() {
+            // showMore[0] contains the chapter state
+            $scope.showMore[0] = !$scope.showMore[0];
+            angular.forEach($scope.items, function(item) {
+                $scope.toggleMore(item, $scope.showMore[0]);
+                });
         }
 
         // strings
