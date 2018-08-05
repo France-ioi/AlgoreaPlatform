@@ -395,13 +395,18 @@ angular.module('algorea')
             $scope.repositoryUrl = $sce.trustAsResourceUrl('http://svnimport.mblockelet.info/import.php?path='+encodeURI($scope.item.sRepositoryPath)+'&recursive=1&display=frame');
         }
         $scope.repositoryChan = null;
-        $scope.bindRepository = function() {
+        $scope.bindRepository = function(callback) {
             // Bind to the repository editor
-            if(!$scope.repositoryUrl || $scope.repositoryChan) { return; }
+            if(!$scope.repositoryUrl || $scope.repositoryChan) {
+                if(callback) {
+                    callback();
+                }
+                return;
+            }
             if(!document.getElementById('iframe-editor')) {
-               // The iframe hasn't rendered yet, retry in a second
-               $timeout($scope.bindRepository, 1000);
-               return;
+                // The iframe hasn't rendered yet, retry in a second
+                $timeout($scope.bindRepository, 1000);
+                return;
             }
             $scope.repositoryChan = Channel.build({
                 window: document.getElementById('iframe-editor').contentWindow,
@@ -410,17 +415,22 @@ angular.module('algorea')
                 });
             $scope.repositoryChan.bind('link', $scope.repositoryLinked);
             $scope.repositoryChan.bind('syncFinished', $scope.syncFinished);
+            $scope.repositoryChan.bind('syncError', $scope.syncError);
 //            $scope.getHeightInterval = $interval($scope.getHeight, 1000);
+            if(callback) {
+                callback();
+            }
         };
 
         $scope.syncResults = [];
+        $scope.syncStatus = {
+            done: false,
+            icon: 'loop',
+            msg: 'inprogress',
+            nbGood: 0};
         $scope.repositoryLinked = function(e, params) {
             // Called when the repository sends a link
             if(!params.url || !params.task) { console.error(params); }
-
-            if(!$scope.syncPrepared) {
-                $scope.makeSyncItemLists();
-            }
 
             if(params.task.indexOf($scope.item.sRepositoryPath) != 0) {
                 // This task is not in a subfolder
@@ -433,6 +443,7 @@ angular.module('algorea')
             }
 
             var item = null;
+            var modified = false;
             if($scope.itemsByPath[params.task]) {
                 item = $scope.itemsByPath[params.task];
                 if(item.sUrl != params.url) {
@@ -443,6 +454,7 @@ angular.module('algorea')
                         msg: 'chapterEditor_sync_update_link',
                         params: params,
                         item: item});
+                    modified = true;
                 }
             } else if($scope.itemsByUrl[params.url]) {
                 item = $scope.itemsByUrl[params.url];
@@ -454,51 +466,109 @@ angular.module('algorea')
                     msg: 'chapterEditor_sync_update_path',
                     params: params,
                     item: item});
+                modified = true;
             }
 
             var path = params.task.split('/');
-            var parentPath = path.slice(0, -1).join('/');
             if(item) {
                 // Check item hierarchy
-                if($scope.itemsParents[item.ID].sRepositoryPath != parentPath) {
-                    console.log(parentPath);
-                    console.log($scope.itemsParents[item.ID].sRepositoryPath);
-                    $scope.syncResults.push({
-                        icon: 'error',
-                        msg: 'chapterEditor_sync_error_path',
-                        params: params,
-                        item: item});
+                var lastParent = item;
+                var curParent = $scope.itemsParents[item.ID];
+                var minIdx = $scope.item.sRepositoryPath.split('/').length;
+                var idx = path.length-1;
+                while(curParent && idx >= minIdx) {
+                    var desiredPath = path.slice(0, idx).join('/');
+                    if(curParent.sRepositoryPath != path.slice(0, idx).join('/')) {
+                        $scope.syncResults.push({
+                            icon: 'error',
+                            msg: 'chapterEditor_sync_error_path',
+                            params: {task: desiredPath, url: ''},
+                            item: lastParent,
+                            hierarchyError: 1});
+                        modified = true;
+                        break;
+                    }
+                    lastParent = curParent;
+                    curParent = $scope.itemsParents[curParent.ID];
+                    idx -= 1;
+                }
+                if(!modified) {
+                    $scope.syncStatus.nbGood += 1;
                 }
             } else {
-                var curParent = $scope.item;
-                var item = null;
-                for(var i = $scope.item.sRepositoryPath.split('/').length; i < path.length; i++) {
-                    var name = path[i];
-                    var isLeaf = (i == path.length-1);
-                    item = createItem(isLeaf ? 'Task' : 'Chapter', name);
-                    addItem(item, curParent);
-                    ModelsManager.updated('items', item.ID);
-                    item.sRepositoryPath = path.slice(0, i+1).join('/');
-                    curParent = item;
-                    $scope.syncResults.push({
-                        icon: isLeaf ? 'note_add' : 'create_new_folder',
-                        msg: 'chapterEditor_sync_new_' + (isLeaf ? 'task' : 'chapter'),
-                        params: {task: item.sRepositoryPath, url: ''},
-                        item: item});
-                }
-                if(!item) {
-                    console.error('error while creating hierarchy');
-                    return;
-                }
+                var name = path[path.length-1];
+                var item = createItem('Task', name);
+                item.sRepositoryPath = params.task;
                 item.sUrl = params.url;
                 ModelsManager.updated('items', item.ID);
+                $scope.setHierarchy(item);
+                $scope.syncResults.push({
+                    icon: 'note_add',
+                    msg: 'chapterEditor_sync_new_task',
+                    params: params,
+                    item: item});
+            }
+        };
+
+        $scope.setHierarchy = function(item, result) {
+            // Put the item in the right hierarchy, creating chapters if needed
+            // result is the optional corresponding syncResult, to set as fixed
+            // once done
+
+            // Create the item
+            var curParent = $scope.item;
+            var path = item.sRepositoryPath.split('/');
+            for(var i = $scope.item.sRepositoryPath.split('/').length; i < path.length; i++) {
+                // Create hierarchy
+                var name = path[i];
+                var curPath = path.slice(0, i+1).join('/');
+                // Select item at this depth
+                var curItem = (i == path.length-1) ? item : $scope.itemsByPath[curPath];
+                if(curItem) {
+                    // An item already is at this path, check parent
+                    var curItemParent = $scope.itemsParents[curItem.ID];
+                    if(curItemParent !== curParent) {
+                        // Parent is wrong, create proper relation
+                        angular.forEach(curItem.parents, function(item_item) {
+                            if(item_item.parent === curItemParent) {
+                                ModelsManager.deleteRecord('items_items', item_item.ID);
+                            }});
+                        addItem(curItem, curParent);
+                    }
+                } else {
+                    // Create a new chapter
+                    curItem = createItem('Chapter', name);
+                    addItem(curItem, curParent);
+                    curItem.sRepositoryPath = curPath;
+                    ModelsManager.updated('items', curItem.ID);
+                    $scope.syncResults.push({
+                        icon: 'create_new_folder',
+                        msg: 'chapterEditor_sync_new_chapter',
+                        params: {task: curPath, url: ''},
+                        item: curItem});
+                }
+                $scope.itemsByPath[curPath] = curItem;
+                $scope.itemsParents[curItem.ID] = curParent;
+                curParent = curItem;
+            }
+
+            if(result && result.hierarchyError) {
+                result.hierarchyError = 2;
             }
         };
 
         $scope.syncFinished = function() {
-            $scope.syncResults.push({done: true});
-            $scope.syncPrepared = false;
+            // Importer said the synchronisation is done
+            $scope.syncStatus.done = true;
+            $scope.syncStatus.icon = 'done';
+            $scope.syncStatus.msg = 'done';
         };
+
+        $scope.syncError = function() {
+            $scope.syncStatus.done = true;
+            $scope.syncStatus.icon = 'error';
+            $scope.syncStatus.msg = 'error';
+        }
 
         $scope.makeSyncItemLists = function() {
             // Prepare data for sync
@@ -526,13 +596,18 @@ angular.module('algorea')
                     });
             };
             makeItemLists($scope.item.children, $scope.item);
-
-            $scope.syncPrepared = true;
         };
 
         $scope.syncRepository = function() {
-            $scope.bindRepository();
-            $scope.repositoryChan.notify({method: 'syncRepository'});
+            $scope.syncStatus.done = false;
+            $scope.syncStatus.icon = 'loop';
+            $scope.syncStatus.msg = 'inprogress';
+            $scope.syncStatus.nbGood = 0;
+            $scope.syncResults = [];
+            $scope.bindRepository(function() {
+                $scope.makeSyncItemLists();
+                $scope.repositoryChan.notify({method: 'syncRepository'});
+                });
         };
     }
 ]);
