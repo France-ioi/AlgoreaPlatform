@@ -133,7 +133,10 @@ foreach ($config->shared->domains as $domain => $domainData) {
 $config->shared->domains['current'] = $config->shared->domains[$thisDomain];
 
 
-// Login module
+$config->shared->options = [
+        'profile_auth_methods' => false
+];
+
 // Login module
 $config->login_module_client = [
         'id' => '3',
