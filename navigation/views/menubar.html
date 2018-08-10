@@ -1,20 +1,16 @@
-<div ng-if="isMobileLayout && hasSidebarLeft && !layout.navTopIsOpen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control main-titlebar-item' />
-<div class="main-titlebar-icon main-titlebar-item material-icons {{ mainIconClass }}">{{ mainIconName }}</div>
 <div class="main-titlebar-titles main-titlebar-item">
   <div class="main-titlebar-title1">{{strings.sTitle}}</div>
   <span class="menubar-userinfos" ng-if="showUserInfos">{{userInfos}}</span>
   <div>{{strings.sSubtitle}}</div>
 </div>
-<div class='inTaskNav'>
-  <div ng-if="!leftLink && topLink" id="leftTopLink" class="link-arrow main-up-arrow" ng-click="goTopLink()"><span class="arrow-link-icon-top arrow-link-icon material-icons">arrow_upward</span></div>
-  <div ng-if="leftLink" id="leftLink" class="link-arrow main-left-arrow" ng-click="goLeftLink()"><span class="arrow-link-icon-left arrow-link-icon material-icons">arrow_back</span></div>
-  <div ng-if="rightLink" id="rightLink" class="link-arrow main-right-arrow" ng-click="goRightLink()"><span class="material-icons arrow-link-icon arrow-link-icon-right">arrow_forward</span></div>
-  <div ng-if="!rightLink && leftLink && topLink" id="rightTopLink" class="link-arrow main-up-arrow" ng-click="goTopLink()"><span class="material-icons arrow-link-icon arrow-link-icon-top">arrow_upward</span></div>
+<div ng-if="leftLink || topLink || rightLink" class='inTaskNav'>
+  <div ng-if="!leftLink && topLink" id="leftTopLink" class="link-arrow main-up-arrow" ng-click="goTopLink()"><span class="arrow-link-icon-top arrow-link-icon material-icons">expand_less</span></div>
+  <div ng-if="leftLink" id="leftLink" class="link-arrow main-left-arrow" ng-click="goLeftLink()"><span class="arrow-link-icon-left arrow-link-icon material-icons">navigate_before</span></div>
+  <div ng-if="rightLink" id="rightLink" class="link-arrow main-right-arrow" ng-click="goRightLink()"><span class="material-icons arrow-link-icon arrow-link-icon-right">navigate_next</span></div>
+  <div ng-if="!rightLink && leftLink && topLink" id="rightTopLink" class="link-arrow main-up-arrow" ng-click="goTopLink()"><span class="material-icons arrow-link-icon arrow-link-icon-top">expand_less</span></div>
 </div>
-
+<!--
 <div ng-if="hasMap" class="link-map" ng-click="layout.openMap();"></div>
 <div ng-if="!hasMap" class="link-no-map" ng-click="gotoIndex();"></div>
 <div class="main-titlebar-icon2 main-titlebar-item" ng-if="item_item.sCategory == 'Challenge'"><span class="material-icons">star</span></div>
-<div ng-if='isMobileLayout && !layout.navTopIsOpen' class="main-titlebar-item menu-toggle">
-  <span class="material-icons menu-more" ng-click="layout.openMobileTaskMenu()">menu</span>
-</div>
+-->

@@ -1,0 +1,19 @@
+<div id="main-content-panel-header">
+  <div>
+    <div ng-if="!sidebarLeftIsOpen" ng-click="layout.openSidebarLeft()"><i class="material-icons">menu</i></div>
+    <div id="header-control"></div>
+  </div>
+  <div id="main-content-panel-header-content">
+    <div class="material-icons">folder</div>
+    <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
+    <div ng-controller='localeController' uib-dropdown id="language-selector">
+      <button type="button" class='language-selector-label' uib-dropdown-toggle>{{sLocale}}</button>
+      <ul uib-dropdown-menu class='language-selector-dropdown'>
+         <li ng-repeat='lang in locales' ng-click="changeLocale(lang);">
+            <span>{{lang.label}}</span>
+         </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div ui-view="right"></div>

@@ -1,0 +1,20 @@
+<div id="left-panel-header">
+  <div id="access">
+    <div ng-click="layout.closeSidebarLeft()"><i class="material-icons">menu</i></div>
+    <a href="" ng-click="gotoIndex()" id="site-title">{{config.domains.current.title}}</a>
+    <div id="loginout" ng-controller="userController">
+      <button type="button" ng-if="loginStr" ng-click="openLoginPopup('logout');" class="material-icons loginout-btn">power_settings_new</button>
+      <button type="button" ng-if="!loginStr" ng-click="openLoginPopup('login');" class="material-icons loginout-btn">power_settings_new</button>
+    </div>
+  </div>
+  <div id="user" ng-controller="userController">
+    <div><i class="material-icons" style="font-size:36px">account_circle</i></div>
+    <div class="user-name">{{loginStr}}</div>
+    <div>
+      <!--TODO: notifications><i class="material-icons">notifications</i>-->
+      <button type="button" ng-controller="navbarController" ng-click="gotoMenuItem($index, 'profile')"><i class="material-icons">settings</i></button>
+    </div>
+  </div>
+  <div id="searchbar"></div>
+</div>
+<div ui-view="left"></div>

@@ -1,0 +1,145 @@
+/*
+Colors:
+#4a90e2
+*/
+:root {
+  --main-accent-color: #4a90e2;
+  --main-bg-color: #f1f2f7;
+  --text-light: #fff;
+  --text-main: #9b9b9b;
+  --text-dark: #525252;
+  --text-medium: #afafb0;
+  --font-main: 'Titillium Web', sans-serif;
+  --font-secondary: 'Source Sans Pro', sans-serif;
+}
+
+
+/*
+//
+//
+  Styling things
+//
+//
+*/
+body {
+  font-family: var(--font-main);
+  background-color: var(--main-bg-color);
+}
+a {
+  color: var(--text-dark);
+}
+/*
+********************
+Left Panel
+********************
+*/
+
+#left-panel {
+  background-color: var(--main-accent-color);
+}
+#left-panel-header {
+  background-color: #43494a;
+  color: var(--text-light);
+}
+#access {
+  text-transform: uppercase;
+  border-bottom: 1px solid #fff5;
+}
+#site-title {
+  font-family: var(--font-secondary);
+  font-size: 12px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: bold;
+}
+#user {
+  border-bottom: 1px solid #fff5;
+  padding: 5px;
+}
+#user .user-name {
+  font-size: 22px;
+}
+#left-panel-header button {
+  border: none;
+  background-color: transparent;
+}
+/*
+********************
+Right Panel
+********************
+*/
+#right-panel {
+  background-color: var(--main-bg-color);
+}
+#main-content-panel-header {
+  border-bottom: 1px solid #e6e7ec;
+}
+#main-content-panel-header .material-icons {
+  color: var(--main-accent-color);
+}
+#breadcrumbs {
+  color: var(--text-medium);
+  font-family: var(--font-secondary);
+  font-size: 12px;
+}
+#breadcrumbs .breadcrumbs-item > span {
+  border-top: 2px solid transparent;
+}
+#breadcrumbs .breadcrumbs-item .breadcrumbs-item-active {
+  border-top: 2px solid var(--main-accent-color);
+  color: var(--main-accent-color);
+  font-weight: bold;
+}
+#language-selector {
+  background-color: transparent;
+  background-image: -ms-linear-gradient(bottom left, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(228,229,234,1) 50%, rgba(228,229,234,1) 100%);
+  background-image: -moz-linear-gradient(bottom left, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(228,229,234,1) 50%, rgba(228,229,234,1) 100%);
+  background-image: -o-linear-gradient(bottom left, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(228,229,234,1) 50%, rgba(228,229,234,1) 100%);
+  background-image: -webkit-gradient(linear, left bottom, right top, color-stop(0, rgba(255,255,255,0)), color-stop(50, rgba(255,255,255,0)), color-stop(50, rgba(228,229,234,1)), color-stop(100, rgba(228,229,234,1)));
+  background-image: -webkit-linear-gradient(bottom left, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(228,229,234,1) 50%, rgba(228,229,234,1) 100%);
+  background-image: linear-gradient(to top right, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(228,229,234,1) 50%, rgba(228,229,234,1) 100%);
+  padding: 5px 8px 20px 25px;
+}
+#language-selector button {
+  background-color: transparent;
+  border: none;
+  text-transform: uppercase;
+  color: #afafb0;
+}
+
+.main-titlebar .inTaskNav {
+  background-color: var(--main-accent-color);
+  border-radius: 16px 0 0 16px;
+  padding-left: 3px;
+  padding-right: 6px;
+  height: 30px;
+}
+.main-titlebar .inTaskNav .link-arrow {
+  color: var(--text-light);
+  display: inline-block;
+}
+.main-titlebar .inTaskNav .link-arrow span {
+  display: block;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+.main-area {
+  background-color: #fff;
+  padding: 20px;
+  margin-top: 2em;
+}
+
+.children-item {
+  border-bottom: 1px solid #e7e6e6;
+}
+
+/*
+********************
+Footer
+********************
+*/
+
+footer {
+  background-color: var(--main-accent-color);
+}

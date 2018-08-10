@@ -62,29 +62,23 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
       ?>
     </script>
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <?php if (!$compiledMode): ?>
       <link rel="stylesheet" href="<?= includeFile('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>">
-      <link href="<?= includeFile('layout/3columns-flex.css') ?>" rel="stylesheet" type="text/css" />
-      <link href="<?= includeFile('layout/menu.css') ?>" rel="stylesheet" type="text/css" />
-      <link href="<?= includeFile('layout/main.css') ?>" rel="stylesheet" type="text/css" />
-      <link href="<?= includeFile('layout/sidebar-left.css') ?>" rel="stylesheet" type="text/css" />
-      <link href="<?= includeFile('layout/sidebar-right.css') ?>" rel="stylesheet" type="text/css" />
+      <link href="<?= includeFile('layout/layout.css') ?>" rel="stylesheet" type="text/css" />
       <link href="<?= includeFile('groupAdmin/groupAdmin.css') ?>" rel="stylesheet" type="text/css" />
       <link href="<?= includeFile('profile/groups.css') ?>" rel="stylesheet" type="text/css" />
-      <link rel="stylesheet" href="<?= includeFile('algorea.css') ?>" type="text/css">
       <?php if ($usesForum): ?>
         <link href="<?= includeFile('bower_components/dynatree/dist/skin/ui.dynatree.css') ?>" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="<?= includeFile('forum/forum.css') ?>" type="text/css">
       <?php endif; ?>
     <?php else: ?>
       <link rel="stylesheet" href="<?= includeFile('vendor.min.css') ?>">
-      <link rel="stylesheet" href="<?= includeFile('algorea.min.css') ?>">
     <?php endif; ?>
     <?php if ($additionalCssUrl): ?>
       <link rel="stylesheet" href="<?= $additionalCssUrl.$urlArgs ?>" type="text/css">
     <?php endif; ?>
-    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
     <style>
     #animation-debut {
       position:absolute;
@@ -107,21 +101,16 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
     }
     </style>
 </head>
-<body ng-controller="layoutController" id="body" ng-cloak ng-class="{'mobile-layout': isMobileLayout, 'has-sidebar-left-open': (hasSidebarLeft && sidebarLeftIsOpen)}">
+<body ng-controller="layoutController" id="body" ng-cloak>
 <?php if ($animationHtmlFile): ?>
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
-<div ng-if="showNavTopOverlay" id="navTopOverlay" ng-click="layout.closeNavTopOverlay()"></div>
-<div ng-if="showMobileNavTopOverlay" id="mobileNavTopOverlay" ng-click="layout.closeMobileNavTop()"></div>
-<div ng-if="showSidebarLeftOverlay" id="sidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
-<div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
-</header>
+
 <div id='main'>
 
-<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-show="hasSidebarLeft"></nav>
+  <div ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-include="templatesPrefix+'left-panel.html'" id="left-panel"></div>
 
-<article id="view-right" ui-view="right" autoscroll="false"></article>
+  <div ng-include="templatesPrefix+'right-panel.html'" id="right-panel"></div>
 
 </div>
 

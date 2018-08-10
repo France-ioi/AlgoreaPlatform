@@ -209,11 +209,11 @@ angular.module('algorea')
       },
       openSidebarLeft: function() {
         $rootScope.sidebarLeftIsOpen = true;
-        layoutService.openSidebarLeftOverlay(); // is hidden in CSS when not mobile layout to enable its visibility when resizing window
-        $scope.layout.closeNavTopOverlay();
-        if ($rootScope.isMobileLayout) {
+        //layoutService.openSidebarLeftOverlay(); // is hidden in CSS when not mobile layout to enable its visibility when resizing window
+        //$scope.layout.closeNavTopOverlay();
+        /*if ($rootScope.isMobileLayout) {
           $scope.layout.closeMobileNavTop();
-        }
+        }*/
       },
       closeSidebarLeft: function() {
         $rootScope.sidebarLeftIsOpen = false;
