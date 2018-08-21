@@ -1,7 +1,13 @@
 <div ng-if="isMobileLayout && hasSidebarLeft && !layout.navTopIsOpen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control main-titlebar-item' />
 <div class="main-titlebar-icon main-titlebar-item material-icons {{ mainIconClass }}">{{ mainIconName }}</div>
 <div class="main-titlebar-titles main-titlebar-item">
-  <div class="main-titlebar-title1">{{strings.sTitle}}</div>
+  <div class="main-titlebar-title1">
+      {{strings.sTitle}}
+      <span ng-if="editable()">
+        <i class="material-icons material-btn" ng-click="setEditMode('edit')" ng-if="isEditMode('view')">mode_edit</i>
+        <i class="material-icons material-btn" ng-click="setEditMode('view')" ng-if="isEditMode('edit')">remove_red_eye</i>
+      </span>
+  </div>
   <span class="menubar-userinfos" ng-if="showUserInfos">{{userInfos}}</span>
   <div>{{strings.sSubtitle}}</div>
 </div>

@@ -63,6 +63,9 @@ body {
 .task-tab.task-tab-selected {
    cursor: default;
 }
+.task-tab.task-tab-disabled {
+   cursor: not-allowed;
+}
 
 .main-titlebar {
    display:-webkit-flex;
@@ -229,6 +232,35 @@ body {
   flex-direction: column;
 }
 
+.material-btn {
+  cursor: pointer;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.chapter-editor .drag-ctrl {
+  cursor: move;
+}
+
+.chapter-editor .children-item-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chapter-editor .children-item-div {
+  display: inline-block;
+  vertical-align: baseline;
+  line-height: 1em;
+}
+
+.chapter-editor .children-item-more {
+  margin-left: 24px;
+}
+
+.chapter-editor .children-item-links {
+  font-size: 14px;
+}
+
 .forum-in-task {
    width:800px;
    margin-left:auto;
@@ -252,3 +284,5 @@ body {
    margin-left:auto;
    margin-right:auto;
 }
+
+

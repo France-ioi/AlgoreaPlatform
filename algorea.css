@@ -227,6 +227,10 @@ header {
   border: 1px solid #ddd;
   border-bottom-color: transparent;
 }
+.task-tab.task-tab-disabled {
+  color: #bbbbbb;
+  background-color: transparent;
+}
 
 
 .children-item {
@@ -515,4 +519,9 @@ footer a {
 .group-code-prompt {
   max-width: 800px;
   margin: 50px auto 0 auto;
+}
+
+
+.content-wrapper {
+  padding: 20px;
 }

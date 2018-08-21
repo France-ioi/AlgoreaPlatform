@@ -182,6 +182,7 @@ var models = {
          sUrl: {type: "string", label: "models_items_fields_sUrl_label"},
          idPlatform: {type: "int", label: "models_items_fields_idPlatform_label", defaultValue: 0},
          sTextId: {type: "string", label: "models_items_fields_sTextId_label", defaultValue: ''},
+         sRepositoryPath: {type: "string", label: "models_items_fields_sRepositoryPath_label", defaultValue: null},
          sType: {
             type: "enum",
             values: {

@@ -1,0 +1,23 @@
+<div ng-controller="modifyController">
+  <div ng-show="!modifyUrl && !item.sUrl">
+    <h3>Creating a new {{ item.sType }}</h3>
+    <div class="form-group">
+      <label for="editorSelect">Please select a type for this new {{ item.sType }}:</label>
+      <select ng-model="newItemEditor" class="form-control" id="editorSelect" ng-options="editor as editor.sTitle for editor in editors">
+      </select>
+    </div>
+    <div class="form-group" ng-show="newItemEditor.url == 'direct'">
+      <label for="manualUrl">Please enter the URL of the task:</label>
+      <input type="text" ng-model="newItemUrl" class="form-control" id="manualUrl" />
+    </div>
+    <button class="btn btn-lg btn-primary" ng-disabled="createTaskDisabled()" ng-click="startEditor()">Create task</button>
+  </div>
+  <div ng-show="!modifyUrl && item.sUrl">
+    <p>{{ item.sType }} has been successfully created. There is no editor available for this {{ item.sType }}.</p>
+  </div>
+  <div ng-show="modifyUrl">
+    <p ng-show="!item.sUrl">Please save and import your task to set this item up.</p>
+    <iframe ng-src="{{modifyUrl}}" id="iframe-editor" class="iframe-task" style="width: 100%;" allowfullscreen>
+    </iframe>
+  </div>
+</div>

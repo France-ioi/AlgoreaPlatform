@@ -152,12 +152,13 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
 <?php if (!$compiledMode): ?>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
   <?php if ($usesForum): ?>
-    <script src="<?= includeFile('bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
+
     <script src="<?= includeFile('bower_components/dynatree/dist/jquery.dynatree.min.js') ?>" type="text/javascript"></script>
     <script src="<?= includeFile('shared/utils.js') ?>"></script>
     <script src="<?= includeFile('ext/inheritance.js') ?>" type="text/javascript"></script>
     <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <?php endif; ?>
+  <script src="<?= includeFile('bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular-i18n/angular-locale_'.$config->shared->domains['current']->defaultAngularLocale.'.js') ?>"></script>
@@ -167,9 +168,11 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('bower_components/i18next/i18next.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/i18next-xhr-backend/i18nextXHRBackend.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/ng-i18next/dist/ng-i18next.min.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/i18next-sprintf-postprocessor/i18nextSprintfPostProcessor.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/js-md5/build/md5.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/jschannel/src/jschannel.js') ?>"></script>
   <script src="<?= includeFile('bower_components/pem-platform/task-xd-pr.js') ?>"></script>
+  <script src="<?= includeFile('bower_components/angular-ui-sortable/sortable.min.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/modelsManager/modelsManager.js') ?>"></script>
   <script src="<?= includeFile('commonFramework/sync/syncQueue.js') ?>"></script>
   <script src="<?= includeFile('shared/models.js') ?>"></script>
@@ -184,6 +187,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('layout.js') ?>"></script>
   <script src="<?= includeFile('navigation/service.js') ?>"></script>
   <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
+  <script src="<?= includeFile('navigation/chapterController.js') ?>"></script>
   <script src="<?= includeFile('navigation/directives.js') ?>"></script>
 
   <script src="<?= includeFile('community/controller.js') ?>"></script>
@@ -197,6 +201,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('states.js') ?>"></script>
   <script src="<?= includeFile('task/controller.js') ?>"></script>
   <script src="<?= includeFile('task/directive.js') ?>"></script>
+  <script src="<?= includeFile('task/modifyController.js') ?>"></script>
 
   <script src="<?= includeFile('profile/profileController.js') ?>"></script>
   <script src="<?= includeFile('profile/myAccountController.js') ?>"></script>
@@ -239,6 +244,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
                     }
                   }
     };
+  window.i18next.use(window.i18nextSprintfPostProcessor);
   window.i18next.init(i18nextOpts);
   window.i18next.on('initialized', function (options) {
     window.i18nextOptions = options;
