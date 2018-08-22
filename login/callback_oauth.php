@@ -53,6 +53,12 @@ try {
             $idGroup
         );
     }
+    if(isset($_SESSION['ONLOGIN_REDIRECT_URL'])) {
+        $url = $_SESSION['ONLOGIN_REDIRECT_URL'];
+        unset($_SESSION['ONLOGIN_REDIRECT_URL']);
+        header('Location: '.$url);
+        die();
+    }
 } catch(Exception $e) {
     echo json_encode([
         'result' => true,

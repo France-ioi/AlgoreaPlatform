@@ -2,7 +2,30 @@
     <div>
         <button class="btn btn-default" ng-click="openPopup('profile')" ng-i18next="userInfos_btn_profile"></button>
         <button class="btn btn-default" ng-if="config.options.profile_auth_methods" ng-click="openPopup('auth_methods')" ng-i18next="userInfos_btn_auth_methods"></button>
+        <a ng-if="collected_data_controls" class="btn btn-default" target="_blank" ng-i18next="userInfos_btn_export" href="/profile/export.php"></a>
+        <button ng-if="deleteAccountAvailable()" class="btn btn-danger" ng-click="deleteAccount()" ng-i18next="userInfos_btn_delete"></button>
+        <span ng-if="loading" ng-i18next="loading"></span>
     </div>
+    <div class="alert alert-warning" ng-if="delete_locks.length > 0">
+        <strong ng-i18next="userInfos_deletion_locked"></strong>
+        <ul>
+            <li ng-repeat="l in delete_locks">
+                {{l.sName}}
+                <span ng-i18next="userInfos_locked_until"></span>
+                {{l.lockUserDeletionDate}}
+            </li>
+        </ul>
+    </div>
+    <div class="alert alert-warning" ng-if="linked_platforms.length > 0">
+        <strong ng-i18next="userInfos_linked_platforms_title"></strong>
+        <ul>
+            <li ng-repeat="p in linked_platforms">
+                {{p.sName}}
+                <a href="{{p.url}}" ng-i18next="userInfos_linked_platforms_manage"></a>
+            </li>
+        </ul>
+    </div>
+
     <h2 class="groupRequest-title" ng-i18next="userInfos_title_infos"></h2>
     <div>
         <table class="table">
