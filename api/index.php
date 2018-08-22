@@ -1,45 +1,19 @@
 <?php
-require_once __DIR__.'/../vendor/autoload.php';
-require_once __DIR__.'/../shared/connect.php';
-require_once __DIR__.'/../shared/listeners.php';
-require_once __DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php';
-require_once __DIR__.'/../shared/UserHelperClass.php';
-
-const LOGIN_PREFIX = 'user-';
-
-if(session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-
-
-function verifyCode() {
-    if(!isset($_POST['code'])) {
-        throw new Exception('Code param missed');
-    }
-    global $db;
-    $query = 'select * from `groups` where `sPassword` = :code limit 1';
-    $stmt = $db->prepare($query);
-    $stmt->execute([ 'code' => $_POST['code'] ]);
-    if($stmt->fetchObject()) {
-        return ['success' => true];
-    } else {
-        throw new Exception('Code not found');
-    }
-}
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 
 try {
-    $action = isset($_POST['action']) ? $_POST['action'] : null;
-    switch($action) {
-        case 'verify_code':
-            $res = verifyCode();
-            break;
-        default:
-            throw new Exception('Action param missed');
-            break;
+    $module = isset($_REQUEST['module']) ? $_REQUEST['module'] : null;
+    if(!$module) {
+        throw new Exception('Module param missed');
     }
-    echo json_encode($res);
+    $file = __DIR__.'/modules/'.$module.'.php';
+    if(!file_exists($file)) {
+        throw new Exception('Module not exists');
+    }
+    require_once($file);
 } catch(Exception $e) {
+    header('Content-Type: application/json');
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()

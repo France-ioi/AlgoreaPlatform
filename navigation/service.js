@@ -17,6 +17,7 @@ angular.module('algorea')
       var intervalIsSet = false;
       var firstSyncFailed = false; // case of first sync without session, before login
       var usersAnswers = {}; // Stores users_answers per item
+      var chapterClipboard = null;
 
       function setSyncInterval() {
          if (!intervalIsSet) {
@@ -160,6 +161,15 @@ angular.module('algorea')
          getItem: function(ID) {
             return ModelsManager.getRecord('items', ID);
          },
+         getItemIcon: function(item) {
+            var icons = {
+               Root: 'list',
+               Task: 'keyboard',
+               Chapter: 'folder',
+               Course: 'assignment'
+            }
+            return item.sType in icons ? icons[item.sType] : 'folder';
+         },
          getAsyncUser: function(callback) {
             if (syncDone) {
                callback(getUser());
@@ -192,11 +202,17 @@ angular.module('algorea')
             if (syncDone) {
                callback();
             } else {
-               if (! callbacks.general) {
+               if (!callbacks.general) {
                   callbacks.general = {0: []};
                }
-               callbacks.general[0].push(callback);
-               // TODO: remove callback once called
+               // Self-delete from callbacks once executed
+               var cb = null;
+               cb = function() {
+                  callback();
+                  var idx = callbacks.general[0].indexOf(cb);
+                  if(idx > -1) { callbacks.general[0].splice(idx, 1); }
+               };
+               callbacks.general[0].push(cb);
             }
          },
          saveRecord: function(model, ID) {
@@ -221,7 +237,7 @@ angular.module('algorea')
             return strings;
          },
          getGroupItem: function(item, idGroup) {
-            if(!item) return null;
+            if(!item || !item.group_items) return null;
             if(!idGroup) {
                var loginData = loginService.getLoginData();
                if(!loginData) return null;
@@ -372,6 +388,12 @@ angular.module('algorea')
                typeStr = $i18next.t('navigation_course');
             }
             return typeStr;
+         },
+         getClipboard: function() {
+            return chapterClipboard ? chapterClipboard : {};
+         },
+         setClipboard: function(newClip) {
+            chapterClipboard = newClip;
          },
          syncThread: function(idThread, idItem, idUser, callback) {
             // Start synchronizing some users_answers

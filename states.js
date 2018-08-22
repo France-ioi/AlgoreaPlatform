@@ -302,7 +302,11 @@ angular.module('algorea')
            return "contents("+JSON.stringify({path:path, sell: sell, selr: selr, viewl: viewl, viewr: viewr})+")";
         },
         getSrefFunction: function(path, sell, selr, viewl, viewr) {
-           return function() {$state.go("contents", {path:path, sell: sell, selr: selr, viewl: viewl, viewr: viewr})};
+           return function() {
+              if(!viewl) { viewl = $stateParams.viewl; }
+              if(!viewr) { viewr = $stateParams.viewr; }
+              $state.go("contents", {path:path, sell: sell, selr: selr, viewl: viewl, viewr: viewr})
+              };
         },
         goToResolution: function(pathParams) {
            $state.go('contents', {

@@ -9,8 +9,11 @@
      </div>
 
      <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
-     <div ng-include="templatesPrefix+'navigation/views/attempts.html'" ng-if="showAttempts"></div>
-     <div ng-include="templatesPrefix+'navigation/views/history.html'" ng-if="showHistory"></div>
+     <div ng-include="templatesPrefix+'navigation/views/attempts.html'" ng-if="currentView == 'attempts'"></div>
+     <div ng-include="templatesPrefix+'navigation/views/history.html'" ng-if="currentView == 'history'"></div>
+     <div ng-include="templatesPrefix+'navigation/views/modify.html'" ng-if="currentView == 'modify'"></div>
+     <div ng-include="templatesPrefix+'navigation/views/parameters.html'" ng-if="currentView == 'settings'"></div>
+     <div ng-include="templatesPrefix+'navigation/views/strings.html'" ng-if="currentView == 'strings'"></div>
      <!-- the task is still rendered while loaded, as some elements, such as Blockly, glitch when they are loaded while on display: none -->
      <!-- TODO :: it's possible that it's not needed anymore as quickAlgo has fixes for that -->
      <div ng-show="showTask" include-task read-only="{{ item.bReadOnly }}" class="task-container" style="position: relative;"></div>

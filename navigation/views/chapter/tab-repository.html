@@ -1,0 +1,21 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h4 ng-i18next="chapterEditor_sync_results"></h4>
+  </div>
+  <div class="panel-body">
+    <div class="alert alert-info">
+      <p>
+        <span class="material-icons">{{ syncStatus.icon }}</span>
+        <span ng-i18next="chapterEditor_sync_status_{{ syncStatus.msg }}"></span><span ng-show="syncStatus.nbGood">, {{ syncStatus.nbGood }} <span ng-i18next="chapterEditor_sync_nb_good"></span></span>
+      </p>
+      <p><button class="btn btn-sm" ng-class="syncStatus.done ? 'btn-primary' : 'btn-default'" ng-click="syncRepository()" ng-i18next="chapterEditor_sync_restart"></button></p>
+    </div>
+    <ul>
+      <li ng-repeat="result in syncResults">
+        <span class="material-icons">{{ result.icon }}</span> <span ng-i18next="{{ result.msg }}"></span>, {{ result.params.task }} <span class="material-icons">compare_arrows</span> <a ui-sref="{{ getChildSref(result.item) }}" target="_blank">{{ result.item.strings[0].sTitle }}</a>
+        <button class="btn btn-sm" ng-class="{1: 'btn-primary', 2: 'btn-success'}[result.hierarchyError]" ng-show="result.hierarchyError" ng-disabled="result.hierarchyError == 2" ng-click="setHierarchy(result.item, result)" ng-i18next="chapterEditor_sync_fix_hierarchy"></button>
+      </li>
+    </ul>
+  </div>
+</div>
+<iframe ng-if="repositoryUrl" ng-src="{{ repositoryUrl }}" id="iframe-editor" class="iframe-task" style="width: 100%;"></iframe>

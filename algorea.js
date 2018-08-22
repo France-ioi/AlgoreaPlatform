@@ -1,7 +1,7 @@
 'use strict';
 
 // Make sure to include the `ui.router` module as a dependency
-var app = angular.module('algorea', ['ui.router', 'ui.bootstrap', 'franceIOILogin', 'ngSanitize','small-ui-confirm', 'anguFixedHeaderTable', 'jm.i18next']);
+var app = angular.module('algorea', ['ui.router', 'ui.bootstrap', 'ui.sortable', 'franceIOILogin', 'ngSanitize','small-ui-confirm', 'anguFixedHeaderTable', 'jm.i18next']);
 
 app.factory('$exceptionHandler', ['$log', function($log) {
     return function (exception, cause) {

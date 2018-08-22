@@ -1,0 +1,77 @@
+<div class="content-wrapper">
+    <form class="form-horizontal">
+        <p>
+            <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="reset"></a>
+            <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="save"></a>
+        </p>
+        <div class="form-group row">
+            <label class="control-label col-xs-4">ID :</label>
+            <div class="col-xs-8">
+                <input type="text" value="{{ item.ID }}" class="form-control" disabled></input>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-4" ng-i18next="admin_type"></label>
+            <div class="col-xs-8">
+                <input type="text" ng-i18next="[value]{{'models_items_fields_sType_values_' + item.sType + '_label'}}" class="form-control" disabled></input>
+            </div>
+        </div>
+        <div ng-if="item.sType=='Task' || item.sType=='Course'">
+            <field model="item" field="items.sUrl" />
+            <field model="item" field="items.bUsesAPI" />
+        </div>
+
+        <field model="item" field="items.sTextId" />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="material-icons material-btn">assignment</span>
+                Paramètres de participation
+            </div>
+            <div class="panel-body">
+                <field model="item" field="items.bReadOnly" />
+                <field model="item" field="items.sDuration"/>
+                <field model="item" field="items.bNoScore" />
+                <field model="item" field="items.bHasAttempts" />
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="material-icons material-btn">lock</span>
+                Paramètres de déblocage
+            </div>
+            <div class="panel-body">
+                <field model="item" field="items.idItemUnlocked" />
+                <field model="item" field="items.iScoreMinUnlock" />
+            </div>
+        </div>
+<!--        <field model="item" field="items.bShowSource" />-->
+<!--        <field model="item" field="items.sSupportedLangProg" />-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="material-icons material-btn">aspect_ratio</span>
+                Paramètres d'affichage
+            </div>
+            <div class="panel-body">
+                <div class="form-group row">
+                    <label class="control-label col-xs-4" ng-i18next="models_items_fields_idDefaultLanguage_label"></label>
+                    <div class="col-xs-8">
+                        <select class="form-control" ng-model="item.idDefaultLanguage">
+                            <option ng-repeat="is in item.strings" value="{{ is.language.ID }}">{{ is.language.sName }}</option>
+                        </select>
+                    </div>
+                </div>
+<!--            <field model="item" field="items.sFullScreen" />-->
+                <field model="item" field="items.bTitleBarVisible" />
+                <field model="item" field="items.bDisplayDetailsInParent" />
+                <div ng-if="item.sType=='Root' || item.sType=='Chapter'">
+                    <field model="item" field="items.bDisplayChildrenAsTabs" />
+                    <field model="item" field="items.groupCodeEnter" />
+                </div>
+            </div>
+        </div>
+        <p>
+            <a class="btn btn-warning" ng-click="resetObjectChanges('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="reset"></a>
+            <a class="btn btn-primary" ng-click="saveObject('items', item)" ng-disabled="!hasObjectChanged('items', item)" ng-i18next="save"></a>
+        </p>
+    </form>
+</div>
