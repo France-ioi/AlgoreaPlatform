@@ -33,7 +33,7 @@ require_once '../shared/connect.php';
       echo 'var config = '.json_encode($config->shared).';';
     ?>
   </script>
-  <link rel="stylesheet" href="<?= includeFile('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>">
+  <link rel="stylesheet" href="<?= includeFile('node_modules/bootstrap/dist/css/bootstrap.min.css') ?>">
   <script src="<?= includeFile('errors/error_logger.js') ?>"></script>
   <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>" type="text/javascript"></script>
