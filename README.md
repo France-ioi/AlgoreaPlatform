@@ -56,22 +56,20 @@ Finally, run
 ```
 NODE_ENV=production webpack -p --progress --colors
 ```
-this will run webpack to build bundles.
+this will run webpack to build bundles. Optional evn variables:
 
-Optional evn variables:
+Include forum assets to bundle:
 ```
 USE_FORUM=1
 ```
-Include forum assets to bundle.
-
+Include map assets to bundle:
 ```
 USE_MAP=1
 ```
-Include map assets to bundle.
+Set locale (default is fr-fr):
 ```
 DEFAULT_LOCALE=en-us
 ```
-Set locale (default is fr-fr)
 
 
 ## Webserver configuration
