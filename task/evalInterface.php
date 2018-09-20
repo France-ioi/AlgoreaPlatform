@@ -35,8 +35,8 @@ require_once '../shared/connect.php';
   </script>
   <link rel="stylesheet" href="<?= includeFile('node_modules/bootstrap/dist/css/bootstrap.min.css') ?>">
   <script src="<?= includeFile('errors/error_logger.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
-  <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>" type="text/javascript"></script>
+  <script src="<?= includeFile('node_modules/bowser/src/bowser.js') ?>"></script>
+  <script src="<?= includeFile('node_modules/jquery/dist/jquery.min.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('task/evalInterface.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('bower_components/jschannel/src/jschannel.js') ?>"></script>
   <script src="<?= includeFile('bower_components/pem-platform/task-xd-pr.js') ?>"></script>
