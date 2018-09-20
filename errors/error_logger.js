@@ -1,4 +1,4 @@
-window.ErrorLogger = {
+var ErrorLogger = {
 
   last_error_key: null,
 
@@ -108,3 +108,5 @@ window.ErrorLogger = {
 window.onerror = function() {
   ErrorLogger.log.apply(ErrorLogger, arguments);
 };
+
+module.exports = ErrorLogger;

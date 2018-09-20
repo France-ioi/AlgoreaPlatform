@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('algorea')
    .controller('groupsMemberController', ['$scope', '$http', 'loginService', '$rootScope', 'itemService', '$filter', '$timeout', '$i18next', function ($scope, $http, loginService, $rootScope, itemService, $filter, $timeout, $i18next) {
 

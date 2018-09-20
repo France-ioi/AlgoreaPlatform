@@ -1,0 +1,25 @@
++ npm i --save angular@1.5.8
++ npm i --save angular-animate@1.5.8
++?npm i --save angular-bootstrap@2.1.3
++ npm i --save angular-i18n@1.5.8
++ npm i --save angular-sanitize@1.5.8
++ npm i --save angular-ui-router@0.2.13
++ npm i --save bootstrap@3
+- npm i --save dynatree
+- npm i --save jQuery-contextMenu@2.2.4
++?npm i --save jquery
++?npm i --save jquery-ui
+//npm i --save jquery.layout@1.3.0–rc30.79
++ npm i --save jschannel@https://github.com/France-ioi/jschannel.git#01f53a1
+- npm i --save pem-platform@https://github.com/France-ioi/pem-platform
+  npm i --save paper@0.10.2 // stay with old
++ npm i --save lodash@^4.13.1
++ npm i --save angu-fixed-header-table@^1.2.0
+- npm i --save jquery/jquery-mousewheel@3.1.13
++ npm i --save i18next@3.4.4
++ npm i --save ng-i18next@^1.0.3
++ npm i --save i18next-xhr-backend@^1.2.0
++ npm i --save js-md5@md5#^0.6.0
++ npm i --save bowser
++ npm i --save angular-ui-sortable@^0.19.0
++ npm i --save i18next-sprintf-postprocessor@^0.2.2

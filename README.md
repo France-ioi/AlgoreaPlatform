@@ -13,6 +13,7 @@ The Algorea Platform depends on:
 - zip
 - composer
 - bower
+- npm
 
 ## Installation
 
@@ -26,6 +27,7 @@ cd AlgoreaPlatform
 git submodule update --init
 bower install
 composer install
+npm install
 cp -p config_local_template.php config_local.php
 ```
 
@@ -39,7 +41,7 @@ You must then run
 php commonFramework/modelsManager/triggers.php
 ```
 
-Finally, run
+Then run
 
 ```
 php shared/initPlatform.php
@@ -48,6 +50,29 @@ php shared/initPlatform.php
 this will make a boilerplate for a platform. You can use this script again if you want to set up another platform on the same database, with different item IDs.
 
 To add users as administrators on this platform, they must first log into the platform (to have their user created within the platform), then check the `shared/addAdmin.php` script to add them as users. You'll need to modify the configuration at the beginning of the file.
+
+
+Finally, run
+```
+NODE_ENV=production webpack -p --progress --colors
+```
+this will run webpack to build bundles.
+
+Optional evn variables:
+```
+USE_FORUM=1
+```
+Include forum assets to bundle.
+
+```
+USE_MAP=1
+```
+Include map assets to bundle.
+```
+DEFAULT_LOCALE=en-us
+```
+Set locale (default is fr-fr)
+
 
 ## Webserver configuration
 

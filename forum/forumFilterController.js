@@ -145,7 +145,7 @@ angular.module('algorea')
       if (filter.olderThan && Math.floor((today - thread.sLastActivityDate) / 86400000) < filter.olderThan)
          return false;
       // check if item is descendant of filter.idItem
-      if (filter.idItem && (!ModelsManager.indexes.idItemAncestor[filter.idItem] || 
+      if (filter.idItem && (!ModelsManager.indexes.idItemAncestor[filter.idItem] ||
                !ModelsManager.indexes.idItemAncestor[filter.idItem][thread.idItem])) {
          return false;
       }
@@ -177,4 +177,13 @@ angular.module('algorea')
 
 // hack due to https://github.com/angular-ui/bootstrap/issues/2659, remove when
 // bug fixed in angular-ui
-angular.module('algorea').directive('datepickerPopup', function (){return {restrict: 'EAC',require: 'ngModel',link: function(scope, element, attr, controller) {controller.$formatters.shift();}}});
+angular.module('algorea')
+      .directive('datepickerPopup', function () {
+            return {
+                  restrict: 'EAC',
+                  require: 'ngModel',
+                  link: function(scope, element, attr, controller) {
+                        controller.$formatters.shift();
+                  }
+            }
+      });

@@ -1,4 +1,4 @@
-'use strict';
+var md5 = require('js-md5')
 
 angular.module('algorea')
    .service('itemService', ['$rootScope', '$timeout', '$interval', '$http', 'loginService', '$i18next', function($rootScope, $timeout, $interval, $http, loginService, $i18next) {
@@ -143,7 +143,7 @@ angular.module('algorea')
       SyncQueue.addSyncEndListeners("ItemsService", syncEndListener);
       SyncQueue.addSyncStartListeners("ItemsService", syncStartListener);
       // SyncThread intervals
-      var syncThreadIntervals = {}; 
+      var syncThreadIntervals = {};
       function stopThreadInterval(idThread, idItem, idUser) {
          // Stop a syncThread interval and return the name
          if (idThread) {

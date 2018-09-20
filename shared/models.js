@@ -1,6 +1,6 @@
 "use strict";
 
-var models = {
+window.models = {
    filters: {
       fields: {
          idUser: {type: "int", label: "models_filters_fields_idUser_label"},

@@ -1,7 +1,13 @@
-'use strict';
-
-// Make sure to include the `ui.router` module as a dependency
-var app = angular.module('algorea', ['ui.router', 'ui.bootstrap', 'ui.sortable', 'franceIOILogin', 'ngSanitize','small-ui-confirm', 'anguFixedHeaderTable', 'jm.i18next']);
+var app = angular.module('algorea', [
+  'ui.router',
+  'ui.bootstrap',
+  'ui.sortable',
+  'franceIOILogin',
+  'ngSanitize',
+  'small-ui-confirm',
+  'anguFixedHeaderTable',
+  'jm.i18next'
+]);
 
 app.factory('$exceptionHandler', ['$log', function($log) {
     return function (exception, cause) {
@@ -10,7 +16,7 @@ app.factory('$exceptionHandler', ['$log', function($log) {
     }
 }]);
 
-app.factory('preventTemplateCache', function($injector) {
+app.factory('preventTemplateCache', ['$injector', function($injector) {
   return {
     'request': function(cfg) {
       // 'uib/' - we must skip bootstrap templates since they are in cache already
@@ -20,6 +26,6 @@ app.factory('preventTemplateCache', function($injector) {
       return cfg;
     }
   }
-}).config(function($httpProvider) {
+}]).config(['$httpProvider', function($httpProvider) {
   $httpProvider.interceptors.push('preventTemplateCache');
-});
+}]);

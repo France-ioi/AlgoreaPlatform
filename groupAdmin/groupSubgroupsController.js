@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('algorea').
   filter('groupsOnly', function() {
     return function(items) {

@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('algorea')
    .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', '$i18next', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http, $i18next) {
       $scope.domainTitle = config.domains.current.title;

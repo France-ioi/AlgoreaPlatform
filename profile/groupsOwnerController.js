@@ -1,5 +1,3 @@
-'use strict';
-
 // index of groups
 
 angular.module('algorea').
