@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var UglifyPlugin = require('uglifyjs-webpack-plugin');
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = function(env) {
     var production = process.env.NODE_ENV === 'production';
@@ -32,6 +33,7 @@ module.exports = function(env) {
                 DEFAULT_LOCALE: JSON.stringify(process.env.DEFAULT_LOCALE || 'fr-fr')
             }
         }),
+        new BundleAnalyzerPlugin()
     ];
 
     if(production) {
