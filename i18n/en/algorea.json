@@ -290,6 +290,7 @@
     "groupAccountsManager_wrong_postfix_length": "Postfix length must be in range [3..50]",
     "groupAccountsManager_password_length": "Password length",
     "groupAccountsManager_wrong_password_length": "Password length must be in range [6..50]",
+    "groupAccountsManager_wrong_login_length": "Login length must be in range [3..30]",
     "groupAccountsManager_used_prefix": "Prefix already used",
     "groupAccountsManager_nonexistent_prefix": "Nonexistent prefix",
     "groupAccountsManager_example": "Example of generated login: ",

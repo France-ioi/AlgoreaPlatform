@@ -312,6 +312,7 @@
     "groupAccountsManager_example": "Exemple de nom d'utilisateur généré : ",
     "groupAccountsManager_number_of_users": "Nombre d'utilisateurs à créer dans ce groupe",
     "groupAccountsManager_wrong_number_of_users": "Doit être compris entre 1 et 50",
+    "groupAccountsManager_wrong_login_length": "Login length must be in range [3..30]",
     "groupAccountsManager_create": "Créer les utilisateurs",
     "groupAccountsManager_print": "Imprimer",
     "groupAccountsManager_login": "Nom d'utilisateur",

@@ -304,6 +304,7 @@
     "groupAccountsManager_wrong_postfix_length": "Postfix-Length muss im Bereich [3..50] liegen",
     "groupAccountsManager_password_length": "Passwort-Länge",
     "groupAccountsManager_wrong_password_length": "Passwort-Länge muss im Bereich [6..50] liegen",
+    "groupAccountsManager_wrong_login_length": "Login length must be in range [3..30]",
     "groupAccountsManager_used_prefix": "Präfix wird bereits verwendet",
     "groupAccountsManager_nonexistent_prefix": "Nichtvorhandenes Präfix",
     "groupAccountsManager_example": "Beispiel eines erzeugten Loginnamen: ",
