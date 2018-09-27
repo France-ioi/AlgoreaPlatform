@@ -1,4 +1,4 @@
-<div class="main-titlebar task-titlebar" ng-if="item.bTitleBarVisible || item.sFullScreen == 'forceYes'" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
+<div class="main-titlebar task-titlebar" ng-if="item.bTitleBarVisible || item.sFullScreen == 'forceYes'" ng-include="'/navigation/views/menubar.html'"></div>
 <div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
    <div class="first-task" style="position: relative;">
      <div ng-if="itemType == 'Task'" ng-show="taskLoaded || !showTask" id="task-tabs" class="task-tabs">
@@ -8,16 +8,16 @@
        </div>
      </div>
 
-     <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
-     <div ng-include="templatesPrefix+'navigation/views/attempts.html'" ng-if="currentView == 'attempts'"></div>
-     <div ng-include="templatesPrefix+'navigation/views/history.html'" ng-if="currentView == 'history'"></div>
-     <div ng-include="templatesPrefix+'navigation/views/modify.html'" ng-if="currentView == 'modify'"></div>
-     <div ng-include="templatesPrefix+'navigation/views/parameters.html'" ng-if="currentView == 'settings'"></div>
-     <div ng-include="templatesPrefix+'navigation/views/strings.html'" ng-if="currentView == 'strings'"></div>
+     <div ng-include="'/forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
+     <div ng-include="'/navigation/views/attempts.html'" ng-if="currentView == 'attempts'"></div>
+     <div ng-include="'/navigation/views/history.html'" ng-if="currentView == 'history'"></div>
+     <div ng-include="'/navigation/views/modify.html'" ng-if="currentView == 'modify'"></div>
+     <div ng-include="'/navigation/views/parameters.html'" ng-if="currentView == 'settings'"></div>
+     <div ng-include="'/navigation/views/strings.html'" ng-if="currentView == 'strings'"></div>
      <!-- the task is still rendered while loaded, as some elements, such as Blockly, glitch when they are loaded while on display: none -->
      <!-- TODO :: it's possible that it's not needed anymore as quickAlgo has fixes for that -->
      <div ng-show="showTask" include-task read-only="{{ item.bReadOnly }}" class="task-container" style="position: relative;"></div>
-     <div class="loading" ng-hide="taskLoaded || !showTask" ng-include="viewsBaseUrl+'loading.html'" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; height: 100%; width: 100%; z-index: 1; background-color: rgba(255, 255, 255, {{ loadOpacity }});"></div>
+     <div class="loading" ng-hide="taskLoaded || !showTask" ng-include="'/navigation/views/loading.html'" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; height: 100%; width: 100%; z-index: 1; background-color: rgba(255, 255, 255, {{ loadOpacity }});"></div>
   </div>
   <div ng-show="taskLoaded" ng-if="hasEditor && layout.separateEditorOK" class="second-task" ng-controller="taskController">
     <div uib-tabset justified="true" ng-show="taskLoaded" id="task-tabs" class="task-tabs">

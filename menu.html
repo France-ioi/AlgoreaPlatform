@@ -6,18 +6,18 @@
                <div ng-click="gotoIndex()" class="branding-toolbar-content">
                   <div id="menu-logo">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
                </div>
-               <div ng-include="'navigation/views/language-selector.html'" class="language-selector"></div>
+               <div ng-include="'/navigation/views/language-selector.html'" class="language-selector"></div>
             </div>
             <div id="menu-main" >
                <div ng-repeat="tab in siteTabs" id="menu-item{{ $index }}" class="menu-item" ng-class="{'menu-item-active': activated === $index}" ng-click="gotoMenuItem($index, tab.path, tab.special)">
-                  <div ng-if="tab.special == 'login'" ng-include="templatesPrefix + 'login/userbox.html'" ng-controller="userController" id="userinfocontainer"></div>
+                  <div ng-if="tab.special == 'login'" ng-include="'/login/userbox.html'" ng-controller="userController" id="userinfocontainer"></div>
                   <div ng-if="!tab.special" class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
                </div>
             </div>
          </div>
          <div affix-me="affix==='toolbar'">
             <div id="toolbar">
-               <div ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control' />
+               <div ng-include="'/navigation/views/sidebar-left-control.html'" class='sidebar-left-control' />
                <div ui-view="breadcrumbs" class="breadcrumbs" id="breadcrumbs" autoscroll="false" ng-click="layout.breadcrumbsClicked($event);"></div>
                <span class="contest-timer" contest-timer></span>
                <span ng-if="!layout.navTopIsOpen" class="material-icons menu-more" ng-click="layout.openTaskMenu()">menu</span>
@@ -28,7 +28,7 @@
    </div>
    <div ng-if='isMobileLayout && layout.navTopIsOpen' id="headerContainer" class="mobile-layout">
       <div id="branding-toolbar">
-         <div ng-if="!rightIsFullScreen" ng-include="'navigation/views/sidebar-left-control.html'" class='sidebar-left-control'/>
+         <div ng-if="!rightIsFullScreen" ng-include="'/navigation/views/sidebar-left-control.html'" class='sidebar-left-control'/>
          <div class="branding-toolbar-content" ng-click="gotoIndex()">
             <div id="menu-logo">{{siteTitle}}</div><div class="tagline" ng-bind-html="tagline"></div>
          </div>
@@ -39,9 +39,9 @@
       <div ng-show='mobileNavTopIsOpen'>
          <div id="menu" class="menu" role="navigation">
             <div id="menu-main" >
-               <div ng-include="'navigation/views/language-selector.html'" class="language-selector" />
+               <div ng-include="'/navigation/views/language-selector.html'" class="language-selector" />
                <div ng-repeat="tab in siteTabs" id="menu-item{{ $index }}" class="menu-item" ng-class="{'menu-item-active': activated === $index}" ng-click="gotoMenuItem($index, tab.path, tab.special)">
-                  <div ng-if="tab.special == 'login'" ng-include="templatesPrefix + 'login/userbox.html'" ng-controller="userController" id="userinfocontainer"></div>
+                  <div ng-if="tab.special == 'login'" ng-include="'/login/userbox.html'" ng-controller="userController" id="userinfocontainer"></div>
                   <div ng-if="!tab.special" class="menu-item-content"><span class="material-icons menu-item-icon">{{tab.icon}}</span> {{tab.title | i18next}}</div>
                </div>
             </div>

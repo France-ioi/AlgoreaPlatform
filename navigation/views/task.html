@@ -1,4 +1,4 @@
-<div class="main-titlebar task-titlebar" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
+<div class="main-titlebar task-titlebar" ng-include="'/navigation/views/menubar.html'"></div>
 <div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
    <div class="first-task">
        <div uib-tabset justified="true" ng-show="taskLoaded || !showTask" id="task-tabs"  class="task-tabs">
@@ -6,8 +6,8 @@
           </li>
        </div>
 
-     <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
-     <div class="loading" ng-hide="taskLoaded || !showTask" ng-include="viewsBaseUrl+'loading.html'"></div>
+     <div ng-include="'/forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
+     <div class="loading" ng-hide="taskLoaded || !showTask" ng-include="'/navigation/views/loading.html'"></div>
      <div ng-show="taskLoaded && showTask" include-task class="task-container"></div>
   </div>
   <div ng-show="taskLoaded" ng-if="hasEditor && layout.separateEditorOK" class="second-task" ng-controller="taskController">

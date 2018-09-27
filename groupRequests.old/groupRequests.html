@@ -1,14 +1,14 @@
 <div class="groupRequest">
     <uib-tabset active="active">
         <uib-tab heading="{{'groupRequests_title_account'|i18next}}">
-            <div ng-include="'groupRequests/myAccount.html'"></div>
+            <div ng-include="'/groupRequests/myAccount.html'"></div>
         </uib-tab>
         <uib-tab heading="{{'groupRequests_title_groups'|i18next}}">
-            <div ng-include="'groupRequests/groupsMember.html'"></div>
+            <div ng-include="'/groupRequests/groupsMember.html'"></div>
         </uib-tab>
 
         <uib-tab heading="{{'groupRequests_title_my_groups'|i18next}}">
-            <div ng-include="'groupRequests/groupsOwner.html'"></div>
+            <div ng-include="'/groupRequests/groupsOwner.html'"></div>
         </uib-tab>
     </uib-tabset>
     <div ng-if="loading && !error">

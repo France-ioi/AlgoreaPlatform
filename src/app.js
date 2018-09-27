@@ -7,17 +7,12 @@ require('angular');
 require('jquery-ui/ui/widgets/sortable');
 require('angular-ui-sortable');
 require('angu-fixed-header-table/angu-fixed-header-table.js');
-//require('../bower_components/angu-fixed-header-table/angu-fixed-header-table.js');
 require('angular-ui-router');
 
 
 // localization
-//require('../bower_components/angular-i18n/angular-locale_' + WEBPACK_ENV.DEFAULT_LOCALE + '.js');
-//require('../bower_components/angular-sanitize/angular-sanitize.min.js');
-//require('../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js');
 require('angular-i18n/angular-locale_' + WEBPACK_ENV.DEFAULT_LOCALE);
 require('angular-sanitize');
-//require('angular-bootstrap/ui-bootstrap-tpls');
 require('angular-ui-bootstrap');
 window.i18next = require('i18next');
 window.i18nextXHRBackend = require('i18next-xhr-backend');
@@ -95,6 +90,7 @@ if(WEBPACK_ENV.USE_FORUM) {
 
 
 // styles
+require('material-icons');
 require('bootstrap/dist/css/bootstrap.css');
 require('../layout/3columns-flex.css');
 require('../layout/menu.css');

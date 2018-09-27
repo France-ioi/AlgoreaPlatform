@@ -167,7 +167,7 @@ angular.module('algorea')
                item: user_item.item
             };
          $uibModal.open({
-            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button><div ng-include="\'forum/thread.html\'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>',
+            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button><div ng-include="\'/forum/thread.html\'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>',
             controller: 'groupAdminPopupController',
             resolve: {popupData: function () { return popupData; }},
             windowClass: 'groupAdmin-modal'

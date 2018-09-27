@@ -36,9 +36,12 @@
     "webpack-jquery-ui": "^2.0.1"
   },
   "devDependencies": {
+    "angular-templatecache-loader": "^0.2.0",
     "css-loader": "^1.0.0",
-    "expose-loader": "^0.7.5",
+    "html-loader": "^0.5.5",
+    "material-icons": "^0.2.3",
     "mini-css-extract-plugin": "^0.4.3",
+    "ngtemplate-loader": "^2.0.1",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "script-loader": "^0.7.2",
     "webpack": "^4.17.2",

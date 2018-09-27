@@ -57,8 +57,6 @@
         echo 'var config = '.json_encode($config->shared).';';
       ?>
     </script>
-    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
 </head>
 <body ng-controller="layoutController" id="body" ng-cloak ng-class="{'mobile-layout': isMobileLayout, 'has-sidebar-left-open': (hasSidebarLeft && sidebarLeftIsOpen)}">
@@ -69,7 +67,7 @@
   <div ng-if="showMobileNavTopOverlay" id="mobileNavTopOverlay" ng-click="layout.closeMobileNavTop()"></div>
   <div ng-if="showSidebarLeftOverlay" id="sidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
   <div id="fixed-header-room" class="fixed-header-room"></div>
-  <header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'"></header>
+  <header ng-click="layout.menuClicked($event);" ng-include="'/menu.html'"></header>
 
   <div id='main'>
     <nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-show="hasSidebarLeft"></nav>
@@ -86,6 +84,7 @@
 <link href="/assets/app.css" rel="stylesheet" type="text/css"/>
 <script src="/assets/vendor.js"></script>
 <script src="/assets/app.js"></script>
+<script src="/assets/templates.js"></script>
 
 
 <script>

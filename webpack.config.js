@@ -33,7 +33,7 @@ module.exports = function(env) {
                 DEFAULT_LOCALE: JSON.stringify(process.env.DEFAULT_LOCALE || 'fr-fr')
             }
         }),
-        new BundleAnalyzerPlugin()
+        //new BundleAnalyzerPlugin()
     ];
 
     if(production) {
@@ -48,7 +48,8 @@ module.exports = function(env) {
     return {
         devtool: production ? false : 'cheap-module-source-map',
         entry: {
-            app: './src/app.js'
+            app: './src/app.js',
+            templates: './src/templates.js'
         },
         watchOptions: {
             ignored: [
@@ -74,7 +75,6 @@ module.exports = function(env) {
         },
         module: {
             rules: [
-
                 {
                     test: /\.(css)$/,
                     use: [
@@ -94,10 +94,18 @@ module.exports = function(env) {
                 },
                 {
                     test: /\.html$/,
-                    loader: 'raw-loader'
-                }
-            ],
-        },
-    }
+                    use: [
+                        {
+                            loader: 'ngtemplate-loader',
+                            options: {
+                                relativeTo: __dirname
+                            }
+                        },
+                        'html-loader'
+                    ]
 
+                }
+            ]
+        }
+    }
 };

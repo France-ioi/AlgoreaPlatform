@@ -2,7 +2,7 @@ angular.module('algorea')
    .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', '$i18next', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http, $i18next) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
-      $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
+      $scope.viewsBaseUrl = '/navigation/views/';
       $scope.itemService = itemService;
       var mapService = null;
       if (config.domains.current.useMap) {
