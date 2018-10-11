@@ -356,6 +356,14 @@ function graderResult($request, $db) {
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
       $token = $tokenGenerator->encodeJWS($params);
    }
+   if(isset($request['lti'])) {
+      $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
+      $lti = $client->getLtiInterface();
+      $lti->sendResult([
+            'user_id' => $_SESSION['login']['loginId'],
+            'score' => $score
+      ]);
+   }
    echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'bKeyObtained' => $bKeyObtained, 'sToken' => $token));
 }
 
@@ -471,7 +479,7 @@ function selectAttempt($request, $db) {
    $stmt->execute(['idItem' => $request['idItem']]);
    $item = ['data' => (object)$stmt->fetch()];
    $item['data']->bGrayedAccess = false;
-   
+
    $stmt = $db->prepare("SELECT * FROM users_items WHERE idUser = :idUser AND idItem = :idItem;");
    $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
    $userItem = ['data' => (object)$stmt->fetch()];

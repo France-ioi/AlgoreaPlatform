@@ -13,10 +13,6 @@ class PlatformRedirect {
 
         if(isset($_COOKIE[self::KEYR])) return;
 
-        if(session_status() === PHP_SESSION_NONE){
-            session_start();
-        }
-
         if(isset($_POST[self::KEY])) {
             switch($_POST[self::KEY]) {
                 case self::YES:

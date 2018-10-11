@@ -1,15 +1,14 @@
 <?php
-        require_once "config.php";
-        require_once 'offerRedirect/platform_redirect.php';
-        PlatformRedirect::process($config->shared->domains['current']);
-        $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
+  session_start();
+  require_once "config.php";
+  require_once 'shared/LtiEntry.php';
+  require_once 'offerRedirect/platform_redirect.php';
+  LtiEntry::handleRequest();
+  PlatformRedirect::process($config->shared->domains['current']);
+  $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
+  $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
 ?>
 <!DOCTYPE html>
-<?php
-require_once "config.php";
-
-$defaultLanguage = $config->shared->domains['current']->defaultLanguage;
-?>
 <html lang="<?=$defaultLanguage ?>" ng-app="algorea"  ng-controller="navigationController">
   <head>
     <meta charset="utf-8">
@@ -28,7 +27,6 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
         $useMap = false;
         $usesForum = false;
         $footerHtmlFile = "templatesPrefix+'footer.html'";
-
         $domainConfig = $config->shared->domains['current'];
         if (property_exists($domainConfig, 'compiledMode')) {
           $compiledMode = $domainConfig->compiledMode;
@@ -59,6 +57,7 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
           return $assetsBaseUrl.$url.$urlArgs;
         }
         echo 'var config = '.json_encode($config->shared).';';
+        //echo 'var lti = '.json_encode($lti).';';
       ?>
     </script>
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -115,7 +114,7 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
 <div ng-if="showMobileNavTopOverlay" id="mobileNavTopOverlay" ng-click="layout.closeMobileNavTop()"></div>
 <div ng-if="showSidebarLeftOverlay" id="sidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
 <div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
+<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'" ng-if="!barebone">
 </header>
 <div id='main'>
 
@@ -125,7 +124,7 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
 
 </div>
 
-<footer id="footer" ng-include="<?= $footerHtmlFile ?>"></footer>
+<footer id="footer" ng-include="<?= $footerHtmlFile ?>" ng-if="!barebone"></footer>
 
 <?php if ($useMap): ?>
   <div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>

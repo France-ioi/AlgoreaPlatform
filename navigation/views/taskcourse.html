@@ -1,4 +1,4 @@
-<div class="main-titlebar task-titlebar" ng-if="item.bTitleBarVisible || item.sFullScreen == 'forceYes'" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
+<div class="main-titlebar task-titlebar" ng-if="!barebone && (item.bTitleBarVisible || item.sFullScreen == 'forceYes')" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
 <div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
    <div class="first-task" style="position: relative;">
      <div ng-if="itemType == 'Task'" ng-show="taskLoaded || !showTask" id="task-tabs" class="task-tabs">

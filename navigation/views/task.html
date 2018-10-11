@@ -1,4 +1,4 @@
-<div class="main-titlebar task-titlebar" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
+<div class="main-titlebar task-titlebar" ng-if="!barebone" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
 <div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
    <div class="first-task">
        <div uib-tabset justified="true" ng-show="taskLoaded || !showTask" id="task-tabs"  class="task-tabs">

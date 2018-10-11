@@ -217,7 +217,7 @@ angular.module('algorea')
          noScore: 0,
          readOnly: !!scope.readOnly,
          randomSeed: scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser,
-         options: {},   
+         options: {},
          returnUrl: config.domains.current.baseUrl+'/task/task.php'};
       scope.curAttemptId = scope.user_item.attempt ? scope.user_item.attempt.ID : null;
       scope.platform.getTaskParams = function(key, defaultValue, success, error) {
@@ -246,6 +246,9 @@ angular.module('algorea')
               message: message,
               sToken: scope.user_item.sToken
             };
+            if(window.lti) {
+              postParams.lti = '1';
+            }
             if (!scoreToken) {
                postParams.answerToken = answerToken;
             }
@@ -451,7 +454,7 @@ angular.module('algorea')
                   scope.taskUrl = '';
                   $timeout(function() {initTask();});
                });
-               
+
             } else {
                scope.taskLoaded = false;
                scope.canGetState = false;
