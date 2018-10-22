@@ -1,9 +1,12 @@
 <?php
   session_start();
   require_once "config.php";
+  require_once 'vendor/autoload.php';
   require_once 'shared/LtiEntry.php';
+  require_once 'shared/LoginTokenEntry.php';
   require_once 'offerRedirect/platform_redirect.php';
   LtiEntry::handleRequest();
+  LoginTokenEntry::handleRequest();
   PlatformRedirect::process($config->shared->domains['current']);
   $base_href = parse_url($config->shared->domains['current']->baseUrl, PHP_URL_PATH) ?: '/';
   $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
