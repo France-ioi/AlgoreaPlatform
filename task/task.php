@@ -361,7 +361,7 @@ function graderResult($request, $db) {
       $lti = $client->getLtiInterface();
       $lti->sendResult([
             'user_id' => $_SESSION['login']['loginId'],
-            'score' => $score
+            'score' => $score / 100
       ]);
    }
    echo json_encode(array('result' => true, 'bValidated' => $bValidated, 'bKeyObtained' => $bKeyObtained, 'sToken' => $token));
