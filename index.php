@@ -61,6 +61,11 @@
         }
         echo 'var config = '.json_encode($config->shared).';';
         //echo 'var lti = '.json_encode($lti).';';
+
+        $options = [
+          'barebone' => isset($_SESSION['login']) && isset($_SESSION['login']['lti_connection_id'])
+        ];
+        echo 'var options = '.json_encode($options).';';
       ?>
     </script>
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">

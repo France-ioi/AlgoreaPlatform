@@ -10,8 +10,11 @@ class LoginTokenEntry {
 
     public static function handleRequest() {
         $token = isset($_GET['loginToken']) ? $_GET['loginToken'] : false;
-        if(!$token) return;
-        self::apply($token);
+        if($token) {
+            self::apply($token);
+        } else {
+            self::reset();
+        }
     }
 
 
@@ -83,6 +86,13 @@ class LoginTokenEntry {
            $_SESSION['login']['bIsAdmin'] = $res['bIsAdmin'];
         }
         return true;
+    }
+
+
+    private static function reset() {
+        if(isset($_SESSION['login'])) {
+            unset($_SESSION['login']['lti_connection_id']);
+        }
     }
 
 }

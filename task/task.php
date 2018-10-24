@@ -356,11 +356,11 @@ function graderResult($request, $db) {
       $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
       $token = $tokenGenerator->encodeJWS($params);
    }
-   if(isset($request['lti'])) {
+   if(isset($_SESSION['login']) && isset($_SESSION['login']['lti_connection_id'])) {
       $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
       $lti = $client->getLtiInterface();
       $lti->sendResult([
-            'user_id' => $_SESSION['login']['loginId'],
+            'lti_connection_id' => $_SESSION['login']['lti_connection_id'],
             'score' => $score / 100
       ]);
    }

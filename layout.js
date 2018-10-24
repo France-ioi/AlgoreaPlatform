@@ -125,7 +125,7 @@ angular.module('algorea')
     var nonTaskMinWidth = 400;
     var mapService = null;
 
-    $rootScope.barebone = window.lti || /[\?&]barebone=/.test(window.location);
+    $rootScope.barebone = window.options.barebone || /[\?&]barebone=/.test(window.location);
 
     if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
