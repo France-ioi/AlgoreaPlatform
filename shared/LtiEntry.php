@@ -33,7 +33,7 @@ class LtiEntry {
         try {
             $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
             $lti = $client->getLtiInterface();
-            $res = $lti->entry($params);
+            $token = $lti->entry($params);
         } catch (\Exception $e) {
             die($e->getMessage());
         }
