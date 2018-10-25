@@ -56,7 +56,6 @@ class LoginTokenEntry {
         if (!$params || empty($params)) {
            return false;
         }
-        if(!$reAuth  )
         if(!isset($_SESSION['login'])) {
             $_SESSION['login'] = array();
         }

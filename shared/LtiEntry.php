@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
-
+require_once __DIR__.'/LoginTokenEntry.php';
 
 class LtiEntry {
 
@@ -8,7 +8,10 @@ class LtiEntry {
         $lti = isset($_POST['lti_message_type']);
         if(!$lti) return;
 
-        $lti_user_id = isset($_SESSION['login']) ? $_SESSION['login']['lti_user_id'] : null;
+        $lti_user_id = null;
+        if(isset($_SESSION['login']) && isset($_SESSION['login']['lti_user_id'])) {
+            $lti_user_id = $_SESSION['login']['lti_user_id'];
+        }
         if($lti_user_id !== $_POST['user_id']) {
             self::doAuth();
         }
@@ -20,13 +23,23 @@ class LtiEntry {
         session_destroy();
         session_start();
 
-        $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
-        $lti = $client->getLtiInterface();
-        $user = $lti->entry($_POST);
-
-        $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $_SESSION['ONLOGIN_REDIRECT_URL'] = $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-
+        $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
+        $url = $protocol.'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $params = [
+            'post_params' => $_POST,
+            'http_method' => $_SERVER['REQUEST_METHOD'],
+            'http_url' => $url
+        ];
+        try {
+            $client = new FranceIOI\LoginModuleClient\Client($config->login_module_client);
+            $lti = $client->getLtiInterface();
+            $res = $lti->entry($params);
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
+        LoginTokenEntry::apply($token);
+/*
+        $_SESSION['ONLOGIN_REDIRECT_URL'] = $url;
         $auth_params = [
           'locale' => $config->shared->domains['default']->defaultLanguage,
           'login' => $user['login'],
@@ -37,6 +50,7 @@ class LtiEntry {
 
         header('Location: '.$url);
         die();
+        */
     }
 
 }
