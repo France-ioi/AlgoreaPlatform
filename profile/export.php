@@ -23,7 +23,7 @@ function exportUser() {
     $stmt = $db->prepare($q);
     $stmt->execute(['id' => $_SESSION['login']['ID']]);
     $data = $stmt->fetchObject();
-    echo json_encode($data);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
 
 
@@ -34,7 +34,7 @@ function exportTable($table) {
     $stmt = $db->prepare($q);
     $stmt->execute(['id' => $_SESSION['login']['ID']]);
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($data);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
 
 
@@ -53,7 +53,7 @@ function exportGroups() {
     $stmt = $db->prepare($q);
     $stmt->execute(['idGroupOwned' => $_SESSION['login']['idGroupOwned']]);
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($data);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     echo ',';
 
     echo '"joined_groups":';
