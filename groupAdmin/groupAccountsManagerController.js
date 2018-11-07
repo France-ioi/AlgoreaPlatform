@@ -164,6 +164,7 @@ angular.module('algorea')
     // show generated accounts
 
     function showAccounts(accounts) {
+
         $uibModal.open({
             templateUrl: '/groupAdmin/groupAccountsCreatePopup.html',
             controller: 'groupAccountsCreatePopupController',
@@ -234,12 +235,13 @@ angular.module('algorea')
 // printable popup controller
 
 angular.module('algorea')
-   .controller('groupAccountsCreatePopupController', ['$scope', '$uibModalInstance', 'data', function ($scope, $uibModalInstance, data) {
+   .controller('groupAccountsCreatePopupController', ['$i18next','$scope', '$uibModalInstance', 'data', function ($i18next, $scope, $uibModalInstance, data) {
    'use strict';
 
     $scope.groups = data.groups;
     $scope.accounts = data.accounts;
     $scope.printing = false;
+
 
     $scope.print = function() {
         $scope.printing = true;
@@ -272,7 +274,44 @@ angular.module('algorea')
         }, 5000);
     }
 
+
+    $scope.download = function () {
+        var csv = [[
+            $i18next.t('models_groups_items_fields_idGroup_label'),
+            $i18next.t('groupAccountsManager_login'),
+            $i18next.t('groupAccountsManager_password')
+        ].join(';')];
+
+        for(var i=0; i<data.accounts.length; i++) {
+            var account = data.accounts[i];
+            csv.push([
+                data.groups[account.algoreaGroupId],
+                account.login,
+                account.password
+            ].join(';'));
+        }
+
+        var blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        if(navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, exportedFilenmae);
+        } else {
+            var link = document.createElement('a');
+            if (link.download !== undefined) { // feature detection
+                // Browsers that support HTML5 download attribute
+                var url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'accounts.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
+
+
     $scope.close = function () {
         $uibModalInstance.close();
     };
+
 }]);
