@@ -926,38 +926,56 @@ angular.module('algorea')
       });
    };
 
-   $scope.zip_btn_disabled = false;
-   $scope.zip_message = false;
-   $scope.zipExport = function(itemId, groupId) {
-      $scope.zip_btn_disabled = true;
-      $scope.zip_message = 'Please wait...';
-      $scope.zip_url = null;
-      $.ajax({
-         type: 'GET',
-         url: '/admin/zip_export.php',
-         data: {
-            itemId: itemId,
-            groupId: groupId
-         },
-         success: function(res) {
-            $scope.zip_btn_disabled = false;
-            if(res && res.file) {
-               $scope.zip_message = '';
-               $scope.zip_url = res.file;
-            } else {
-               $scope.zip_message = res;
-            }
-         },
-         error: function(request, status, err) {
-            $scope.zip_btn_disabled = false;
-            $scope.zip_message = err;
-         }
-      });
-   }
 
-   $scope.zipDownload = function() {
-      if($scope.zip_url) { window.location = $scope.zip_url; }
-   };
+   $scope.export = {
+        all: {
+              btn_disabled: false,
+              message: false,
+              url: null
+        },
+        root: {
+              btn_disabled: false,
+              message: false,
+              url: null
+        }
+    }
+
+
+    $scope.exportData = function(itemId, groupId, target) {
+        $scope.export[target] = {
+              btn_disabled: true,
+              message: 'Please wait...',
+              url: null
+        };
+        $.ajax({
+              type: 'GET',
+              url: '/admin/export.php',
+              data: {
+                    itemId: itemId,
+                    groupId: groupId,
+                    target: target
+              },
+              success: function(res) {
+                    $scope.export[target].btn_disabled = false;
+                    if(res && res.file) {
+                          $scope.export[target].message = false;
+                          $scope.export[target].url = res.file;
+                    } else {
+                          $scope.export[target].message = res;
+                    }
+              },
+              error: function(request, status, err) {
+                    $scope.export[target].btn_disabled = false;
+                    $scope.export[target].message = err;
+              }
+        });
+    }
+
+    $scope.downloadData = function(target) {
+    if($scope.export[target].url) { window.location = $scope.export[target].url; }
+    }
+
+
 
    $scope.init = function() {
       $scope.loading = true;

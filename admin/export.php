@@ -1,7 +1,4 @@
 <?php
-/*
-  Old file, used for admin zip export.
-*/
 
 require_once "../shared/connect.php";
 
@@ -204,9 +201,10 @@ $langProgToExt = [
   'javascript' => 'js'
 ];
 
-function write_files(&$db, &$user_information, &$item_information) {
+function write_files(&$db, &$user_information, &$item_information, $root_csv_only = false) {
    global $langProgToExt, $groupName;
-   $csv = fopen($groupName.".csv", "w");
+   $root_file_name = $groupName.".csv";
+   $csv = fopen($root_file_name, "w");
       if ($csv) {
 
       foreach ($item_information as $item_info) {
@@ -228,13 +226,14 @@ function write_files(&$db, &$user_information, &$item_information) {
 
             if (array_key_exists ($itemId, $user_info["results"])) {
                fwrite($csv,";" . $user_info["results"][$itemId]["score"]);
-
-               $file = fopen($directory . "data.json", "w");
-               if ($file) {
-                  fwrite($file, json_encode($user_info["results"][$itemId]["jsondata"]));
-                  fclose($file);
+               if(!$root_csv_only) {
+                  $file = fopen($directory . "data.json", "w");
+                  if ($file) {
+                    fwrite($file, json_encode($user_info["results"][$itemId]["jsondata"]));
+                    fclose($file);
+                  }
+                  else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }
                }
-               else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }
             }
             else fwrite($csv,";");
             ////print($userId . ':' . $itemId . ':');
@@ -286,6 +285,7 @@ function write_files(&$db, &$user_information, &$item_information) {
       fclose($csv);
    }
    else { print("File access error in result generation, line ".__LINE__.".\n"); exit(); }
+   return $root_file_name;
 }
 
 
@@ -358,18 +358,20 @@ function cleanupDownloads() {
 }
 
 
-
+$root_csv_only = isset($_GET['target']) && $_GET['target'] == 'root';
 cleanupDownloads();
 $base_dir = "";
 $download_id = initTmpDir();
 $user_information = obtain_user_information($db, $main_group_id);
 $item_information = obtain_item_information($db, $main_item_id, $base_dir);
 populate_user_information($db, $user_information, $item_information, $main_group_id, $main_item_id);
-write_files($db, $user_information, $item_information);
-$zip_id = make_zip_file_name($db, $main_group_id, $main_item_id);
-exec("zip -r ". $zip_id . ' ' . $base_dir . ' ' . $groupName . ".csv");
+$file_name = write_files($db, $user_information, $item_information, $root_csv_only);
+if(!$root_csv_only) {
+  $file_name = make_zip_file_name($db, $main_group_id, $main_item_id);
+  exec("zip -r ". $file_name . ' ' . $base_dir . ' ' . $groupName . ".csv");
+}
 header("Content-Type: application/json");
 die(json_encode([
-  'file' => getFile($download_id, $zip_id)
+  'file' => getFile($download_id, $file_name)
 ]));
 ?>

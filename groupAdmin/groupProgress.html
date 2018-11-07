@@ -36,11 +36,24 @@
             <option ng-repeat="child in dropdownSelections[dropdownSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
         </select>
     </div>
+    <!--
     <p class="dl-link">
-        <button class="btn btn-primary" ng-i18next="admin_zip_export" ng-click="zipExport(dropdownSelections[dropdownSelections.length-1].ID, group.ID)" ng-disabled="zip_btn_disabled"></button>
+        <button class="btn btn-primary" ng-i18next="admin_export_all" ng-click="zipExport(dropdownSelections[dropdownSelections.length-1].ID, group.ID)" ng-disabled="zip_btn_disabled"></button>
         <span ng-if="zip_message">{{ zip_message }}</span>
         <span ng-if="zip_url"><button class="btn btn-success" ng-click="zipDownload()" ng-i18next="download"></button></span>
     </p>
+-->
+    <p class="dl-link">
+        <button class="btn btn-primary" ng-i18next="admin_export_all" ng-click="exportData(dropdownSelections[dropdownSelections.length-1].ID, group.ID, 'all')" ng-disabled="export.all.btn_disabled"></button>
+        <span ng-if="export.all.zip_message">{{ export.all.message }}</span>
+        <span ng-if="export.all.url"><button class="btn btn-success" ng-click="downloadData('all')" ng-i18next="download"></button></span>
+    </p>
+    <p class="dl-link">
+        <button class="btn btn-primary" ng-i18next="admin_export_root" ng-click="exportData(dropdownSelections[dropdownSelections.length-1].ID, group.ID, 'root')" ng-disabled="export.root.btn_disabled"></button>
+        <span ng-if="export.root.message">{{ export.root.message }}</span>
+        <span ng-if="export.root.url"><button class="btn btn-success" ng-click="downloadData('root')" ng-i18next="download"></button></span>
+    </p>
+
 
     <div ng-if="formValues.progressionType != 'collective'" class="flex-container view-chrono">
         <div>
