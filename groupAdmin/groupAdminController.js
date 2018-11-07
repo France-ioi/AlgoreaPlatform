@@ -949,7 +949,7 @@ angular.module('algorea')
         };
         $.ajax({
               type: 'GET',
-              url: '/admin/export.php',
+              url: '/controllers/export_progress.php',
               data: {
                     itemId: itemId,
                     groupId: groupId,

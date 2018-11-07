@@ -635,7 +635,7 @@ angular.module('algorea')
             $scope.zip_url = null;
             $.ajax({
                   type: 'GET',
-                  url: 'zip_export.php',
+                  url: '/controllers/export_progress.php',
                   data: {
                         itemId: itemId,
                         groupId: groupId
