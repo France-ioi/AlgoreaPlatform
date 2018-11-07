@@ -147,7 +147,7 @@
     "admin_no_access_removal": "You can't remove this group's access to this item because it has a direct access to one of the items' children",
     "admin_select_item_group_access": "Start by selecting the item and the group for which you want to set access rights.",
     "admin_export_all": "Export a zip file with all the submissions",
-    "admin_export_root": "Export a root csv file",
+    "admin_export_root": "Export the scores table as csv",
     "admin_warning": "Warning:",
     "admin_warning_readonly": "You have read-only access to this item",
     "admin_select_exercise": "You have to select a task or a course to display it.",
