@@ -18,12 +18,14 @@ angular.module('algorea')
             }
         }
 
-        // sync does not work without this
-        if(!SyncQueue.requests) { SyncQueue.requests = {}; }
-        SyncQueue.requests.algorea = {
-           admin: true
-        };
-
+        $scope.setupSync = function() {
+            if($scope.getEditMode() != 'edit') { return; }
+            // sync does not work without this
+            if(!SyncQueue.requests) { SyncQueue.requests = {}; }
+            SyncQueue.requests.algorea = {
+                admin: true
+            };
+        }
 
         var user = null;
         loginService.getLoginData(function(res) {
@@ -41,6 +43,7 @@ angular.module('algorea')
             $scope.items = itemService.getChildren($scope.item);
             $scope.item_strings = $scope.item.strings[0];
             $scope.item_strings_compare = null;
+            $scope.setupSync();
         }
         refresh();
 
@@ -56,7 +59,9 @@ angular.module('algorea')
         }
 
 
-
+        $scope.$on('alogrea.reloadTabs', function(event) {
+            $scope.setupSync();
+        });
         $scope.$on('algorea.reloadView', function(event, view) {
             if(view == 'right') {
                 refresh();
