@@ -59,6 +59,9 @@
                         <button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
                     </div>
                 </div>
+                <div ng-if="formValues.hasPassword">
+                    <a class="btn btn-success" target="_blank" href="/controllers/export_participation_codes.php?group_id={{group.ID}}" ng-i18next="groupAdmin_export_users"></a>
+                </div>
                 <hr ng-if="formValues.hasPassword" />
                 <div class="flex-container" ng-if="formValues.hasPassword">
                     <div class="left-col">

@@ -183,6 +183,7 @@
 
     "profile_not_logged": "Veuillez vous connecter (en cliquant sur l'onglet \"Se connecter\") pour accéder à cette interface.",
 
+    "groupAdmin_export_users": "Export users",
     "groupAdmin_logins_not_found": "Les logins suivants n'ont pas pu être trouvés :",
     "groupAdmin_logins_already_members": "Les logins suivants ont déjà reçu une invitation ou font déjà partie du groupe :",
     "groupAdmin_confirm_unsaved": "Des données de l'item en cours ont été modifiées, vous allez perdre les changements.",

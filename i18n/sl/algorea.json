@@ -120,6 +120,7 @@
     "admin_manage_access": "Manage access",
     "admin_manage_access_desc": "Use the mouse wheel or a two finger movement to move vertically in the table",
 
+    "groupAdmin_export_users": "Export users",
     "groupAdmin_logins_not_found": "The following logins have not ben found:",
     "groupAdmin_logins_already_members": "The following logins already have received an invitation or already belong to the group:",
     "groupAdmin_confirm_unsaved": "Some fields of the current item have been changed, you will lose these changes.",

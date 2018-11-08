@@ -178,6 +178,7 @@
 
     "profile_not_logged": "Bitte einloggen, um diese Funktion zu nutzen (Button rechts oben auf dem Bildschirm).",
 
+    "groupAdmin_export_users": "Export users",
     "groupAdmin_logins_not_found": "Die folgenden Logins wurden nicht gefunden: ",
     "groupAdmin_logins_already_members": "Die folgenden Logins haben bereits eine Einladung erhalten oder sind der Gruppe schon beigetreten:",
     "groupAdmin_confirm_unsaved": "Dieses Item wurde bereits bearbeitet, alle Änderungen werden verworfen.",

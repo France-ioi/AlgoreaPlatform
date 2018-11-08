@@ -109,6 +109,7 @@
     "admin_manage_access": "Administrar el acceso",
     "admin_manage_access_desc": "Use la rueda del ratón o un movimiento con dos dedos para moverse verticalmente en la tabla",
 
+    "groupAdmin_export_users": "Export users",
     "groupAdmin_logins_not_found": "Los siguientes login no se han encontrado:",
     "groupAdmin_logins_already_members": "Los siguientes login ya han recibido una invitación o ya son parte del grupo:",
     "groupAdmin_confirm_unsaved": "Algunos campos del item actual han sido modificados. Usted perderá estos cambios.",
