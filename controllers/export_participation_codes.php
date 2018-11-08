@@ -12,77 +12,8 @@ if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempU
 }
 
 
-function getGroup() {
-    global $db;
-
-    $group_id = isset($_GET['group_id']) ? $_GET['group_id'] : null;
-    if($group_id === null) {
-        throw new Exception('Missed param group_id.');
-    }
-
-    $query = '
-        SELECT
-            sPassword,
-            sName
-        FROM
-            groups
-        WHERE
-            ID=:group_id
-        LIMIT 1
-    ';
-    $stmt = $db->prepare($query);
-    $stmt->execute([
-       'group_id' => $group_id
-    ]);
-    $group = $stmt->fetchObject();
-    if(!$group) {
-        throw new Exception('Group not found.');
-    }
-    return $group;
-}
-
-
-function getUser($user_id) {
-    global $db;
-    $query = '
-        SELECT
-            sFirstName,
-            sLastName,
-            iGrade
-        FROM
-            users
-        WHERE
-            loginID=:user_id
-        LIMIT 1
-    ';
-    $stmt=$db->prepare($query);
-    $stmt->execute([
-       'user_id' => $user_id
-    ]);
-    return $stmt->fetchObject();
-}
-
-
 function getGroupUsers($group_id) {
     global $db;
-    /*
-    $query = '
-        SELECT
-            u.loginID,
-            u.sFirstName,
-            u.sLastName,
-            u.iGrade
-        FROM
-            groups_groups AS gg
-        JOIN
-            users AS u
-        ON
-            u.idGroupSelf = gg.idGroupChild
-        WHERE
-            gg.sType = \'direct\' AND
-            gg.idGroupParent = :group_id
-    ';
-    */
     $q = '
         SELECT groups.sName as `group`, users.loginID, users.sFirstName, users.sLastName, users.iGrade
         FROM groups_ancestors
@@ -108,7 +39,6 @@ function getUserIds($users) {
     }
     return $user_ids;
 }
-
 
 
 function outputCSV($data) {
