@@ -20,7 +20,7 @@ COPY composer.json composer.lock ./
 RUN composer.phar install --no-plugins --no-scripts
 
 COPY bower.json ./
-#RUN bower install --allow-root   (disabled as bower config not working)
+RUN bower install --allow-root
 
 COPY config/apache.conf /etc/apache2/sites-available/algorea.conf
 RUN a2dissite 000-default
