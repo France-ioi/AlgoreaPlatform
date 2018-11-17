@@ -1,0 +1,23 @@
+web:
+  build: .
+  volumes:
+    - .:/var/www/devdir/
+  ports:
+    - "8080:80"
+  links:
+   - db
+  environment:
+    ENVIRONMENT: dev
+    DATABASE_HOST: db
+    DATABASE_NAME: algorea_contest
+    DATABASE_USER: dbuser
+    DATABASE_PASSWORD: password
+db:
+  image: mysql:5.7.11
+  ports:
+    - "3306:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: rootpwd
+    MYSQL_USER: dbuser
+    MYSQL_PASSWORD: password
+    MYSQL_DATABASE: algorea_contest

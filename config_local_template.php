@@ -1,10 +1,10 @@
 <?php
 
 // *** Database configuration
-//$config->db->host = "";
-$config->db->database = "";
-$config->db->user = "";
-$config->db->password = "";
+$config->db->host = $_ENV['DATABASE_HOST'];
+$config->db->database = $_ENV['DATABASE_NAME'];
+$config->db->user = $_ENV['DATABASE_USER'];
+$config->db->password = $_ENV['DATABASE_PASSWORD'];
 // Whether this MySQL server supports fractionnal time (5.6.4+)
 $config->db->fractionalTime = false;
 
