@@ -93,3 +93,8 @@ if (is_readable(__DIR__.'/config_local.php')) {
 }
 
 date_default_timezone_set($config->shared->timezone);
+
+
+if(!$config->platform->private_key) {
+   die('Config error. Platform private_key missed.');
+}
