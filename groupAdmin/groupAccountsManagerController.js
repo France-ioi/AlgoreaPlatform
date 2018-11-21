@@ -75,7 +75,7 @@ angular.module('algorea')
         postfix_length: 3,
         password_length: 6,
         create_in_subgroups: false,
-        example_login: null,
+        example_login: '',
         error: false
     }
     $scope.accounts = [];
@@ -111,11 +111,6 @@ angular.module('algorea')
             postfix_length: parseInt($scope.create_params.postfix_length, 10) || 0,
             password_length: parseInt($scope.create_params.password_length, 10) || 0
         };
-        var l = $scope.create_params.example_login.length;
-        if(l > 30 || l < 3) {
-            $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_login_length');
-            return;
-        }
         if(res.prefix == '') {
             $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_prefix');
             return;
@@ -126,6 +121,11 @@ angular.module('algorea')
         }
         if(res.password_length > 50 || res.password_length < 6) {
             $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_password_length');
+            return;
+        }
+        var l = $scope.create_params.example_login.length;
+        if(l > 30 || l < 3) {
+            $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_login_length');
             return;
         }
         if(getPrefixId(res.prefix)) {
@@ -154,7 +154,7 @@ angular.module('algorea')
             showAccounts(data.accounts);
         });
 
-        $scope.create_params.example_login = null;
+        $scope.create_params.example_login = '';
         $scope.create_params.prefix = '';
         $scope.create_params.amount = 1;
     }
