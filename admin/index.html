@@ -130,7 +130,7 @@
                   </uib-tabset>
                </div>
                <div class="adminContainerTabContent" ng-show="selectedView == 'groupsEditable'">
-                  <h2><span ng-i18next="group"></span> : {{ group.sName }}</h2>
+                  <h2><span ng-i18next="group"></span> : {{ group.sName }} <small>(ID: {{ group.ID }})</small></h2>
                   <uib-tabset class="adminTabs">
                      <uib-tab heading="{{'settings'|i18next}}"><div ng-include="templatesPrefix+'/admin/tabs/groups_params.html'"></div></uib-tab>
                      <!--<tab ng-show="user" heading="Utilisateur associé"><div ng-include='"tabs/users_params.html"'></div></tab>-->
@@ -153,7 +153,7 @@
     'lng': config.domains.current.defaultLanguage,
     'fallbackLng': ['en', 'fr'],
     'fallbackNS': 'algorea',
-    'debug': true,
+    'debug': false,
     'ns': config.domains.current.customStringsName ? [config.domains.current.customStringsName, 'commonFramework', 'algorea'] : ['commonFramework', 'algorea'],
     'backend' : {
       'allowMultiLoading' : false,

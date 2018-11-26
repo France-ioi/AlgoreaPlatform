@@ -1208,7 +1208,7 @@ var AccessManager = {
          }
       }
       if (access.bOwnerAccess) {
-         access.sAccessTitle += $i18next.t('groupAdmin_access_owner_direct');
+         access.sAccessTitle += i18next.t('groupAdmin_access_owner_direct');
          access.sAccessLabel += "+O";
       }
       if (access.bCachedManagerAccess || access.bManagerAccess) {
