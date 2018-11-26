@@ -1,3 +1,8 @@
+<div class="breadcrumbs-item" ng-if="config.domains.current.title">
+    <span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last breadcrumbs-before-selected">
+        <a href="/">{{ config.domains.current.title }}</a>
+    </span>
+</div>
 <div class="breadcrumbs-item">
     <span class="breadcrumbs-item-inactive breadcrumbs-item-inactive-not-last">
         <a ui-sref="profile" ng-i18next="profile"></a>

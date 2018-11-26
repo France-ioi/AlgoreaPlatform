@@ -45,15 +45,15 @@ angular.module('algorea')
           .state('profile', {
             url: "/profile/:section",
             views: {
-              'left': {
-                  template: '',
+               'left': {
+                   template: '',
                 },
                 'right': {
-                  templateUrl: templatesPrefix+'profile/profile.html',
-                  controller: 'profileController',
+                   templateUrl: templatesPrefix+'profile/profile.html',
+                   controller: 'profileController',
                 },
                 'breadcrumbs': {
-                  template: '<div class="breadcrumbs-item"><span class="breadcrumbs-item-active breadcrumbs-item-active-last">Profile</span></div>',
+                   templateUrl: templatesPrefix+'navigation/views/breadcrumbs-profile.html'
                 },
             },
           }).state("groupAdminGroup", {
