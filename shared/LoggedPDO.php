@@ -9,11 +9,11 @@ $printRequests = false;
 class LoggedPDO extends PDO
 {
     public static $log = array();
-    
+
     public function __construct($dsn, $username, $password, $pdo_options) {
         parent::__construct($dsn, $username, $password, $pdo_options);
     }
-    
+
     /**
      * Print out the log when we're destructed. I'm assuming this will
      * be at the end of the page. If not you might want to remove this
@@ -22,7 +22,7 @@ class LoggedPDO extends PDO
     public function __destruct() {
         self::printLog();
     }
-    
+
     public function query($query) {
         $start = microtime(true);
         $result = parent::query($query);
@@ -39,19 +39,54 @@ class LoggedPDO extends PDO
     public function prepare($query, $options=NULL) {
         return new LoggedPDOStatement(parent::prepare($query), $query);
     }
-    
+
     public static function printLog() {
+        global $config;
         if (!array_key_exists("REQUEST_URI", $_SERVER))
            return;
-        $domain = preg_match('|coordinateur|', $_SERVER["REQUEST_URI"])?"coordinateur":"concours";
-        $totalTime = 0;
-        $s = "";
-        foreach(self::$log as $entry) {
-            $totalTime += $entry['time'];
-            $s .= $domain ."\t". str_pad($entry['time'], 9,  " ", STR_PAD_LEFT) . "\t" . md5($entry['query']) ."\t".  date('Y/m/d-H:i') ."\t". $entry['query'].  "\t" .  $_SERVER["REQUEST_URI"] . "\n";
+        if($config->db->extendedLog) {
+         $s = self::extendedLogFormat();
+        } else {
+         $s = self::stdLogFormat();
         }
         file_put_contents(realpath(dirname(__FILE__))."/../logs/pdo.log", $s, FILE_APPEND);
     }
+
+
+    private static function stdLogFormat() {
+      $domain = preg_match('|coordinateur|', $_SERVER["REQUEST_URI"])?"coordinateur":"concours";
+      $totalTime = 0;
+      $s = "";
+      foreach(self::$log as $entry) {
+         $totalTime += $entry['time'];
+         $s .= $domain ."\t". str_pad($entry['time'], 9,  " ", STR_PAD_LEFT) . "\t" . md5($entry['query']) ."\t".  date('Y/m/d-H:i') ."\t". $entry['query'].  "\t" .  $_SERVER["REQUEST_URI"] . "\n";
+      }
+      return $s;
+    }
+
+
+    private static function extendedLogFormat() {
+      $post = file_get_contents("php://input");
+      $post = json_decode($post, 1);
+      if(json_last_error() === JSON_ERROR_NONE) {
+       $post = 'JSON'.PHP_EOL.json_encode($post, JSON_PRETTY_PRINT);
+      } else {
+       $post = print_r($_POST, 1);
+      }
+      $s =
+       '----------------------------------------------------------------------'.PHP_EOL.
+       'Timestamp: '.date('Y/m/d-H:i:s').PHP_EOL.
+       'Script: '.$_SERVER["REQUEST_URI"].PHP_EOL.
+       'POST: '.$post.PHP_EOL.
+       'GET: '.print_r($_GET, 1).PHP_EOL.
+       'SQL: '.PHP_EOL;
+      foreach(self::$log as $entry) {
+          $s .= $entry['query'].PHP_EOL;
+      }
+      $s .= PHP_EOL.PHP_EOL;
+      return $s;
+    }
+
 }
 
 /**
@@ -104,7 +139,7 @@ class LoggedPDOStatement {
           throw $e;
        }
        $time = microtime(true) - $start;
-       LoggedPDO::$log[] = array('query' => '[PS] ' . $this->statement->queryString,
+       LoggedPDO::$log[] = array('query' => $this->statement->queryString,
                                   'params' => $params,
                                   'time' => round($time * 1000, 3));
        return $result;

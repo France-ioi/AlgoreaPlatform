@@ -12,6 +12,7 @@ angular.module('algorea')
       }
 
       $scope.editable = function() {
+         //return true;
          var groupItem = itemService.getGroupItem(this.item);
          if(!groupItem) return false;
          return groupItem.bOwnerAccess || groupItem.bManagerAccess;
