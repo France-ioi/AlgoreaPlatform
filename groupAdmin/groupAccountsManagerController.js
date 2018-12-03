@@ -8,6 +8,9 @@ angular.module('algorea')
         var res = {}
         res[group.ID] = group.sName;
         for(var i=0; i<group.children.length; i++) {
+            // TODO :: better filter on groups, maybe show the count in the
+            // interface?
+            if(group.children[i].sType == 'UserSelf') { continue; }
             Object.assign(res, collectGroups(group.children[i].child));
         }
         return res;
