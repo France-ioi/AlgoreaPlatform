@@ -148,6 +148,7 @@
     "admin_no_access_removal": "Sie können den Zugriff zu diesem Item für diese Gruppe nicht einschränken, da es einen direkten Zugriff auf ein Unter-Item gibt",
     "admin_select_item_group_access": "Wählen Sie zunächst das Item und die Gruppe für welche Sie den Zugriff konfigurieren wollen.",
     "admin_export_all": "Alle Einsendungen als ZIP-Datei exportieren",
+    "admin_export_root": "Punktetabelle as CSV exportieren",
     "admin_warning": "Achtung:",
     "admin_warning_readonly": "Sie haben keine Schreibrechte für dieses Item",
     "admin_select_exercise": "Sie müssen eine Aufgabe oder einen Kurs auswählen um ihn anzuzeigen.",
@@ -177,7 +178,7 @@
 
     "profile_not_logged": "Bitte einloggen, um diese Funktion zu nutzen (Button rechts oben auf dem Bildschirm).",
 
-    "groupAdmin_export_users": "Export users",
+    "groupAdmin_export_users": "Nutzer exportieren (mit Teilnahmecodes)",
     "groupAdmin_logins_not_found": "Die folgenden Logins wurden nicht gefunden: ",
     "groupAdmin_logins_already_members": "Die folgenden Logins haben bereits eine Einladung erhalten oder sind der Gruppe schon beigetreten:",
     "groupAdmin_confirm_unsaved": "Dieses Item wurde bereits bearbeitet, alle Änderungen werden verworfen.",
@@ -311,6 +312,7 @@
     "groupAccountsManager_example": "Beispiel eines erzeugten Loginnamen: ",
     "groupAccountsManager_number_of_users": "Anzahl der in der Gruppe zu erstellenden Nutzer",
     "groupAccountsManager_wrong_number_of_users": "Muss im Bereich [1..50] liegen",
+    "groupAccountsManager_create_in_subgroups": "Nutzer in Untergruppe anlegen",
     "groupAccountsManager_create": "Nutzer erstellen",
     "groupAccountsManager_print": "Drucken",
     "groupAccountsManager_login": "Loginname",
