@@ -15,7 +15,7 @@ if (!isset($_SESSION) || !isset($_SESSION['login']) || $_SESSION['login']['tempU
 function getGroupUsers($group_id) {
     global $db;
     $q = '
-        SELECT groups.sName as `group`, users.loginID, users.sFirstName, users.sLastName, users.iGrade
+        SELECT groups.sName as `group`, users.sLogin, users.loginID, users.sFirstName, users.sLastName, users.iGrade
         FROM groups_ancestors
         JOIN users
         ON users.idGroupSelf = groups_ancestors.idGroupChild
@@ -43,7 +43,7 @@ function getUserIds($users) {
 
 function outputCSV($data) {
     $fp = fopen('php://temp', 'w+');
-    $row = ['Group', 'First name', 'Last name', 'Grade', 'Participation code'];
+    $row = ['Group', 'Username', 'First name', 'Last name', 'Grade', 'Participation code'];
     fputcsv($fp, $row);
     foreach($data as $row) {
         fputcsv($fp, $row);
@@ -78,11 +78,12 @@ try {
 
         foreach($users as &$user) {
             $data[] = [
-                'group' => $user['group'],
-                'sFirstName' => $user['sFirstName'],
-                'sLastName' => $user['sLastName'],
-                'iGrage' => $user['iGrade'],
-                'code' => isset($codes[$user['loginID']]) ? $codes[$user['loginID']] : ''
+                $user['group'],
+                $user['sLogin'],
+                $user['sFirstName'],
+                $user['sLastName'],
+                $user['iGrade'],
+                isset($codes[$user['loginID']]) ? $codes[$user['loginID']] : ''
             ];
         }
     }
