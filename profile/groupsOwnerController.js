@@ -20,12 +20,18 @@ angular.module('algorea')
    $scope.formValues = {};
 
    $scope.startSync = function(callback) {
-   	SyncQueue.requestSets.groupsDescendants = {name: "groupsDescendants", minServerVersion: 0};
+      if(SyncQueue.status > 1) {
+          // Try again when it's not currently syncing, else we won't get the
+          // results from the requestSet
+          setTimeout(function() { $scope.startSync(callback); }, 500);
+          return;
+      }
+      SyncQueue.requestSets.groupsDescendants = {name: "groupsDescendants", minServerVersion: 0};
       SyncQueue.addSyncEndListeners('groupsOwnerController', function() {
-      	$scope.loading = false;
-      	SyncQueue.removeSyncEndListeners('groupsOwnerController');
-         delete(SyncQueue.requestSets.groupsDescendants.minServerVersion);
-      	callback();
+          $scope.loading = false;
+          SyncQueue.removeSyncEndListeners('groupsOwnerController');
+          delete(SyncQueue.requestSets.groupsDescendants.minServerVersion);
+          callback();
       }, false, true);
       SyncQueue.planToSend(0);
    };
@@ -93,6 +99,7 @@ angular.module('algorea')
       $scope.loading = true;
       $scope.error = '';
    });
-   itemService.onNewLoad($scope.init);
-
+   // Why were we using onNewLoad?
+//   itemService.onNewLoad($scope.init);
+   $scope.init();
 }]);
