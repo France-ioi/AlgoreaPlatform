@@ -25,7 +25,7 @@ function deleteUsersByPrefix($prefix) {
     $prefix = str_replace('_', '\_', $prefix).'%';
     $prefix = $db->quote($prefix);
     $remover = new RemoveUsersClass($db, [
-        'baseUserQuery' => 'FROM users WHERE sLogin LIKE '.$prefix,
+        'baseUserQuery' => 'WHERE users.sLogin LIKE '.$prefix,
         'output' => false
     ]);
     $remover->execute();

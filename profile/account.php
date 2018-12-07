@@ -95,7 +95,7 @@ $res = [
 function deleteAccount() {
     global $db, $config;
     $remover = new RemoveUsersClass($db, [
-        'baseUserQuery' => 'FROM users WHERE `ID` = '.$_SESSION['login']['ID'],
+        'baseUserQuery' => 'WHERE users.ID = '.$_SESSION['login']['ID'],
         'output' => false
     ]);
     $remover->execute();
