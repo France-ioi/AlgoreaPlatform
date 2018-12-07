@@ -272,8 +272,8 @@ body {
    top:4px;
 }
 
-.task-auto-height {
-   height: calc(100vh - 205px);
+iframe.task-auto-height {
+   height: 80vh;
 }
 
 .fullscreen-iframe {
