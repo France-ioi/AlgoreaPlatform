@@ -21,15 +21,6 @@ class RemoveUsersClass {
     }
 
 
-    // is it required?
-    public function dropTriggers($table) {
-        $this->db->exec("DROP TRIGGER IF EXISTS `delete_".$table."`");
-        $this->db->exec("DROP TRIGGER IF EXISTS `custom_delete_".$table."`");
-        $this->db->exec("DROP TRIGGER IF EXISTS `before_delete_".$table."`");
-        $this->db->exec("DROP TRIGGER IF EXISTS `after_delete_".$table."`");
-    }
-
-
     private function output($str) {
         if(!$this->options['output']) return;
         if(!$this->options['displayFull'] && !$this->options['displayOnly'] && strlen($str) > 78) {
@@ -40,9 +31,9 @@ class RemoveUsersClass {
     }
 
 
-    public function executeDirectQuery($query) {
+    public function executeSubQuery($table, $query) {
         if($this->options['mode'] == 'delete') {
-            $fullQuery = "DELETE " . $query;
+            $fullQuery = "DELETE `$table` FROM `$table` $query";
             $this->output($fullQuery.';');
             if(!$this->options['displayOnly']) {
                 $stmt = $this->db->prepare($fullQuery);
@@ -52,7 +43,7 @@ class RemoveUsersClass {
                 return $count;
             }
         } elseif($this->options['mode'] == 'count') {
-            $fullQuery = "SELECT COUNT(*) " . $query;
+            $fullQuery = "SELECT COUNT(*) FROM `$table` $query";
             $this->output($fullQuery);
             if(!$this->options['displayOnly']) {
                 $stmt = $this->db->prepare($fullQuery);
@@ -62,16 +53,16 @@ class RemoveUsersClass {
                 return $count;
             }
         } else {
-            $fullQuery = "SELECT * " . $query;
+            $fullQuery = "SELECT * FROM `$table` $query";
             $this->output($fullQuery);
         }
         return null;
     }
 
-    public function executeQuery($query) {
-        $count = $this->executeDirectQuery(str_replace('[HISTORY]', '', $query));
-        if($count !== 0 && $this->options['deleteHistory'] && strpos($query, '[HISTORY]') !== FALSE) {
-            $this->executeDirectQuery(str_replace('[HISTORY]', 'history_', $query));
+    public function executeQuery($table, $query, $hasHistory=false) {
+        $count = $this->executeSubQuery($table, $query);
+        if($count !== 0 && $this->options['deleteHistory'] && $hasHistory) {
+            $this->executeSubQuery('history_'.$table, str_replace($table, 'history_'.$table, $query));
         }
     }
 
@@ -82,29 +73,17 @@ class RemoveUsersClass {
 
 
     public function execute() {
-        //$idUserQuery = "SELECT * FROM pixal.users WHERE `sLogin` LIKE 'ups%' AND NOT EXISTS (SELECT 1 FROM pixal.groups_ancestors WHERE (idGroupAncestor = 109102066123047656 OR idGroupAncestor = 477112099289678181 OR idGroupAncestor = 899084761192596830) AND idGroupChild = users.idGroupSelf)";
-        $idUserQuery = "SELECT ID " . str_replace('[HISTORY]', '', $this->options['baseUserQuery']);
+        $this->executeQuery('users_threads', 'JOIN users ON users.ID = users_threads.idUser '.$this->options['baseUserQuery'], true);
+        $this->executeQuery('users_answers', 'JOIN users ON users.ID = users_answers.idUser '.$this->options['baseUserQuery']);
+        $this->executeQuery('users_items', 'JOIN users ON users.ID = users_items.idUser '.$this->options['baseUserQuery'], true);
 
-        $this->executeQuery("FROM `[HISTORY]users_threads` WHERE idUser IN ( $idUserQuery )");
-        $this->executeQuery("FROM `users_answers` WHERE idUser IN ( $idUserQuery )");
-        $this->executeQuery("FROM `[HISTORY]users_items` WHERE idUser IN ( $idUserQuery )");
-
-        $idGroupSelfQuery = "SELECT idGroupSelf " . str_replace('[HISTORY]', '', $this->options['baseUserQuery']);
-        $idGroupOwnedQuery = "SELECT idGroupOwned " . str_replace('[HISTORY]', '', $this->options['baseUserQuery']);
-
-        $this->db->exec("CREATE TEMPORARY TABLE $this->tmp_table (ID BIGINT)");
-        $this->db->exec("INSERT IGNORE INTO $this->tmp_table ($idGroupSelfQuery)");
-        $this->db->exec("INSERT IGNORE INTO $this->tmp_table ($idGroupOwnedQuery)");
-
-        $this->executeQuery("FROM `groups_items_propagate` WHERE ID IN (SELECT ID FROM `groups_items` WHERE idGroup IN (SELECT ID FROM $this->tmp_table))");
-        $this->executeQuery("FROM `[HISTORY]groups_items` WHERE idGroup IN (SELECT ID FROM $this->tmp_table)");
-        $this->executeQuery("FROM `[HISTORY]groups_groups` WHERE idGroupChild IN (SELECT ID FROM $this->tmp_table)");
-        $this->executeQuery("FROM `[HISTORY]groups_groups` WHERE idGroupParent IN (SELECT ID FROM $this->tmp_table)");
-        $this->executeQuery("FROM `[HISTORY]groups_ancestors` WHERE idGroupChild IN (SELECT ID FROM $this->tmp_table)");
-        $this->executeQuery("FROM `[HISTORY]groups_ancestors` WHERE idGroupAncestor IN (SELECT ID FROM $this->tmp_table)");
-        $this->executeQuery("FROM `groups_propagate` WHERE ID IN (SELECT ID FROM $this->tmp_table)");
-        $this->executeQuery("FROM `[HISTORY]groups` WHERE ID IN (SELECT ID FROM $this->tmp_table)");
-        $this->executeQuery($this->options['baseUserQuery']);
+        $this->executeQuery('groups_items_propagate', 'JOIN groups_items ON groups_items.ID = groups_items_propagate.ID JOIN users ON (groups_items.idGroup = users.idGroupSelf OR groups_items.idGroup = users.idGroupOwned) '.$this->options['baseUserQuery']);
+        $this->executeQuery('groups_items', 'JOIN users ON (groups_items.idGroup = users.idGroupSelf OR groups_items.idGroup = users.idGroupOwned) '.$this->options['baseUserQuery'], true);
+        $this->executeQuery('groups_groups', 'JOIN users ON (groups_groups.idGroupParent = users.idGroupSelf OR groups_groups.idGroupParent = users.idGroupOwned OR groups_groups.idGroupChild = users.idGroupSelf OR groups_groups.idGroupChild = users.idGroupOwned) '.$this->options['baseUserQuery'], true);
+        $this->executeQuery('groups_ancestors', 'JOIN users ON (groups_ancestors.idGroupAncestor = users.idGroupSelf OR groups_ancestors.idGroupAncestor = users.idGroupOwned OR groups_ancestors.idGroupChild = users.idGroupSelf OR groups_ancestors.idGroupChild = users.idGroupOwned) '.$this->options['baseUserQuery'], true);
+        $this->executeQuery('groups_propagate', 'JOIN users ON (groups_propagate.ID = users.idGroupSelf OR groups_propagate.ID = users.idGroupOwned) '.$this->options['baseUserQuery']);
+        $this->executeQuery('groups', 'JOIN users ON (groups.ID = users.idGroupSelf OR groups.ID = users.idGroupOwned) '.$this->options['baseUserQuery'], true);
+        $this->executeQuery('users', ' '.$this->options['baseUserQuery'], true);
 
         if($this->options['deleteHistoryAll']) {
             $this->removeHistory("users_threads");
@@ -115,7 +94,5 @@ class RemoveUsersClass {
             $this->removeHistory("groups");
             $this->removeHistory("users");
         }
-
     }
-
 }
