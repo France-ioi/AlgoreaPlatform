@@ -13,6 +13,9 @@ angular.module('algorea')
             loginService.getLoginData(function(data) {
                $scope.userGroupSelf = data.idGroupSelf;
             });
+            if($scope.loading && $scope.team.iTeamParticipating == 1) {
+               $scope.collapse = true;
+            }
          }
          if(typeof data.qualificationState != 'undefined') {
             $scope.qualificationState = data.qualificationState;
@@ -107,6 +110,10 @@ angular.module('algorea')
 
       $scope.resetDoNotPossess = function() {
          loginService.openLoginPopup('badge');
+      };
+
+      $scope.toggleInterface = function() {
+         $scope.collapse = !$scope.collapse;
       };
 
       $scope.loading = true;

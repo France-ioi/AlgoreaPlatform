@@ -1,6 +1,6 @@
 <div class="panel panel-default" ng-controller="teamsController">
   <div ng-show="isLogged" class="panel-body">
-    <div>
+    <div ng-hide="collapse">
       <p ng-i18next="teams_intro"></p>
       <p ng-show="!item.bTeamsEditable" ng-i18next="teams_not_editable"></p>
       <p ng-show="item.bTeamsEditable"><span ng-i18next="teams_conditions_intro"></span></p>
@@ -16,7 +16,28 @@
       <p ng-if="canResetQualificationState" class="text-danger"><span ng-i18next="teams_qualification_reset_code"></span> <button class="btn btn-default" ng-click="resetDoNotPossess();" ng-i18next="teams_qualification_reset_code_btn"></button></p>
     </div>
     <div class="text-danger" ng-i18next="{{ error }}"></div>
-    <div ng-show="team">
+    <div ng-show="collapse">
+      <div>
+        <span ng-show="team.checkRequirements.result">
+          <b ng-show="team.iTeamParticipating == 0" class="text-success" ng-i18next="teams_requirements_yes"></b>
+          <button ng-show="team.iTeamParticipating == 0" class="btn btn-primary" ng-click="startItem();" ng-i18next="teams_start"></button>
+          <b ng-show="item.sDuration && team.iTeamParticipating == 0" class="text-warning" ng-i18next="teams_time_limit"></b>
+          <b ng-show="team.iTeamParticipating == 1 && !user_item.sFinishDate" class="text-success" ng-i18next="teams_started"></b>
+          <b ng-show="team.iTeamParticipating == 1 && user_item.sFinishDate" class="text-info" ng-i18next="teams_time_over"></b>
+        </span>
+        <b ng-if="!team.checkRequirements.result" class="text-warning">
+          <span ng-i18next="teams_requirements_no"></span>
+          <span ng-i18next="{{ team.checkRequirements.error }}"></span>
+        </b>
+      </div>
+      <div>
+        <button class="btn btn-default" ng-click="toggleInterface();">
+          <span class="glyphicon glyphicon-chevron-down"></span>
+          <span ng-i18next="teams_open_interface"></span>
+        </button>
+      </div>
+    </div>
+    <div ng-show="team && !collapse">
       <hr ng-show="item.bTeamsEditable" />
       <div>
         <span ng-if="team.isAdmin" ng-i18next="teams_team_leading"></span>
@@ -66,7 +87,7 @@
       <div style="height: 16px;"></div>
       <div ng-show="item.bTeamsEditable"><button class="btn btn-default" ng-click="leaveTeam();" ng-i18next="teams_leave"></button></div>
     </div>
-    <div ng-hide="!item.bTeamsEditable || team || canResetQualificationState">
+    <div ng-hide="!item.bTeamsEditable || team || canResetQualificationState || collapse">
       <hr />
       <div><span ng-i18next="teams_join_code"></span> <input type="text" ng-model="joinPassword"></input><button class="btn btn-default" ng-click="joinTeam();" ng-i18next="join"></button></div>
       <div ng-hide="qualificationState <= 0"><span ng-i18next="teams_create"></span> <input type="text" ng-model="newTeamName"></input><button class="btn btn-default" ng-click="createTeam();" ng-i18next="create"></button></div>
