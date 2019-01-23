@@ -567,7 +567,7 @@ angular.module('algorea')
    };
 }])
 
-   .filter('orderObjectBy', function() {
+.filter('orderObjectBy', function() {
    return function(items, field, reverse) {
       var filtered = [];
       angular.forEach(items, function(item) {
@@ -577,5 +577,13 @@ angular.module('algorea')
          return (a[field] > b[field] ? !reverse : !!reverse) ? 1 : -1;
       });
       return filtered;
+   };
+})
+
+.filter('attemptTime', function() {
+   return function(attempt) {
+      var mins = Math.floor((attempt.sBestAnswerDate - attempt.sStartDate) / 60000);
+      var secs = Math.floor((attempt.sBestAnswerDate - attempt.sStartDate) / 1000) % 60;
+      return (mins ? mins + 'mn ' : '') + secs + 's';
    };
 });
