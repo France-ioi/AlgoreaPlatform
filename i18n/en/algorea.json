@@ -106,6 +106,12 @@
     "teams_not_a_member": "This user doesn't belong to this team.",
     "teams_no_name": "Please provide a name for your team.",
     "teams_creation_error": "Error while creating team.",
+    "teams_new_not_logged": "Please log in to automatically join the team.",
+    "teams_new_disallowed": "The team creator doesn't currently allow new members to join the team.",
+    "teams_new_login_intro": "If some of your teammates is in front of this screen, they can join this team quickly by logging in",
+    "teams_new_login_password": "(note : this will activate joining by password for this group)",
+    "teams_new_login_btn": "Relogin and join this team",
+    "teams_new_login_desc": "You will be logged off, and your teammate will then be able to log in and be automatically added to this team.",
 
     "login_loading": "Loading...",
     "login_disconnect": "Logout",

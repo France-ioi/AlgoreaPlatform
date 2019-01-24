@@ -26,7 +26,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
               return retval;
            } else {
               if(callback) {
-                 callbacks.push(function() {
+                 callbacks.push({callback: function() {
                     callback({
                        'ID': userID,
                        'sLogin': userLogin,
@@ -34,7 +34,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
                        'idGroupOwned': userOwnedGroup,
                        'tempUser': tempUser
                     });
-                 });
+                 }});
               }
               return null;
            }
@@ -57,12 +57,19 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
             }
           }
         }
-        function triggerCallback() {
+        function triggerCallback(type) {
            loginDone = true;
-           angular.forEach(callbacks, function(callback, i) {
-             if (typeof callback === 'function') {
-                callback();
-                delete callbacks[i];
+
+           var curCallbacks = callbacks;
+           callbacks = [];
+
+           angular.forEach(curCallbacks, function(cbData, i) {
+             if(cbData.type && cbData.type != type) {
+                callbacks.push(cbData);
+                return;
+             }
+             if (typeof cbData.callback === 'function') {
+                cbData.callback(type);
              }
           });
         }
@@ -122,7 +129,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
             tempUser: false,
             loginData: user.loginData
           });
-          triggerCallback();
+          triggerCallback('login');
         }
 
         function handleLogout(user) {
@@ -143,7 +150,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
             tempUser: true,
             loginData: user.loginData
           });
-          triggerCallback();
+          triggerCallback('logout');
         }
 
         function handleProfile(user) {
@@ -160,7 +167,7 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
               u[key] = user.loginData[key];
             }
           });
-          triggerCallback();
+          triggerCallback('profile');
         }
 
 
@@ -214,6 +221,9 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
               return tempUser;
            },
            bindScope: function(newScope) {
+           },
+           registerCallback: function(callback, type) {
+              callbacks.push({type: type, callback: callback});
            },
            init: function() {
             window.__LoginModuleOnLogin = createHandler(handleLogin);

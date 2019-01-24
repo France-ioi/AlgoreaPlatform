@@ -112,6 +112,12 @@
     "teams_started": "Votre équipe a commencé l'épreuve. Vous pouvez entrer en sélectionnant un des items de l'épreuve ci-dessus.",
     "teams_time_limit": "Attention : cette épreuve se déroule en temps limité.",
     "teams_time_over": "Votre équipe a déjà participé à cette épreuve en temps limité.",
+    "teams_new_not_logged": "Veuillez vous connecter pour rejoindre automatiquement l'équipe.",
+    "teams_new_disallowed": "Le créateur de l'équipe ne permet actuellement pas à de nouveaux membres de rejoindre l'équipe.",
+    "teams_new_login_intro": "Si un de vos coéquipiers est devant cet écran, il peut rejoindre l'équipe rapidement en se connectant",
+    "teams_new_login_password": "(note : cela activera la possibilité de rejoindre cette équipe par mot de passe)",
+    "teams_new_login_btn": "Déconnexoin pour reconnexion d'un coéquipier",
+    "teams_new_login_desc": "Vous serez déconnecté, votre coéquipier pourra alors se connecter et sera automatiquement ajouté à cette équipe.",
 
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",

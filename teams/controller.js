@@ -1,5 +1,7 @@
 angular.module('algorea')
    .controller('teamsController', ['$scope', '$rootScope', '$http', '$i18next', 'loginService', 'itemService', 'contestTimerService', function ($scope, $rootScope, $http, $i18next, loginService, itemService, contestTimerService) {
+      $scope.window = window;
+
       $scope.newTeamName = '';
       $scope.joinPassword = '';
       $scope.isLogged = true;
@@ -65,8 +67,10 @@ angular.module('algorea')
          $scope.apiRequest('createTeam', {name: $scope.newTeamName, password: $scope.genPassword()}, true);
       };
 
-      $scope.joinTeam = function() {
-         $scope.apiRequest('joinTeam', {password: $scope.joinPassword}, true);
+      $scope.joinTeam = function(password) {
+         $scope.apiRequest('joinTeam', {
+            password: password ? password : $scope.joinPassword
+            }, true);
       };
 
       $scope.startItem = function() {
@@ -83,14 +87,14 @@ angular.module('algorea')
          });
       };
 
-      $scope.changeTeamPassword = function() {
+      $scope.changeTeamPassword = function(callback) {
          if(!$scope.team) { return; }
          var newPassword = '';
          if(!$scope.team.sPassword) {
             // Create a new password
             newPassword = $scope.genPassword();
          } // else the password will be set at null, preventing people from joining
-         $scope.apiRequest('changeTeamPassword', {password: newPassword});
+         $scope.apiRequest('changeTeamPassword', {password: newPassword}, false, callback);
       };
 
       $scope.removeTeamMember = function(idGroupChild) {
@@ -114,6 +118,29 @@ angular.module('algorea')
 
       $scope.toggleInterface = function() {
          $scope.collapse = !$scope.collapse;
+      };
+
+      $scope.loginNewMemberCallback = function() {
+         if(!window.loginNewMemberPassword) { return; }
+         $scope.joinPassword = window.loginNewMemberPassword;
+         $scope.joinTeam(window.loginNewMemberPassword);
+         window.loginNewMemberPassword = null;
+      };
+
+      $scope.loginNewMember = function() {
+         function logoutLogin() {
+            window.loginNewMemberPassword = $scope.team.sPassword;
+            loginService.registerCallback(function() {
+               loginService.registerCallback($scope.loginNewMemberCallback, 'login');
+               loginService.openLoginPopup('login');
+               }, 'logout');
+            loginService.openLoginPopup('logout');
+         }
+         if($scope.team.sPassword) {
+            logoutLogin();
+         } else {
+            $scope.changeTeamPassword(logoutLogin);
+         }
       };
 
       $scope.loading = true;

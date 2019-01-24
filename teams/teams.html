@@ -50,7 +50,18 @@
         <span class="checkboxSwitch" ng-if="team.isAdmin">
           <input type="checkbox" id="codeInscr" class="switch" ng-model="hasPassword" ng-change="changeTeamPassword();">
           <label for="codeInscr"><span></span></label>
-       </span>
+        </span>
+      </div>
+      <div ng-if="item.bTeamsEditable && (!item.iTeamMaxMembers || team.children.length < item.iTeamMaxMembers)">
+        <p ng-show="!team.isAdmin && !team.sPassword" ng-i18next="teams_new_disallowed"></p>
+        <p ng-show="team.isAdmin || team.sPassword">
+          <span ng-i18next="teams_new_login_intro"></span>
+          <span ng-show="team.isAdmin && !team.sPassword" ng-i18next="teams_new_login_password"></span>
+          :
+          <button class="btn btn-default" ng-click="loginNewMember();" ng-i18next="teams_new_login_btn"></button>
+          <br>
+          <i ng-i18next="teams_new_login_desc"></i>
+        </p>
       </div>
       <hr />
       <table class="table table-bordered table-hover">
@@ -95,6 +106,7 @@
   </div>
   <div ng-show="!isLogged" class="panel-body">
     <p ng-i18next="teams_intro"></p>
-    <p ng-i18next="teams_not_logged"></p>
+    <p ng-hide="window.loginNewMemberPassword" ng-i18next="teams_not_logged"></p>
+    <p ng-show="window.loginNewMemberPassword" ng-i18next="teams_new_not_logged"></p>
   </div>
 </div>
