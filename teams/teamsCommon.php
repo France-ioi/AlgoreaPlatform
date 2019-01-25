@@ -170,34 +170,13 @@ function generateUserItems($team) {
    // Generate all user_items for a team
    global $db, $loginData;
 
-   // * Generate missing attempts
-   // Fetch attempts
+   // * Fetch attempts
    $attemptsIds = [];
    $stmt = $db->prepare("SELECT ID, idItem FROM groups_attempts WHERE idGroup = :idGroup;");
    $stmt->execute(['idGroup' => $team['ID']]);
    while($res = $stmt->fetch()) {
       $attemptsIds[$res['idItem']] = $res['ID'];
    }
-
-   // Fetch list of items which have attempts
-   $stmt = $db->prepare("
-      SELECT items.ID
-      FROM items
-      JOIN items_ancestors ON items_ancestors.idItemChild = items.ID
-      WHERE items.bHasAttempts = 1 AND items_ancestors.idItemAncestor = :idItem;");
-   $stmt->execute(['idItem' => $team['idTeamItem']]);
-
-   // Generate missing attempts
-   while($res = $stmt->fetch()) {
-      if(!isset($attemptsIds[$res['ID']])) {
-         // Attempt is missing, create one
-         $newId = getRandomId();
-         $stmt2 = $db->prepare("INSERT INTO groups_attempts (ID, idGroup, idItem, idUserCreator, iOrder) VALUES (:id, :idGroup, :idItem, :idUser, 1);");
-         $stmt2->execute(['id' => $newId, 'idGroup' => $team['ID'], 'idItem' => $res['ID'], 'idUser' => $loginData['ID']]);
-         $attemptsIds[$res['ID']] = $newId;
-      }
-   }
-
 
    // * Generate missing users_items
    // Create missing users_items for the chapter item
@@ -230,9 +209,10 @@ function generateUserItems($team) {
    $stmt->execute(['idGroup' => $team['ID'], 'idItem' => $team['idTeamItem']]);
 
    while($res = $stmt->fetch()) {
+      $curAttemptId = isset($attemptsIds[$res['idItem']]) ? $attemptsIds[$res['idItem']] : null;
       // Pretty inefficient but necessary because of getRandomID()
       $stmt2 = $db->prepare("INSERT IGNORE INTO `users_items` (`ID`, `idUser`, `idItem`, `idAttemptActive`, `sAncestorsComputationState`) VALUES (:ID, :idUser, :idItem, :idAttempt, 'todo');");
-      $stmt2->execute(['ID' => getRandomID(), 'idUser' => $res['idUser'], 'idItem' => $res['idItem'], 'idAttempt' => $attemptsIds[$res['idItem']]]);
+      $stmt2->execute(['ID' => getRandomID(), 'idUser' => $res['idUser'], 'idItem' => $res['idItem'], 'idAttempt' => $curAttemptId]);
    }
 
    Listeners::computeAllUserItems($db);

@@ -1,6 +1,6 @@
 <div>
   <p>Vous pouvez effectuer plusieurs tentatives sur ce sujet. Chaque tentative correspond à des paramètres différents du sujet.</p>
-  <div class="well">
+  <div ng-hide="item.groups_attempts|isEmptyObject" class="well">
     <table class="table">
       <tr>
         <th>Tentative</th>
@@ -12,6 +12,8 @@
         <td>
           N°{{ attempt.iOrder }}
           <b ng-show="attempt.ID == user_item.idAttemptActive">(active)</b>
+          <br>
+          {{ attempt.sStartDate|date:'medium' }}
         </td>
         <td>
           {{ attempt.iScore }}%
@@ -28,5 +30,10 @@
       </tr>
     </table>
   </div>
-  <p><button class="btn btn-default" ng-click="userCreateAttempt();">Démarrer une nouvelle tentative</button></p>
+  <p ng-hide="item.groups_attempts|isEmptyObject">
+    <button class="btn btn-default" ng-click="userCreateAttempt();">Démarrer une nouvelle tentative</button>
+  </p>
+  <p ng-show="item.groups_attempts|isEmptyObject" class="text-center">
+    <button class="btn btn-primary btn-lg" ng-click="userCreateAttempt();">Démarrer votre première tentative</button>
+  </p>
 </div>

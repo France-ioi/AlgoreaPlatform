@@ -302,6 +302,9 @@ angular.module('algorea')
      if(view == 'task' && !$scope.item.sUrl) {
         return true;
      }
+     if(view == 'task' && $scope.item.bHasAttempts && !$scope.user_item.idAttemptActive) {
+        return true;
+     }
      return false;
    };
    $scope.updateModifyTab = function() {
@@ -410,8 +413,9 @@ angular.module('algorea')
    };
 
    $scope.userCreateAttempt = function() {
-      $scope.selectTab('task');
-      $scope.createAttempt();
+      $scope.createAttempt(function () {
+         $scope.selectTab('task');
+         });
    };
 
    $scope.selectAttempt = function(attemptId, loadingState) {
@@ -450,7 +454,7 @@ angular.module('algorea')
       if(targetAttempt) {
          $scope.selectAttempt(targetAttempt.ID);
       } else {
-         $scope.createAttempt();
+         $scope.showView('attempts');
       }
    };
 
@@ -585,5 +589,11 @@ angular.module('algorea')
       var mins = Math.floor((attempt.sBestAnswerDate - attempt.sStartDate) / 60000);
       var secs = Math.floor((attempt.sBestAnswerDate - attempt.sStartDate) / 1000) % 60;
       return (mins ? mins + 'mn ' : '') + secs + 's';
+   };
+})
+
+.filter('isEmptyObject', function() {
+   return function(obj) {
+      return !Object.keys(obj).length;
    };
 });
