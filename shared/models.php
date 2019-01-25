@@ -293,7 +293,7 @@ $tablesModels = array (
           "bPhotoAutoload"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sLangProg"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sLastLoginDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
-          "sLastActivityDate"  => array("type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
+          "sLastActivityDate"  => array("skipHistory" => true, "type" => "date", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "sLastIP"  => array("type" => "string", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "bBasicEditorMode"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),
           "nbSpacesForTab"  => array("type" => "int", "access" => array("write" => array("admin"), "read" => array("admin"))),

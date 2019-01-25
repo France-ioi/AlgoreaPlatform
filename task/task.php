@@ -31,6 +31,22 @@ require_once(dirname(__FILE__)."/../shared/TokenParser.php");
 require_once(__DIR__.'/../commonFramework/modelsManager/modelsTools.inc.php');
 require_once(__DIR__.'/../contest/common.php');
 
+function updateLastActivity() {
+   // Update user's last activity date
+   global $db;
+
+   if($_SESSION['login']['tempUser'] == 1) { return; }
+   $time = time();
+
+   // Update only once every 5 minutes
+   if(isset($_SESSION['lastActivityUpdate']) && $time - $_SESSION['lastActivityUpdate'] < 300) { return; }
+
+   $stmt = $db->prepare("UPDATE `users` SET `sLastActivityDate` = NOW() WHERE `ID` = :id;");
+   $stmt->execute(['id' => $_SESSION['login']['ID']]);
+   $_SESSION['lastActivityUpdate'] = $time;
+}
+
+
 function getTokenParams($request) {
    global $config, $db;
    $tokenParser = new TokenParser($config->platform->public_key, $config->platform->name);
@@ -185,6 +201,7 @@ function checkSubmissionRight($idItem, $idUser=false) {
 
 function askValidation($request, $db) {
    global $config;
+   updateLastActivity();
    $params = getTokenParams($request);
    $canValidate = checkSubmissionRight($params['idItemLocal'], $params['idUser']);
    if (!$canValidate['result']) {
@@ -296,6 +313,7 @@ function askHint($request, $db) {
 
 function graderResult($request, $db) {
    global $config;
+   updateLastActivity();
    $params = getTokenParams($request);
    $canValidate = checkSubmissionRight($params['idItemLocal'], $params['idUser']);
    if (!$canValidate['result']) {
@@ -361,6 +379,7 @@ function graderResult($request, $db) {
 
 function getToken($request, $db) {
    global $config;
+   updateLastActivity();
    $query = 'select `users_items`.`idAttemptActive`, `users_items`.`sHintsRequested`, `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
    'from `items` '.
    'join `groups_items` on `groups_items`.`idItem` = `items`.`ID` '.
@@ -425,6 +444,7 @@ function getUserTeam($idItem, $idUserSelf, $db) {
 
 function startItem($request, $db) {
     // Set the start date on an item
+    updateLastActivity();
     $stmt = $db->prepare('UPDATE users_items SET sStartDate = IFNULL(sStartDate, NOW()) WHERE idUser = :idUser AND idItem = :idItem;');
     $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
 
@@ -437,6 +457,7 @@ function startItem($request, $db) {
 
 function createAttempt($request, $db) {
    // Create an attempt on an item
+   updateLastActivity();
 
    // Check the item has attempts activated
    $stmt = $db->prepare('SELECT bHasAttempts FROM items WHERE ID = :id;');
@@ -463,6 +484,7 @@ function createAttempt($request, $db) {
 function selectAttempt($request, $db) {
    // Select an attempt
    global $config;
+   updateLastActivity();
    $stmt = $db->prepare("UPDATE users_items JOIN groups_attempts ON groups_attempts.ID = :idAttempt SET users_items.idAttemptActive = :idAttempt, users_items.sHintsRequested = groups_attempts.sHintsRequested, users_items.nbHintsCached = groups_attempts.nbHintsCached WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem;");
    $stmt->execute(['idAttempt' => $request['idAttempt'], 'idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
    Listeners::computeAllUserItems($db);
@@ -487,6 +509,7 @@ function selectAttempt($request, $db) {
 
 function keepState($request, $db) {
    // Keep the current state/answer
+   updateLastActivity();
 
    if($request['isCurrent']) {
       $stmt = $db->prepare("SELECT ID FROM users_answers WHERE idUser = :idUser AND idItem = :idItem AND idAttempt = :idAttempt AND sType = 'Current';");
@@ -515,6 +538,7 @@ function keepState($request, $db) {
 
 
 function getHistory($request, $db) {
+   updateLastActivity();
    $stmt = $db->prepare("
       SELECT users_answers.*
       FROM users_answers
@@ -526,6 +550,7 @@ function getHistory($request, $db) {
 
 function getTeamUsers($request, $db) {
    // Get users belonging to a team in common
+   updateLastActivity();
    $stmt = $db->prepare("
       SELECT users.ID, users.sLogin, users.sFirstName, users.sLastName
       FROM users
@@ -542,6 +567,7 @@ function getTeamUsers($request, $db) {
 
 
 function getUsersAnswers($request, $db) {
+   updateLastActivity();
    $thread = null;
    if(isset($request['idThread']) && $request['idThread']) {
       $stmt = $db->prepare("SELECT ID, idItem, idUserCreated FROM threads WHERE ID = :id;");

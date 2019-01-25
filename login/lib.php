@@ -358,7 +358,7 @@ function createUpdateUser($db, $params) {
         $_SESSION['login']['bIsAdmin'] = false;
     } else {
         $stmt = $db->prepare("
-            update `users` set
+            UPDATE `users` SET
                 `sLogin` = :sLogin,
                 `sEmail` = :sEmail,
                 `sFirstName` = :sFirstName,
@@ -376,10 +376,11 @@ function createUpdateUser($db, $params) {
                 `sDefaultLanguage` = :sDefaultLanguage,
                 `sFreeText` = :sFreeText,
                 `sWebSite` = :sWebSite,
+                `sLastActivityDate` = NOW(),
                 `sLastLoginDate` = NOW(),
                 `sLastIP` = :sLastIP,
                 `sSex` = :sSex
-            where ID = :ID;");
+            WHERE ID = :ID;");
         $stmt->execute([
             'ID' => $res['ID'],
             'sLogin' => $params['sLogin'],
