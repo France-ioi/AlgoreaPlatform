@@ -118,7 +118,7 @@
     "teams_new_disallowed": "Le créateur de l'équipe ne permet actuellement pas à de nouveaux membres de rejoindre l'équipe.",
     "teams_new_login_intro": "Si un de vos coéquipiers est devant cet écran, il peut rejoindre l'équipe rapidement en se connectant",
     "teams_new_login_password": "(note : cela activera la possibilité de rejoindre cette équipe par mot de passe)",
-    "teams_new_login_btn": "Déconnexoin pour reconnexion d'un coéquipier",
+    "teams_new_login_btn": "Déconnexion pour reconnexion d'un coéquipier",
     "teams_new_login_desc": "Vous serez déconnecté, votre coéquipier pourra alors se connecter et sera automatiquement ajouté à cette équipe.",
 
     "attempts_intro": "Vous pouvez effectuer plusieurs tentatives sur ce sujet. Chaque tentative correspond à des paramètres différents du sujet.",

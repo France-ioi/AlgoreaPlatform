@@ -1,5 +1,5 @@
 angular.module('algorea')
-   .controller('teamsController', ['$scope', '$rootScope', '$http', '$i18next', 'loginService', 'itemService', 'contestTimerService', function ($scope, $rootScope, $http, $i18next, loginService, itemService, contestTimerService) {
+   .controller('teamsController', ['$scope', '$rootScope', '$http', '$timeout', '$i18next', 'loginService', 'itemService', 'contestTimerService', function ($scope, $rootScope, $http, $timeout, $i18next, loginService, itemService, contestTimerService) {
       $scope.window = window;
 
       $scope.newTeamName = '';
@@ -74,7 +74,8 @@ angular.module('algorea')
       };
 
       $scope.startItem = function() {
-         $scope.apiRequest('startItem', {}, true, function(res) {
+         var nbChildren = $scope.item.children.length;
+         $scope.apiRequest('startItem', {}, false, function(res) {
             if(res.startTime) {
                config.contestData = {endTime: res.endTime, startTime: res.startTime, duration: res.duration, idItem: $scope.item.ID};
                contestTimerService.startContest($scope.item.ID, res.duration);
@@ -82,9 +83,19 @@ angular.module('algorea')
                SyncQueue.sentVersion = 0;
                SyncQueue.serverVersion = 0;
                SyncQueue.resetSync = true;
-               SyncQueue.planToSend(0);
             }
+            SyncQueue.planToSend(0);
+            $scope.syncUntilChildren(nbChildren, 30);
          });
+      };
+
+      $scope.syncUntilChildren = function(nbChildren, attempts) {
+         if(attempts < 0) { return; }
+         $timeout(function() {
+            if($scope.item.children.length > nbChildren) { return; }
+            SyncQueue.planToSend(0);
+            $scope.syncUntilChildren(nbChildren, attempts-1);
+            }, 1000);
       };
 
       $scope.changeTeamPassword = function(callback) {
