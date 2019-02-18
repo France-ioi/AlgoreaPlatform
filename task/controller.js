@@ -435,6 +435,7 @@ angular.module('algorea')
          $scope.user_item.sAnswer = '';
       }
       $scope.user_item.idAttemptActive = attemptId;
+      $scope.showTask = true;
       ModelsManager.updated('users_items', $scope.user_item.ID, 'noSync');
       $scope.apiRequest('selectAttempt', {idAttempt: attemptId}, function(res) {
          $scope.getHistory();
