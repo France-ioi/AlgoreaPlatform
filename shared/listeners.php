@@ -44,19 +44,6 @@ class Listeners {
               * nbChildrenValidated as the sum of children with bValidated == 1
               * bValidated, depending on the items_items.sCategory and items.sValidationType
          */
-         $updateAttemptsQuery = "
-            UPDATE users_items
-            left join
-            (select attempt_user.ID as idUser, attempts.idItem as idItem, MAX(attempts.iScore) as iScore, MAX(attempts.bValidated) as bValidated
-               from users AS attempt_user
-               join groups_attempts AS attempts
-               join groups_groups AS attempt_group ON attempts.idGroup = attempt_group.idGroupParent AND attempt_user.idGroupSelf = attempt_group.idGroupChild
-               GROUP BY attempt_user.ID, attempts.idItem
-            ) AS attempts_data ON attempts_data.idUser = users_items.idUser AND attempts_data.idItem = users_items.idItem
-            SET users_items.iScore = GREATEST(users_items.iScore, IFNULL(attempts_data.iScore, 0)),
-                users_items.bValidated = GREATEST(users_items.bValidated, IFNULL(attempts_data.bValidated, 0))
-            WHERE users_items.sAncestorsComputationState = 'processing';";
-         $db->exec($updateAttemptsQuery);
          $updateActiveAttemptQuery = "
             UPDATE users_items
             JOIN groups_attempts ON groups_attempts.ID = users_items.idAttemptActive
@@ -153,6 +140,9 @@ class Listeners {
       // opposite)
       $db->exec("LOCK TABLES
          users_items WRITE,
+         users AS attempt_user READ,
+         groups_attempts AS attempts WRITE,
+         groups_groups AS attempt_group WRITE,
          groups_attempts WRITE,
          groups_groups WRITE,
          users WRITE
@@ -165,6 +155,21 @@ class Listeners {
          SET users_items.sAncestorsComputationState = 'todo'
          WHERE groups_attempts.sAncestorsComputationState = 'todo';";
       $db->exec($queryPropagate);
+
+      $updateAttemptsQuery = "
+         UPDATE users_items
+         JOIN
+         (select attempt_user.ID as idUser, attempts.idItem as idItem, MAX(attempts.iScore) as iScore, MAX(attempts.bValidated) as bValidated
+            from users AS attempt_user
+            join groups_attempts AS attempts
+            join groups_groups AS attempt_group ON attempts.idGroup = attempt_group.idGroupParent AND attempt_user.idGroupSelf = attempt_group.idGroupChild
+            WHERE attempts.sAncestorsComputationState = 'todo'
+            GROUP BY attempt_user.ID, attempts.idItem
+         ) AS attempts_data ON attempts_data.idUser = users_items.idUser AND attempts_data.idItem = users_items.idItem
+         SET users_items.iScore = GREATEST(users_items.iScore, IFNULL(attempts_data.iScore, 0)),
+             users_items.bValidated = GREATEST(users_items.bValidated, IFNULL(attempts_data.bValidated, 0));";
+      $db->exec($updateAttemptsQuery);
+
       $queryEndPropagate = "
          UPDATE groups_attempts
          SET sAncestorsComputationState = 'done'
