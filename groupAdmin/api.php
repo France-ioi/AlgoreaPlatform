@@ -215,7 +215,22 @@ function createMultipleGroups($sNames, $idParent) {
     }
     Listeners::groupsGroupsAfter($db);
     echo json_encode(array('success' => true, 'idGroups' => $idGroups));
- }
+}
+
+function getUsersItems($idGroup, $idItem) {
+    global $db;
+    // Get all users items from children of idGroup who are also children of
+    // the admin's groupOwned
+    $stmt = $db->prepare("
+        SELECT users_items.* FROM users_items
+        JOIN users ON users_items.idUser = users.ID
+        JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild AND groups_ancestors.idGroupAncestor = :idGroup
+        JOIN groups_ancestors AS admin_child ON users.idGroupSelf = admin_child.idGroupChild AND admin_child.idGroupAncestor = :idGroupOwned
+        JOIN items_ancestors ON items_ancestors.idItemChild = users_items.idItem AND items_ancestors.idItemAncestor = :idItem
+        ");
+    $stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $_SESSION['login']['idGroupOwned'], 'idItem' => $idItem]);
+    echo json_encode(['success' => true, 'users_items' => $stmt->fetchAll()]);
+}
 
 
 
@@ -234,7 +249,9 @@ if ($request['action'] == 'refreshCode') {
 } elseif ($request['action'] == 'createGroup') {
    createGroup($idGroup, $request['sName']);
 } elseif ($request['action'] == 'createMultipleGroups') {
-    createMultipleGroups($request['sNames'], $request['idParent']);
+   createMultipleGroups($request['sNames'], $request['idParent']);
+} elseif ($request['action'] == 'getUsersItems') {
+   getUsersItems($request['idGroup'], $request['idItem']);
 } else {
    echo json_encode(array('success' => false, 'error' => 'unknown action: '.$request['action']));
    exit();

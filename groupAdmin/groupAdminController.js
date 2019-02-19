@@ -305,31 +305,29 @@ angular.module('algorea')
    $scope.updateEvents = function() {
       $scope.events = [];
       $scope.oldestEventDate = new Date("2012-01-15");
-      var usersItems = ModelsManager.curData.users_items;
+      var usersItems = $scope.allUserItems;
+      function getJSDate(sDate) {
+         return sDate ? ModelsManager.getJSDateTimeFromSQLDateTime(sDate) : null;
+      }
       angular.forEach(usersItems, function(userItem) {
          if (!$scope.usersSelected[userItem.idUser] || !$scope.itemsListRev[userItem.idItem]) {
             return;
          }
-         if (userItem.sValidationDate > $scope.oldestEventDate) {
+         if (getJSDate(userItem.sValidationDate) > $scope.oldestEventDate) {
             insertEvent(userItem, 'validation', userItem.sValidationDate);
          }
-         if (userItem.sLastAnswerDate > $scope.oldestEventDate && userItem.sLastAnswerDate != userItem.sValidationDate) {
+         if (getJSDate(userItem.sLastAnswerDate) > $scope.oldestEventDate && getJSDate(userItem.sLastAnswerDate) != userItem.sValidationDate) {
             insertEvent(userItem, 'answer', userItem.sLastAnswerDate);
          }
          if (userItem.item.sType == 'task' && userItem.sLastHintDate > $scope.oldestEventDate) {
             insertEvent(userItem, 'hint', userItem.sLastHintDate);
          }
-         if (userItem.sThreadStartDate > $scope.oldestEventDate) {
+         if (getJSDate(userItem.sThreadStartDate) > $scope.oldestEventDate) {
             insertEvent(userItem, 'newThread', userItem.sThreadStartDate);
          }
       });
       _.reverse($scope.events);
    };
-
-   var needToUpdateAtEndOfSync = false;
-   ModelsManager.addListener('users_items', 'deleted', 'groupAdminDeleted', function() {needToUpdateAtEndOfSync = true;});
-   ModelsManager.addListener('users_items', 'inserted', 'groupAdminInserted', function() {needToUpdateAtEndOfSync = true;});
-   ModelsManager.addListener('users_items', 'updated', 'groupAdminUpdated', function() {needToUpdateAtEndOfSync = true;});
 
    $scope.invitationError = null;
    $scope.newInvitationOpened = false;
@@ -632,6 +630,7 @@ angular.module('algorea')
       });
    };
 
+   $scope.userItemsByRef = {};
    $scope.startSync = function(groupId, itemId, callback) {
       SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minVersion: 0};
       // yeah...
@@ -639,10 +638,36 @@ angular.module('algorea')
          $scope.loading = false;
          SyncQueue.removeSyncEndListeners('groupAdminController');
          delete(SyncQueue.requestSets.groupAdmin.minVersion);
-         callback();
-         $rootScope.$broadcast('algorea.groupSynced');
+/*         callback();
+         $rootScope.$broadcast('algorea.groupSynced');*/
       }, true);
       SyncQueue.planToSend(0);
+      if(!itemId) {
+         callback();
+         return;
+      }
+      $http.post('/groupAdmin/api.php', {action: 'getUsersItems', idGroup: groupId, idItem: itemId}, {responseType: 'json'}).success(function(postRes) {
+         if (!postRes || !postRes.success) {
+            console.error("got error from admin groupAdmin/api.php: "+postRes.error);
+            return;
+         }
+         $scope.allUserItems = postRes.users_items;
+         angular.forEach($scope.allUserItems, function(userItem) {
+            userItem.user = ModelsManager.curData.users[userItem.idUser];
+            userItem.item = itemService.getItem(userItem.idItem);
+            if(!$scope.userItemsByRef[userItem.idUser]) {
+                $scope.userItemsByRef[userItem.idUser] = {};
+            }
+            $scope.userItemsByRef[userItem.idUser][userItem.idItem] = userItem;
+         });
+         $scope.loading = false;
+         $rootScope.$broadcast('algorea.groupSynced');
+         callback();
+      })
+      .error(function() {
+         console.error("error calling groupAdmin/api.php");
+      });
+      
    };
 
    $scope.initGroup = function() {
@@ -699,7 +724,8 @@ angular.module('algorea')
          return;
       }
       var userId = group.userSelf.ID;
-      var userItem = itemService.getUserItem(item, userId);
+      //var userItem = itemService.getUserItem(item, userId);
+      var userItem = $scope.userItemsByRef[userId][item.ID];
       return userItem;
    }
 
@@ -846,10 +872,6 @@ angular.module('algorea')
          $scope.initItems();
          $scope.initGroup();
          SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
-            if (needToUpdateAtEndOfSync) {
-               $scope.updateEvents();
-               needToUpdateAtEndOfSync = false;
-            }
             if (needToUpdateGroupsGroupsAtEndOfSync) {
                $scope.updateGroupsGroups();
                needToUpdateGroupsGroupsAtEndOfSync = false;
@@ -893,15 +915,12 @@ angular.module('algorea')
       delete(SyncQueue.requestSets.groupAdmin);
       SyncQueue.removeSyncEndListeners('groupAdminController');
       SyncQueue.removeSyncEndListeners('groupAdminUsersItems');
-      ModelsManager.removeListener('users_items', 'deleted', 'groupAdminDeleted');
-      ModelsManager.removeListener('users_items', 'inserted', 'groupAdminInserted');
-      ModelsManager.removeListener('users_items', 'updated', 'groupAdminUpdated');
       ModelsManager.removeListener('groups_groups', 'deleted', 'groupAdminGpsGpsDeleted');
       ModelsManager.removeListener('groups_groups', 'inserted', 'groupAdminGpsGpsInserted');
       ModelsManager.removeListener('groups_groups', 'updated', 'groupAdminGpsGpsUpdated');
    };
 
-   $scope.allUserItems = ModelsManager.curData.users_items;
+   $scope.allUserItems = {};
 
    // not used, maybe later
    $scope.newGroup = function (callback) {
@@ -998,10 +1017,6 @@ angular.module('algorea')
          $scope.initItems();
          $scope.initGroup();
          SyncQueue.addSyncEndListeners('groupAdminUsersItems', function() {
-            if (needToUpdateAtEndOfSync) {
-               $scope.updateEvents();
-               needToUpdateAtEndOfSync = false;
-            }
             if (needToUpdateGroupsGroupsAtEndOfSync) {
                $scope.updateGroupsGroups();
                needToUpdateGroupsGroupsAtEndOfSync = false;
