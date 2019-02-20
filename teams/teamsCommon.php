@@ -188,16 +188,6 @@ function generateUserItems($team) {
        WHERE groups_groups.idGroupParent = :idGroup);");
    $stmt->execute(['idGroup' => $team['ID'], 'idItem' => $team['idTeamItem']]);
 
-   // Set all users_items to be computed for this team
-   $stmt = $db->prepare("
-      UPDATE users_items
-      JOIN users ON users_items.idUser = users.ID
-      JOIN groups_groups ON groups_groups.idGroupChild = users.idGroupSelf
-      JOIN items_ancestors ON users_items.idItem = items_ancestors.idItemChild
-      SET sAncestorsComputationState = 'todo'
-      WHERE groups_groups.idGroupParent = :idGroup AND items_ancestors.idItemAncestor = :idItem;");
-   $stmt->execute(['idGroup' => $team['ID'], 'idItem' => $team['idTeamItem']]);
-
    // Create missing user_items
    $stmt = $db->prepare("
       SELECT users.ID as idUser, items_ancestors.idItemChild as idItem
@@ -215,6 +205,16 @@ function generateUserItems($team) {
       $stmt2->execute(['ID' => getRandomID(), 'idUser' => $res['idUser'], 'idItem' => $res['idItem'], 'idAttempt' => $curAttemptId]);
    }
 
+   // Set all attempts to be propagated for this team
+   $stmt = $db->prepare("
+      UPDATE groups_attempts
+      SET sAncestorsComputationState = 'todo'
+      WHERE groups_attempts.idGroup = :idGroup;");
+   $stmt->execute(['idGroup' => $team['ID']]);
+
+   $stmt = null;
+   $stmt2 = null;
+   Listeners::propagateAttempts($db);
    Listeners::computeAllUserItems($db);
 }
 
