@@ -861,12 +861,6 @@ angular.module('algorea')
 
       // Force angular to regenerate the grid; no good way to make it better
       $scope.itemsList = [];
-      $timeout(function() {
-         $scope.itemsList = [item];
-         $scope.itemsListRev = {};
-         $scope.itemsListRev[item.ID] = true;
-         fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
-      }, 0);
 
       $scope.startSync($scope.groupId, item.ID, function() {
          $scope.initItems();
@@ -878,6 +872,10 @@ angular.module('algorea')
             }
          });
          $scope.updateEvents();
+         $scope.itemsList = [item];
+         $scope.itemsListRev = {};
+         $scope.itemsListRev[item.ID] = true;
+         fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
       });
    }
 
