@@ -352,6 +352,22 @@ class Listeners {
        "      `groups_items`.`sCachedAccessReason` = `new_data`.`sAccessReasonAncestors` ".
        "  WHERE `groups_items_propagate`.`sPropagateAccess` = 'self';";
 
+      $cachedFields = array(
+         "bCachedFullAccess" => "sCachedFullAccessDate",
+         "bCachedPartialAccess" => "sCachedPartialAccessDate",
+         "bCachedAccessSolutions" => "sCachedAccessSolutionsDate",
+         "bCachedGrayedAccess" => "sCachedGrayedAccessDate");
+
+      $queryUpdateCached = '';
+      foreach ($cachedFields as $bAccessField => $sAccessDateField) {
+          $queryUpdateCached .= "UPDATE `groups_items` ".
+            "JOIN `groups_items_propagate` ON (`groups_items_propagate`.`ID` = `groups_items`.`ID`) ".
+            "SET `".$bAccessField."` = false ".
+            "WHERE `".$bAccessField."` = true ".
+            "AND `groups_items_propagate`.`sPropagateAccess` = 'self' ".
+            "AND (`".$sAccessDateField."` IS NULL OR `".$sAccessDateField."` > NOW());";
+      }
+
       // marking 'self' groups_items as 'children'
       $queryMarkChildrenItems = "UPDATE `groups_items_propagate`".
                 "SET `sPropagateAccess` = 'children' ".
@@ -367,6 +383,7 @@ class Listeners {
          $res = $db->exec($queryMarkExistingChildren);
          $res = $db->exec($queryMarkFinishedItems);
          $res = $db->exec($queryUpdateGroupItems);
+         $res = $db->exec($queryUpdateCached);
          $hasChanges = $db->exec($queryMarkChildrenItems);
          $db->exec($queryUnlockTables);
       }
@@ -396,18 +413,13 @@ class Listeners {
          "bCachedGrayedAccess" => "sCachedGrayedAccessDate");
 
       foreach ($listFields as $bAccessField => $sAccessDateField) {
+         // Only update items which are getting access ; we only lose access
+         // when a groups_items is edited, that case is handled above
          $query = "UPDATE `groups_items` ".
          "SET `".$bAccessField."` = true ".
          "WHERE `".$bAccessField."` = false ".
-         "AND `".$sAccessDateField."` IS NOT NULL AND `".$sAccessDateField."` <= NOW();";
+         "AND `".$sAccessDateField."` <= NOW();";
          $db->exec($query);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $query."\n", FILE_APPEND);
-         $query = "UPDATE `groups_items` ".
-         "SET `".$bAccessField."` = false ".
-         "WHERE `".$bAccessField."` = true ".
-         "AND (`".$sAccessDateField."` IS NULL OR `".$sAccessDateField."` > NOW());";
-         $db->exec($query);
-         //file_put_contents(__DIR__.'/../logs/groups_item_listeners.log', $query."\n", FILE_APPEND);
       }
    }
 
