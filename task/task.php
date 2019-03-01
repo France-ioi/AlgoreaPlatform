@@ -338,10 +338,19 @@ function graderResult($request, $db) {
    // Build query to update users_items
    // The iScore is set towards the end, so that the IF condition on
    // sBestAnswerDate is computed before iScore is updated
-   $baseQuery = "SET nbTasksTried = 1, sLastActivityDate = NOW(), sBestAnswerDate = IF(:iScore > `iScore`, NOW(), `sBestAnswerDate`), sLastAnswerDate = NOW(), iScore = GREATEST(:iScore, `iScore`)";
+   $baseQueryArgs = [
+        'nbTasksTried' => 1,
+        'sLastActivityDate' => 'NOW()',
+        'sBestAnswerDate' => 'IF(:iScore > `iScore`, NOW(), `sBestAnswerDate`)',
+        'sLastAnswerDate' => 'NOW()',
+        'iScore' => 'GREATEST(:iScore, `iScore`)'
+        ];
    if ($bValidated) {
       // Item was validated
-      $baseQuery .= ", sAncestorsComputationState = 'todo', bValidated = 1, bKeyObtained = 1, sValidationDate = IFNULL(sValidationDate,NOW())";
+      $baseQueryArgs['sAncestorsComputationState'] = "'todo'";
+      $baseQueryArgs['bValidated'] = 1;
+      $baseQueryArgs['bKeyObtained'] = 1;
+      $baseQueryArgs['sValidationDate'] = 'IFNULL(sValidationDate, NOW())';
       $bKeyObtained = true;
    } else {
       // Item wasn't validated, check if we unlocked something
@@ -351,9 +360,19 @@ function graderResult($request, $db) {
       if($item['idItemUnlocked'] && $score >= intval($item['iScoreMinUnlock'])) {
          $bKeyObtained = true;
          // Update sAncestorsComputationState only if we hadn't obtained the key before
-         $baseQuery .= ", sAncestorsComputationState = IF(bKeyObtained = 0, 'todo', sAncestorsComputationState), bKeyObtained = 1";
+         $baseQueryArgs['sAncestorsComputationState'] = "IF(bKeyObtained = 0, 'todo', sAncestorsComputationState)";
+         $baseQueryArgs['bKeyObtained'] = 1;
       }
    }
+   if($score > 0 && $params['idAttempt']) {
+      // Always propagate attempts if the score was non-zero
+      $baseQueryArgs['sAncestorsComputationState'] = "'todo'";
+   }
+   $baseQuerySets = [];
+   foreach($baseQueryArgs as $tableKey => $tableVal) {
+      $baseQuerySets[] = $tableKey . ' = ' . $tableVal;
+   }
+   $baseQuery = 'SET ' . implode(', ', $baseQuerySets);
    $userItemQuery = "UPDATE `users_items` " . $baseQuery . " WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($userItemQuery);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
