@@ -875,8 +875,8 @@ angular.module('algorea')
          $scope.itemsList = [item];
          $scope.itemsListRev = {};
          $scope.itemsListRev[item.ID] = true;
-         $scope.updateEvents();
          fillItemsListWithSonsRec($scope.itemsList, $scope.itemsListRev, $scope.rootItem);
+         $scope.updateEvents();
       });
    }
 
