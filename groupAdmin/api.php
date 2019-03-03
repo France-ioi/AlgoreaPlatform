@@ -226,7 +226,8 @@ function getUsersItems($idGroup, $idItem) {
         JOIN users ON users_items.idUser = users.ID
         JOIN groups_ancestors ON users.idGroupSelf = groups_ancestors.idGroupChild AND groups_ancestors.idGroupAncestor = :idGroup
         JOIN groups_ancestors AS admin_child ON users.idGroupSelf = admin_child.idGroupChild AND admin_child.idGroupAncestor = :idGroupOwned
-        JOIN items_ancestors ON items_ancestors.idItemChild = users_items.idItem AND items_ancestors.idItemAncestor = :idItem
+        LEFT JOIN items_ancestors ON items_ancestors.idItemChild = users_items.idItem AND items_ancestors.idItemAncestor = :idItem
+        WHERE items_ancestors.ID IS NOT NULL OR users_items.idItem = :idItem;
         ");
     $stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $_SESSION['login']['idGroupOwned'], 'idItem' => $idItem]);
     echo json_encode(['success' => true, 'users_items' => $stmt->fetchAll()]);
