@@ -36,7 +36,7 @@ angular.module('algorea')
       itemService = $injector.get('itemService');
     }
     if($injector.has('pathService')) {
-      itemService = $injector.get('pathService');
+      pathService = $injector.get('pathService');
     }
 
    function loadTask(scope, elem, sameUrl) {
@@ -91,10 +91,10 @@ angular.module('algorea')
          scope.selectTab(view);
          if (success) { success(); }
       };
-      scope.platform.openUrl = function(sTextId, success, error) {
+      scope.platform.openUrl = function(itemPath, success, error) {
          if (itemService && pathService) {
-            var itemId = itemService.getItemIdByTextId(sTextId);
-            pathService.openItemFromLink(itemId, scope.pathParams, scope.panel);
+            // Temporarily restricted to a specific use case : open an item path
+            pathService.openItemFromLink(itemPath);
             if (success) {success();}
          } else {
             if (error) {

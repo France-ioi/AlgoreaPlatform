@@ -317,20 +317,14 @@ angular.module('algorea')
               viewr: 'editor',
            });
         },
-        openItemFromLink: function(itemId, pathParams, pane) {
-           if (itemService.isSonOf(itemId, pathParams.currentItemID)) {
-              $state.go('contents', {
-                 path:   pathParams.basePathStr+'/'+itemId,
-                 sell:   pane == 'right' ? pathParams.selr : pathParams.sell,
-                 selr:   pane == 'right' ? parseInt(pathParams.selr)+1 : parseInt(pathParams.sell)+1,
+        openItemFromLink: function(itemPath) {
+           // Currently only used by platform.openUrl
+           var selr = itemPath.split('/').length;
+           $state.go('contents', {
+              path: itemPath,
+              sell: Math.max(selr-1, 0),
+              selr: selr
               });
-           } else {
-              $state.go('contents', {
-                 path:   itemId,
-                 sell:   -1,
-                 selr:   1,
-              });
-           }
         }
       };
    }]);
