@@ -631,6 +631,7 @@ angular.module('algorea')
    };
 
    $scope.userItemsByRef = {};
+   $scope.itemsListRev = {};
    $scope.startSync = function(groupId, itemId, callback) {
       SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minVersion: 0};
       // yeah...
@@ -725,7 +726,7 @@ angular.module('algorea')
       }
       var userId = group.userSelf.ID;
       //var userItem = itemService.getUserItem(item, userId);
-      var userItem = $scope.userItemsByRef[userId][item.ID];
+      var userItem = $scope.userItemsByRef[userId] ? $scope.userItemsByRef[userId][item.ID] : null;
       return userItem;
    }
 
