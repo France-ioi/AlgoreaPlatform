@@ -279,7 +279,11 @@ angular.module('algorea')
             $scope.askedView = 'attempts';
             $scope.attemptAutoSelected = false;
          } else if($scope.editable() && !$scope.item.sUrl) {
-            $scope.setEditMode('edit');
+            if(!$scope.isEditMode('edit')) {
+               $scope.setEditMode('edit');
+               $scope.setTabs(taskViews, platformOnly);
+               return;
+            }
             $scope.askedView = 'modify';
          } else {
             $scope.askedView = 'task';

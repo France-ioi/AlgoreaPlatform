@@ -379,8 +379,10 @@ angular.module('algorea')
                   scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
                   scope.itemUrl = null;
                }
+               $timeout(function() { initIframe(sameUrl); });
+            } else {
+               loadTask(scope, null, false);
             }
-            $timeout(function() { initIframe(sameUrl); });
          }
          function initIframe(sameUrl) {
             scope.taskIframe = elem.find('iframe');

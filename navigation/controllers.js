@@ -20,7 +20,8 @@ angular.module('algorea')
       $scope.editState = {mode: 'view'};
 
       $scope.setEditMode = function(mode) {
-         this.editState.mode = this.editable() ? mode : false;
+         if(this.editState.mode == mode) { return; }
+         this.editState.mode = this.editable() ? mode : 'view';
          $rootScope.$broadcast('algorea.reloadTabs');
       }
 
