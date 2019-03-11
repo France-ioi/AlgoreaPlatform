@@ -49,6 +49,18 @@ this will make a boilerplate for a platform. You can use this script again if yo
 
 To add users as administrators on this platform, they must first log into the platform (to have their user created within the platform), then check the `shared/addAdmin.php` script to add them as users. You'll need to modify the configuration at the beginning of the file.
 
+## Configuration
+
+To generate a public and private key pair, use :
+
+```
+openssl genpkey -algorithm RSA -out private_key.pem
+openssl rsa -pubout -in private_key.pem -out public_key.pem
+```
+
+Then set `$config->platform->private_key` to the contents of `private_key.pem`,
+and `$config->platform->public_key` to the contents of `public_key.pem`.
+
 ## Webserver configuration
 
 Example webserver configurations.
