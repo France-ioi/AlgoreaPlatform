@@ -51,15 +51,32 @@ To add users as administrators on this platform, they must first log into the pl
 
 ## Configuration
 
-To generate a public and private key pair, use :
+### Authentication keys
+
+The platform needs a key pair to sign its tokens.
+
+To generate a private key, use :
+
 
 ```
 openssl genpkey -algorithm RSA -out private_key.pem
+```
+
+On Mac and some older versions of OpenSSL, you might need to use instead :
+
+```
+openssl genrsa -out private_key.pem
+```
+
+Then extract the public key :
+
+```
 openssl rsa -pubout -in private_key.pem -out public_key.pem
 ```
 
-Then set `$config->platform->private_key` to the contents of `private_key.pem`,
-and `$config->platform->public_key` to the contents of `public_key.pem`.
+Finally, set `$config->platform->private_key` to the contents of
+`private_key.pem`, and `$config->platform->public_key` to the contents of
+`public_key.pem`.
 
 ## Webserver configuration
 
