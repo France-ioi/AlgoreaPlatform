@@ -192,7 +192,7 @@ angular.module('algorea')
             if(itemService.getClipboard().ID == item.ID) {
                 itemService.setClipboard(null);
             }
-            ModelsManager.deleteRecord('items', item_item.idItemChild);
+            ModelsManager.deleteRecord('items', item.ID);
         }
 
 
