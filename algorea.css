@@ -525,3 +525,8 @@ footer a {
 .content-wrapper {
   padding: 20px;
 }
+
+.best-attempt {
+  font-weight: bold;
+  color: green;
+}

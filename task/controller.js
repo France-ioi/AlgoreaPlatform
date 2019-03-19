@@ -597,6 +597,39 @@ angular.module('algorea')
    };
 })
 
+.filter('bestAttemptTime', function() {
+   return function(attempts) {
+      var bestTime = Infinity;
+      angular.forEach(attempts, function(attempt) {
+         if(attempt.iScore > 0 && attempt.sStartDate && attempt.sBestAnswerDate) {
+            var curTime = attempt.sBestAnswerDate - attempt.sStartDate;
+            if(curTime < bestTime) { bestTime = curTime; }
+         }
+      });
+      if(bestTime === Infinity) { return ''; }
+      var mins = Math.floor(bestTime / 60000);
+      var secs = Math.floor(bestTime / 1000) % 60;
+      return (mins ? mins + 'mn ' : '') + secs + 's';
+   };
+})
+
+.filter('isBestAttempt', function() {
+   return function(attempt, attempts) {
+      if(attempt.iScore == 0 || !attempt.sStartDate || !attempt.sBestAnswerDate) { return false; }
+      var attemptTime = attempt.sBestAnswerDate - attempt.sStartDate;
+      var isBest = true;
+      angular.forEach(attempts, function(curAttempt) {
+         isBest = isBest && !(
+            curAttempt.iScore > attempt.iScore
+               || (curAttempt.iScore == attempt.iScore
+                && curAttempt.sStartDate
+                && curAttempt.sBestAnswerDate
+                && (curAttempt.sBestAnswerDate - curAttempt.sStartDate) < attemptTime));
+      });
+      return isBest;
+   };
+})
+
 .filter('isEmptyObject', function() {
    return function(obj) {
       return !Object.keys(obj).length;

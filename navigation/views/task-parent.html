@@ -4,7 +4,10 @@
   <span ng-if="!item.bReadOnly && item.bGrayedAccess && !item.sDuration" class="material-icons">lock</span>
   <span ng-if="!item.bReadOnly && item.sDuration" class="material-icons">alarm</span>
   <span ng-if="item.bReadOnly" class="material-icons">visibility</span>
-  <span ng-if="iScore > 0">&nbsp;{{ iScore }}%</div>
+  <span ng-if="iScore > 0">
+    &nbsp;{{ iScore }}%
+    <span ng-if="item.bHasAttempts && iScore > 0"><span ng-i18next="attempts_in"></span> {{ item.groups_attempts|bestAttemptTime }}</span>
+  </span>
 </div>
 <span class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
 <span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>

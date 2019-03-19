@@ -16,8 +16,10 @@
           {{ attempt.sStartDate|date:'medium' }}
         </td>
         <td>
-          {{ attempt.iScore }}%
-          <span ng-if="attempt.iScore > 0 && attempt.sBestAnswerDate"><span ng-i18next="attempts_in"></span> {{ attempt|attemptTime }}</span>
+          <span ng-class="{'best-attempt': (attempt|isBestAttempt:item.groups_attempts)}">
+            {{ attempt.iScore }}%
+            <span ng-if="attempt.iScore > 0 && attempt.sBestAnswerDate"><span ng-i18next="attempts_in"></span> {{ attempt|attemptTime }}</span>
+          </span>
         </td>
         <td>
           {{ teamUsers[attempt.idUserCreator].sLogin }}
