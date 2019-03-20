@@ -186,6 +186,7 @@ angular.module('algorea')
          return;
       }
       if (platformView != $scope.currentView) {
+         if($scope.isDisabled(platformView)) { return; }
          if((platformView == 'modify' || platformView == 'settings' || platformView == 'strings') && !$scope.editable()) {
             // Avoid displaying the view if the user doesn't have the rights
             return;
@@ -256,8 +257,9 @@ angular.module('algorea')
       var scopeViews = [];
       var scopeViewsIndex = [];
       $scope.askedView = $scope.currentView;
+      if($scope.isDisabled($scope.askedView)) { $scope.askedView = null; }
       angular.forEach(platformViews, function(platformView, platformViewName) {
-         if (!$scope.currentView && $scope.isActive(platformViewName)) {
+         if (!$scope.currentView && $scope.isActive(platformViewName) && !$scope.isDisabled(platformViewName)) {
             $scope.askedView = platformViewName;
          }
          scopeViewsIndex[platformViewName] = scopeViews.push({
@@ -272,7 +274,7 @@ angular.module('algorea')
       $scope.views = scopeViews;
       $scope.viewsIndex = scopeViewsIndex;
 
-      if (!$scope.askedView || !$scope.viewsIndex[$scope.askedView]) {
+      if (!$scope.askedView || !$scope.viewsIndex[$scope.askedView] || $scope.isDisabled($scope.askedView)) {
          // Set default view
          if($scope.attemptAutoSelected || ($scope.item.bHasAttempts && $scope.user_item && !$scope.user_item.idAttemptActive)) {
             // Show attempts view if it's our first time on this task
@@ -347,7 +349,7 @@ angular.module('algorea')
       $scope.showEditor = true;
    };
    $scope.selectTab = function(tabname, fromURL) {
-      if (!tabname) {
+      if (!tabname || $scope.isDisabled(tabname)) {
          return;
       }
 //      if (tabname == $scope.resolutionViewName && !this.pathParams.itemsOnBothSides) {
