@@ -172,6 +172,7 @@
     "admin_select_item_group_access": "Sélectionnez d'abord l'item et le groupe pour lesquels vous souhaitez configurer les accès.",
     "admin_export_all": "Exporter un zip avec toutes les soumissions",
     "admin_export_root": "Exporter le tableau des scores",
+    "admin_reload_data": "Rafraîchir les données",
     "admin_warning": "Attention :",
     "admin_warning_readonly": "Vous n'avez accès à cet item qu'en lecture",
     "admin_select_exercise": "Vous devez sélectionner un exercice ou un cours pour pouvoir l'afficher.",

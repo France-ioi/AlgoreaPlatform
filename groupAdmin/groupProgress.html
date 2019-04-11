@@ -37,16 +37,36 @@
         </select>
     </div>
     <p class="dl-link">
-        <button class="btn btn-primary" ng-i18next="admin_export_all" ng-click="exportData(dropdownSelections[dropdownSelections.length-1].ID, group.ID, 'all')" ng-disabled="export.all.btn_disabled"></button>
+        <button class="btn btn-primary" ng-click="exportData(dropdownSelections[dropdownSelections.length-1].ID, group.ID, 'all')" ng-disabled="export.all.btn_disabled">
+            <span class="material-icons">archive</span>
+            <span ng-i18next="admin_export_all"></span>
+        </button>
         <span ng-if="export.all.zip_message">{{ export.all.message }}</span>
-        <span ng-if="export.all.url"><button class="btn btn-success" ng-click="downloadData('all')" ng-i18next="download"></button></span>
+        <span ng-if="export.all.url"><button class="btn btn-success" ng-click="downloadData('all')">
+            <span class="material-icons">get_app</span>
+            <span ng-i18next="download"></span>
+        </button></span>
     </p>
     <p class="dl-link">
-        <button class="btn btn-primary" ng-i18next="admin_export_root" ng-click="exportData(dropdownSelections[dropdownSelections.length-1].ID, group.ID, 'root')" ng-disabled="export.root.btn_disabled"></button>
+        <button class="btn btn-primary" ng-click="exportData(dropdownSelections[dropdownSelections.length-1].ID, group.ID, 'root')" ng-disabled="export.root.btn_disabled">
+            <span class="material-icons">table_chart</span>
+            <span ng-i18next="admin_export_root"></span>
+        </button>
         <span ng-if="export.root.message">{{ export.root.message }}</span>
-        <span ng-if="export.root.url"><button class="btn btn-success" ng-click="downloadData('root')" ng-i18next="download"></button></span>
+        <span ng-if="export.root.url"><button class="btn btn-success" ng-click="downloadData('root')">
+            <span class="material-icons">get_app</span>
+            <span ng-i18next="download"></span>
+        </button></span>
     </p>
 
+    <hr>
+
+    <p class="dl-link">
+        <button class="btn btn-primary" ng-click="resync();" ng-disabled="syncing">
+            <span class="material-icons">refresh</span>
+            <span ng-i18next="admin_reload_data"></span>
+        </button>
+    </p>
 
     <div ng-if="formValues.progressionType != 'collective'" class="flex-container view-chrono">
         <div>

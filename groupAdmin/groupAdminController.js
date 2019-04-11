@@ -241,7 +241,7 @@ angular.module('algorea')
    }
 
    $scope.getDuration = function(user_item) {
-      if (!user_item || !user_item.sStartDate || user_item.sStartDate.getYear() < 100) {
+      if (!user_item || !user_item.sStartDate || (user_item.sStartDate.getYear && user_item.sStartDate.getYear() < 100)) {
          return '-';
       }
       if (user_item.bValidated) {
@@ -633,6 +633,7 @@ angular.module('algorea')
    $scope.userItemsByRef = {};
    $scope.itemsListRev = {};
    $scope.startSync = function(groupId, itemId, callback) {
+      $scope.syncing = true;
       SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minVersion: 0};
       // yeah...
       SyncQueue.addSyncEndListeners('groupAdminController', function() {
@@ -644,6 +645,7 @@ angular.module('algorea')
       }, true);
       SyncQueue.planToSend(0);
       if(!itemId) {
+         $scope.syncing = false;
          callback();
          return;
       }
@@ -662,13 +664,20 @@ angular.module('algorea')
             $scope.userItemsByRef[userItem.idUser][userItem.idItem] = userItem;
          });
          $scope.loading = false;
+         $scope.syncing = false;
          $rootScope.$broadcast('algorea.groupSynced');
          callback();
       })
       .error(function() {
+         $scope.syncing = false;
          console.error("error calling groupAdmin/api.php");
       });
       
+   };
+
+   $scope.resync = function() {
+      $scope.startSync($scope.groupId, $scope.rootItem.ID, function() {
+         });
    };
 
    $scope.initGroup = function() {
@@ -679,7 +688,7 @@ angular.module('algorea')
          return;
       }
       if($scope.group.sType == 'Team') {
-         $scope.error = 'groupAdmin_team_not_editable';
+//         $scope.error = 'groupAdmin_team_not_editable';
       }
       $scope.formValues.hasPassword = !!$scope.group.sPassword;
       $scope.formValues.expirationTimer = !!$scope.group.sPasswordTimer;

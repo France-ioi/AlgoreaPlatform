@@ -420,8 +420,14 @@ body:not(.mobile-layout) .groupAdmin-homeContent {
 }
 .groupAdmin .tab-progression .dl-link {
 	margin-top: 10px;
-	margin-bottom: 2em;
+	margin-bottom: 10px;
 }
+.groupAdmin .tab-progression .dl-link button .material-icons {
+    position: relative;
+    top: 4px;
+    font-size: 20px;
+}
+
 /* Individual view */
 	/* Activities */
 .groupAdmin .list-users .row_selected {
