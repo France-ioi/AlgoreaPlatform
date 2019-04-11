@@ -676,8 +676,7 @@ angular.module('algorea')
    };
 
    $scope.resync = function() {
-      $scope.startSync($scope.groupId, $scope.rootItem.ID, function() {
-         });
+      $scope.itemSelected($scope.rootItem, true);
    };
 
    $scope.initGroup = function() {
@@ -865,8 +864,8 @@ angular.module('algorea')
       $scope.saveGroup();
    }
 
-   $scope.itemSelected = function(item) {
-      if ($scope.rootItem == item) return;
+   $scope.itemSelected = function(item, force) {
+      if ($scope.rootItem == item && !force) return;
       $scope.rootItem = item;
 
       // Force angular to regenerate the grid; no good way to make it better

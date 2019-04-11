@@ -238,9 +238,9 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
     'allowMultiLoading': false,
     'loadPath': function (lng, ns) {
                     if(ns == 'commonFramework') {
-                      return config.domains.current.baseUrl + '/commonFramework/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/commonFramework/i18n/'+lng+'/'+ns+'.json<?=$urlArgs ?>';
                     } else {
-                      return config.domains.current.baseUrl + '/i18n/'+lng+'/'+ns+'.json';
+                      return config.domains.current.baseUrl + '/i18n/'+lng+'/'+ns+'.json<?=$urlArgs ?>';
                     }
                   }
     };
