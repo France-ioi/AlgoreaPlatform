@@ -118,6 +118,11 @@ angular.module('algorea')
          if(data.views) {
             scope.setTabs(data.views);
          }
+         if(typeof data.scrollTop != 'undefined') {
+            // Scroll
+            var offset = data.scrollTop && data.scrollTop > 0 ? elem.offset().top + data.scrollTop - 60 : 0;
+            $([document.documentElement, document.body]).animate({scrollTop: offset});
+         }
          if(success) { success(); }
       };
       // move to next item in same chapter
