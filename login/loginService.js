@@ -177,10 +177,9 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
             if(user.result) {
               handler(user);
               if(params && params['redirectPath']) {
-                var sell = params.redirectPath.split('/').length-1;
                 if($injector.has('$state')) {
                   $state = $injector.get('$state');
-                  $state.go('contents', {path: params.redirectPath, sell: sell, selr: sell+1});
+                  $state.go('contents', {path: params.redirectPath});
                 }
               }
             } else {

@@ -1,30 +1,12 @@
 <div ng-if="!loading && !error" class="groupAdmin">
 	<h1><span ng-i18next="group"></span> : <span class="groupName">{{group.sName}}</span></h1>
-	<uib-tabset active="section">
-		<uib-tab heading="{{'groupAdmin_description' | i18next}}" index="'description'" select="selectSection('description')">
-			<div ng-include="'groupAdmin/groupDescription.html'"></div>
-		</uib-tab>
-
-		<uib-tab heading="{{'members' | i18next}}" index="'members'" select="selectSection('members')">
-			<div ng-include="'groupAdmin/groupMembers.html'"></div>
-		</uib-tab>
-
-		<uib-tab heading="{{'progress' | i18next}}" index="'progress'" select="selectSection('progress')">
-			<div ng-include="'groupAdmin/groupProgress.html'"></div>
-		</uib-tab>
-
-		<uib-tab heading="{{'administration' | i18next}}" index="'administration'" select="selectSection('administration')">
-			<div ng-include="'groupAdmin/groupAdministration.html'"></div>
-
-		</uib-tab>
-		<uib-tab heading="{{'groupAccountsManager' | i18next}}" index="'accountsManager'" select="selectSection('accountsManager')">
-			<div ng-include="'groupAdmin/groupAccountsManager.html'"></div>
-		</uib-tab>
-
-		<uib-tab heading="{{'groupSubgroups' | i18next}}" index="'subgroups'" select="selectSection('subgroups')">
-			<div ng-include="'groupAdmin/groupSubgroups.html'"></div>
-		</uib-tab>
-	</uib-tabset>
+    <div ng-include="templatesPrefix+'/navigation/views/tabs.html'"></div>
+    <div ng-if="tabsService.isTab('description')" ng-include="templatesPrefix+'/groupAdmin/groupDescription.html'"></div>
+    <div ng-if="tabsService.isTab('members')" ng-include="templatesPrefix+'/groupAdmin/groupMembers.html'"></div>
+    <div ng-if="tabsService.isTab('progress')" ng-include="templatesPrefix+'/groupAdmin/groupProgress.html'"></div>
+    <div ng-if="tabsService.isTab('administration')" ng-include="templatesPrefix+'/groupAdmin/groupAdministration.html'"></div>
+    <div ng-if="tabsService.isTab('accountsManager')" ng-include="templatesPrefix+'/groupAdmin/groupAccountsManager.html'"></div>
+    <div ng-if="tabsService.isTab('subgroups')" ng-include="templatesPrefix+'/groupAdmin/groupSubgroups.html'"></div>
 </div>
 <div ng-if="loading" ng-i18next="loading"></div>
 <div ng-show="error">{{error}}</div>

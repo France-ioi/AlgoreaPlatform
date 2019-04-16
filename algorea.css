@@ -221,6 +221,10 @@ header {
 .task-tabs-inner {
   border-bottom: 1px solid #ddd;
 }
+.main-tabs {
+  border-bottom: 1px solid #ddd;
+  margin: 10px 10px 0px 10px;
+}
 .task-tab.task-tab-selected {
   color: #82bf2b;
   background-color: #fff;

@@ -1,15 +1,4 @@
 <div class="chapter-editor">
-    <div class="main-titlebar chapter-titlebar" ng-if="item.bTitleBarVisible" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
-    <div class="main-area main-area-normal">
-        <div class="task-tabs-inner">
-            <div ng-click="selectTab('content')" class="task-tab" ng-class="{content: 'task-tab-selected'}[tab]" ng-i18next="chapterEditor_content"></div>
-            <div ng-click="selectTab('parameters')" class="task-tab" ng-class="{parameters: 'task-tab-selected'}[tab]" ng-i18next="chapterEditor_parameters"></div>
-            <div ng-click="selectTab('strings')" class="task-tab" ng-class="{strings: 'task-tab-selected'}[tab]" ng-i18next="chapterEditor_strings"></div>
-            <div ng-if="item.sRepositoryPath" ng-click="selectTab('repository')" class="task-tab" ng-class="{repository: 'task-tab-selected'}[tab]" ng-i18next="chapterEditor_repository"></div>
-        </div>
-        <div ng-if="tab == 'content'" ng-include="templatesPrefix+'/navigation/views/chapter/tab-content.html'"></div>
-        <div ng-if="tab == 'parameters'" ng-include="templatesPrefix+'/navigation/views/parameters.html'"></div>
-        <div ng-if="tab == 'strings'" ng-include="templatesPrefix+'/navigation/views/strings.html'"></div>
-        <div ng-if="item.sRepositoryPath" ng-show="tab == 'repository'" ng-include="templatesPrefix+'/navigation/views/chapter/tab-repository.html'"></div>
-    </div>
+    <div ng-if="tabsService.isTab('content')" ng-include="templatesPrefix+'/navigation/views/chapter/tab-content.html'"></div>
+    <div ng-if="item.sRepositoryPath" ng-show="tabsService.isTab('repository')" ng-include="templatesPrefix+'/navigation/views/chapter/tab-repository.html'"></div>
 </div>

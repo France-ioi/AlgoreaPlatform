@@ -1,4 +1,4 @@
-<div ng-if="!item.bDisplayDetailsInParent">
+<div ng-show="item && !item.bDisplayDetailsInParent">
   <span class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
   <span ng-if="item_status() == 'grayed'" class="grayed">{{strings.sTitle}}</span>
   <span ng-if="item_status() != 'grayed'"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></span>
@@ -10,9 +10,9 @@
     <span ng-if="item.bReadOnly" class="material-icons">visibility</span>
     <span ng-if="iScore > 0">&nbsp;{{ iScore }}%</div>
   </div>
+  <div class="clear: both;"></div>
 </div>
-<div ng-if="!item.bDisplayDetailsInParent" class="clear: both;"></div>
-<div ng-click="" class="level-container" ng-if="item.bDisplayDetailsInParent">
+<div ng-click="" class="level-container" ng-show="item && item.bDisplayDetailsInParent">
 	<div class="level-image"><img ng-src="{{imageUrl}}"/></div>
 	<div class="level-notimage">
 		<div class="level-title" ng-class="{grayed: item_status() == 'grayed'}"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></div>
@@ -25,3 +25,4 @@
 		<div class="level-description" ng-show="formValues.moreInfosOpened">{{strings.sDescription}}</div>
 	</div>
 </div>
+<span ng-show="!item" ng-i18next="error_item_not_found"></span>

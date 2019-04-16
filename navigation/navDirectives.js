@@ -8,8 +8,12 @@ angular.module('algorea')
       template: function(element, attrs) {
         if (attrs.from == 'menu') {
            return '<span ng-if="visible" class="breadcrumbs-item-{{activityClass}} breadcrumbs-{{activityClass}}-{{lastClass}} breadcrumbs-{{distanceClass}}">' +
-                  '<span ng-if="active" ng-include="getTemplate(\'menu\')"></span>' +
-                  '  <a ng-if="!active" ui-sref="{{getSref()}}" ng-include="getTemplate(\'menu\')"></a></span>';
+                  '  <span ng-show="active" ng-include="viewsBaseUrl+\'item-menu.html\'"></span>' +
+                  '  <a ng-show="!active" ui-sref="{{getSref()}}" ng-include="viewsBaseUrl+\'item-menu.html\'"></a>' +
+                  '</span>';
+        } else if(attrs.from == 'main') {
+           return '<div ng-include="viewsBaseUrl+\'item-header.html\'"></div>' +
+                  '<div ng-show="showItem" ng-include="getTemplate()"></div>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,
             * but Angular doesn't provide a way to select a templateUrl based on scope:
@@ -24,26 +28,27 @@ angular.module('algorea')
             scope.imageUrl = scope.strings && scope.strings.sImageUrl ? scope.strings.sImageUrl : 'images/default-level.png';
             scope.user_item = scope.item && scope.item.ID > 0 ? itemService.getUserItem(scope.item) : null;
             scope.item_item = scope.item && scope.item.ID > 0 ? scope.selectItemItem(scope.item, scope.parentItemID) : null;
-            scope.depth = scope.item && scope.item.breadCrumbsDepth ? scope.item.breadCrumbsDepth : 0;
+            scope.depth = attrs.depth ? parseInt(attrs.depth) : 0;
             scope.visible = scope.item && !scope.item.bTransparentFolder;
             scope.active_tab=0;
+            scope.showItem = true;
             scope.setItemIcon(scope.item);
             if (from == 'menu') {
                scope.lastClass = (scope.depth+1 == scope.pathParams.path.length) ? 'last' : 'not-last'; // IE8 doesn't support the :not(:last-child) selector...
-               scope.active = (scope.depth+1 == scope.pathParams.selr);
+               scope.active = (scope.depth+1 == scope.realPathParams.path.length);
                scope.activityClass = scope.active ? "active" : "inactive";
                scope.distanceClass = 'before-selected';
-               if (scope.depth+1 > scope.pathParams.selr) {
+               if (scope.depth+1 > scope.realPathParams.path.length) {
                   scope.distanceClass = 'after-selected';
                }
             } else {
                if (from == "parent") {
                   scope.setItemAccessIcon(scope.item);
                   scope.setScore(scope.item);
-                  scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'/'+scope.item.ID;
-                  scope.activityClass = (scope.pathParams.selr != 'r' && scope.item.ID == scope.pathParams.path[scope.pathParams.selr-1]) ? 'active' : 'inactive';
+                  scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'-'+scope.item.ID;
+                  scope.activityClass = (scope.item.ID == scope.pathParams.path[scope.pathParams.path.length-1]) ? 'active' : 'inactive';
                } else if (from == "children-list") {
-                  scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'/'+scope.item.ID;
+                  scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'-'+scope.item.ID;
                } else {
                   scope.relativePath = '';
                }
@@ -59,7 +64,7 @@ angular.module('algorea')
                if (scope.hasOwnProperty('getPathParams')) { // don't do it on each subscope
                   scope.getPathParams();
                }
-               scope.activityClass = (scope.pathParams.selr != 'r' && scope.item.ID == scope.pathParams.path[scope.pathParams.selr-1]) ? 'active' : 'inactive';
+               scope.activityClass = (scope.item.ID == scope.pathParams.path[scope.pathParams.path.length-1]) ? 'active' : 'inactive';
             }
          });
          scope.$on('algorea.itemTriggered', function(event, itemId){

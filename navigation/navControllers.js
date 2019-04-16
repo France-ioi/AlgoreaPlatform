@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', '$i18next', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http, $i18next) {
+   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', '$i18next', 'tabsService', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http, $i18next, tabsService) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
       $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
@@ -22,6 +22,7 @@ angular.module('algorea')
       $scope.setEditMode = function(mode) {
          if(this.editState.mode == mode) { return; }
          this.editState.mode = this.editable() ? mode : 'view';
+         tabsService.setEditMode(mode == 'edit');
          $rootScope.$broadcast('algorea.reloadTabs');
       }
 
@@ -58,69 +59,66 @@ angular.module('algorea')
          }
       }
       $scope.goToPath = function(path) {
-         $state.go('contents', {path: path,sell:null,selr:null});
+         $state.go('contents', {path: path});
       }
       $scope.goToForum = function() {
          if (config.domains.current.ForumItemId) {
-            $state.go('contents', {path: config.domains.current.ForumItemId,sell:null,selr:null});
+            $state.go('contents', {path: config.domains.current.ForumItemId});
          } else {
             $state.go('forum');
          }
       }
 
-      $scope.getTemplate = function(from) {
+      $scope.makeTemplateName = function(from) {
          this.layout.isOnePage(false);
          var suffix = from ? '-'+from : '';
 
          $scope.itemType = this.item && this.item.sType ? this.item.sType : 'error';
          var type = $scope.itemType.toLowerCase();
-         if(type == 'root') {
-            type = 'chapter';
-         }
-         if ( ! from) {
+         if(type == 'root') { type = 'chapter'; }
+         if(type == 'course') { type = 'task'; }
+         if(!from) {
             if (type == 'chapter') {
                if (config.domains.current.useMap) {
                   type = 'blank';
                }
                this.layout.hasMap('always');
-            } else if (type == 'task' || type == 'course') {
+            } else if (type == 'task') {
                this.layout.hasMap('button', this.firstApply);
             } else {
                this.layout.hasMap('never');
             }
             $scope.setItemOnMap();
             if (this.panel == 'right') {
-               if (this.item.sFullScreen != 'forceNo' && (type == 'task' || type == 'course' || this.item.sFullScreen == 'forceYes')) {
+               if (this.item.sFullScreen != 'forceNo' && (type == 'task' || this.item.sFullScreen == 'forceYes')) {
                   this.layout.rightIsFullScreen(true);
                } else {
                   this.layout.rightIsFullScreen(false);
                }
             }
+         } else if(from == 'parent') {
+            return 'item-' + from;
          }
-         if (this.pathParams.currentItemID == -2 || (this.pathParams.sell == 0 && this.panel == 'left')) {
-            type = 'blank';
-            suffix = '';
+         if (this.pathParams.currentItemID == -2) {
+            return 'blank';
          } else if (!this.item || this.item.ID == -1) {
-            type = 'error';
+            return 'error';
          } else if (this.item.ID == 0) {
-            type = 'loading';
+            return 'loading';
          }
          this.firstApply = false;
 
-         // haaaaaaacks
-         if(suffix == '-children-list') {
-            return this.viewsBaseUrl+'children-list.html';
-         }
+         if(from == 'children-list') { return 'children-list'; }
 
          var ts = type+suffix;
          if (ts == 'task' || ts == 'course') {
-            return this.viewsBaseUrl+'taskcourse.html';
+            return 'taskcourse';
          }
-         if(ts == 'task-parent' && this.item.bDisplayDetailsInParent) {
-            return this.viewsBaseUrl + 'chapter-parent.html';
-         }
-         return this.viewsBaseUrl+ts+'.html';
+         return ts;
       };
+      $scope.getTemplate = function(from) {
+         return this.viewsBaseUrl + this.makeTemplateName(from) + '.html';
+      }
       $scope.getSref = function(view) {
          return pathService.getSref(this.panel, this.depth, this.pathParams, this.relativePath, view);
       };
@@ -169,7 +167,6 @@ angular.module('algorea')
             SyncQueue.planToSend(0);
          });
       };
-      // TODO: cleanup
       var type_iconName = {
          'Root': 'list',
          'Task': 'keyboard',
@@ -303,7 +300,7 @@ angular.module('algorea')
             return;
          }
          angular.forEach(pathParams.path, function(itemID, idx) {
-            if (itemID == item.ID || idx >= pathParams.selr-1) {
+            if (itemID == item.ID) {
                return false;
             }
             var ancestorItem = itemService.getRecord('items',itemID);
@@ -325,7 +322,7 @@ angular.module('algorea')
          });
          return res;
       };
-      $scope.getItem = function(callback) {
+      $scope.getItem = function(callback, forceAsync) {
          var that = this;
          itemService.getAsyncRecord('items', that.pathParams.currentItemID, function(item){
             if (!item) {
@@ -361,7 +358,7 @@ angular.module('algorea')
             if(callback) {
                callback(item);
             }
-         });
+         }, forceAsync);
       };
       $scope.$on('algorea.languageChanged', function() {
          if($scope.item) {
@@ -391,18 +388,18 @@ angular.module('algorea')
             }
             previousID = brothers[i].ID;
          }
-         var basePath = $scope.pathParams.path.slice(0, $scope.pathParams.selr-1).join('/');
+         var basePath = pathService.getPathStrAtDepth($scope.pathParams.pathStr, $scope.pathParams.path.length-2);
 
          // Top link - find first non-transparent parent
-         var newSelr = $scope.pathParams.selr-1;
-         while(newSelr > 0) {
-            var curParentItem = itemService.getItem($scope.pathParams.path[newSelr-1]);
+         var newDepth = $scope.pathParams.path.length-1;
+         while(newDepth > 0) {
+            var curParentItem = itemService.getItem($scope.pathParams.path[newDepth-1]);
             if(!curParentItem || !curParentItem.bTransparentFolder) { break; }
-            newSelr -= 1;
+            newDepth -= 1;
          }
-         if(newSelr > 0) {
-            var topPath = $scope.pathParams.path.slice(0, newSelr).join('/');
-            $scope.topLink = {sref: pathService.getSrefFunction(topPath, newSelr-1, null, null, null), stateName: 'contents', stateParams: {path: topPath, sell: newSelr-1, selr: null, viewr: null}};
+         if(newDepth > 0) {
+            var topPath = $scope.pathParams.path.slice(0, newDepth).join('-');
+            $scope.topLink = {sref: pathService.getSrefFunction(topPath, newDepth-1), stateName: 'contents', stateParams: {path: topPath}};
          } else {
             $scope.topLink = null;
          }
@@ -410,34 +407,17 @@ angular.module('algorea')
          // Right link
          var nextItem = nextID ? itemService.getItem(nextID) : null;
          if (nextItem && !nextItem.bGrayedAccess) {
-            $scope.rightImmediateLink = {sref: pathService.getSrefFunction(basePath+'/'+nextID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+nextID, selr: null, viewr: null}};
+            $scope.rightImmediateLink = {sref: pathService.getSrefFunction(basePath+'-'+nextID, null), stateName: 'contents', stateParams: {path: basePath+'-'+nextID}};
             $scope.rightLink = $scope.rightImmediateLink;
          } else {
             $scope.rightImmediateLink = null;
             $scope.rightLink = null;
-/* Old code to go to the next cousin
-            if ($scope.pathParams.selr > 4) {
-               var grandParentId = $scope.pathParams.path[$scope.pathParams.selr-3];
-               if (grandParentId) {
-                  var uncles = itemService.getBrothersFromParent(grandParentId);
-                  var grandParentPath = $scope.pathParams.path.slice(0, $scope.pathParams.selr-2).join('/');
-                  for (i = 0 ; i < uncles.length ; i++) {
-                     if (uncles[i].ID == this.pathParams.parentItemID) {
-                        nextID = (i+1<uncles.length) ? uncles[i+1].ID : null;
-                        break;
-                     }
-                  }
-                  if (nextID) {
-                     $scope.rightLink = {sref: pathService.getSrefFunction(grandParentPath+'/'+nextID, $scope.pathParams.path.length-2, null, null, null), stateName: 'contents', stateParams: {path: basePath, sell: $scope.pathParams.path.length-2, selr: null, viewr: null}};
-                  }
-               }
-            }*/
          }
 
          // Left link
          var previousItem = previousID ? itemService.getItem(previousID) : null;
          if (previousItem && !previousItem.bGrayedAccess) {
-            $scope.leftLink = {sref: pathService.getSrefFunction(basePath+'/'+previousID, null, null, null), stateName: 'contents', stateParams: {path: basePath+'/'+previousID, selr: null, viewr: null}};
+            $scope.leftLink = {sref: pathService.getSrefFunction(basePath+'-'+previousID, null), stateName: 'contents', stateParams: {path: basePath+'-'+previousID}};
          } else {
             $scope.leftLink = null;
          }
@@ -497,7 +477,7 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('leftNavigationController', ['$scope', 'pathService', 'itemService', '$rootScope', function ($scope, pathService, itemService, $rootScope) {
+   .controller('leftNavigationController', ['$scope', 'pathService', 'itemService', '$rootScope', '$timeout', function ($scope, pathService, itemService, $rootScope, $timeout) {
       $scope.panel = 'left';
       $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('left');}
       $scope.itemsList = [];
@@ -507,16 +487,10 @@ angular.module('algorea')
          }
          $scope.leftParentItemId = item.ID;
          $scope.itemsList = [];
-         /*
-         if (item.sType == 'Presentation') {
-            $scope.itemsList = [item];
-            return;
-         }
-         */
          var children = itemService.getChildren(item);
          angular.forEach(children, function(child) {
-            child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '/'+child.ID);
-            child.private_go_func = pathService.getStateGo($scope.panel, 1, $scope.pathParams, '/'+child.ID);
+            child.private_sref = pathService.getSref($scope.panel, 1, $scope.pathParams, '-'+child.ID);
+            child.private_go_func = pathService.getStateGo($scope.panel, 1, $scope.pathParams, '-'+child.ID);
             child.private_go = function () {
                if(!child.bGrayedAccess) {
                   child.private_go_func();
@@ -529,7 +503,7 @@ angular.module('algorea')
             };
             $scope.itemsList.push(child);
          });
-         $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
+         $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.path.length-1];
          var strings = itemService.getStrings(item);
          if (!strings) {
             console.error('no string for item'+item.ID);
@@ -537,11 +511,12 @@ angular.module('algorea')
          } else {
             $scope.currentLeftItemTitle = strings.sTitle;
          }
+         $scope.$apply();
       };
       $scope.localInit = function() {
          $scope.getPathParams();
          $scope.item = {ID: 0};
-         $scope.getItem(getLeftItems);
+         $scope.getItem(getLeftItems, true);
       };
       $scope.$on('algorea.languageChanged', function() {
          if($scope.item) {
@@ -558,7 +533,8 @@ angular.module('algorea')
       $scope.$on('algorea.reloadView', function(event, viewName){
          if (viewName == 'right') {
             $scope.getPathParams();
-            $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.selr-1];
+            $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.path.length-1];
+            $scope.getItem(getLeftItems, true);
          }
       });
 }]);
@@ -603,10 +579,11 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('superBreadCrumbsController', ['$scope', 'itemService', 'pathService', function ($scope, itemService, pathService) {
+   .controller('superBreadCrumbsController', ['$scope', '$rootScope', 'itemService', 'pathService', function ($scope, $rootScope, itemService, pathService) {
       $scope.panel = 'menu';
       $scope.getItems = function() {
          angular.forEach($scope.pathParams.path, function(ID, index) {
+            if(typeof $scope.items[index] != 'undefined') { return; }
             $scope.items.push({ID: 0});
             itemService.getAsyncRecord('items', ID, function(item) {
                if(item) {
@@ -618,11 +595,35 @@ angular.module('algorea')
             });
          });
       };
-      $scope.getPathParams = function() {$scope.pathParams = pathService.getPathParams('menu');}
+      $scope.getPathParams = function() {
+         $scope.realPathParams = pathService.getPathParams('menu');
+         $scope.pathParams = $rootScope.breadcrumbsParams ? $rootScope.breadcrumbsParams : $scope.realPathParams;
+      }
+
+      $scope.isSamePathBase = function() {
+         if(!$rootScope.breadcrumbsParams) { return false; }
+         for(var i=0; i < $scope.realPathParams.path.length && i < $scope.breadcrumbsParams.path.length; i++) {
+            if($scope.realPathParams.path[i] != $rootScope.breadcrumbsParams.path[i]) {
+               return false;
+            }
+         }
+         return true;
+      }
+
       $scope.localInit = function() {
          $scope.getPathParams();
-         $scope.items = [];
+         if($scope.isSamePathBase()) {
+            $scope.items = $rootScope.breadcrumbsItems;
+            if($rootScope.breadcrumbsParams.path.length < $scope.realPathParams.path.length) {
+               $rootScope.breadcrumbsParams = $scope.realPathParams;
+            }
+         } else {
+            $scope.items = [];
+            $scope.pathParams = $scope.realPathParams;
+            $rootScope.breadcrumbsParams = $scope.realPathParams;
+         }
          $scope.getItems();
+         $rootScope.breadcrumbsItems = $scope.items;
       };
       $scope.localInit();
       $scope.$on('syncResetted', function() {
@@ -664,10 +665,10 @@ angular.module('algorea')
          else if (tabPath == 'profile'){
             $state.go('profile');
          } else {
-            if (tabPath.indexOf('/') !== -1) {
-               $state.go('contents', {path: tabPath,sell:1,selr:2});
+            if (tabPath.indexOf('-') !== -1) {
+               $state.go('contents', {path: tabPath});
             } else {
-               $state.go('contents', {path: tabPath,sell:0,selr:1});
+               $state.go('contents', {path: tabPath});
             }
          }
          if ($rootScope.isMobileLayout) {

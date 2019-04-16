@@ -119,24 +119,24 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', '$i18next', function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter, $i18next) {
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', '$i18next', 'tabsService',
+   function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter, $i18next, tabsService) {
    'use strict';
+
    $scope.error = null;
-
-
-    function validateSection(section) {
-     return section ? section : 'description'
-    }
-    $scope.section = validateSection($stateParams.section ? $stateParams.section : 'description');
-
-    $scope.selectSection = function(section) {
-      $scope.section = validateSection(section);
-      $state.go('groupAdminGroup', {section: section}, {notify: false});
-    }
+   $scope.tabsService = tabsService;
 
    $scope.layout.isOnePage(true);
    $scope.layout.hasMap('never');
    $scope.groupFields = models.groups.fields;
+
+   tabsService.resetTabs();
+   tabsService.addTab({id: 'description', title: 'groupAdmin_description', order: 10});
+   tabsService.addTab({id: 'members', title: 'members', order: 11});
+   tabsService.addTab({id: 'progress', title: 'progress', order: 12});
+   tabsService.addTab({id: 'administration', title: 'administration', order: 13});
+   tabsService.addTab({id: 'accountsManager', title: 'groupAccountsManager', order: 14});
+   tabsService.addTab({id: 'subgroups', title: 'groupSubgroups', order: 15});
 
    function getThread(user_item) {
       if (!user_item.item) {
@@ -151,6 +151,8 @@ angular.module('algorea')
       });
       return res;
    }
+
+
 
    $scope.openPopup = function(user_item) {
       var thread = getThread(user_item);
@@ -1038,12 +1040,10 @@ angular.module('algorea')
 
 
    $scope.$on('login.login', function(event, data) {
-    if (data.tempUser) {
-       $state.go('profile');
-    } else {
-       $state.go('profile', { section: 'groupsOwner'});
-    }
- });
+      if(data.tempUser) {
+         $state.go('profile');
+      }
+   });
 
    $scope.loading = true;
    itemService.onNewLoad($scope.init);

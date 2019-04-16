@@ -111,21 +111,21 @@ $defaultLanguage = $config->shared->domains['current']->defaultLanguage;
 <?php if ($animationHtmlFile): ?>
   <iframe id="animation-debut" src="<?= $animationHtmlFile ?>" onclick="animationFinished()" style="display:none;"></iframe>
 <?php endif; ?>
-<div ng-if="showNavTopOverlay" id="navTopOverlay" ng-click="layout.closeNavTopOverlay()"></div>
-<div ng-if="showMobileNavTopOverlay" id="mobileNavTopOverlay" ng-click="layout.closeMobileNavTop()"></div>
-<div ng-if="showSidebarLeftOverlay" id="sidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
-<div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
-</header>
-<div id='main'>
+  <div ng-if="showNavTopOverlay" id="navTopOverlay" ng-click="layout.closeNavTopOverlay()"></div>
+  <div ng-if="showMobileNavTopOverlay" id="mobileNavTopOverlay" ng-click="layout.closeMobileNavTop()"></div>
+  <div ng-if="showSidebarLeftOverlay" id="sidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
+  <div id="fixed-header-room" class="fixed-header-room"></div>
+  <header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'">
+  </header>
 
-<nav ui-view="left" autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-show="hasSidebarLeft"></nav>
+  <div id='main'>
+    <div autoscroll="false" id="sidebar-left" class="sidebar-left" ng-class="{'sidebar-left-open': sidebarLeftIsOpen, 'sidebar-left-closed': !sidebarLeftIsOpen}" ng-if="hasSidebarLeft" ng-controller="leftNavigationController">
+      <div class="sidebar-left-content" ng-include="''+templatesPrefix+'navigation/views/navbaritem.html'" ng-repeat="item in itemsList"></div>
+    </div>
+    <div id="view-right" ui-view="right" autoscroll="false"></div>
+  </div>
 
-<article id="view-right" ui-view="right" autoscroll="false"></article>
-
-</div>
-
-<footer id="footer" ng-include="<?= $footerHtmlFile ?>"></footer>
+  <footer id="footer" ng-include="<?= $footerHtmlFile ?>"></footer>
 
 <?php if ($useMap): ?>
   <div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>
@@ -151,13 +151,14 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
 <script src="<?= includeFile('errors/error_logger.js') ?>"></script>
 <?php if (!$compiledMode): ?>
   <script src="<?= includeFile('bower_components/jquery/dist/jquery.min.js') ?>"></script>
-  <?php if ($usesForum): ?>
 
+  <?php if ($usesForum): ?>
     <script src="<?= includeFile('bower_components/dynatree/dist/jquery.dynatree.min.js') ?>" type="text/javascript"></script>
     <script src="<?= includeFile('shared/utils.js') ?>"></script>
     <script src="<?= includeFile('ext/inheritance.js') ?>" type="text/javascript"></script>
     <script src="<?= includeFile('commonFramework/treeview/treeview.js') ?>"></script>
   <?php endif; ?>
+
   <script src="<?= includeFile('bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
   <script src="<?= includeFile('bower_components/bowser/src/bowser.js') ?>"></script>
   <script src="<?= includeFile('bower_components/angular/angular.min.js') ?>"></script>
@@ -180,27 +181,32 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('shared/small-ui-confirm.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('bower_components/angu-fixed-header-table/angu-fixed-header-table.js') ?>" type="text/javascript"></script>
   <script src="<?= includeFile('bower_components/lodash/dist/lodash.min.js') ?>" type="text/javascript"></script>
-  <script src="<?= includeFile('login/service.js') ?>"></script>
+  <script src="<?= includeFile('login/loginService.js') ?>"></script>
+
   <script src="<?= includeFile('algorea.js') ?>"></script>
   <script src="<?= includeFile('contest/contestTimerService.js') ?>"></script>
   <script src="<?= includeFile('contest/contestTimerDirective.js') ?>"></script>
   <script src="<?= includeFile('layout.js') ?>"></script>
-  <script src="<?= includeFile('navigation/service.js') ?>"></script>
-  <script src="<?= includeFile('navigation/controllers.js') ?>"></script>
+  <script src="<?= includeFile('navigation/itemService.js') ?>"></script>
+  <script src="<?= includeFile('navigation/navControllers.js') ?>"></script>
+  <script src="<?= includeFile('navigation/tabsService.js') ?>"></script>
+  <script src="<?= includeFile('navigation/tabsController.js') ?>"></script>
   <script src="<?= includeFile('navigation/chapterController.js') ?>"></script>
-  <script src="<?= includeFile('navigation/directives.js') ?>"></script>
+  <script src="<?= includeFile('navigation/editController.js') ?>"></script>
+  <script src="<?= includeFile('navigation/navDirectives.js') ?>"></script>
 
-  <script src="<?= includeFile('community/controller.js') ?>"></script>
   <?php if ($useMap): ?>
     <script src="<?= includeFile('bower_components/paper/dist/paper-full.min.js') ?>"></script>
     <script src="<?= includeFile('bower_components/jquery-mousewheel/jquery.mousewheel.min.js') ?>"></script>
     <script src="<?= includeFile('map/mapService.js') ?>"></script>
     <script src="<?= includeFile('map/map.js') ?>"></script>
   <?php endif; ?>
-  <script src="<?= includeFile('login/controller.js') ?>"></script>
+
+  <script src="<?= includeFile('community/controller.js') ?>"></script>
+  <script src="<?= includeFile('login/loginController.js') ?>"></script>
   <script src="<?= includeFile('states.js') ?>"></script>
-  <script src="<?= includeFile('task/controller.js') ?>"></script>
-  <script src="<?= includeFile('task/directive.js') ?>"></script>
+  <script src="<?= includeFile('task/taskController.js') ?>"></script>
+  <script src="<?= includeFile('task/taskDirective.js') ?>"></script>
   <script src="<?= includeFile('task/modifyController.js') ?>"></script>
 
   <script src="<?= includeFile('profile/profileController.js') ?>"></script>
@@ -208,18 +214,20 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('profile/groupsOwnerController.js') ?>"></script>
   <script src="<?= includeFile('profile/groupsMemberController.js') ?>"></script>
 
-  <script src="<?= includeFile('groupCodePrompt/controller.js') ?>"></script>
+  <script src="<?= includeFile('groupCodePrompt/groupCodeController.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAdminController.js') ?>"></script>
-  <script src="<?= includeFile('teams/controller.js') ?>"></script>
+  <script src="<?= includeFile('teams/teamsController.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupAccountsManagerController.js') ?>"></script>
   <script src="<?= includeFile('groupAdmin/groupSubgroupsController.js') ?>"></script>
-  <script src="<?= includeFile('userInfos/controller.js') ?>"></script>
+
   <?php if ($usesForum): ?>
     <script src="<?= includeFile('forum/forumIndexController.js') ?>"></script>
     <script src="<?= includeFile('forum/forumFilterController.js') ?>"></script>
     <script src="<?= includeFile('shared/treeviewDirective.js') ?>"></script>
   <?php endif; ?>
+
   <script src="<?= includeFile('forum/forumThreadController.js') ?>"></script>
+
 <?php else: ?>
   <script src="<?= includeFile('vendor.min.js') ?>"></script>
   <script src="<?= includeFile('algorea.min.js') ?>"></script>

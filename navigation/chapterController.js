@@ -2,9 +2,10 @@
 
 angular.module('algorea')
 .controller('chapterController', [
-    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', 'loginService', 'pathService',
-    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, loginService, pathService) {
+    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', 'loginService', 'pathService', 'tabsService',
+    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, loginService, pathService, tabsService) {
         $scope.itemService = itemService;
+        $scope.tabsService = tabsService;
         $scope.models = models;
         $scope.tab = 'content';
 
@@ -32,6 +33,8 @@ angular.module('algorea')
             user = res;
         })
 
+        tabsService.resetTabs($scope.getEditMode && $scope.getEditMode() == 'edit');
+        tabsService.addTab({id: 'content', title: 'chapterEditor_content', order: 0});
 
         // common
         $scope.availableLocales = ModelsManager.getRecords('languages');
@@ -43,6 +46,9 @@ angular.module('algorea')
             $scope.items = itemService.getChildren($scope.item);
             $scope.item_strings = $scope.item.strings[0];
             $scope.item_strings_compare = null;
+            if($scope.getEditMode() == 'edit' && $scope.item.sRepositoryPath) {
+                tabsService.addTab({id: 'repository', title: 'chapterEditor_repository', order: 200});
+            }
             $scope.setupSync();
         }
         refresh();
@@ -59,8 +65,8 @@ angular.module('algorea')
         }
 
 
-        $scope.$on('alogrea.reloadTabs', function(event) {
-            $scope.setupSync();
+        $scope.$on('algorea.reloadTabs', function(event) {
+            refresh();
         });
         $scope.$on('algorea.reloadView', function(event, view) {
             if(view == 'right') {
@@ -69,60 +75,11 @@ angular.module('algorea')
         });
 
 
-        $scope.selectTab = function(tab) {
-            $scope.tab = tab;
-            if(tab == 'repository' && !$scope.repositoryAutoSynced) {
-                $scope.syncRepository();
-                // Only do it automatically once
-                $scope.repositoryAutoSynced = true;
-            }
-        }
-
         $scope.getItemIcon = itemService.getItemIcon;
 
         $scope.getChildSref = function(item) {
-            return pathService.getSref($scope.panel, typeof $scope.depth != 'undefined' ? $scope.depth + 1 : 0, $scope.pathParams, '/' + item.ID);
+            return pathService.getSref($scope.panel, typeof $scope.depth != 'undefined' ? $scope.depth + 1 : 0, $scope.pathParams, '-' + item.ID);
         };
-
-        $scope.checkSaveItem = function() {
-            var hasChanged = false;
-//            hasChanged |= $scope.hasObjectChanged("items_items", $scope.item_item);
-            hasChanged |= $scope.hasObjectChanged("items", $scope.item);
-            hasChanged |= $scope.hasObjectChanged("items_strings", $scope.item_strings);
-            if (hasChanged) {
-               if (confirm($i18next.t('groupAdmin_confirm_unsaved'))) {
-//                  $scope.resetObjectChanges("items_items", $scope.item_item);
-                  $scope.resetObjectChanges("items", $scope.item);
-                  $scope.resetObjectChanges("items_strings", $scope.item_strings);
-               } else {
-                  return false;
-               }
-            }
-            return true;
-        };
-
-
-
-        // params
-
-        $scope.hasObjectChanged = function(modelName, record) {
-            if(!record) return;
-            return ModelsManager.hasRecordChanged(modelName, record.ID);
-        };
-
-
-        $scope.resetObjectChanges = function(modelName, record) {
-            if(!record) return;
-            ModelsManager.resetRecordChanges(modelName, record.ID);
-        };
-
-
-        $scope.saveObject = function(modelName, record) {
-            if(!record) return;
-            ModelsManager.updated(modelName, record.ID);
-        };
-
-
 
         // children items
 
@@ -358,42 +315,6 @@ angular.module('algorea')
                 });
         }
 
-        // strings
-
-        $scope.newItemStrings = function() {
-            if (!$scope.checkSaveItem()) {
-                return;
-            }
-            var existingLocales = [];
-            for(var i=0; i < $scope.item.strings.length; i++) {
-                existingLocales.push($scope.item.strings[i].language);
-            }
-            // TODO :: default to selected admin locale
-            var idLanguage = null;
-            for(var idLocale in $scope.availableLocales) {
-                if(existingLocales.indexOf($scope.availableLocales[idLocale]) == -1) {
-                    idLanguage = idLocale;
-                    break;
-                }
-            }
-            if(!idLanguage) {
-                return;
-            }
-            var itemStrings = ModelsManager.createRecord("items_strings");
-            itemStrings.idItem = $scope.item.ID;
-            itemStrings.idLanguage = idLanguage;
-            itemStrings.sTitle = $i18next.t('groupAdmin_new_item');
-            ModelsManager.insertRecord("items_strings", itemStrings);
-            $scope.item_strings = itemStrings;
-        };
-
-
-        $scope.deleteItemStrings = function(id) {
-            if($scope.item.strings.length > 1) {
-                ModelsManager.deleteRecord("items_strings", id);
-                $scope.item_strings = $scope.item.strings[0];
-            }
-        };
 
         if($scope.item.sRepositoryPath) {
             // TODO :: something depending on the platform

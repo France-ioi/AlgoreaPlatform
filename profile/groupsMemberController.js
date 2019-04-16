@@ -219,9 +219,8 @@ angular.module('algorea')
 
             var callback = null;
             if(postRes.redirectPath) {
-               var sell = postRes.redirectPath.split('/').length-1;
                callback = function () {
-                  $state.go('contents', {path: postRes.redirectPath, sell: sell, selr: sell+1});
+                  $state.go('contents', {path: postRes.redirectPath});
                }
             }
 
@@ -265,6 +264,7 @@ angular.module('algorea')
             });
             SyncQueue.removeSyncEndListeners('groupRequestsInit');
          });
+         SyncQueue.planToSend(0);
       });
    };
 

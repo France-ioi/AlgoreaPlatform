@@ -1,0 +1,3 @@
+<span ng-if="item && strings">{{strings.sTitle}}</span>
+<span ng-if="item && !strings" ng-i18next="loading"></span>
+<span ng-if="!item || item.ID < 0" ng-i18next="error"></span>

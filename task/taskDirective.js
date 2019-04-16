@@ -26,18 +26,52 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-  .directive('buildTask', ['$sce', '$http', '$timeout', '$rootScope', '$interval', '$injector', '$i18next', function ($sce, $http, $timeout, $rootScope, $interval, $injector, $i18next) {
+  .directive('buildTask', ['$sce', '$http', '$timeout', '$rootScope', '$interval', '$injector', '$i18next', 'itemService', 'pathService', 'tabsService', function ($sce, $http, $timeout, $rootScope, $interval, $injector, $i18next, itemService, pathService, tabsService) {
    var mapService = null;
    if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
    }
-    var itemService, pathService;
-    if($injector.has('itemService')) {
-      itemService = $injector.get('itemService');
-    }
-    if($injector.has('pathService')) {
-      pathService = $injector.get('pathService');
-    }
+
+   // Steps :
+   // -initTask : loads the URL into the iframe
+   // -initIframe : wait for the task DOM to be loaded
+   // -loadTask : connect to the task object
+   // -configureTask : configure the platform and start task.load
+   // and then the controller logic takes over
+
+   function initTask(scope, elem, sameUrl) {
+      scope.currentView = null;
+      // ID of the current instance, allows to avoid callbacks from old tasks
+      scope.currentId = Math.random() * 1000000000;
+      if (scope.item.sUrl) {
+         if (scope.item.bUsesAPI) {
+            var itemUrl = scope.item.sUrl;
+            scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name, $rootScope.sLocale));
+            scope.itemUrl = itemUrl;
+         } else {
+            scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
+            scope.itemUrl = null; // Reload the iframe each time
+         }
+
+         // Let a $digest happen before continuing
+         $timeout(function() { initIframe(scope, elem, sameUrl); });
+      } else {
+         loadTask(scope, null, false);
+      }
+   }
+
+   function initIframe(scope, elem, sameUrl) {
+      scope.taskIframe = elem.find('iframe');
+//      scope.taskIframe[0].src = scope.taskUrl;
+      var timeout = $timeout(function() {
+          loadTask(scope, scope.taskIframe, sameUrl);
+          }, 3000);
+      scope.taskIframe[0].onload = function() {
+         if($timeout.cancel(timeout)) {
+            loadTask(scope, scope.taskIframe, sameUrl);
+         }
+      };
+   }
 
    function loadTask(scope, elem, sameUrl) {
       scope.item_strings = scope.item.strings[0];
@@ -60,13 +94,12 @@ angular.module('algorea')
       }
       var currentId = scope.currentId;
       scope.loadOpacity = 1;
-      var loadMsgTimeout = setTimeout(function () {
+      var loadMsgTimeout = $timeout(function () {
          scope.slowLoading = true;
-         scope.$apply();
       }, 5000);
       TaskProxyManager.getTaskProxy(scope.taskName, function(task) {
          if(scope.currentId != currentId) { return; }
-         clearTimeout(loadMsgTimeout);
+         $timeout.cancel(loadMsgTimeout);
          scope.task = task;
          configureTask(scope, elem, sameUrl);
       }, !sameUrl, function() {
@@ -76,6 +109,7 @@ angular.module('algorea')
          scope.$apply();
       });
    }
+
    function configureTask(scope, elem, sameUrl) {
       scope.loadedUserItemID = scope.user_item.ID;
       scope.task.unloaded = false;
@@ -85,30 +119,31 @@ angular.module('algorea')
          if(scope.currentId != currentId) { return; }
          scope.grader = grader;
       });
+      scope.taskParams = {
+         minScore: 0,
+         maxScore: 100,
+         noScore: 0,
+         readOnly: !!scope.readOnly,
+         randomSeed: scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser,
+         options: {},   
+         returnUrl: config.domains.current.baseUrl+'/task/task.php'
+         };
+
       scope.platform = new Platform(scope.task);
       TaskProxyManager.setPlatform(scope.task, scope.platform);
       scope.platform.showView = function(view, success, error) {
-         scope.selectTab(view);
+         tabsService.selectTab(view);
          if (success) { success(); }
       };
       scope.platform.openUrl = function(itemPath, success, error) {
-         if (itemService && pathService) {
-            // Temporarily restricted to a specific use case : open an item path
-            pathService.openItemFromLink(itemPath);
-            if (success) {success();}
-         } else {
-            if (error) {
-               error('you cannot follow links in this mode');
-            } else {
-               console.error('you cannot follow links in this mode');
-            }
-         }
+         // Temporarily restricted to a specific use case : open an item path
+         pathService.openItemFromLink(itemPath);
+         if (success) {success();}
       };
       scope.platform.updateHeight = function(height, success, error) {
          // TODO :: remove once we are sure it's not used anymore
          console.log("updateHeight is deprecated and shouldn't be called");
-         scope.updateHeight(height);
-         if (success) { success(); }
+         scope.platform.updateDisplay({height: height}, success, error);
       };
       scope.platform.updateDisplay = function(data, success, error) {
          // Task asked the platform to update display
@@ -124,14 +159,6 @@ angular.module('algorea')
             $([document.documentElement, document.body]).animate({scrollTop: offset});
          }
          if(success) { success(); }
-      };
-      // move to next item in same chapter
-      scope.moveToNextImmediate = function() {
-         scope.goRightImmediateLink();
-      };
-      // move to next item
-      scope.moveToNext = function() {
-         scope.goRightLink();
       };
       scope.platform.askHint = function(hintToken, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
@@ -216,15 +243,6 @@ angular.module('algorea')
             });
          }
       };
-      scope.taskParams = {
-         minScore: 0,
-         maxScore: 100,
-         noScore: 0,
-         readOnly: !!scope.readOnly,
-         randomSeed: scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser,
-         options: {},   
-         returnUrl: config.domains.current.baseUrl+'/task/task.php'};
-      scope.curAttemptId = scope.user_item.attempt ? scope.user_item.attempt.ID : null;
       scope.platform.getTaskParams = function(key, defaultValue, success, error) {
          var res = scope.taskParams;
          if (key) {
@@ -242,6 +260,17 @@ angular.module('algorea')
             return res;
          }
       };
+
+      // move to next item in same chapter
+      scope.moveToNextImmediate = function() {
+         scope.goRightImmediateLink();
+      };
+      // move to next item
+      scope.moveToNext = function() {
+         scope.goRightLink();
+      };
+
+      scope.curAttemptId = scope.user_item.attempt ? scope.user_item.attempt.ID : null;
       scope.gradeTask = function (answer, answerToken, validateUserItemID, success, error) {
          scope.grader.gradeTask(answer, answerToken, function(score, message, scoreToken) {
             var postParams = {
@@ -271,6 +300,8 @@ angular.module('algorea')
                   if(!postRes.bValidated) {
                      ModelsManager.updated('users_items', scope.user_item.ID, false, true);
                   }
+                  // An item has been unlocked, need to reset sync as for some
+                  // reason it doesn't get the changes
                   SyncQueue.sentVersion = 0;
                   SyncQueue.serverVersion = 0;
                   SyncQueue.resetSync = true;
@@ -294,9 +325,6 @@ angular.module('algorea')
                         scope.setTabs(views);
                      });
                   });
-
-                  // An item has been unlocked, need to reset sync as for some
-                  // reason it doesn't get the changes
                }
                scope.user_item.iScore = Math.max(scope.user_item.iScore, score);
                $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
@@ -308,18 +336,21 @@ angular.module('algorea')
             });
          });
       };
-      var views = {'task': true, 'solution': true, 'editor': true, 'hints': true, 'grader': true,'metadata':true};
+
+      var views = {'task': true, 'solution': true, 'editor': true, 'hints': true, 'grader': true, 'metadata':true};
       var currentId = scope.currentId;
+
       scope.loadOpacity = 0.6;
       scope.$apply();
-      var loadMsgTimeout = setTimeout(function () {
+
+      var loadMsgTimeout = $timeout(function () {
          scope.slowLoading = true;
-         scope.$apply();
       }, 5000);
+
       scope.task.load(views, function() {
          if(scope.currentId != currentId) { return; }
          scope.taskLoaded = true;
-         clearTimeout(loadMsgTimeout);
+         $timeout.cancel(loadMsgTimeout);
          scope.task.getMetaData(function(metaData) {
             scope.metaData = metaData;
             if (metaData.minWidth) {
@@ -336,13 +367,14 @@ angular.module('algorea')
                elem.removeClass('task-auto-height');
             }
             scope.modifyUrl = metaData.editorUrl ? $sce.trustAsResourceUrl(metaData.editorUrl) : null;
-            scope.updateModifyTab();
+            tabsService.updateTabById('modify', {disabled: !scope.modifyUrl});
             $rootScope.$broadcast('layout.taskLayoutChange');
          });
          $timeout(function () {
             // Need to let the DOM refresh properly first
             scope.task.getViews(function(views) {
                scope.setTabs(views);
+               scope.$apply();
             });
          }, 0);
       }, function() {
@@ -351,6 +383,7 @@ angular.module('algorea')
          scope.$apply();
       });
     }
+
     return {
       restrict: 'EA',
       scope: false,
@@ -363,44 +396,6 @@ angular.module('algorea')
             name = 'task-'+Math.floor((Math.random() * 10000) + 1);// could be better...
          }
          if (!scope.taskName) {scope.taskName = name;}
-         scope.$on('algorea.attemptChanged', function(event) {
-            // Reload item after we select a new attempt
-            if (scope.user_item.attempt && scope.user_item.attempt.ID != scope.curAttemptId) {
-               scope.itemUrl = null; // Avoid considering it's the same URL as we're changing parameters
-               reinit();
-            }
-         });
-         function initTask(sameUrl) {
-            scope.currentView = null;
-            // ID of the current instance, allows to avoid callbacks from old tasks
-            scope.currentId = Math.random() * 1000000000;
-            if (scope.item.sUrl) {
-               if (scope.item.bUsesAPI) {
-                  var itemUrl = scope.item.sUrl;
-                  scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name, $rootScope.sLocale));
-                  // we save the value, to compare it with the new one if iframe is reloaded
-                  scope.itemUrl = itemUrl;
-               } else {
-                  scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
-                  scope.itemUrl = null;
-               }
-               $timeout(function() { initIframe(sameUrl); });
-            } else {
-               loadTask(scope, null, false);
-            }
-         }
-         function initIframe(sameUrl) {
-            scope.taskIframe = elem.find('iframe');
-            scope.taskIframe[0].src = scope.taskUrl;
-            var timeout = $timeout(function() {
-                loadTask(scope, scope.taskIframe, sameUrl);
-                }, 3000);
-            scope.taskIframe[0].onload = function() {
-               if($timeout.cancel(timeout)) {
-                  loadTask(scope, scope.taskIframe, sameUrl);
-               }
-            };
-         }
          if (scope.item && (scope.item.sType == 'Task' || scope.item.sType == 'Course')) {
             if(scope.item.bHasAttempts && !scope.user_item.idAttemptActive) {
                // Create an attempt first
@@ -408,7 +403,7 @@ angular.module('algorea')
                scope.autoSelectAttempt();
             } else {
                scope.startItem();
-               initTask(false);
+               initTask(scope, elem, false);
             }
          }
          // function comparing two url, returning true if the iframe won't be reloaded
@@ -428,25 +423,24 @@ angular.module('algorea')
             if (!scope.item || (scope.item.sType !== 'Task' && scope.item.sType !== 'Course')) {
                return;
             }
-            angular.forEach(scope.intervals, function(interval, name) {
+            angular.forEach(scope.intervals, function(interval) {
                $interval.cancel(interval);
             });
             scope.intervals = {};
+
             var sameUrl = !force && isSameBaseUrl(scope.itemUrl, scope.item.sUrl);
             if (scope.task && !scope.task.unloaded) {
                scope.task.unload(function() {
                   scope.taskLoaded = false;
                   scope.canGetState = false;
-                  // TODO :: did we really need that?
-//                  scope.currentView = null;
                   scope.task.unloaded = true;
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);
                      scope.taskUrl = '';
-                     $timeout(function() {initTask(sameUrl);});
+                     $timeout(function() {initTask(scope, elem, sameUrl);});
                   } else {
                      scope.task.updateToken(scope.user_item.sToken, function() {
-                        initTask(sameUrl);
+                        initTask(scope, elem, sameUrl);
                      });
                   }
                }, function() {
@@ -456,9 +450,8 @@ angular.module('algorea')
                   scope.task.unloaded = true;
                   TaskProxyManager.deleteTaskProxy(scope.taskName);
                   scope.taskUrl = '';
-                  $timeout(function() {initTask();});
+                  $timeout(function() {initTask(scope, elem);});
                });
-               
             } else {
                scope.taskLoaded = false;
                scope.canGetState = false;
@@ -467,9 +460,16 @@ angular.module('algorea')
                   TaskProxyManager.deleteTaskProxy(scope.taskName);
                   scope.taskUrl = '';
                }
-               $timeout(function() {initTask(sameUrl);});
+               $timeout(function() {initTask(scope, elem, sameUrl);});
             }
          }
+         scope.$on('algorea.attemptChanged', function(event) {
+            // Reload item after we select a new attempt
+            if (scope.user_item.attempt && scope.user_item.attempt.ID != scope.curAttemptId) {
+               scope.itemUrl = null; // Avoid considering it's the same URL as we're changing parameters
+               reinit();
+            }
+         });
          scope.$on('admin.itemSelected', function() {
             reinit();
          });

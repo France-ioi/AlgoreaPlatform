@@ -1,5 +1,6 @@
 <div class="groupRequest-tabContent" ng-controller="groupsMemberController">
-    <div class="">
+    <div ng-if="loading" ng-i18next="groupRequests_loading"></div>
+    <div>
         <div ng-if="!loading && !showTable()">
             <p data-18n="groupRequests_member_no_group"></p>
         </div>

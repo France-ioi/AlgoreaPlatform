@@ -1,58 +1,58 @@
-<div class="content-wrapper">
-    <div class="children-list-container">
-        <div class="children-list-left-margin"></div>
-        <div class="children-list" ui-sortable="sortableOptions" ng-model="items">
-            <div ng-repeat="childItem in items track by childItem.ID" class="children-item-div">
-                <div class="children-item-row">
-                    <div>
-                        <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">drag_handle</i>
-                        <span class="material-icons material-btn">{{ getItemIcon(childItem); }}</span>
-                        <a ui-sref="{{ getChildSref(childItem) }}">{{ childItem.strings[0].sTitle }}</a>
-                    </div>
-                    <div>
-                        <i class="material-icons material-btn" ng-show="canMore(childItem)" ng-click="toggleMore(childItem)">more_vert</i>
-                        <i class="material-icons material-btn" ng-click="copyItem(childItem)">content_copy</i>
-                        <i class="material-icons material-btn" ng-click="cutItem(childItem)">content_cut</i>
-                        <i class="material-icons material-btn" ng-click="removeItem(childItem)">remove_circle</i>
-                    </div>
+<div class="children-list-container">
+    <div class="children-list-left-margin"></div>
+    <div class="children-list" ui-sortable="sortableOptions" ng-model="items">
+        <div ng-repeat="childItem in items track by childItem.ID" class="children-item-div">
+            <div class="children-item-row">
+                <div>
+                    <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">drag_handle</i>
+                    <span class="material-icons material-btn">{{ getItemIcon(childItem); }}</span>
+                    <a ui-sref="{{ getChildSref(childItem) }}">{{ childItem.strings[0].sTitle }}</a>
                 </div>
-                <div class="children-item-more" ng-show="showMore[childItem.ID]">
-                    <div style="float: right; margin-top: 8px;">
-                        <button class="btn btn-default btn-xs">
-                            <span class="material-icons material-btn" ng-click="copyItem(childItem)">get_app</span>
-                            <span ng-i18next="chapterEditor_zip_download"></span>
-                        </button>
-                    </div>
-                    <div ng-if="childItem.sRepositoryPath">
-                        <span class="material-icons">work</span>
-                        <span ng-i18next="chapterEditor_repository_folder"></span> :
-                        {{ childItem.sRepositoryPath }}
-                    </div>
-                    <div ng-if="item.sRepositoryPath && !childItem.sRepositoryPath">
-                        <span class="material-icons">work_off</span>
-                        <span ng-i18next="chapterEditor_repository_folder_none"></span>
-                    </div>
-                    <div>
-                        <span class="material-icons">link</span> <span ng-i18next="chapterEditor_links_title"></span> :
-                        <ul class="children-item-links">
-                            <li><span ng-i18next="chapterEditor_links_task"></span>&nbsp;:&nbsp;<a href="{{ childItem.sUrl }}">{{ childItem.sUrl }}</a></li>
-                            <li ng-repeat="link in links[childItem.ID]">{{ link.title }}&nbsp;:&nbsp;<a href="{{ link.url }}">{{ link.url }}</a></li>
-                        </ul>
-                    </div>
-                    <div style="clear: both;"></div>
+                <div>
+                    <i class="material-icons material-btn" ng-show="canMore(childItem)" ng-click="toggleMore(childItem)">more_vert</i>
+                    <i class="material-icons material-btn" ng-click="copyItem(childItem)">content_copy</i>
+                    <i class="material-icons material-btn" ng-click="cutItem(childItem)">content_cut</i>
+                    <i class="material-icons material-btn" ng-click="removeItem(childItem)">remove_circle</i>
                 </div>
             </div>
-            <div ng-show="creating">
-                <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">drag_handle</i>
-                <span class="material-icons material-btn">{{ creating.icon }}</span>
-                <input type="text" placeholder="{{ creating.placeholder }}" ng-model="creating.name"></input>
-                <button class="btn btn-primary" ng-i18next="create" ng-click="create();"></button>
-                <button class="btn btn-danger" ng-i18next="cancel" ng-click="cancelCreate();"></button>
+            <div class="children-item-more" ng-show="showMore[childItem.ID]">
+                <div style="float: right; margin-top: 8px;">
+                    <button class="btn btn-default btn-xs">
+                        <span class="material-icons material-btn" ng-click="copyItem(childItem)">get_app</span>
+                        <span ng-i18next="chapterEditor_zip_download"></span>
+                    </button>
+                </div>
+                <div ng-if="childItem.sRepositoryPath">
+                    <span class="material-icons">work</span>
+                    <span ng-i18next="chapterEditor_repository_folder"></span> :
+                    {{ childItem.sRepositoryPath }}
+                </div>
+                <div ng-if="item.sRepositoryPath && !childItem.sRepositoryPath">
+                    <span class="material-icons">work_off</span>
+                    <span ng-i18next="chapterEditor_repository_folder_none"></span>
+                </div>
+                <div>
+                    <span class="material-icons">link</span> <span ng-i18next="chapterEditor_links_title"></span> :
+                    <ul class="children-item-links">
+                        <li><span ng-i18next="chapterEditor_links_task"></span>&nbsp;:&nbsp;<a href="{{ childItem.sUrl }}">{{ childItem.sUrl }}</a></li>
+                        <li ng-repeat="link in links[childItem.ID]">{{ link.title }}&nbsp;:&nbsp;<a href="{{ link.url }}">{{ link.url }}</a></li>
+                    </ul>
+                </div>
+                <div style="clear: both;"></div>
             </div>
         </div>
-        <div class="children-list-right-margin"></div>
+        <div ng-show="creating">
+            <i class="material-icons material-btn drag-ctrl" ng-if="allowReorder">drag_handle</i>
+            <span class="material-icons material-btn">{{ creating.icon }}</span>
+            <input type="text" placeholder="{{ creating.placeholder }}" ng-model="creating.name"></input>
+            <button class="btn btn-primary" ng-i18next="create" ng-click="create();"></button>
+            <button class="btn btn-danger" ng-i18next="cancel" ng-click="cancelCreate();"></button>
+        </div>
     </div>
+    <div class="children-list-right-margin"></div>
 </div>
+
+<hr>
 
 <div class="panel panel-default">
     <div class="panel-heading">
