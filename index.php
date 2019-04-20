@@ -184,6 +184,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('login/loginService.js') ?>"></script>
 
   <script src="<?= includeFile('algorea.js') ?>"></script>
+  <script src="<?= includeFile('backendService.js') ?>"></script>
   <script src="<?= includeFile('contest/contestTimerService.js') ?>"></script>
   <script src="<?= includeFile('contest/contestTimerDirective.js') ?>"></script>
   <script src="<?= includeFile('layout.js') ?>"></script>

@@ -119,9 +119,8 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', '$i18next', 'tabsService',
-   function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter, $i18next, tabsService) {
-   'use strict';
+   .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', '$i18next', 'tabsService', 'backendService',
+   function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter, $i18next, tabsService, backendService) {
 
    $scope.error = null;
    $scope.tabsService = tabsService;
@@ -203,21 +202,6 @@ angular.module('algorea')
 
    $scope.numberOfEvents = 10;
 
-   var getTypeString = function(type, userItem) {
-      if (type == 'hint') {
-         return userItem.nbHintsCached+$i18next.t('groupAdmin_type_hint');
-      }
-      if (type == 'answer') {
-         return userItem.nbSubmissionsAttempts+$i18next.t('groupAdmin_type_answer');
-      }
-      if (type == 'validation') {
-         return $i18next.t('groupAdmin_type_validation');
-      }
-      if (type == 'newThread') {
-         return $i18next.t('groupAdmin_type_newThread');
-      }
-   };
-
    var durationToStr = function(date1, date2) {
       if (!date2 || !date1) return '-';
       var timeDiffMs = Math.abs(date2.getTime() - date1.getTime());
@@ -266,69 +250,66 @@ angular.module('algorea')
       return '-';
    }
 
-   function getUserStr(user) {
+   $scope.getUserStr = function(user) {
       if (!user) {
          return $i18next.t('groupAdmin_unkonwn_user');
       }
-      var res = user.sLogin;
-      if (user.sFirstName || user.sLastName) {
+      var res = user.login;
+      if (user.first_name || user.last_name) {
          res += ' (';
       }
-      if (user.sFirstName) {
-         res += user.sFirstName + (user.sLastName ? ' ' : '');
+      if (user.first_name) {
+         res += user.first_name + (user.last_name ? ' ' : '');
       }
-      if (user.sLastName) {
-         res += user.sLastName;
+      if (user.last_name) {
+         res += user.last_name;
       }
-      if (user.sFirstName || user.sLastName) {
+      if (user.first_name || user.last_name) {
          res += ')';
       }
       return res;
    }
 
-   var insertEvent = function(userItem, type, date) {
-      var eventStr = getTypeString(type, userItem);
-      var userStr = getUserStr(userItem.user);
-      var event = {
-         'date': date,
-         'userStr': userStr,
-         'eventStr': eventStr,
-         'itemStr': userItem.item.strings[0].sTitle,
-         'user_item': userItem
-      };
-      // insertion in a sorted array:
-      $scope.events.splice(_.sortedIndexBy($scope.events, event, function(event) {return event.date;}), 0, event);
-      if ($scope.events.length > $scope.numberOfEvents) {
-         $scope.events.shift();
-         $scope.oldestEventDate = $scope.events[$scope.events.length-1].date;
+   function getJSDate(date) {
+      return new Date(date);
+   }
+
+   $scope.getEventClass = function(userAnswer) {
+      if(userAnswer.validated) {
+         return 'validated';
+      } else if(userAnswer.score > 0) {
+         return 'validated_partial';
+      } else {
+         return 'failed';
       }
-   };
+   }
 
    $scope.updateEvents = function() {
       $scope.events = [];
-      $scope.oldestEventDate = new Date("2012-01-15");
-      var usersItems = $scope.allUserItems;
-      function getJSDate(sDate) {
-         return sDate ? ModelsManager.getJSDateTimeFromSQLDateTime(sDate) : null;
-      }
-      angular.forEach(usersItems, function(userItem) {
-         if (!$scope.usersSelected[userItem.idUser] || !$scope.itemsListRev[userItem.idItem]) {
+      angular.forEach($scope.allEvents, function(userAnswer) {
+         if(!$scope.usersSelected[userAnswer.user.login] || !$scope.itemsListRev[userAnswer.item.id]) {
+            console.log('rejected');
             return;
          }
-         if (getJSDate(userItem.sValidationDate) > $scope.oldestEventDate) {
-            insertEvent(userItem, 'validation', userItem.sValidationDate);
-         }
-         if (getJSDate(userItem.sLastAnswerDate) > $scope.oldestEventDate && getJSDate(userItem.sLastAnswerDate) != userItem.sValidationDate) {
-            insertEvent(userItem, 'answer', userItem.sLastAnswerDate);
-         }
-         if (userItem.item.sType == 'task' && userItem.sLastHintDate > $scope.oldestEventDate) {
-            insertEvent(userItem, 'hint', userItem.sLastHintDate);
-         }
-         if (getJSDate(userItem.sThreadStartDate) > $scope.oldestEventDate) {
-            insertEvent(userItem, 'newThread', userItem.sThreadStartDate);
-         }
+         $scope.events.push(userAnswer);
       });
-      _.reverse($scope.events);
+   };
+
+   $scope.processEvents = function() {
+      $scope.allEvents = [];
+      var lastUserAnswer = null;
+      angular.forEach($scope.allUserAnswers, function(userAnswer) {
+         if(lastUserAnswer &&
+               userAnswer.user.login == lastUserAnswer.user.login &&
+               userAnswer.item.id == lastUserAnswer.item.id &&
+               userAnswer.score == lastUserAnswer.score) {
+            if(!lastUserAnswer.repeat) { lastUserAnswer.repeat = 1; }
+            lastUserAnswer.repeat += 1;
+         } else {
+            $scope.allEvents.push(userAnswer);
+            lastUserAnswer = userAnswer;
+         }
+         });
    };
 
    $scope.invitationError = null;
@@ -674,7 +655,14 @@ angular.module('algorea')
          $scope.syncing = false;
          console.error("error calling groupAdmin/api.php");
       });
-      
+
+      backendService.groupRecentActivity(groupId, itemId).success(function(data) {
+         $scope.allUserAnswers = data;
+         $scope.processEvents();
+         $scope.updateEvents();
+         }).error(function() {
+            console.error("error getting groupRecentActivity");
+         });
    };
 
    $scope.resync = function() {
@@ -713,7 +701,7 @@ angular.module('algorea')
          $scope.groupsSelected[child_group.ID] = true;
          var user = child_group.userSelf;
          if (!user) return;
-         $scope.usersSelected[user.ID] = true;
+         $scope.usersSelected[user.sLogin] = true;
          $scope.groupChildren.push(child_group_group);
       });
       $scope.adminOnGroup = false;
@@ -744,7 +732,7 @@ angular.module('algorea')
       $scope.groupsSelected[group.ID] = !$scope.groupsSelected[group.ID];
       var user = group.userSelf;
       if (!user) return;
-      $scope.usersSelected[user.ID] = !$scope.usersSelected[user.ID];
+      $scope.usersSelected[user.sLogin] = !$scope.usersSelected[user.sLogin];
       $scope.updateEvents();
    }
 
@@ -755,7 +743,7 @@ angular.module('algorea')
          if (!group) return;
          var user = group.userSelf;
          if (!user) return;
-         $scope.usersSelected[user.ID] = true;
+         $scope.usersSelected[user.sLogin] = true;
          $scope.updateEvents();
       });
    };
@@ -767,7 +755,7 @@ angular.module('algorea')
          if (!group) return;
          var user = group.userSelf;
          if (!user) return;
-         $scope.usersSelected[user.ID] = false;
+         $scope.usersSelected[user.sLogin] = false;
          $scope.updateEvents();
       });
    }
@@ -779,10 +767,10 @@ angular.module('algorea')
       $scope.groupsSelected[group.ID] = true;
       var user = group.userSelf;
       if (!user) return;
-      angular.forEach($scope.usersSelected, function(val, ID) {
-         $scope.usersSelected[ID] = false;
+      angular.forEach($scope.usersSelected, function(val, login) {
+         $scope.usersSelected[login] = false;
       });
-      $scope.usersSelected[user.ID] = true;
+      $scope.usersSelected[user.sLogin] = true;
       $scope.updateEvents();
       $scope.section = 'progress'; // formValues.activeTab = 2; // selects members tab
    }

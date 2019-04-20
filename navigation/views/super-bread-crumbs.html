@@ -1,1 +1,8 @@
-<div class="breadcrumbs-item" ng-repeat="(depth, item) in items" display-item from="menu" depth="{{ depth }}"></div>
+<div class="breadcrumbs-item" ng-repeat="(depth, item) in items">
+    <span ng-show="item.loading" ng-i18next="loading"></span>
+    <span ng-show="!item.loading" ng-class="getClass(depth)">
+        <span ng-show="depth == curDepth">{{ item.title }}</span>
+        <a ng-show="depth != curDepth" ui-sref="{{ getSref(depth) }}">{{ item.title }}</a>
+    </span>
+    <span ng-if="depth < maxDepth" style="padding-left: 5px;">&gt;</span>
+</div>

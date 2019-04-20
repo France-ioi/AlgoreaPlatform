@@ -187,6 +187,7 @@ BREADCRUMBS TOOLBAR
    padding-right:10px;
    align-self: center;
 }
+/* Deprecated */
 #breadcrumbs .breadcrumbs-item-inactive-not-last::after,
 #breadcrumbs .breadcrumbs-inactive-not-last::after,
 #breadcrumbs .breadcrumbs-active-not-last::after {

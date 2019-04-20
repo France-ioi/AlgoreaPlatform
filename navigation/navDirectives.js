@@ -6,12 +6,7 @@ angular.module('algorea')
       restrict: 'EA',
       scope: false,
       template: function(element, attrs) {
-        if (attrs.from == 'menu') {
-           return '<span ng-if="visible" class="breadcrumbs-item-{{activityClass}} breadcrumbs-{{activityClass}}-{{lastClass}} breadcrumbs-{{distanceClass}}">' +
-                  '  <span ng-show="active" ng-include="viewsBaseUrl+\'item-menu.html\'"></span>' +
-                  '  <a ng-show="!active" ui-sref="{{getSref()}}" ng-include="viewsBaseUrl+\'item-menu.html\'"></a>' +
-                  '</span>';
-        } else if(attrs.from == 'main') {
+        if(attrs.from == 'main') {
            return '<div ng-include="viewsBaseUrl+\'item-header.html\'"></div>' +
                   '<div ng-show="showItem" ng-include="getTemplate()"></div>';
         } else {
@@ -33,27 +28,17 @@ angular.module('algorea')
             scope.active_tab=0;
             scope.showItem = true;
             scope.setItemIcon(scope.item);
-            if (from == 'menu') {
-               scope.lastClass = (scope.depth+1 == scope.pathParams.path.length) ? 'last' : 'not-last'; // IE8 doesn't support the :not(:last-child) selector...
-               scope.active = (scope.depth+1 == scope.realPathParams.path.length);
-               scope.activityClass = scope.active ? "active" : "inactive";
-               scope.distanceClass = 'before-selected';
-               if (scope.depth+1 > scope.realPathParams.path.length) {
-                  scope.distanceClass = 'after-selected';
-               }
+            if (from == "parent") {
+               scope.setItemAccessIcon(scope.item);
+               scope.setScore(scope.item);
+               scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'-'+scope.item.ID;
+               scope.activityClass = (scope.item.ID == scope.pathParams.path[scope.pathParams.path.length-1]) ? 'active' : 'inactive';
+            } else if (from == "children-list") {
+               scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'-'+scope.item.ID;
             } else {
-               if (from == "parent") {
-                  scope.setItemAccessIcon(scope.item);
-                  scope.setScore(scope.item);
-                  scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'-'+scope.item.ID;
-                  scope.activityClass = (scope.item.ID == scope.pathParams.path[scope.pathParams.path.length-1]) ? 'active' : 'inactive';
-               } else if (from == "children-list") {
-                  scope.relativePath = (scope.relativePath === undefined ? '' : scope.relativePath)+'-'+scope.item.ID;
-               } else {
-                  scope.relativePath = '';
-               }
-               scope.depth = (scope.depth === undefined) ? 0 : scope.depth + 1;
+               scope.relativePath = '';
             }
+            scope.depth = (scope.depth === undefined) ? 0 : scope.depth + 1;
          };
          scope.$watch('item.ID', function() { scope.init(attrs.from); });
          scope.$on('algorea.reloadView', function(event, viewName){

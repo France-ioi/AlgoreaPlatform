@@ -204,7 +204,9 @@ angular.module('algorea')
         },
         getSrefString: function(path, depth, section) {
            // Get string for ui-sref, targetting depth in path
-           path = this.getPathStrAtDepth(path, depth);
+           if(typeof depth != 'undefined') {
+              path = this.getPathStrAtDepth(path, depth);
+           }
            return "contents("+JSON.stringify({path: path, section: section})+")";
         },
         getSrefFunction: function(path, depth, section) {

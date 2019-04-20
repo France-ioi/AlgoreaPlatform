@@ -579,56 +579,82 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('superBreadCrumbsController', ['$scope', '$rootScope', 'itemService', 'pathService', function ($scope, $rootScope, itemService, pathService) {
-      $scope.panel = 'menu';
-      $scope.getItems = function() {
-         angular.forEach($scope.pathParams.path, function(ID, index) {
-            if(typeof $scope.items[index] != 'undefined') { return; }
-            $scope.items.push({ID: 0});
-            itemService.getAsyncRecord('items', ID, function(item) {
-               if(item) {
-                  item.breadCrumbsDepth = index;
-                  for(var prop in item) {
-                     $scope.items[index][prop] = item[prop];
-                  }
-               }
+.controller('superBreadCrumbsController', ['$scope', '$rootScope', 'itemService', 'pathService', 'backendService', function ($scope, $rootScope, itemService, pathService, backendService) {
+    if(!$rootScope.breadcrumbs) {
+        $rootScope.breadcrumbs = {};
+    }
+    $scope.path = '';
+
+    $scope.panel = 'menu';
+    $scope.getItems = function() {
+        angular.forEach($scope.path, function(ID, idx) {
+            if(typeof $scope.items[idx] != 'undefined') { return; }
+            $scope.items.push({item_id: ID, loading: true});
+        });
+        backendService.itemsBreadCrumbs($scope.path).success(function(data) {
+            var itemsIdx = {};
+            angular.forEach($scope.items, function(crumb, idx) {
+                itemsIdx[crumb.item_id] = idx;
             });
-         });
-      };
-      $scope.getPathParams = function() {
-         $scope.realPathParams = pathService.getPathParams('menu');
-         $scope.pathParams = $rootScope.breadcrumbsParams ? $rootScope.breadcrumbsParams : $scope.realPathParams;
-      }
 
-      $scope.isSamePathBase = function() {
-         if(!$rootScope.breadcrumbsParams) { return false; }
-         for(var i=0; i < $scope.realPathParams.path.length && i < $scope.breadcrumbsParams.path.length; i++) {
-            if($scope.realPathParams.path[i] != $rootScope.breadcrumbsParams.path[i]) {
-               return false;
-            }
-         }
-         return true;
-      }
+            angular.forEach(data, function(itemData) {
+                if(typeof itemsIdx[itemData.item_id] == 'undefined') { return; }
+                var crumb = $scope.items[itemsIdx[itemData.item_id]];
+                if(crumb.loading) {
+                    crumb.title = itemData.title;
+                    crumb.loading = false;
+                } else if(itemData.language_id == $rootScope.sLocaleId) {
+                    crumb.title = itemData.title;
+                }
+            });
+        });
+    };
 
-      $scope.localInit = function() {
-         $scope.getPathParams();
-         if($scope.isSamePathBase()) {
-            $scope.items = $rootScope.breadcrumbsItems;
-            if($rootScope.breadcrumbsParams.path.length < $scope.realPathParams.path.length) {
-               $rootScope.breadcrumbsParams = $scope.realPathParams;
+    $scope.isSamePathBase = function() {
+        if(!$rootScope.breadcrumbs.path) { return false; }
+        for(var i=0; i < $scope.realPath.length && i < $rootScope.breadcrumbs.path.length; i++) {
+            if($scope.realPath[i] != $rootScope.breadcrumbs.path[i]) {
+                return false;
             }
-         } else {
+        }
+        return true;
+    }
+
+    $scope.localInit = function() {
+        $scope.realPath = pathService.getPathParams('menu').path;
+        if($scope.isSamePathBase()) {
+            $scope.items = $rootScope.breadcrumbs.items;
+            if($rootScope.breadcrumbs.path.length < $scope.realPath.length) {
+                $rootScope.breadcrumbs.path = $scope.realPath;
+            }
+        } else {
             $scope.items = [];
             $scope.pathParams = $scope.realPathParams;
-            $rootScope.breadcrumbsParams = $scope.realPathParams;
-         }
-         $scope.getItems();
-         $rootScope.breadcrumbsItems = $scope.items;
-      };
-      $scope.localInit();
-      $scope.$on('syncResetted', function() {
-         $scope.localInit();
-      });
+            $rootScope.breadcrumbs.path = $scope.realPath;
+        }
+        $scope.path = $rootScope.breadcrumbs.path;
+        $scope.curDepth = $scope.realPath.length - 1;
+        $scope.maxDepth = $scope.path.length - 1;
+        $scope.getItems();
+        $rootScope.breadcrumbs.items = $scope.items;
+    };
+
+    $scope.getClass = function(depth) {
+        if(depth == $scope.curDepth) {
+            return 'breadcrumbs-item-active';
+        } else if(depth > $scope.curDepth) {
+            return 'breadcrumbs-after';
+        }
+    };
+
+    $scope.getSref = function(depth) {
+        return pathService.getSrefString($scope.path.join('-'), depth);
+    };
+
+    $scope.localInit();
+    $scope.$on('syncResetted', function() {
+        $scope.localInit();
+    });
 }]);
 
 angular.module('algorea')
@@ -694,8 +720,8 @@ angular.module('algorea')
    .controller('localeController', ['$scope', '$rootScope', '$i18next', function ($scope, $rootScope, $i18next) {
       // Base locales
       $scope.locales = [
-         {id: 'fr', label: 'Français'},
-         {id: 'en', label: 'English'}
+         {ID: 1, name: 'fr', label: 'Français'},
+         {ID: 2, name: 'en', label: 'English'}
          ];
 
       // Fetch available locales
@@ -704,10 +730,10 @@ angular.module('algorea')
          var dbLocales = ModelsManager.getRecords('languages');
          _.forEach(dbLocales, function(curLang) {
             if(!curLang.sCode || !curLang.sName) { return; }
-            if(!_.find(newLocales, function(l) { return l.id == curLang.sCode; })) {
-               var newLang = {id: curLang.sCode, label: curLang.sName};
+            if(!_.find(newLocales, function(l) { return l.name == curLang.sCode; })) {
+               var newLang = {id: curLang.ID, name: curLang.sCode, label: curLang.sName};
                newLocales.push(newLang);
-               if(newLang.id == $scope.curLocale.id) { $scope.curLocale = newLang; }
+               if(newLang.name == $scope.curLocale.name) { $scope.curLocale = newLang; }
             }
          });
          if(newLocales.length) { $scope.locales = newLocales; }
@@ -721,11 +747,12 @@ angular.module('algorea')
 
       $scope.changeLocale = function(newLocale, force) {
          // Select a new locale
-         if(!force && $scope.curLocale.id == newLocale.id) { return; }
+         if(!force && $scope.curLocale.name == newLocale.name) { return; }
 
          $scope.curLocale = newLocale;
-         $rootScope.sLocale = $scope.curLocale.id;
-         $i18next.changeLanguage($scope.curLocale.id);
+         $rootScope.sLocale = $scope.curLocale.name;
+         $rootScope.sLocaleID = $scope.curLocale.ID;
+         $i18next.changeLanguage($scope.curLocale.name);
          $rootScope.$broadcast('algorea.languageChanged');
       };
 
@@ -733,13 +760,13 @@ angular.module('algorea')
       $scope.filterLocales = function(noApply) {
          for(var i = $scope.locales.length - 1; i > -1; i--) {
             var locale = $scope.locales[i];
-            if(config.domains.current.availableLanguages && config.domains.current.availableLanguages.split(',').indexOf(locale.id) == -1) {
+            if(config.domains.current.availableLanguages && config.domains.current.availableLanguages.split(',').indexOf(locale.name) == -1) {
                // Filter locales depending on the config
                $scope.locales.splice(i, 1);
             }
             for(var j=0; j < $scope.targets.length; j++) {
                // If there are target languages, see if one got available
-               if(locale.id != $scope.targets[j]) continue;
+               if(locale.name != $scope.targets[j]) continue;
                if(noApply === true) {
                   $scope.curLocale = locale;
                } else {
