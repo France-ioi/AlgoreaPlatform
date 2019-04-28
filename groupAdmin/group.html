@@ -1,7 +1,6 @@
 <div ng-if="!loading && !error" class="groupAdmin">
-	<h1><span ng-i18next="group"></span> : <span class="groupName">{{group.sName}}</span></h1>
+    <div ng-include="templatesPrefix+'/groupAdmin/groupDescription.html'"></div>
     <div ng-include="templatesPrefix+'/navigation/views/tabs.html'"></div>
-    <div ng-if="tabsService.isTab('description')" ng-include="templatesPrefix+'/groupAdmin/groupDescription.html'"></div>
     <div ng-if="tabsService.isTab('members')" ng-include="templatesPrefix+'/groupAdmin/groupMembers.html'"></div>
     <div ng-if="tabsService.isTab('progress')" ng-include="templatesPrefix+'/groupAdmin/groupProgress.html'"></div>
     <div ng-if="tabsService.isTab('administration')" ng-include="templatesPrefix+'/groupAdmin/groupAdministration.html'"></div>

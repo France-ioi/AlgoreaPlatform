@@ -37,9 +37,12 @@ angular.module('algorea')
             tab.callback(id, true);
         }
 
-        var params = Object.assign({}, $stateParams);
-        params.section = tabsById[id] > 0 ? id : null;
-        $state.go($state.current.name, params, {notify: false});
+        var newSection = tabsById[id] > 0 ? id : '';
+        if(newSection != $stateParams.section) {
+            var params = Object.assign({}, $stateParams);
+            params.section = newSection;
+            $state.go($state.current.name, params, {notify: false});
+        }
 
         return true;
     }

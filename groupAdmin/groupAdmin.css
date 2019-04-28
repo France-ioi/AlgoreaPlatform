@@ -314,6 +314,9 @@ body:not(.mobile-layout) .groupAdmin-homeContent {
 /*
 	Tab: Descriptif
 */
+.tab-group-description {
+    max-width: 752px;
+}
 .tab-group-description .flex-container {
 	display: flex;
 	flex-flow: row wrap;
@@ -328,19 +331,6 @@ body:not(.mobile-layout) .groupAdmin-homeContent {
 .tab-group-description .flex-container .item-control {
 	flex-basis: auto;
 	width: 480px;
-}
-.groupAdmin .tab-group-description .group-action {
-	max-width: 752px;
-}
-.groupAdmin .tab-group-description .group-save {
-	margin-bottom: 10px;
-	clear: both;
-	overflow: auto;
-}
-.groupAdmin .tab-group-description .block-delete {
-	border-top: 1px solid #000;
-	padding-top: 1em;
-	text-align: right;
 }
 
 /*

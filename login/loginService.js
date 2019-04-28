@@ -216,6 +216,9 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
               }
               return {tempUser: tempUser, userLogin: userLogin, userID: userID};
            },
+           isLoggedIn: function() {
+              return state == 'login';
+           },
            isTempUser: function() {
               return tempUser;
            },

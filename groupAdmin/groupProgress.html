@@ -63,7 +63,7 @@
 
     <p class="dl-link">
         <button class="btn btn-primary" ng-click="resync();" ng-disabled="syncing">
-            <span class="material-icons">refresh</span>
+            <span class="material-icons" ng-class="{'icon-spin': syncing}">refresh</span>
             <span ng-i18next="admin_reload_data"></span>
         </button>
     </p>
@@ -141,7 +141,7 @@
                     <tr ng-repeat="(idx, item) in itemsList track by idx">
                         <td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><p uib-tooltip="{{item.strings[0].sTitle}}" tooltip-placement="top-left">{{item.strings[0].sTitle}}</p></td>
                         <td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
-                        <td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
+                        <td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getUserItemClass(thisUserItem);">
                             <div ng-if="formValues.detailedView" class="progress-details">
                                 <div class="details-row">
                                     <div class="date" ng-i18next="[uib-tooltip]groupAdmin_last_activity" tooltip-placement="top">{{getDate(thisUserItem)}}</div>
@@ -156,8 +156,8 @@
                                 </div>
                             </div>
                             <div ng-if="!formValues.detailedView && item.sType == 'Task'" class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}">
-                                <span ng-if="getClass(thisUserItem) == 'read'">—</span>
-                                <span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
+                                <span ng-if="getUserItemClass(thisUserItem) == 'read'">—</span>
+                                <span ng-if="thisUserItem.iScore <= 100 && getUserItemClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
                             </div>
                             <button ng-if="!formValues.detailedView" uib-popover-template="'progress-details.html'" popover-trigger="'mouseenter'" popover-placement="top"class="btn-icon btn-small btn-preview pull-left"></button>
                             <button ng-if="!formValues.detailedView && item.sType == 'Task' && thisUserItem.nbSubmissionsAttempts" class="btn-icon btn-small btn-modal pull-right" ng-click="openPopup(thisUserItem);" ng-i18next="[uib-tooltip]groupAdmin_see_code" tooltip-placement="top"><span class="btn-label" ng-i18next="groupAdmin_see_more"></span></button>
@@ -166,7 +166,7 @@
                     <script type="text/ng-template" id="progress-details.html">
                         <ul class="progress-details">
                             <li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
-                            <li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
+                            <li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getUserItemClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getUserItemClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
                             <li class="date" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_last_activity"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
                             <li class="date" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_validation_date"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
                             <li class="time" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_time_spent"></span> : {{getDuration(thisUserItem)}}</li>
@@ -192,7 +192,7 @@
                     <tr ng-repeat="(idx, item) in itemsList track by idx">
                         <td class="fixed-width step-name" ng-class="{chapter_string: item.sType!='Task'}"><div>{{item.strings[0].sTitle}}</div></td>
                         <td class="fixed-width step-descr" ng-if="formValues.showDescription">{{item.strings[0].sDescription}}</td>
-                        <td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getClass(thisUserItem);">
+                        <td ng-repeat="child in group.children | confirmed" ng-init="thisUserItem = getUserItem(child, item);" class="status" ng-class="getUserItemClass(thisUserItem);">
                             <div ng-if="formValues.detailedView" class="progress-details">
                                 <div class="details-row">
                                     <div class="date" ng-i18next="[title]groupAdmin_last_activity">{{getDate(thisUserItem)}}</div>
@@ -209,8 +209,8 @@
                             non lu : vide / lu, sans essai : tiret / commencé : score
                                 -->
                             <div class="score text-center" ng-if="!formValues.detailedView && item.sType == 'Task'">
-                                <span ng-if="getClass(thisUserItem) == 'read'">—</span>
-                                <span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
+                                <span ng-if="getUserItemClass(thisUserItem) == 'read'">—</span>
+                                <span ng-if="thisUserItem.iScore <= 100 && getUserItemClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span>
                             </div>
                         </td>
                     </tr>

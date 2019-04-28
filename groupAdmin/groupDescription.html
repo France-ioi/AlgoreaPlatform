@@ -1,47 +1,51 @@
-<div class="groupAdmin-tabContent tab-group-description">
+<h1><span ng-i18next="{{ 'models_groups_fields_sType_values_'+newGroup.type+'_label' }}"></span> : <span class="groupName">{{ newGroup.name }}</span></h1>
+<div ng-if="!editingDetails">
+    <p>{{ newGroup.description }}</p>
+    <button class="btn btn-primary" ng-click="toggleEdit();" btn-icon-text="edit,modify"></button>
+</div>
+<div class="tab-group-description" ng-if="editingDetails">
     <div class="flex-container">
         <label class="control-label item-label">
             <span class="label-title" ng-i18next="groupAdmin_group_name"></span>
             <span class="label-description" ng-i18next="groupAdmin_group_name_desc"></span>
         </label>
-        <input type="text" ng-model="group.sName" class="form-control item-control" ng-readonly="!adminOnGroup"/>
+        <input type="text" ng-model="editedGroup.name" class="form-control item-control" />
     </div>
     <div class="flex-container">
         <label class="control-label item-label">
             <span class="label-title" ng-i18next="type"></span>
             <span class="label-description" ng-i18next="groupAdmin_type_desc"></span>
         </label>
-        <select ng-model="group.sType" class="form-control item-control" ng-disabled="!adminOnGroup">
-            <option value="Class" ng-selected="group.sType == 'Class'" ng-i18next="class"></option>
-            <option value="Friends" ng-selected="group.sType == 'Friends'" ng-i18next="team"></option>
-            <option value="Other" ng-selected="group.sType == 'Other'" ng-i18next="other"></option>
+        <select ng-model="editedGroup.type" class="form-control item-control">
+            <option ng-repeat="groupType in groupFields.types" value="{{ groupType }}" ng-i18next="{{ 'models_groups_fields_sType_values_'+groupType+'_label' }}"></option>
+        </select>
+    </div>
+    <div ng-if="editedGroup.type == 'Class'" class="flex-container">
+        <label class="control-label item-label">
+            <span class="label-title" ng-i18next="level"></span>
+            <span class="label-description" ng-i18next="groupAdmin_level_desc"></span>
+        </label>
+        <select ng-model="editedGroup.grade" class="form-control item-control">
+            <option ng-repeat="groupGrade in groupFields.grades" value="{{ groupGrade }}" ng-i18next="{{ 'models_groups_fields_iGrade_values_'+groupGrade+'_label' }}"></option>
         </select>
     </div>
     <div class="flex-container">
-            <label class="control-label item-label">
-                <span class="label-title" ng-i18next="description"></span>
-                <span class="label-description" ng-i18next="groupAdmin_description_desc"></span>
-            </label>
-            <textarea ng-model="group.sDescription" class="form-control  item-control" ng-readonly="!adminOnGroup"></textarea>
+        <label class="control-label item-label">
+            <span class="label-title" ng-i18next="description"></span>
+            <span class="label-description" ng-i18next="groupAdmin_description_desc"></span>
+        </label>
+        <textarea ng-model="editedGroup.description" class="form-control item-control"></textarea>
     </div>
-    <div ng-if="group.sType == 'Class'" class="flex-container">
-            <label class="control-label item-label" ng-if="group.sType == 'Class'">
-                <span class="label-title" ng-i18next="level"></span>
-                <span class="label-description" ng-i18next="groupAdmin_level_desc"></span>
-            </label>
-            <div class="item-control">
-                <select ng-model="group.iGrade" class="form-control">
-                    <option value="{{key}}" ng-repeat="(key, value) in groupFields.iGrade.values" ng-selected="group.iGrade == key">{{value.label}}</option>
-                </select>
-                <input type="text" ng-if="group.iGrade == '-4'" ng-model="group.sGradeDetails" class="form-control" placeholder="Précisez" ng-readonly="!adminOnGroup"/>
+    <div class="buttons-line">
+        <div>
+            <button class="btn btn-danger" confirm="deleteGroup();" btn-icon-text="delete,groupAdmin_delete_group" ng-i18next="[rel]groupAdmin_delete_group_msg"></button>
         </div>
-    </div>
-    <div class="group-action" ng-if="adminOnGroup">
-        <div class="group-save">
-            <a class="btn btn-primary pull-right" ng-click="saveGroup()" ng-disabled="!hasObjectChanged('groups', group)" ng-i18next="save"></a>
-        </div>
-        <div class="block-delete">
-            <a class="group-delete" confirm="deleteGroup();"><span ng-i18next="groupAdmin_delete_group;[rel]groupAdmin_delete_group_msg"></span><i class="material-icons">delete</i></a>
+        <div>
+            <button class="btn btn-warning" ng-click="toggleEdit()" btn-icon-text="close,cancel"></button>
+            <button class="btn btn-primary" ng-click="saveGroup()" ng-disabled="!hasModifications()" btn-loading="savingGroup" btn-icon-text="save,save">
+                <i class="material-icons">save</i>
+                <span ng-i18next="save"></span>
+            </button>
         </div>
     </div>
 </div>

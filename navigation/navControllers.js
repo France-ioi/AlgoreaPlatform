@@ -591,13 +591,13 @@ angular.module('algorea')
             if(typeof $scope.items[idx] != 'undefined') { return; }
             $scope.items.push({item_id: ID, loading: true});
         });
-        backendService.itemsBreadCrumbs($scope.path).success(function(data) {
+        backendService.itemsBreadCrumbs($scope.path).then(function(data) {
             var itemsIdx = {};
             angular.forEach($scope.items, function(crumb, idx) {
                 itemsIdx[crumb.item_id] = idx;
             });
 
-            angular.forEach(data, function(itemData) {
+            angular.forEach(data.data, function(itemData) {
                 if(typeof itemsIdx[itemData.item_id] == 'undefined') { return; }
                 var crumb = $scope.items[itemsIdx[itemData.item_id]];
                 if(crumb.loading) {

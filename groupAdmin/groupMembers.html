@@ -1,159 +1,157 @@
 <div class="groupAdmin-tabContent tab-members">
-    <div class="flex-container">
-        <div class="members-col">
-            <div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span></div>
-            <ul class="list list-block list-users">
-                <li class="list-item" ng-repeat="child in group.children | usersOnly | confirmed | userSort" ng-click="userClickedInMembers(child.child);">
-                    <span class="user-status connected"></span>
-                    <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
+    <div>
+        <div class="groupAdmin-title"><span ng-i18next="groupAdmin_group_members"></span></div>
+        <table class="table">
+            <tr ng-repeat="member in groupMembers" ng-click="userClickedInMembers(member);">
+                <td class="user-name">{{ getUserStr(member.user) }}</td>
+                <td>{{ member.status_date|date:"medium" }}</td>
+                <td>
                     <span class="action">
                         <button class="btn-icon btn-delete btn-small" ng-click="removeUser(child, $event);" uib-tooltip="supprimer"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="delete"></span></button>
                     </span>
+                </td>
+            </tr>
+        </table>
+        <div class="groupAdmin-title" ng-i18next="groupAdmin_invited_users"></div>
+        <ul class="list list-block list-applicants">
+                <li class="list-item" ng-repeat="child in group.children | invitation | userSort">
+                    <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})<span ng-if="child.sType == 'invitationRefused'" ng-i18next="groupAdmin_invite_rejected"></span></span>
+                    <span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" uib-tooltip="Annuler"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="cancel"></span></button></span>
                 </li>
-            </ul>
-            <div class="groupAdmin-title" ng-i18next="groupAdmin_invited_users"></div>
-            <ul class="list list-block list-applicants">
-                    <li class="list-item" ng-repeat="child in group.children | invitation | userSort">
-                        <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})<span ng-if="child.sType == 'invitationRefused'" ng-i18next="groupAdmin_invite_rejected"></span></span>
-                        <span class="action"><button class="btn-icon btn-delete btn-small" ng-click="cancelInvitation(child);" uib-tooltip="Annuler"><i class="material-icons md-18">close</i><span class="btn-label" ng-i18next="cancel"></span></button></span>
-                    </li>
-            </ul>
+        </ul>
+    </div>
+
+    <div class="action-col">
+        <div class="bloc-inscription">
+            <div class="groupAdmin-title"><span ng-i18next="groupAdmin_registration_management"></span>
+            <span class="title-desc" ng-i18next="groupAdmin_registration_management_desc"></span></div>
+            <div class="label-title label-list-item" ng-i18next="groupAdmin_title_invite"></div>
+            <div class="flex-container">
+                <div class="left-col">
+                    <input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" ng-i18next="[placeholder]groupAdmin_insert_logins">
+                </div>
+                <div class="right-col">
+                    <button class="btn-icon btn-add" ng-click="inviteLogins()"><i class="material-icons md-36">add_circle</i><span class="btn-label" ng-i18next="add"></span></button>
+                </div>
+            </div>
+            <span ng-if="invitationError" style="font-weight:bold;" ng-i18next="groupAdmin_error"></span> <span ng-bind="invitationError"></span>
         </div>
 
-        <div class="action-col">
-            <div class="bloc-inscription">
-                <div class="groupAdmin-title"><span ng-i18next="groupAdmin_registration_management"></span>
-                <span class="title-desc" ng-i18next="groupAdmin_registration_management_desc"></span></div>
-                <div class="label-title label-list-item" ng-i18next="groupAdmin_title_invite"></div>
-                <div class="flex-container">
-                    <div class="left-col">
-                        <input type="text" class="form-control" id="sLogin" ng-model="formValues.currentLogins" ng-i18next="[placeholder]groupAdmin_insert_logins">
-                    </div>
-                    <div class="right-col">
-                        <button class="btn-icon btn-add" ng-click="inviteLogins()"><i class="material-icons md-36">add_circle</i><span class="btn-label" ng-i18next="add"></span></button>
-                    </div>
+        <div class="bloc-inscription">
+            <div class="flex-container">
+                <div class="left-col">
+                    <div class="label-title label-list-item" ng-i18next="groupAdmin_title_code"></div>
+                    <p ng-i18next="groupAdmin_code_desc"></p>
                 </div>
-                <span ng-if="invitationError" style="font-weight:bold;" ng-i18next="groupAdmin_error"></span> <span ng-bind="invitationError"></span>
-            </div>
-
-            <!--<field model="group" field="groups.bFreeAccess" />-->
-            <div class="bloc-inscription">
-                <div class="flex-container">
-                    <div class="left-col">
-                        <div class="label-title label-list-item" ng-i18next="groupAdmin_title_code"></div>
-                        <p ng-i18next="groupAdmin_code_desc"></p>
-                    </div>
-                    <div class="right-col">
-                        <div class="checkboxSwitch">
-                            <input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
-                            <label for="codeInscr"><span></span></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-container" ng-if="formValues.hasPassword">
-                    <div class="left-col">
-                        <p ng-i18next="groupAdmin_code_label"></p>
-                    </div>
-                    <div class="right-col form-inline">
-                        <input type="text" class="form-control access-code" ng-model="group.sPassword" readonly/>
-                        <button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg"></button>
-                    </div>
-                </div>
-                <div ng-if="formValues.hasPassword">
-                    <a class="btn btn-success" target="_blank" href="/controllers/export_participation_codes.php?group_id={{group.ID}}" ng-i18next="groupAdmin_export_users"></a>
-                </div>
-                <hr ng-if="formValues.hasPassword" />
-                <div class="flex-container" ng-if="formValues.hasPassword">
-                    <div class="left-col">
-                        <p><b ng-i18next="groupAdmin_code_expiration"></b></p>
-                    </div>
-                    <div class="right-col form-inline">
-                        <div class="checkboxSwitch">
-                            <input type="checkbox" ng-change="changeExpiration();" id="expirCheck" class="switch" ng-model="formValues.expirationTimer">
-                            <label for="expirCheck"><span></span></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-container" ng-if="formValues.expirationTimer">
-                    <div class="left-col">
-                        <p ng-i18next="groupAdmin_code_expiration_timer"></p>
-                    </div>
-                    <div class="right-col form-inline">
-                        <div class="checkboxSwitch">
-                            <input type="text" id="expirLength" ng-change="saveGroup();" class="form-control" ng-model="group.sPasswordTimer">
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-container" ng-if="formValues.expirationTimer">
-                    <div class="left-col">
-                        <p ng-hide="group.sPasswordEnd" ng-i18next="groupAdmin_code_expiration_inactive"></p>
-                        <p ng-show="group.sPasswordEnd"><span ng-i18next="groupAdmin_code_expiration_active"></span> : {{ group.sPasswordEnd | date:'short' }}</p>
-                    </div>
-                    <div class="right-col form-inline">
-                        <button ng-if="group.sPasswordEnd" ng-click="refreshExpiration();" class="btn btn-primary" ng-i18next="reset"></button>
+                <div class="right-col">
+                    <div class="checkboxSwitch">
+                        <input type="checkbox" id="codeInscr" class="switch" ng-model="formValues.hasPassword" ng-change="passwordChecked();">
+                        <label for="codeInscr"><span></span></label>
                     </div>
                 </div>
             </div>
-            <div class="bloc-inscription">
-                <div class="flex-container">
-                    <div class="left-col">
-                        <div class="label-title label-list-item" ng-i18next="groupAdmin_redirect_title"></div>
-                        <p ng-i18next="groupAdmin_redirect_desc"></p>
-                    </div>
-                    <div class="right-col form-inline">
-                        <div class="checkboxSwitch">
-                            <input type="checkbox" ng-change="changeRedirect();" id="redirCheck" class="switch" ng-model="formValues.hasRedirect">
-                            <label for="redirCheck"><span></span></label>
-                        </div>
+            <div class="flex-container" ng-if="formValues.hasPassword">
+                <div class="left-col">
+                    <p ng-i18next="groupAdmin_code_label"></p>
+                </div>
+                <div class="right-col form-inline">
+                    <input type="text" class="form-control access-code" ng-model="group.sPassword" readonly/>
+                    <button confirm="refreshPassword()" class="btn btn-primary" ng-i18next="groupAdmin_renew_code;[rel]groupAdmin_renew_code_msg" btn-loading="passwordRenewing"></button>
+                </div>
+            </div>
+            <div ng-if="formValues.hasPassword">
+                <a class="btn btn-success" target="_blank" href="/controllers/export_participation_codes.php?group_id={{group.ID}}" ng-i18next="groupAdmin_export_users"></a>
+            </div>
+            <div class="flex-container" ng-if="formValues.hasPassword">
+                <div class="left-col">
+                    <p><b ng-i18next="groupAdmin_code_expiration"></b></p>
+                </div>
+                <div class="right-col form-inline">
+                    <div class="checkboxSwitch">
+                        <input type="checkbox" ng-change="changeExpiration();" id="expirCheck" class="switch" ng-model="formValues.expirationTimer">
+                        <label for="expirCheck"><span></span></label>
                     </div>
                 </div>
-                <div class="parcours-select" ng-if="formValues.hasRedirect">
-                    <span ng-i18next="groupAdmin_course"></span>
-                    <select ng-model="formValues.selectedBaseRedirection" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="redirectionBaseSelected()">
-                    </select>
-                    <select ng-repeat="(depth, selectedItem) in redirectionSelections" ng-if="depth != 0" ng-change="redirectionSelected(depth)" ng-model="redirectionSelectionsIDs[depth]">
-                        <option value=""></option>
-                        <option ng-repeat="child in redirectionSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == redirectionSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
-                    </select>
-                    <select ng-if="redirectionSelections[redirectionSelections.length-1].children.length" ng-change="redirectionSelected(0)" ng-model="redirectionSelectionsIDs[redirectionSelections.length]">
-                        <option selected="selected" value=""></option>
-                        <option ng-repeat="child in redirectionSelections[redirectionSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
-                    </select>
+            </div>
+            <div class="flex-container" ng-if="formValues.expirationTimer">
+                <div class="left-col">
+                    <p ng-i18next="groupAdmin_code_expiration_timer"></p>
                 </div>
-                <div class="flex-container" ng-if="formValues.hasContest">
-                    <div class="left-col">
-                        <p ng-i18next="groupAdmin_redirect_contest"></p>
+                <div class="right-col form-inline">
+                    <div class="checkboxSwitch">
+                        <input type="text" id="expirLength" ng-change="saveGroup();" class="form-control" ng-model="group.sPasswordTimer">
                     </div>
-                    <div class="right-col form-inline">
-                        <div class="checkboxSwitch">
-                            <input type="checkbox" ng-change="saveGroup();" id="contestCheck" class="switch" ng-model="group.bOpenContest">
-                            <label for="contestCheck"><span></span></label>
-                        </div>
+                </div>
+            </div>
+            <div class="flex-container" ng-if="formValues.expirationTimer">
+                <div class="left-col">
+                    <p ng-hide="group.sPasswordEnd" ng-i18next="groupAdmin_code_expiration_inactive"></p>
+                    <p ng-show="group.sPasswordEnd"><span ng-i18next="groupAdmin_code_expiration_active"></span> : {{ group.sPasswordEnd | date:'short' }}</p>
+                </div>
+                <div class="right-col form-inline">
+                    <button ng-if="group.sPasswordEnd" ng-click="refreshExpiration();" class="btn btn-primary" ng-i18next="reset"></button>
+                </div>
+            </div>
+        </div>
+        <div class="bloc-inscription">
+            <div class="flex-container">
+                <div class="left-col">
+                    <div class="label-title label-list-item" ng-i18next="groupAdmin_redirect_title"></div>
+                    <p ng-i18next="groupAdmin_redirect_desc"></p>
+                </div>
+                <div class="right-col form-inline">
+                    <div class="checkboxSwitch">
+                        <input type="checkbox" ng-change="changeRedirect();" id="redirCheck" class="switch" ng-model="formValues.hasRedirect">
+                        <label for="redirCheck"><span></span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="parcours-select" ng-if="formValues.hasRedirect">
+                <span ng-i18next="groupAdmin_course"></span>
+                <select ng-model="formValues.selectedBaseRedirection" ng-options="item as item.strings[0].sTitle for item in levels" ng-change="redirectionBaseSelected()">
+                </select>
+                <select ng-repeat="(depth, selectedItem) in redirectionSelections" ng-if="depth != 0" ng-change="redirectionSelected(depth)" ng-model="redirectionSelectionsIDs[depth]">
+                    <option value=""></option>
+                    <option ng-repeat="child in redirectionSelections[depth-1].children track by child.ID" ng-selected="child.child.ID == redirectionSelections[depth].ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+                </select>
+                <select ng-if="redirectionSelections[redirectionSelections.length-1].children.length" ng-change="redirectionSelected(0)" ng-model="redirectionSelectionsIDs[redirectionSelections.length]">
+                    <option selected="selected" value=""></option>
+                    <option ng-repeat="child in redirectionSelections[redirectionSelections.length-1].children track by child.ID" value="{{child.child.ID}}">{{child.child.strings[0].sTitle}}</option>
+                </select>
+            </div>
+            <div class="flex-container" ng-if="formValues.hasContest">
+                <div class="left-col">
+                    <p ng-i18next="groupAdmin_redirect_contest"></p>
+                </div>
+                <div class="right-col form-inline">
+                    <div class="checkboxSwitch">
+                        <input type="checkbox" ng-change="saveGroup();" id="contestCheck" class="switch" ng-model="group.bOpenContest">
+                        <label for="contestCheck"><span></span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bloc-inscription">
+            <div class="flex-container">
+                <div class="left-col">
+                    <div class="label-title label-list-item" ng-i18next="groupAdmin_title_spontaneous"></div>
+                    <p ng-i18next="groupAdmin_allow_spontaneous"></p>
+                </div>
+                <div class="right-col">
+                    <div class="checkboxSwitch">
+                        <input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
+                        <label for="demSpont"><span></span></label>
                     </div>
                 </div>
             </div>
-            <div class="bloc-inscription">
-                <div class="flex-container">
-                    <div class="left-col">
-                        <div class="label-title label-list-item" ng-i18next="groupAdmin_title_spontaneous"></div>
-                        <p ng-i18next="groupAdmin_allow_spontaneous"></p>
-                    </div>
-                    <div class="right-col">
-                        <div class="checkboxSwitch">
-                            <input type="checkbox" ng-change="saveGroup();" id="demSpont" class="switch" ng-model="group.bOpened">
-                            <label for="demSpont"><span></span></label>
-                        </div>
-                    </div>
-                </div>
 
-                <div  ng-if="group.bOpened" class="">
-                    <ul class="list list-block list-applicants">
-                        <li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
-                            <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
-                            <span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" ng-i18next="[title]accept"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" ng-i18next="[title]reject"></i></button></span>
-                        </li>
-                    </ul>
-                </div>
+            <div  ng-if="group.bOpened" class="">
+                <ul class="list list-block list-applicants">
+                    <li class="list-item" ng-repeat="child in group.children | byRequest | userSort" class="{success: invitation.success}">
+                        <span class="user-name">{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</span>
+                        <span class="action"><button class="btn-icon btn-small btn-wide" ng-click="acceptRequest(child);"><i class="glyphicon glyphicon-ok" ng-i18next="[title]accept"></i></button><button class="btn-icon btn-small btn-wide" ng-click="refuseRequest(child);"><i class="glyphicon glyphicon-remove" ng-i18next="[title]reject"></i></button></span>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

@@ -534,3 +534,60 @@ footer a {
   font-weight: bold;
   color: green;
 }
+
+.has-icon-spin::after {
+    content: 'flare';
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 14px;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+
+.icon-spin, .has-icon-spin::after {
+    -webkit-animation: spin 2s infinite linear;
+    animation: spin 2s infinite cubic-bezier(0, 0, 0.69, 0.65)
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg)
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg)
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg)
+  }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg)
+  }
+}
+
+/* Fix for material icons alignment */
+.btn .material-icons {
+    vertical-align: middle;
+    line-height: 14px;
+}
+
+.buttons-line {
+    display: flex;
+    justify-content: space-between;
+}
