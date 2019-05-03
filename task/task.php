@@ -399,51 +399,71 @@ function graderResult($request, $db) {
 function getToken($request, $db) {
    global $config;
    updateLastActivity();
+
+   if($request['idUser'] != $_SESSION['login']['ID']) {
+      $stmt = $db->prepare("
+         SELECT * FROM users
+         JOIN groups_ancestors ON groups_ancestors.idGroupChild = users.idGroupSelf
+         WHERE users.ID = :idUser AND groups_ancestors.idGroupAncestor = :idGroupOwned;");
+      $stmt->execute(['idUser' => $request['idUser'], 'idGroupOwned' => $_SESSION['login']['idGroupOwned']]);
+      if(!$stmt->fetch()) {
+         die(json_encode(['result' => false, 'error' => "You are not allowed to access this user's items"]));
+      }
+   }
+
    $query = 'select `users_items`.`idAttemptActive`, `users_items`.`sHintsRequested`, `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, MAX(`groups_items`.`bCachedAccessSolutions`) as `bAccessSolutions`, `items`.`sType` '.
    'from `items` '.
    'join `groups_items` on `groups_items`.`idItem` = `items`.`ID` '.
    'join `users_items` on `users_items`.`idItem` = `items`.`ID` '.
-   'left join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` .'.
-   'where `groups_items`.`idGroup` = idGroupSelf OR `groups_ancestors`.`idGroupChild` = :idGroupSelf AND '.
+   'JOIN users ON users.ID = users_items.idUser '.
+   'join `groups_ancestors` on `groups_ancestors`.`idGroupAncestor` = `groups_items`.`idGroup` AND groups_ancestors.idGroupChild = users.idGroupSelf '.
+   'WHERE '.
    '`users_items`.`idUser` = :idUser and `items`.`ID` = :idItem AND'.
    '(`items`.`sType` = \'Task\' OR `items`.`sType` = \'Course\') AND '.
-   'MAX(`groups_items`.`bCachedFullAccess` + `groups_items`.`bCachedPartialAccess`) != 0 '.
+   '(`groups_items`.`bCachedFullAccess` = 1 OR `groups_items`.`bCachedPartialAccess` = 1) '.
    'group by `items`.`ID`;';
    $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']));
-   $data = $sth->fetch();
+   $stmt->execute(array('idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']));
+   $data = $stmt->fetch();
    if (!count($data)) {
-      echo json_encode(array('result' => false, 'error' => 'you are not allowed to access this item', 'data' => $data, 'session' => $_SESSION));
+      echo json_encode(['result' => false, 'error' => "you are not allowed to access this item"]);
       exit();
    }
-   $query = 'select * from `users_answers` where `idUser` = :idUser and `idItem` = :idItem';
+   $query = 'select `users_items`.`idAttemptActive`, `users_items`.`sHintsRequested`, `users_items`.`nbHintsCached`, `users_items`.`bValidated`, `items`.`sUrl`, `items`.`ID`, `items`.`sTextId`, `items`.`bHintsAllowed`, `items`.`sSupportedLangProg`, `items`.`sType` '.
+   'from `items` '.
+   'join `users_items` on `users_items`.`idItem` = `items`.`ID` '.
+   'WHERE '.
+   '`users_items`.`idUser` = :idUser and `items`.`ID` = :idItem';
    $stmt = $db->prepare($query);
-   $stmt->execute(array('idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']));
-   $answers = $sth->fetchAll();
+   $stmt->execute(array('idUser' => $request['idUser'], 'idItem' => $request['idItem']));
+   $userData = $stmt->fetch();
+   if(!$data) {
+      echo json_encode(['result' => false, 'error' => 'no user_item found']);
+      exit();
+   }
 
    $bAccessSolutions = ($data['bAccessSolutions'] != '0' || $data['bValidated'] != '0') ? 1 : 0;
    $tokenArgs = array(
       'bAccessSolutions' => $bAccessSolutions,
       'bSubmissionPossible' => true,
-      'bHintsAllowed' => $data['bHintsAllowed'],
-      'sHintsRequested' => $data['sHintsRequested'],
-      'nbHintsGiven' => $data['nbHintsCached'],
+      'bHintsAllowed' => $userData['bHintsAllowed'],
+      'sHintsRequested' => $userData['sHintsRequested'],
+      'nbHintsGiven' => $userData['nbHintsCached'],
       'bIsAdmin' => false,
       'bReadAnswers' => true,
-      'aAnswers' => $answers,
-      'idUser' => intval($_SESSION['login']['ID']),
+      'idUser' => $request['idUser'],
       'idItemLocal' => $request['idItem'],
-      'idItem' => $data['sTextId'],
-      'idAttempt' => $data['idAttemptActive'],
-      'itemUrl' => $data['sUrl'],
-      'sSupportedLangProg' => $data['sSupportedLangProg'],
-      'randomSeed' => $data['idAttemptActive'] ? $data['idAttemptActive'] : $_SESSION['login']['ID'],
+      'idItem' => $userData['sTextId'],
+      'idAttempt' => $userData['idAttemptActive'],
+      'itemUrl' => $userData['sUrl'],
+      'sSupportedLangProg' => $userData['sSupportedLangProg'],
+      'randomSeed' => $userData['idAttemptActive'] ? $userData['idAttemptActive'] : $_SESSION['login']['ID'],
       'platformName' => $config->platform->name
    );
    $tokenArgs['id'+$data['sType']] = $tokenArgs['idItem']; // TODO: should disapear
    $tokenGenerator = new TokenGenerator($config->platform->private_key, $config->platform->name);
    $sToken = $tokenGenerator->encodeJWS($tokenArgs);
-   return array('result' => true, 'sToken' => $stoken, 'tokenArgs' => $tokenArgs);
+   return array('result' => true, 'sToken' => $sToken, 'tokenArgs' => $tokenArgs);
 }
 
 

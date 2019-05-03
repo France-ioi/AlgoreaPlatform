@@ -161,17 +161,23 @@ angular.module('algorea')
           || item.bAccessSolutions || item.bOwnerAccess || item.bManagerAccess
           || (groupItem && (groupItem.bCachedAccessSolutions || groupItem.bCachedManagerAccess || groupItem.bManagerAccess || groupItem.bOwnerAccess))) {
          var popupData = {
-               user_item: user_item,
-               thread: thread,
-               readOnlyIfNoThread: true,
-               item: user_item.item
+            user_item: user_item,
+            thread: thread,
+            readOnlyIfNoThread: true,
+            item: user_item.item
             };
-         $uibModal.open({
-            template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button><div ng-include="\'forum/thread.html\'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>',
-            controller: 'groupAdminPopupController',
-            resolve: {popupData: function () { return popupData; }},
-            windowClass: 'groupAdmin-modal'
-          });
+         $http.post('/task/task.php', {action: 'getToken', idUser: user_item.idUser, idItem: user_item.idItem}).success(function(res) {
+            if(!res.result) {
+               return;
+            }
+            popupData.user_item.sToken = res.sToken;
+            $uibModal.open({
+               template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button><div ng-include="\'forum/thread.html\'" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>',
+               controller: 'groupAdminPopupController',
+               resolve: {popupData: function () { return popupData; }},
+               windowClass: 'groupAdmin-modal'
+            });
+         });
       } else {
          $uibModal.open({
             template: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>'+$i18next.t('groupAdmin_solve_required'),
