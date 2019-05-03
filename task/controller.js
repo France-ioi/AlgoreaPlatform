@@ -44,7 +44,7 @@ angular.module('algorea')
          delete(platformViews.attempts);
          delete(platformViews.history);
       }
-      if(!$scope.isEditMode('edit')) {
+      if($scope.isEditMode && !$scope.isEditMode('edit')) {
          delete(platformViews.modify);
          delete(platformViews.settings);
          delete(platformViews.strings);
@@ -187,7 +187,7 @@ angular.module('algorea')
       }
       if (platformView != $scope.currentView) {
          if($scope.isDisabled(platformView)) { return; }
-         if((platformView == 'modify' || platformView == 'settings' || platformView == 'strings') && !$scope.editable()) {
+         if((platformView == 'modify' || platformView == 'settings' || platformView == 'strings') && (!$scope.editable || !$scope.editable())) {
             // Avoid displaying the view if the user doesn't have the rights
             return;
          }
@@ -280,7 +280,7 @@ angular.module('algorea')
             // Show attempts view if it's our first time on this task
             $scope.askedView = 'attempts';
             $scope.attemptAutoSelected = false;
-         } else if($scope.editable() && !$scope.item.sUrl) {
+         } else if($scope.editable && $scope.editable() && !$scope.item.sUrl) {
             if(!$scope.isEditMode('edit')) {
                $scope.setEditMode('edit');
                $scope.setTabs(taskViews, platformOnly);
