@@ -415,10 +415,19 @@ header {
 
 .level-moreInfos {
   color: #a6a6a6;
+  position: relative;
+  padding-left: 25px;
 }
-
+.level-moreInfos i {
+  position: absolute;
+  top: 3px;
+  left: 0;
+}
 .level-educomment {
   color: #a6a6a6;
+  display: inline-block;
+  vertical-align: text-top;
+  white-space: pre-wrap;
 }
 
 .level-image {
