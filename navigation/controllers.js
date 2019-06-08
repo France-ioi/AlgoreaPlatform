@@ -210,7 +210,6 @@ angular.module('algorea')
             if (user_item && user_item.bValidated) {
                this.mainIconTitle = $i18next.t('status_validated')+' '+$scope.get_formatted_date(user_item.sValidationDate);
                this.mainIconClass = "validated-item-icon";
-               this.mainIconName = 'check_circle';
             } else if (user_item && user_item.sLastActivityDate) {
                this.mainIconTitle = $i18next.t('status_seen')+' '+$scope.get_formatted_date(user_item.sLastActivityDate);
                this.mainIconClass = "visited-item-icon";

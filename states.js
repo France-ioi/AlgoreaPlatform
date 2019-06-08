@@ -319,12 +319,15 @@ angular.module('algorea')
         },
         openItemFromLink: function(itemPath) {
            // Currently only used by platform.openUrl
-           var selr = itemPath.split('/').length;
-           $state.go('contents', {
-              path: itemPath,
-              sell: Math.max(selr-1, 0),
-              selr: selr
-              });
+           var params = {};
+           params.path = typeof itemPath == 'string' ? itemPath : itemPath.path;
+           params.selr = params.path.split('/').length;
+           params.sell = Math.max(params.selr-1, 0);
+           if(itemPath && itemPath.newTab) {
+              window.open($state.href('contents', params));
+           } else {
+              $state.go('contents', params);
+           }
         }
       };
    }]);

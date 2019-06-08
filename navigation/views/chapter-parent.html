@@ -8,7 +8,7 @@
     <span ng-if="!item.bReadOnly && item.bGrayedAccess && !item.sDuration" class="material-icons">lock</span>
     <span ng-if="!item.bReadOnly && item.sDuration" class="material-icons">alarm</span>
     <span ng-if="item.bReadOnly" class="material-icons">visibility</span>
-    <span ng-if="iScore > 0">&nbsp;{{ iScore }}%</div>
+    <span ng-if="iScore > 0">&nbsp;{{ iScore }}%</span>
   </div>
 </div>
 <div ng-if="!item.bDisplayDetailsInParent" class="clear: both;"></div>
@@ -17,11 +17,14 @@
 	<div class="level-notimage">
 		<div class="level-title" ng-class="{grayed: item_status() == 'grayed'}"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></div>
 		<div class="level-subtitle">{{strings.sSubtitle}}</div>
-		<span class="level-moreInfos" ng-if="strings.sDescription && strings.sEduComment">
-			<span ng-hide="formValues.moreInfosOpened" ng-click="formValues.moreInfosOpened = true;"><i class="glyphicon glyphicon-triangle-right"></i>plus d'infos</span>
-			<i ng-show="formValues.moreInfosOpened" ng-click="formValues.moreInfosOpened = false;" class="glyphicon glyphicon-triangle-bottom"></i>
-		<span class="level-educomment" ng-show="strings.sEduComment && (!strings.sDescription || formValues.moreInfosOpened)">{{strings.sEduComment}}</span>
-		</span>
-		<div class="level-description" ng-show="formValues.moreInfosOpened">{{strings.sDescription}}</div>
+		<span class="level-educomment" ng-show="strings.sEduComment">{{strings.sEduComment}}</span>
 	</div>
+    <div style="text-align: right;">
+      <span ng-if="!item.bReadOnly && (!item.bGrayedAccess || item.sDuration) && item.idItemUnlocked && item.idItemUnlocked != ''" class="material-icons {{accessIconClass}}">vpn_key</span>
+      <span ng-if="!item.bReadOnly && !item.bGrayedAccess && item_item.sCategory == 'Challenge'" class="material-icons">star</span>
+      <span ng-if="!item.bReadOnly && item.bGrayedAccess && !item.sDuration" class="material-icons">lock</span>
+      <span ng-if="!item.bReadOnly && item.sDuration" class="material-icons">alarm</span>
+      <span ng-if="item.bReadOnly" class="material-icons">visibility</span>
+      <span ng-if="iScore > 0">&nbsp;{{ iScore }}%</span>
+    </div>
 </div>

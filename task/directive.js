@@ -92,15 +92,27 @@ angular.module('algorea')
          if (success) { success(); }
       };
       scope.platform.openUrl = function(itemPath, success, error) {
-         if (itemService && pathService) {
-            // Temporarily restricted to a specific use case : open an item path
-            pathService.openItemFromLink(itemPath);
-            if (success) {success();}
-         } else {
-            if (error) {
-               error('you cannot follow links in this mode');
+         if(!itemPath) {
+            error('no argument given');
+            return;
+         }
+         if(typeof itemPath == 'string' || itemPath.path) {
+            if (itemService && pathService) {
+               // Temporarily restricted to a specific use case : open an item path
+               pathService.openItemFromLink(itemPath);
+               if (success) {success();}
             } else {
-               console.error('you cannot follow links in this mode');
+               if (error) {
+                  error('you cannot follow links in this mode');
+               } else {
+                  console.error('you cannot follow links in this mode');
+               }
+            }
+         } else if(itemPath.url) {
+            if(itemPath.newTab) {
+               window.open(itemPath.url);
+            } else {
+               window.location = itemPath.url;
             }
          }
       };
