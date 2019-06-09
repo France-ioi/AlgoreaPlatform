@@ -21,7 +21,6 @@ angular.module('algorea')
       link:function(scope, elem, attrs){
          scope.init = function(from) {
             scope.strings = scope.item && scope.item.ID > 0 ? itemService.getStrings(scope.item) : null;
-            scope.imageUrl = scope.strings && scope.strings.sImageUrl ? scope.strings.sImageUrl : 'images/default-level.png';
             scope.user_item = scope.item && scope.item.ID > 0 ? itemService.getUserItem(scope.item) : null;
             scope.item_item = scope.item && scope.item.ID > 0 ? scope.selectItemItem(scope.item, scope.parentItemID) : null;
             scope.depth = scope.item && scope.item.breadCrumbsDepth ? scope.item.breadCrumbsDepth : 0;

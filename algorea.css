@@ -437,7 +437,13 @@ header {
 }
 
 .level-image img {
-  max-width: 100%;
+  max-width: 128px;
+  max-height: 128px;
+  width: 100%;
+}
+
+.level-image span {
+  font-size: 64px;
 }
 
 .level-notimage {

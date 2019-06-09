@@ -13,13 +13,17 @@
 </div>
 <div ng-if="!item.bDisplayDetailsInParent" class="clear: both;"></div>
 <div ng-click="" class="level-container" ng-if="item.bDisplayDetailsInParent">
-	<div class="level-image"><img ng-src="{{imageUrl}}"/></div>
+	<div class="level-image">
+        <img ng-show="strings.sImageUrl" ng-src="{{strings.sImageUrl}}"/>
+        <span ng-hide="strings.sImageUrl" class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
+    </div>
 	<div class="level-notimage">
 		<div class="level-title" ng-class="{grayed: item_status() == 'grayed'}"><a ui-sref="{{getSref()}}">{{strings.sTitle}}</a></div>
 		<div class="level-subtitle">{{strings.sSubtitle}}</div>
 		<span class="level-educomment" ng-show="strings.sEduComment">{{strings.sEduComment}}</span>
 	</div>
     <div style="text-align: right;">
+      <span ng-show="strings.sImageUrl && item.sType == 'Task'" class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
       <span ng-if="!item.bReadOnly && (!item.bGrayedAccess || item.sDuration) && item.idItemUnlocked && item.idItemUnlocked != ''" class="material-icons {{accessIconClass}}">vpn_key</span>
       <span ng-if="!item.bReadOnly && !item.bGrayedAccess && item_item.sCategory == 'Challenge'" class="material-icons">star</span>
       <span ng-if="!item.bReadOnly && item.bGrayedAccess && !item.sDuration" class="material-icons">lock</span>

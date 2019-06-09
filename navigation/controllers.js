@@ -116,7 +116,7 @@ angular.module('algorea')
          if (ts == 'task' || ts == 'course') {
             return this.viewsBaseUrl+'taskcourse.html';
          }
-         if(ts == 'task-parent' && this.item.bDisplayDetailsInParent) {
+         if((ts == 'task-parent' || ts == 'course-parent') && this.item.bDisplayDetailsInParent) {
             return this.viewsBaseUrl + 'chapter-parent.html';
          }
          return this.viewsBaseUrl+ts+'.html';
