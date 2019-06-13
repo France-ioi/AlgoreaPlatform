@@ -1,5 +1,5 @@
 <div class="main-titlebar task-titlebar" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
-<div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
+<div ng-controller="taskController" class="main-area main-area-task main-area-fullscreen" id="main-area">
    <div class="first-task">
        <div uib-tabset justified="true" ng-show="taskLoaded || !showTask" id="task-tabs"  class="task-tabs">
           <li ng-repeat="view in views" uib-tab heading="{{view.string}}" select="selectTab(view.name)" disabled="view.disabled" active="view.active" class="task-tab" id="view.id" ng-hide="view.name === 'editor' && layout.separateEditorOK">

@@ -246,7 +246,7 @@ header {
    height: 500px;
 }
 @media all and (min-width: 1024px) {
-  .iframe-task {
+  .iframe-task:not(.task-auto-height) {
      width: 90%;
      max-width: 1400px;
   }
