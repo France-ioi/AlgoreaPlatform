@@ -45,7 +45,7 @@ function getContestEndTime($sContestStartDate, $duration) {
 }
 
 function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
-	global $db, $loginData;
+	global $db, $contestData, $loginData;
 
     // If it's a team item, use the team openContest
     $stmt = $db->prepare('SELECT sTeamMode FROM items WHERE ID = :idItem;');
@@ -96,7 +96,7 @@ function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
 	return ['success' => true, 'endTime' => $endTime->getTimestamp(), 'startTime' => $startTime->getTimestamp(), 'duration' => $contestData['duration']];
 }
 
-function closeContest($idItem) {
+function closeContest($idItem, $idUser = null) {
 	global $db, $loginData;
 
     // If it's a team item, use the team closeContest
@@ -110,8 +110,15 @@ function closeContest($idItem) {
         return $res;
     }
 
+    // Note : we assume that if idUser is given, the rights to do closeContest
+    // for that user have been checked by the calling function (currently only
+    // addTime.php)
+    if(!$idUser) {
+        $idUser = $_SESSION['login']['ID'];
+    }
+
 	$stmt = $db->prepare('update users_items set sFinishDate = NOW() where idItem = :idItem and idUser = :idUser;');
-	$stmt->execute(['idItem' => $idItem, 'idUser' => $_SESSION['login']['ID']]);
+	$stmt->execute(['idItem' => $idItem, 'idUser' => $idUser]);
 	// TODO: remove partial access if other access were present
 	$stmt = $db->prepare('update groups_items set sPartialAccessDate = null, sCachedPartialAccessDate = null, bCachedPartialAccess = 0 where idItem = :idItem and idGroup = :idGroupSelf and bManagerAccess = 0;');
 	$stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
