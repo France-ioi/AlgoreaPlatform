@@ -245,6 +245,12 @@ header {
    overflow: auto;
    height: 500px;
 }
+@media all and (min-width: 1024px) {
+  .iframe-task {
+     width: 90%;
+     max-width: 1400px;
+  }
+}
 .iframe-course {
    width: 100%;
    min-width:600px;
