@@ -630,7 +630,7 @@ angular.module('algorea')
 }]);
 
 angular.module('algorea')
-   .controller('navbarController', ['$scope', '$rootScope', '$state', '$i18next', function ($scope, $rootScope, $state, $i18next) {
+   .controller('navbarController', ['$scope', '$rootScope', '$state', '$i18next', 'loginService', function ($scope, $rootScope, $state, $i18next, loginService) {
 
       // First line
       $scope.siteTitle = config.domains.current.title;
@@ -653,6 +653,24 @@ angular.module('algorea')
          return tabs;
       };
       $scope.siteTabs = initTabs();
+
+      $scope.getClasses = function(tab, idx) {
+         var cls = [];
+         if($scope.activated == idx) {
+            cls.push('menu-item-active');
+         }
+         if(tab.special) {
+            cls.push('menu-item-' + tab.special);
+            if(tab.special == 'login') {
+               if(loginService.getState() == 'not-ready' || loginService.isTempUser()) {
+                  cls.push('menu-item-login-none');
+               } else {
+                  cls.push('menu-item-login-ok');
+               }
+            }
+         }
+         return cls;
+      }
 
       $scope.gotoMenuItem = function(i, tabPath, special) {
          if(special) { return; }
