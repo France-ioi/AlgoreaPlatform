@@ -439,7 +439,7 @@ header {
 .level-image {
   padding-left:20px;
   flex: 0 1 100px;
-  align-self: flex-start;
+  align-self: center;
 }
 
 .level-image img {
