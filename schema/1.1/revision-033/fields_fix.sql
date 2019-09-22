@@ -1,0 +1,2 @@
+ALTER TABLE `history_filters` CHANGE `history_ID` `historyID` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `history_users` ADD `loginID` BIGINT(20) NULL DEFAULT NULL AFTER `ID`;
