@@ -82,7 +82,9 @@ angular.module('algorea')
    };
    $scope.intervals = {};
    $scope.updateHeight = function(height) {
-      $scope.taskIframe.css('height', parseInt(height)+40);
+      if($scope.metaData && !$scope.metaData.autoHeight) {
+         $scope.taskIframe.css('height', parseInt(height)+40);
+      }
       if ($rootScope.refreshSizes) {
          $rootScope.refreshSizes();
       }
