@@ -107,7 +107,7 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
       $params['id'.$item['data']->sType] = $params['idItem'];
       $params['bReadAnswers'] = true;
 
-      $bAccessSolutions = ($userItem['data']->bAccessSolutions != '0' || $userItem['data']->bValidated != '0') ? '1': '0';
+      $bAccessSolutions = (($userItem['data']->bAccessSolutions && $userItem['data']->bAccessSolutions != '0') || ($userItem['data']->bValidated && $userItem['data']->bValidated != '0')) ? '1': '0';
       $params['bAccessSolutions'] = $bAccessSolutions;
 
       $params['randomSeed'] = $userItem['data']->idAttemptActive ? $userItem['data']->idAttemptActive : $userItem['data']->idUser;
