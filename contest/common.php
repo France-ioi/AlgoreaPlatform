@@ -38,10 +38,11 @@ function adjustContestAndGetData() {
 }
 
 function getContestEndTime($sContestStartDate, $duration) {
-	$date = new DateTime($sContestStartDate);
-	$duration = new DateInterval('PT'.$duration.'S');
-	$date->add($duration);
-	return $date;
+    $date = new DateTime($sContestStartDate);
+    $durationStr = $duration < 0 ? '-PT' . (0 - $duration) . 'S' : 'PT'.$duration.'S';
+    $duration = new DateInterval($durationStr);
+    $date->add($duration);
+    return $date;
 }
 
 function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
