@@ -63,7 +63,7 @@
         //echo 'var lti = '.json_encode($lti).';';
 
         $options = [
-          'barebone' => isset($_SESSION['login']) && isset($_SESSION['login']['lti_connection_id'])
+          'barebone' => isset($_SESSION['lti']) && $_SESSION['lti']
         ];
         echo 'var options = '.json_encode($options).';';
       ?>

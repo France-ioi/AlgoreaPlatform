@@ -1,0 +1,17 @@
+<div class="main-area main-area-normal">
+    <h1>Résultats</h1>
+    <div>Résultats par exercice :</div>
+    <div><ul>
+        <li ng-repeat="score in ltiScores">
+            {{ score.sTitle }} :
+            {{ score.iScore }}%
+            <i ng-show="score.iWeight != 1">(coefficient {{ score.iWeight }})</i>
+        </li>
+    </ul></div>
+    <div><b>Total : {{ ltiTotalScore }}%</b></div>
+    <div>
+        <button class="btn btn-primary" ng-click="ltiSendScore();" ng-disabled="ltiSentScore">Valider mon score sur ce chapitre</button>
+        <span style="color: green;" ng-show="ltiSentScore"><b>Score enregistré !</b></span>
+        {{ ltiSendError }}
+    </div>
+</div>

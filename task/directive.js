@@ -122,10 +122,12 @@ angular.module('algorea')
       };
       // move to next item in same chapter
       scope.moveToNextImmediate = function() {
+         if(window.options.barebone) { return; }
          scope.goRightImmediateLink();
       };
       // move to next item
       scope.moveToNext = function() {
+         if(window.options.barebone) { return; }
          scope.goRightLink();
       };
       scope.platform.askHint = function(hintToken, success, error) {

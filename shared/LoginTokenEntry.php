@@ -12,8 +12,6 @@ class LoginTokenEntry {
         $token = isset($_GET['loginToken']) ? $_GET['loginToken'] : false;
         if($token) {
             self::apply($token);
-        } else {
-            self::reset();
         }
     }
 
@@ -86,12 +84,4 @@ class LoginTokenEntry {
         }
         return true;
     }
-
-
-    private static function reset() {
-        if(isset($_SESSION['login'])) {
-            unset($_SESSION['login']['lti_connection_id']);
-        }
-    }
-
 }

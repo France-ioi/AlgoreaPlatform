@@ -2,8 +2,8 @@
 
 angular.module('algorea')
 .controller('chapterController', [
-    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', 'loginService', 'pathService',
-    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, loginService, pathService) {
+    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', '$http', 'loginService', 'pathService',
+    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, $http, loginService, pathService) {
         $scope.itemService = itemService;
         $scope.models = models;
         $scope.tab = 'content';
@@ -189,7 +189,6 @@ angular.module('algorea')
             }
             ModelsManager.deleteRecord('items', item_item.idItemChild);
         }
-
 
         $scope.addNewChapter = function() {
             $scope.creating = {
@@ -609,6 +608,37 @@ angular.module('algorea')
                 $scope.repositoryChan.notify({method: 'syncRepository'});
                 });
         };
+
+
+        // LTI
+        $scope.ltiGetScores = function() {
+            var parameters = {action: 'getScores', idItem: $scope.item.ID};
+            $http.post('/lti/ltiApi.php', parameters).success(function(res) {
+                if(!res.result) {
+                    $scope.ltiError = res.error;
+                    return;
+                }
+                $scope.ltiTotalScore = res.total_score;
+                $scope.ltiScores = res.scores;
+            });
+        }
+
+        $scope.ltiSendScore = function() {
+            var parameters = {action: 'sendScore', idItem: $scope.item.ID};
+            $http.post('/lti/ltiApi.php', parameters).success(function(res) {
+                if(!res.result) {
+                    $scope.ltiSendError = res.error;
+                    return;
+                }
+                $scope.ltiSentScore = true;
+            });
+        }
+
+        if(window.options.barebone) {
+            $scope.getEditMode = function() { return 'lti'; }
+            $scope.ltiGetScores();
+            $scope.ltiSendScore();
+        }
     }
 ]);
 

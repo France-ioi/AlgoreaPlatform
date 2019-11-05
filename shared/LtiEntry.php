@@ -6,7 +6,10 @@ class LtiEntry {
 
     public static function handleRequest() {
         $lti = isset($_POST['lti_message_type']);
-        if(!$lti) return;
+        if(!$lti) {
+            self::resetAuth();
+            return;
+        };
 
         $lti_user_id = null;
         if(isset($_SESSION['login']) && isset($_SESSION['login']['lti_user_id'])) {
@@ -14,6 +17,15 @@ class LtiEntry {
         }
         if($lti_user_id !== $_POST['user_id']) {
             self::doAuth();
+        }
+    }
+
+
+    private static function resetAuth() {
+        if(!isset($_SESSION)) { return; }
+        if(isset($_SESSION['lti']) && $_SESSION['lti']) {
+            unset($_SESSION['lti']);
+            unset($_SESSION['login']);
         }
     }
 
@@ -37,6 +49,7 @@ class LtiEntry {
         } catch (\Exception $e) {
             die($e->getMessage());
         }
+        $_SESSION['lti'] = true;
         LoginTokenEntry::apply($token);
 /*
         $_SESSION['ONLOGIN_REDIRECT_URL'] = $url;
