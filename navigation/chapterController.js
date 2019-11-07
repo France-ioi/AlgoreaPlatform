@@ -637,7 +637,6 @@ angular.module('algorea')
         if(window.options.barebone) {
             $scope.getEditMode = function() { return 'lti'; }
             $scope.ltiGetScores();
-            $scope.ltiSendScore();
         }
     }
 ]);

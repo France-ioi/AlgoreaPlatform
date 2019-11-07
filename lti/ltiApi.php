@@ -26,11 +26,11 @@ function getScores($request) {
     global $db;
 
     $stmt = $db->prepare("
-        SELECT items_items.iWeight, items.ID AS idItem, users_items.iScore AS iScore, items_strings.sTitle AS sTitle
+        SELECT items_items.iWeight, items.ID AS idItem, IFNULL(users_items.iScore, 0) AS iScore, items_strings.sTitle AS sTitle
         FROM items_items
         JOIN items ON items_items.idItemChild = items.ID
         JOIN items_strings ON items_strings.idItem = items.ID
-        JOIN users_items ON users_items.idItem = items.ID
+        LEFT JOIN users_items ON users_items.idItem = items.ID
         WHERE items_items.idItemParent = :idItem AND items.sType = 'Task' AND users_items.idUser = :idUser
         GROUP BY items.ID
         ORDER BY items_items.iChildOrder ASC;
@@ -57,6 +57,7 @@ function getScores($request) {
 
 
 function sendScore($request) {
+    // Send score to the LTI
     global $config;
     $totalScore = getScores($request)['total_score'];
 
@@ -72,7 +73,7 @@ function sendScore($request) {
             'score' => $totalScore / 100
             ]);
     } catch (\Exception $e) {
-        die($e->getMessage());
+        return ['result' => false, 'error' => 'lti_send_failure', 'error_full' => $e->getMessage()];
     }
 
     return ['result' => true, 'sent_score' => $totalScore / 100];
