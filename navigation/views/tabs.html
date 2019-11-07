@@ -1,0 +1,3 @@
+<div ng-controller="tabsController" class="main-tabs" ng-show="displayedTabs.length > 1">
+    <div ng-repeat="tab in displayedTabs" class="task-tab" ng-class="{'task-tab-disabled': tab.disabled, 'task-tab-selected': tab.active}" ng-click="selectTab(tab.id)" ng-i18next="[title]{{ tab.helptext }};{{ tab.title }}"></div>
+</div>

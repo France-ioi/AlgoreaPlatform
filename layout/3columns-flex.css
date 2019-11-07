@@ -22,7 +22,7 @@ body {
    display: -webkit-flex;
    display: flex;
 }
-#main > article {
+#main > #view-right {
    order: 2;
    -webkit-order: 2;
    -webkit-flex: 1 1 auto;

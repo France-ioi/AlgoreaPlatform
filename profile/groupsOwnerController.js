@@ -36,21 +36,21 @@ angular.module('algorea')
       SyncQueue.planToSend(0);
    };
    $scope.initGroups = function() {
-   	var myGroupId = SyncQueue.requests.loginData.idGroupOwned;
-   	if (!myGroupId) {
-   		console.error('big problem!');
-   		return;
-   	}
-   	$scope.myGroupAdmin = ModelsManager.getRecord('groups', myGroupId);
-   	if (!$scope.myGroupAdmin) {
-   		return;
-   	}
+      var myGroupId = SyncQueue.requests.loginData.idGroupOwned;
+      if (!myGroupId) {
+         console.error('big problem!');
+         return;
+      }
+      $scope.myGroupAdmin = ModelsManager.getRecord('groups', myGroupId);
+      if (!$scope.myGroupAdmin) {
+         return;
+      }
    };
    $scope.stopSync = function() {
-   	delete(SyncQueue.requestSets.groupsDescenants);
+      delete(SyncQueue.requestSets.groupsDescenants);
    };
    $scope.openGroup = function(idGroup) {
-   	$state.go('groupAdminGroup', {idGroup: idGroup});
+      $state.go('groupAdminGroup', {idGroup: idGroup});
    };
 
    $scope.newGroup = function() {
@@ -77,24 +77,24 @@ angular.module('algorea')
    $scope.selfAdminGroup = null;
 
    $scope.init = function() {
-   	$scope.loading = true;
-   	$scope.error = '';
-   	if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser == 1) {
-   		$scope.error = $i18next.t('groupAdmin_login_required');
-   		$scope.loading = false;
-   		return;
-   	}
+      $scope.loading = true;
+      $scope.error = '';
+      if (!SyncQueue.requests.loginData || SyncQueue.requests.loginData.tempUser == 1) {
+         $scope.error = $i18next.t('groupAdmin_login_required');
+         $scope.loading = false;
+         return;
+      }
       $scope.loginData = SyncQueue.requests.loginData;
-   	$scope.startSync(function() {
-   		$scope.initGroups();
-   	});
+      $scope.startSync(function() {
+         $scope.initGroups();
+      });
    };
 
    $scope.$on('$destroy', function() {
-   	$scope.stopSync();
+      $scope.stopSync();
    });
 
-	$scope.loading = true;
+   $scope.loading = true;
    $scope.$on('login.logout', function(event,data) {
       $scope.loading = true;
       $scope.error = '';

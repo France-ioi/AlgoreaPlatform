@@ -128,14 +128,12 @@ angular.module('algorea')
       mapService = $injector.get('mapService');
       mapService.setClickedCallback(function(path, lastItem) {
         if (lastItem.sType == 'Task' || lastItem.sType == 'Course') {
-           var pathArray = path.split('/');
-           var selr = pathArray.length;
-           var sell = selr -1;
+           var pathArray = path.split('-');
            var pathParams = pathService.getPathParams();
            if (pathParams.basePathStr == path) {
               $scope.layout.closeMap();
            } else {
-              $state.go('contents', {path: path,sell:sell,selr:selr});
+              $state.go('contents', {path: path});
            }
         }
       });
@@ -149,11 +147,9 @@ angular.module('algorea')
       var defaultPathStr = config.domains.current.defaultPath;
       if (defaultPathStr.substr(0, 10) == '/contents/') {
          defaultPathStr = defaultPathStr.substr(10, defaultPathStr.length);
-         var pathArray = defaultPathStr.split('/');
-         var selr = pathArray.length;
-         var sell = selr -1;
+         var pathArray = defaultPathStr.split('-');
       }
-      $state.go('contents', {path: defaultPathStr,sell:null,selr:null});
+      $state.go('contents', {path: defaultPathStr});
    }
     // $scope.layout will be accesset and set by viewButton directive in a subscope, so
     // it must be an object, or prototypal inheritance will mess everything
@@ -343,30 +339,11 @@ angular.module('algorea')
           return $timeout(later, timeout, apply);
        };
     }
-    $scope.layout.separateEditorOK = false;
-    var lastSeparateEditorOK = false;
+    var lastWindowWidth = $(window).width();
     $scope.layout.refreshSizes = function() {
-       if ($rootScope.rightIsFullScreen) { // things are handled automatically for everything but the task layout
-          var availableMainWidth = $('#main-area').width();
-          var minWidth = $('#task-right').css('min-width');
-          if (!minWidth) {minWidth = '0px';}
-          minWidth = parseInt(minWidth.slice(0,-2));
-          if (!minWidth) {minWidth = 800;}
-          if (availableMainWidth - 2*minWidth > 40) {
-            $scope.layout.separateEditorOK = true;
-          } else {
-            $scope.layout.separateEditorOK = false;
-          }
-         if (lastSeparateEditorOK != $scope.layout.separateEditorOK) {
-            $timeout($rootScope.apply);
-         }
-         lastSeparateEditorOK = $scope.layout.separateEditorOK;
-       } else {
-         $scope.layout.separateEditorOK = false;
-       }
+       $rootScope.isMobileLayout = lastWindowWidth < 700 ? true : false;
     };
 
-    var lastWindowWidth = $(window).width();
     $scope.layout.onResize = function () {
        // reset the opened/closed status of the left sidebar depending on the
        // new window width
@@ -374,7 +351,6 @@ angular.module('algorea')
        lastWindowWidth = newWindowWidth;
 
        $scope.layout.refreshSizes();
-       $rootScope.isMobileLayout = newWindowWidth < 700 ? true : false;
     }
     // resizing on window resizing (tamed)
     $window.onresize = debounce($scope.layout.onResize, 100, false);
@@ -382,14 +358,13 @@ angular.module('algorea')
     $rootScope.refreshSizes = $scope.layout.refreshSizes;
     // resizing on state change
     $rootScope.$on('$viewContentLoaded', function() {
-      $rootScope.hasSidebarLeft = $state.current.views && $state.current.views.left.template.length > 1 ? true : false;
-      if ($rootScope.hasSidebarLeft && !$rootScope.isMobileLayout) {$scope.layout.openSidebarLeft();}
-      $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
+       $rootScope.hasSidebarLeft = $state.current.name == 'contents';
+       if ($rootScope.hasSidebarLeft && !$rootScope.isMobileLayout) {$scope.layout.openSidebarLeft();}
+       $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
-    $interval($scope.layout.refreshSizes, 1000);
     $scope.$on('layout.taskLayoutChange', $scope.layout.refreshSizes);
     $rootScope.sidebarLeftIsOpen = true;
     $rootScope.showSidebarLeftOverlay = false;
     $rootScope.mobileNavTopIsOpen = false;
-    $rootScope.isMobileLayout = $(window).width() < 700 ? true : false;
+    $scope.layout.onResize();
 }]);

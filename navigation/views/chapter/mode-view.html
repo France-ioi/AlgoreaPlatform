@@ -1,18 +1,15 @@
-<div class="main-titlebar chapter-titlebar" ng-if="item.bTitleBarVisible" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
-<div class="main-area main-area-normal">
-    <div ng-if="item.sDuration && !item.sTeamMode && !user_item.sContestStartDate"><button ng-click="openContest();" ng-i18next="contest_start"></button></div>
-    <div ng-if="item.sDuration && !item.sTeamMode && user_item.sFinishDate" ng-i18next="contest_already_done"></div>
-    <div ng-bind-html="strings.sDescription"></div>
-    <div ng-if="item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-tabs.html'"></div>
-    <div ng-if="!item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-list.html'"></div>
-    <div ng-if="item.sTeamMode" style="height: 48px;"></div>
-    <div ng-if="item.sTeamMode" ng-include="templatesPrefix+'teams/teams.html'"></div>
-    <div ng-if="item.groupCodeEnter" ng-include="templatesPrefix+'groupCodePrompt/dialog.html'"></div>
-    <div ng-if="editable()">
-        <hr />
-        <button class="btn btn-default" ng-click="setEditMode('edit')" ng-if="isEditMode('view')">
-            <span class="material-icons material-btn">mode_edit</span>
-            <span ng-i18next="chapterEditor_edit"></span>
-        </button>
-    </div>
+<div ng-if="item.sDuration && !item.sTeamMode && !user_item.sContestStartDate"><button ng-click="openContest();" ng-i18next="contest_start"></button></div>
+<div ng-if="item.sDuration && !item.sTeamMode && user_item.sFinishDate" ng-i18next="contest_already_done"></div>
+<div ng-bind-html="strings.sDescription"></div>
+<div ng-if="item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-tabs.html'"></div>
+<div ng-if="!item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-list.html'"></div>
+<div ng-if="item.sTeamMode" style="height: 48px;"></div>
+<div ng-if="item.sTeamMode" ng-include="templatesPrefix+'teams/teams.html'"></div>
+<div ng-if="item.groupCodeEnter" ng-include="templatesPrefix+'groupCodePrompt/dialog.html'"></div>
+<div ng-if="editable()">
+    <hr />
+    <button class="btn btn-default" ng-click="setEditMode('edit')" ng-if="isEditMode('view')">
+        <span class="material-icons material-btn">mode_edit</span>
+        <span ng-i18next="chapterEditor_edit"></span>
+    </button>
 </div>
