@@ -285,4 +285,49 @@ body {
    margin-right:auto;
 }
 
+.progress-popup {
+   position: fixed;
+   bottom: 0px;
+   right: 16px;
+   z-index: 100;
+   background: #DDD;
+   border: 1px solid black;
+   border-bottom: none;
+   padding: 8px;
+   min-width: 200px;
+}
 
+.progress-popup > div.popup-close {
+   position: absolute;
+   top: 8px;
+   right: 8px;
+   cursor: pointer;
+}
+
+.progress-area {
+   display: flex;
+   justify-content: center;
+}
+
+.progress-box {
+   width: 32px;
+   height: 32px;
+   border: 1px solid black;
+   text-align: center;
+   margin-left: 4px;
+   margin-right: 4px;
+   line-height: 32px;
+   font-size: 16px;
+   font-weight: bold;
+}
+
+.progress-box.progress-box-current {
+   border: 2px solid black;
+}
+
+.progress-box.progress-box-full {
+   background-color: #82BF2B;
+}
+.progress-box.progress-box-partial {
+   background-color: #F29F24;
+}

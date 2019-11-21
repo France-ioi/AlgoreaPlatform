@@ -508,6 +508,7 @@
     "chapterEditor_zip_download": "Télécharger au format ZIP",
     "chapterEditor_zip_all": "Télécharger le chapitre au format ZIP",
     "chapterEditor_actions_title": "Actions sur ce chapitre",
+    "chapterEditor_actions_weight": "Éditer la pondération des scores",
     "chapterEditor_actions_more": "Afficher plus d'informations",
     "chapterEditor_repository_folder": "Dossier dans le dépôt SVN",
     "chapterEditor_repository_folder_none": "Cet élément n'est pas dans le dépôt SVN.",

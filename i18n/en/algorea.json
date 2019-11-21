@@ -497,6 +497,7 @@
     "chapterEditor_zip_download": "Download as ZIP archive",
     "chapterEditor_zip_all": "Download chapter as ZIP archive",
     "chapterEditor_actions_title": "Actions on this chapter",
+    "chapterEditor_actions_weight": "Edit score weights",
     "chapterEditor_actions_more": "Display more information",
     "chapterEditor_repository_folder": "Folder in repository",
     "chapterEditor_repository_folder_none": "This item is not in the repository.",

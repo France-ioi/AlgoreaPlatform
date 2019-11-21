@@ -41,6 +41,10 @@ angular.module('algorea')
             $scope.items = itemService.getChildren($scope.item);
             $scope.item_strings = $scope.item.strings[0];
             $scope.item_strings_compare = null;
+            $scope.itemItems = {};
+            angular.forEach($scope.item.children, function(itemItem) {
+                $scope.itemItems[itemItem.child.ID] = itemItem;
+            });
         }
         refresh();
 
@@ -78,6 +82,10 @@ angular.module('algorea')
         $scope.getChildSref = function(item) {
             return pathService.getSref($scope.panel, typeof $scope.depth != 'undefined' ? $scope.depth + 1 : 0, $scope.pathParams, '/' + item.ID);
         };
+
+        $scope.setChanged = function(itemItem) {
+            ModelsManager.updated('items_items', itemItem.ID);
+        }
 
         $scope.checkSaveItem = function() {
             var hasChanged = false;
@@ -314,7 +322,7 @@ angular.module('algorea')
             var iChildOrder = {}
             $.each(parentItem.children, function(idx, itemItem) {
                 itemItem.iChildOrder = idx+1;
-                ModelsManager.updated('items_items', itemItem.ID);
+                $scope.setChanged(itemItem);
             });
         }
 
@@ -334,7 +342,7 @@ angular.module('algorea')
 
         $scope.toggleMore = function(item, force) {
             if(!$scope.canMore(item)) { return; }
-            if(!$scope.showMore[item.ID]) {
+            if(!$scope.showMore[item.ID] && force !== false) {
                 $scope.links[item.ID] = $scope.getLinks(item);
             }
             if(typeof force !== 'undefined') {
@@ -344,12 +352,31 @@ angular.module('algorea')
             }
         }
 
-        $scope.toggleMoreAll = function() {
-            // showMore[0] contains the chapter state
-            $scope.showMore[0] = !$scope.showMore[0];
+        $scope.toggleAll = function(obj, func) {
+            var toggleTarget = null;
             angular.forEach($scope.items, function(item) {
-                $scope.toggleMore(item, $scope.showMore[0]);
+                if(toggleTarget === null) {
+                    toggleTarget = !obj[item.ID];
+                } else if (toggleTarget != !obj[item.ID]) {
+                    toggleTarget = true;
+                }
                 });
+            angular.forEach($scope.items, function(item) {
+                func(item, toggleTarget);
+                });
+        }
+
+        $scope.toggleMoreAll = function() {
+            $scope.toggleAll($scope.showMore, $scope.toggleMore);
+        }
+
+        $scope.showWeight = {};
+        $scope.toggleWeight = function(childItem, force) {
+            $scope.showWeight[childItem.ID] = !$scope.showWeight[childItem.ID];
+        }
+
+        $scope.toggleWeightAll = function() {
+            $scope.toggleAll($scope.showWeight, $scope.toggleWeight);
         }
 
         // strings

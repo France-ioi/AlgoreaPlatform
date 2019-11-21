@@ -343,6 +343,7 @@ var models = {
             label: "models_items_items_fields_bAlwaysVisible_label",
             defaultValue: 0
          },
+         iWeight: {type: "int", label: "models_items_items_fields_iWeight_label", defaultValue: 1},
          iDifficulty: {type: "int", label: "models_items_items_fields_iDifficulty_label", defaultValue: 0}
       }
    },

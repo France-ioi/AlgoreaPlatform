@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('taskController', ['$scope', '$rootScope', '$window', '$location', '$interval', '$injector', '$http', '$timeout', '$i18next', function ($scope, $rootScope, $window, $location, $interval, $injector, $http, $timeout, $i18next) {
+   .controller('taskController', ['pathService', '$scope', '$rootScope', '$window', '$location', '$interval', '$injector', '$http', '$timeout', '$i18next', function (pathService, $scope, $rootScope, $window, $location, $interval, $injector, $http, $timeout, $i18next) {
    var itemService, $state;
    if ($injector.has('itemService')) {
       itemService = $injector.get('itemService');
@@ -524,6 +524,43 @@ angular.module('algorea')
          $scope.manualSyncDisabled = false;
       }, 3000);
    };
+
+   // Progress popup
+   $scope.openProgressPopup = function() {
+      var parentItemID = pathService.getPathParams('right').parentItemID;
+      if(parentItemID < 1) { parentItemID = $scope.item.ID; }
+      var parameters = {action: 'getScores', idItem: parentItemID};
+      $http.post('/lti/ltiApi.php', parameters).success(function(res) {
+         if(!res.result) {
+            return;
+         }
+         $scope.progress = res;
+         angular.forEach($scope.progress.scores, function(task_score) {
+            if(task_score.idItem == $scope.item.ID) {
+               $scope.progress.score = task_score.iScore;
+               task_score.isCurrent = true;
+            }
+         });
+      });
+   }
+   $scope.openProgressPopup();
+
+   $scope.closeProgressPopup = function() {
+      $scope.progress = null;
+   }
+
+   $scope.getProgressClass = function(task) {
+      var cls = '';
+      if(task.isCurrent) {
+         cls += ' progress-box-current';
+      }
+      if(task.iScore == 100) {
+         cls += ' progress-box-full';
+      } else if(task.iScore > 0) {
+         cls += ' progress-box-partial';
+      }
+      return cls;
+   }
 }]);
 
 angular.module('algorea')
