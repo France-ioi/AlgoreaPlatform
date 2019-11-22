@@ -639,6 +639,7 @@ angular.module('algorea')
 
         // LTI
         $scope.ltiGetScores = function() {
+            $scope.ltiError = null;
             var parameters = {action: 'getScores', idItem: $scope.item.ID};
             $http.post('/lti/ltiApi.php', parameters).success(function(res) {
                 if(!res.result) {
@@ -651,10 +652,11 @@ angular.module('algorea')
         }
 
         $scope.ltiSendScore = function() {
+            $scope.ltiError = null;
             var parameters = {action: 'sendScore', idItem: $scope.item.ID};
             $http.post('/lti/ltiApi.php', parameters).success(function(res) {
                 if(!res.result) {
-                    $scope.ltiSendError = res.error;
+                    $scope.ltiError = res.error;
                     return;
                 }
                 $scope.ltiSentScore = true;

@@ -60,10 +60,10 @@
           return $assetsBaseUrl.$url.$urlArgs;
         }
         echo 'var config = '.json_encode($config->shared).';';
-        //echo 'var lti = '.json_encode($lti).';';
 
         $options = [
-          'barebone' => isset($_SESSION['lti']) && $_SESSION['lti']
+          'barebone' => isset($_SESSION['lti']) && $_SESSION['lti'],
+          'locale' => isset($_GET['sLocale']) ? $_GET['sLocale'] : null
         ];
         echo 'var options = '.json_encode($options).';';
       ?>
@@ -122,7 +122,7 @@
 <div ng-if="showMobileNavTopOverlay" id="mobileNavTopOverlay" ng-click="layout.closeMobileNavTop()"></div>
 <div ng-if="showSidebarLeftOverlay" id="sidebarLeftOverlay" ng-click="layout.closeSidebarLeftOverlay()"></div>
 <div id="fixed-header-room" class="fixed-header-room"></div>
-<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'" ng-if="!barebone">
+<header ng-click="layout.menuClicked($event);" ng-include="templatesPrefix+'menu.html'" ng-show="!barebone">
 </header>
 <div id='main'>
 
@@ -132,7 +132,7 @@
 
 </div>
 
-<footer id="footer" ng-include="<?= $footerHtmlFile ?>" ng-if="!barebone"></footer>
+<footer id="footer" ng-include="<?= $footerHtmlFile ?>" ng-show="!barebone"></footer>
 
 <?php if ($useMap): ?>
   <div id="map" class="map" style="display:none;" ng-include="templatesPrefix+'map/map.html'"></div>

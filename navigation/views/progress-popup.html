@@ -1,8 +1,8 @@
 <div class="progress-popup" ng-show="progress">
     <div class="popup-close" ng-click="closeProgressPopup();"><span class="material-icons">close</span></div>
-    <div><b>Progression</b></div>
+    <div><b ng-i18next="progress"></b></div>
     <div>
-        Sur cet exercice :
+        <span ng-i18next="progressPopup_task_title"></span>
         <uib-progressbar value="progress.score" type="success" ng-if="progress.score == 100">
 {{ progress.score }}%
         </uib-progressbar>
@@ -11,7 +11,7 @@
         </uib-progressbar>
     </div>
     <div>
-        Sur ce chapitre :
+        <span ng-i18next="progressPopup_chapter_title"></span>
         <div class="progress-area">
             <div ng-repeat="task in progress.scores" class="progress-box" ng-class="getProgressClass(task)">
                 {{ task.iScore }}
@@ -19,6 +19,6 @@
         </div>
     </div>
     <div>
-        <b>Score total : {{ progress.total_score }}</b>
+        <b><span ng-i18next="progressPopup_total_score"></span> {{ progress.total_score }}</b>
     </div>
 </div>

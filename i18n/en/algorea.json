@@ -42,6 +42,7 @@
     "remove": "Remove",
     "reset": "Reset",
     "restricted": "Restricted",
+    "results": "Results",
     "save": "Save",
     "search": "Search",
     "settings": "Settings",
@@ -50,6 +51,7 @@
     "submission": "Submission",
     "team": "Team",
     "texts": "Texts",
+    "total": "Total",
     "type": "Type",
     "users": "Users",
     "user": "User",
@@ -514,6 +516,17 @@
     "chapterEditor_sync_status_error": "Synchronisation error",
     "chapterEditor_sync_nb_good": "items not modified since last synchronisation",
     "chapterEditor_sync_fix_hierarchy": "Fix hierarchy",
+
+    "lti_task_title": "Results per task :",
+    "lti_weight": "weight",
+    "lti_score_send": "Validate my score on this chapter",
+    "lti_score_sent": "Score saved!",
+    "lti_not_connected": "Your must be connected from the learning platform to use this feature.",
+    "lti_send_failure": "Failed sending the score, please reload the page completely then try again.",
+
+    "progressPopup_task_title": "On this task :",
+    "progressPopup_chapter_title": "On this chapter :",
+    "progressPopup_total_score": "Total score :",
 
     "models_filters_fields_idUser_label": "User ID",
     "models_filters_fields_sName_label": "Filter name",
