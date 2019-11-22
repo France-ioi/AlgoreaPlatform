@@ -36,6 +36,10 @@ angular.module('algorea')
                 },
              },
           })
+          .state("oldcontents", {
+            // Legacy URLs
+            url: "/contents/*path?sell&selr&viewl&viewr"
+          })
           .state('profile', {
             url: "/profile/:section",
             views: {
@@ -123,6 +127,18 @@ angular.module('algorea')
       * but I find it less elegant because it breaks ui-sref
       */
       $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+         // Keep legacy URLs valid
+         if(toState.name == 'contents' || toState.name == 'oldcontents') {
+             var toPath = toParams.path;
+             var sanitizedPath = toPath.replace(/\//g, '-');
+             if(toState.name == 'oldcontents' || sanitizedPath != toPath) {
+                event.preventDefault();
+                toParams.path = sanitizedPath;
+                $state.go('contents', toParams);
+                return;
+             }
+         }
+
          if (fromState.name == 'contents' && toState.name == 'contents' && fromParams.path == toParams.path) {
              // here, only the parameters that shouldn't change the view are changed in the URL
              event.preventDefault();
