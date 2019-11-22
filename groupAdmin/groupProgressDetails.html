@@ -1,0 +1,11 @@
+<ul class="progress-details">
+    <li class="login"><p>{{child.child.userSelf.sLogin}} ({{child.child.userSelf.sFirstName}} {{child.child.userSelf.sLastName}})</p><p>{{item.strings[0].sTitle}}</p></li>
+    <li class="score" ng-class="{'top-score': thisUserItem.iScore == 100, 'not-top-score': thisUserItem.iScore < 100}"  ng-if="item.sType == 'Task'"><span ng-i18next="score"></span> :  <span ng-if="getClass(thisUserItem) == 'read'">—</span><span ng-if="thisUserItem.iScore <= 100 && getClass(thisUserItem) !== 'read'">{{thisUserItem.iScore}} %</span></li>
+    <li class="date" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_last_activity"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+    <li class="date" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_validation_date"></span> : {{thisUserItem.sLastActivityDate | date}}</li>
+    <li class="time" ng-if="!user_item.sValidationDate"><span ng-i18next="groupAdmin_time_spent"></span> : {{getDuration(thisUserItem)}}</li>
+    <li class="time" ng-if="user_item.sValidationDate"><span ng-i18next="groupAdmin_time_validation"></span> : {{getDuration(thisUserItem)}}</li>
+    <li class="submissions">{{thisUserItem.nbSubmissionsAttempts}} <span ng-i18next="groupAdmin_attempt"</span>{{thisUserItem.nbSubmissionsAttempts > 1 ? 's' : ''}}</li>
+    <li class="questions"><span ng-i18next="groupAdmin_forum_requests"></span> : {{thisUserItem.sThreadStartDate ? '1' : '0'}}</li>
+    <li class="help"><span ng-i18next="groupAdmin_hints_requested"></span> : {{thisUserItem.nbHintsCached}}</li>
+</ul>
