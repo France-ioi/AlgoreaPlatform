@@ -158,7 +158,7 @@ angular.module('algorea')
          }
          $timeout(function() {
             $rootScope.$broadcast('algorea.reloadView', 'breadcrumbs');
-            $rootScope.$broadcast('algorea.reloadView', 'right');
+//            $rootScope.$broadcast('algorea.reloadView', 'right');
          }, 0);
       });
     /*
