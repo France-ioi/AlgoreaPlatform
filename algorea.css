@@ -251,8 +251,7 @@ header {
 }
 @media all and (min-width: 1024px) {
   .iframe-task:not(.task-auto-height) {
-     width: 90%;
-     max-width: 1400px;
+     width: 100%;
   }
 }
 .iframe-course {
