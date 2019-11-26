@@ -530,7 +530,7 @@ angular.module('algorea')
          $scope.localInit();
       });
       $scope.$on('algorea.reloadView', function(event, viewName){
-         if (viewName == 'right') {
+         if (viewName == 'breadcrumbs') {
             $scope.getPathParams();
             $scope.currentActiveId = $scope.pathParams.path[$scope.pathParams.path.length-1];
             $scope.getItem(getLeftItems, true);
