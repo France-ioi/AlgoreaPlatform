@@ -1,6 +1,8 @@
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();" style="padding-right:5px;">&times;</button>
-<button class="btn btn-primary" ng-click="print()" ng-disabled="printing" ng-i18next="groupAccountsManager_print"></button>
-<button class="btn btn-primary" ng-click="download()" ng-i18next="download"></button>
+<div style="padding: 8px;">
+    <button class="btn btn-primary" ng-click="print()" ng-disabled="printing" btn-icon-text="print,groupAccountsManager_print"></button>
+    <button class="btn btn-primary" ng-click="download()" btn-icon-text="get_app,download"></button>
+</div>
 <div id="groupAccountsManagerPopupController_print">
     <div class="box" ng-repeat="account in accounts">
         <table class="outer">

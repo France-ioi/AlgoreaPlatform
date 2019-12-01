@@ -26,25 +26,47 @@
                 <label ng-i18next="groupAccountsManager_number_of_users"></label>
                 <input type="number" min="1" max="50" class="form-control" ng-model="create_params.amount" ng-focus="create_params.error=null"/>
             </div>
-            <div class="checkboxSwitch">
+<!--            <div class="checkboxSwitch">
                 <span ng-i18next="groupAccountsManager_create_in_subgroups"></span>
                 <input type="checkbox" class="switch" ng-model="create_params.create_in_subgroups">
                 <label for="switchView"  ng-click="create_params.create_in_subgroups=!create_params.create_in_subgroups"><span></span></label>
-            </div>
+            </div>-->
 
             <div class="alert alert-danger" ng-if="create_params.error">{{create_params.error}}</div>
 
             <div class="form-group">
-                <button class="btn btn-primary" ng-click="createUsers()" ng-disabled="fetching" ng-i18next="groupAccountsManager_create"></button>
+                <button class="btn btn-primary" ng-click="createUsers()" ng-disabled="creating" btn-loading="creating" btn-icon-text="create_new_folder,groupAccountsManager_create"></button>
+            </div>
+
+            <div ng-show="amountTotal">
+                <uib-progressbar class="progress-striped" ng-class="creating && 'active'" value="amountDone" type="info" max="amountTotal" animate="true">
+                    {{ amountDone }} / {{ amountTotal }}
+                </uibprogressbar>
+            </div>
+
+            <hr ng-show="accounts.length && !creating" />
+            <div ng-show="accounts.length && !creating">
+                <button class="btn btn-primary" ng-click="showAccounts()" btn-icon-text="view_list,groupAccountsManager_view_accounts"></button>
+                <p ng-i18next="groupAccountsManager_view_accounts_info"></p>
             </div>
         </div>
 
         <!-- delete accounts -->
         <div class="col-right">
-            <div ng-if="prefixes && prefixes.length">
-                <div class="groupAdmin-title"><span ng-i18next="groupAccountsManager_delete_title"></span></div>
+            <div>
+                <div class="groupAdmin-title" ng-i18next="groupAccountsManager_delete_title"></div>
                 <p ng-i18next="groupAccountsManager_delete_note"></p>
 
+                <div class="form-group">
+                    <label ng-i18next="groupAccountsManager_exist_prefixes"></label>
+                    <p ng-hide="prefixes.length" ng-i18next="groupAccountsManager_no_prefixes"></p>
+                    <p ng-show="prefixes.length" ng-i18next="groupAccountsManager_exist_prefixes_hint"></p>
+                    <ul class="list list-block list-groups" ng-show="prefixes.length">
+                        <li class="list-item" ng-repeat="login_prefix in prefixes">
+                            <a ng-click="selectPrefix(login_prefix.prefix)">{{login_prefix.prefix}}</a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="form-group">
                     <label ng-i18next="groupAccountsManager_prefix"></label>
                     <input class="form-control" readonly ng-model="delete_params.prefix" ng-focus="delete_params.error=false"/>
@@ -53,22 +75,14 @@
                     <span ng-i18next="groupAccountsManager_example"></span>
                     <strong>{{delete_params.prefix}}0123456789</strong>
                 </div>
+                <p class="text-danger" ng-show="delete_params.prefix" ng-i18next="groupAccountsManager_delete_warning"></p>
 
                 <div class="alert alert-danger" ng-if="delete_params.error">{{delete_params.error}}</div>
 
                 <div class="form-group">
-                    <button class="btn btn-primary" ng-click="deleteUsers()" ng-disabled="fetching" ng-i18next="groupAccountsManager_delete"></button>
+                    <button class="btn btn-primary" ng-click="deleteUsers()" ng-disabled="deleting" btn-loading="deleting" btn-icon-text="delete,groupAccountsManager_delete"></button>
                 </div>
 
-                <div class="form-group">
-                    <label ng-i18next="groupAccountsManager_exist_prefixes"></label>
-                    <p ng-i18next="groupAccountsManager_exist_prefixes_hint"></p>
-                    <ul class="list list-block list-groups">
-                        <li class="list-item" ng-repeat="login_prefix in prefixes">
-                            <a ng-click="selectPrefix(login_prefix.prefix)">{{login_prefix.prefix}}</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>

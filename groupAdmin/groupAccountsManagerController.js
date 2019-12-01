@@ -34,62 +34,63 @@ angular.module('algorea')
     });
 
 
-    function accountsManagerRequest(params, callback) {
-        $scope.fetching = true;
-        $http.post('/groupAdmin/accounts_manager.php', params, { responseType: 'json'})
+    function accountsManagerRequest(params, loadingVar, callback) {
+        $scope[loadingVar] = true;
+        $scope.error = '';
+        $http.post('/groupAdmin/accounts_manager.php', params, {responseType: 'json'})
             .success(function(res) {
-                $scope.fetching = false;
+                $scope[loadingVar] = false;
                 if(res.success) {
                     callback(res.data)
                 } else {
-                    $scope.error = res.error
+                    $scope.error = res.error;
+                    $scope[loadingVar] = false;
+                    $scope.creating = false;
                 }
             })
             .error(function(res) {
                 $scope.error = res && res.error ? res.error : 'Server error';
+                $scope[loadingVar] = false;
                 console.error("error calling accounts_manager.php");
             });
     }
 
 
     // prefixes
-    accountsManagerRequest({
-        action: 'get_prefixes',
-        group_id: $scope.$parent.group.ID
-    }, function(prefixes) {
-        $scope.prefixes = prefixes;
-    });
-
-
-
-    function getPrefixId(prefix) {
-        if($scope.prefixes === null) return false;
-        for(var i=0; i<$scope.prefixes.length; i++) {
-            if($scope.prefixes[i].prefix === prefix) return $scope.prefixes[i].ID;
-        }
-        return false;
+    function getPrefixes() {
+        accountsManagerRequest({
+            action: 'get_prefixes',
+            group_id: $scope.$parent.group.ID
+        }, 'loadingPrefixes', function(prefixes) {
+            $scope.prefixes = prefixes;
+        });
     }
+    getPrefixes();
+
 
 
     // create users
-    $scope.create_params = {
-        prefix: '',
-        amount: 1,
-        postfix_length: 3,
-        password_length: 6,
-        create_in_subgroups: false,
-        example_login: '',
-        error: false
-    }
     $scope.accounts = [];
 
+    $scope.resetCreateParams = function() {
+        $scope.create_params = {
+            prefix: '',
+            amount: 1,
+            postfix_length: 3,
+            password_length: 6,
+            create_in_subgroups: false,
+            example_login: '',
+            error: false
+        }
+    }
+    $scope.resetCreateParams();
 
     $scope.refreshExampleLogin = function() {
         if($scope.create_params.prefix == '') {
             return null;
         }
         var l = parseInt($scope.create_params.postfix_length, 10);
-        if(l > 100 || l < 0) {
+        if(l > 30 || l < 3) {
             return null;
         }
         var postfix = '';
@@ -109,6 +110,7 @@ angular.module('algorea')
         $scope.create_params.error = false;
         var res = {
             action: 'create',
+            group_id: $scope.$parent.group.ID,
             prefix: $scope.create_params.prefix.trim(),
             amount: parseInt($scope.create_params.amount, 10) || 0,
             postfix_length: parseInt($scope.create_params.postfix_length, 10) || 0,
@@ -131,19 +133,11 @@ angular.module('algorea')
             $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_login_length');
             return;
         }
-        if(getPrefixId(res.prefix)) {
-            $scope.create_params.error = $i18next.t('groupAccountsManager_used_prefix');
-            return;
-        }
-        if(res.amount < 0 || res.amount > 50) {
+        if(res.amount < 0) {
             $scope.create_params.error = $i18next.t('groupAccountsManager_wrong_number_of_users');
             return;
         }
-        if($scope.create_params.create_in_subgroups) {
-            res.groups = Object.keys(collectGroups($scope.$parent.group)).join(';');
-        } else {
-            res.groups = $scope.$parent.group.ID;
-        }
+        res.createInSubgroups = !$scope.create_params.create_in_subgroups;
         return res;
     }
 
@@ -151,29 +145,41 @@ angular.module('algorea')
         var params = getCreateParams()
         if(!params) return;
 
-        $scope.error = null;
-        accountsManagerRequest(params, function(data) {
-            $scope.prefixes = data.prefixes;
-            showAccounts(data.accounts);
-        });
+        $scope.creating = true;
+        $scope.amountTotal = params.amount;
+        $scope.amountDone = 0;
 
-        $scope.create_params.example_login = '';
-        $scope.create_params.prefix = '';
-        $scope.create_params.amount = 1;
+        $scope.accounts = [];
+
+        function continueCreation() {
+            if($scope.amountDone >= $scope.amountTotal) {
+                $scope.creating = false;
+                $scope.showAccounts();
+                return;
+            }
+            // Create a batch of users (5 max per query)
+            params.amount = Math.min(5, $scope.amountTotal - $scope.amountDone);
+            accountsManagerRequest(params, 'creatingRequest', function(data) {
+                $scope.prefixes = data.prefixes;
+                $scope.accounts = $scope.accounts.concat(data.accounts);
+                $scope.amountDone += params.amount;
+                continueCreation();
+            });
+        }
+        continueCreation();
     }
 
 
 
     // show generated accounts
 
-    function showAccounts(accounts) {
-
+    $scope.showAccounts = function() {
         $uibModal.open({
             templateUrl: '/groupAdmin/groupAccountsCreatePopup.html',
             controller: 'groupAccountsCreatePopupController',
             resolve: { data: function () {
                 return {
-                    accounts: accounts,
+                    accounts: $scope.accounts,
                     groups: collectGroups($scope.$parent.group)
                 }
             }},
@@ -182,7 +188,6 @@ angular.module('algorea')
             keyboard: false
         });
     };
-
 
 
 
@@ -203,16 +208,11 @@ angular.module('algorea')
         var prefix = $scope.delete_params.prefix.trim();
         var res = {
             action: 'delete',
-            prefix: prefix,
-            id: getPrefixId(prefix),
-            group_id: $scope.$parent.group.ID
+            group_id: $scope.$parent.group.ID,
+            prefix: prefix
         }
         if(!res.prefix) {
             $scope.delete_params.error = $i18next.t('groupAccountsManager_wrong_prefix');
-            return;
-        }
-        if(!res.id) {
-            $scope.delete_params.error = $i18next.t('groupAccountsManager_nonexistent_prefix');
             return;
         }
         return res;
@@ -224,7 +224,7 @@ angular.module('algorea')
         if(!params) return;
 
         $scope.error = null;
-        accountsManagerRequest(params, function(data) {
+        accountsManagerRequest(params, 'deleting', function(data) {
             $scope.prefixes = $scope.prefixes.filter(function(v) {
                 return v.prefix !== params.prefix;
             });
