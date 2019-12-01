@@ -6,6 +6,41 @@
 // JSON request (default in AngularJS $http.post) + PHP crazyness, see
 // http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
 
+
+// First, get out of the parent (LTI wrapper for instance)
+if(!isset($_GET['step'])) {
+?>
+<!doctype html>
+<html>
+   <head>
+   <script src="/bower_components/jschannel/src/jschannel.js" type="text/javascript"></script>
+   <script type="text/javascript">
+      try {
+         window.parent.location.href = window.location.href + '&step=1';
+      } catch(e) {}
+      // If the above fails, try calling platform.openUrl
+      var platform = Channel.build({
+         window: window.parent,
+         origin: "*",
+         scope: "login.france-ioi.org",
+         onReady: function() {
+            platform.call({
+               method: 'platform.openUrl',
+               params: window.location.href + '&step=1',
+               success: function() {}
+               });
+         }
+      });
+   </script>
+   </head>
+   <body>
+   </body>
+</html>
+<?php
+    die();
+}
+// We're out of any parent, proceed with login
+
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
@@ -105,13 +140,14 @@ if(! $stm->rowCount()) {
    $_SESSION['login']['bIsAdmin'] = $res['bIsAdmin'];
 }
 
+// Redirect to the main page now
+Header("Location: /");
 ?>
-
 <!doctype html>
 <html>
    <head>
-   <script>
-      window.parent.location.href = "/";
+   <script type="text/javascript">
+      window.location.href = "/";
    </script>
    </head>
    <body>
