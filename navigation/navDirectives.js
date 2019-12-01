@@ -76,4 +76,43 @@ angular.module('algorea')
          });
       }
     };
+}])
+
+.directive('btnIconText', [function() {
+  return {
+    restrict: 'A',
+    template: function(element, attrs) {
+      if(!attrs.btnIconText) { return ''; }
+      var idx = attrs.btnIconText.indexOf(',');
+      if(idx == -1) {
+        return '<span ng-i18next="'+attrs.btnIconText+'"></span>';
+      } else {
+        return '<i class="material-icons">'+attrs.btnIconText.substring(0, idx)+'</i> '+
+               '<span ng-i18next="'+attrs.btnIconText.substring(idx+1)+'"></span>';
+      }
+    }
+  };
+}])
+
+.directive('btnLoading', [function() {
+  return {
+    restrict: 'A',
+    link: function(scope, elem, attrs) {
+      function updateIcon(val) {
+        if(val) {
+          elem.addClass('has-icon-spin');
+        } else {
+          elem.removeClass('has-icon-spin');
+        }
+      };
+
+      scope.$watch(attrs.btnLoading, function(val) {
+        updateIcon(val);
+      });
+      scope.$on('$destroy', function() {
+        updateIcon(false);
+      });
+      updateIcon(attrs.btnLoading);
+    }
+  };
 }]);
