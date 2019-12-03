@@ -37,7 +37,7 @@ angular.module('algorea')
             tab.callback(id, true);
         }
 
-        var params = Object.assign({}, $stateParams);
+        var params = JSON.parse(JSON.stringify($stateParams));
         params.section = tabsById[id] > 0 ? id : null;
         $state.go($state.current.name, params, {notify: false});
 
