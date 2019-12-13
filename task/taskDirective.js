@@ -283,10 +283,12 @@ angular.module('algorea')
 
       // move to next item in same chapter
       scope.moveToNextImmediate = function() {
+         if(window.options.barebone) { return; }
          scope.goRightImmediateLink();
       };
       // move to next item
       scope.moveToNext = function() {
+         if(window.options.barebone) { return; }
          scope.goRightLink();
       };
 
@@ -300,6 +302,9 @@ angular.module('algorea')
               message: message,
               sToken: scope.user_item.sToken
             };
+            if(window.lti) {
+              postParams.lti = '1';
+            }
             if (!scoreToken) {
                postParams.answerToken = answerToken;
             }
@@ -313,6 +318,10 @@ angular.module('algorea')
                   return;
                }
                scope.user_item.nbTasksTried = scope.user_item.nbTasksTried+1;
+
+               if(score == 100 || score > scope.user_item.iScore) {
+                  scope.openProgressPopup();
+               }
 
                // We just unlocked some items
                if (!scope.user_item.bKeyObtained && postRes.bKeyObtained && scope.item.idItemUnlocked) {

@@ -12,7 +12,7 @@ angular.module('algorea')
                   '  <a ng-show="!active" ui-sref="{{getSref()}}" ng-include="viewsBaseUrl+\'item-menu.html\'"></a>' +
                   '</span>';
         } else if(attrs.from == 'main') {
-           return '<div ng-include="viewsBaseUrl+\'item-header.html\'"></div>' +
+           return (window.options.barebone ? '' : '<div ng-include="viewsBaseUrl+\'item-header.html\'"></div>') +
                   '<div ng-show="showItem" ng-include="getTemplate()"></div>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,

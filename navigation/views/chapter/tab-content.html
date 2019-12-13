@@ -10,6 +10,8 @@
                 </div>
                 <div>
                     <i class="material-icons material-btn" ng-show="canMore(childItem)" ng-click="toggleMore(childItem)">more_vert</i>
+                    <i class="material-icons material-btn" ng-click="toggleWeight(childItem)">insert_chart</i>
+                    <input type="text" ng-show="showWeight[childItem.ID]" ng-model="itemItems[childItem.ID].iWeight" ng-change="setChanged(itemItems[childItem.ID]);" style="width: 60px; height: 20px;">
                     <i class="material-icons material-btn" ng-click="copyItem(childItem)">content_copy</i>
                     <i class="material-icons material-btn" ng-click="cutItem(childItem)">content_cut</i>
                     <i class="material-icons material-btn" ng-click="removeItem(childItem)">remove_circle</i>
@@ -92,6 +94,10 @@
         </h4>
     </div>
     <div class="panel-body">
+        <button ng-click="toggleWeightAll()" class="btn btn-default">
+            <span class="material-icons material-btn">insert_chart</span>
+            <span ng-i18next="chapterEditor_actions_weight"></span>
+        </button>
         <button ng-click="toggleMoreAll()" class="btn btn-default">
             <span class="material-icons material-btn">more_vert</span>
             <span ng-i18next="chapterEditor_actions_more"></span>

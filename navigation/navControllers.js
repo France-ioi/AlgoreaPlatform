@@ -782,6 +782,9 @@ angular.module('algorea')
       } else {
          $scope.targets.push(config.domains.current.defaultLanguage);
       }
+      if(options.locale) {
+         $scope.targets.splice(0, 0, options.locale);
+      }
 
       $scope.updateLocales(true);
       $scope.changeLocale($scope.curLocale, true);

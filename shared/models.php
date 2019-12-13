@@ -129,6 +129,7 @@ $tablesModels = array (
          "sCategory" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "bAccessRestricted" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bAlwaysVisible" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "iWeight" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "iDifficulty" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
       ),
       "listeners" => array(
@@ -621,6 +622,7 @@ $viewsModels = array(
          "idItemChild" => array(),
          "iChildOrder" => array(),
          "sCategory" => array(),
+         "iWeight" => array(),
          "iDifficulty" => array(),
          "bAccessRestricted" => array(),
          "bAlwaysVisible" => array(),

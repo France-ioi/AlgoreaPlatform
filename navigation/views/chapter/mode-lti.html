@@ -1,0 +1,20 @@
+<div class="main-area main-area-normal">
+    <h1 ng-i18next="results"></h1>
+    <div class="alert alert-warning" ng-show="ltiError" ng-i18next="{{ltiError}}"></div>
+    <div ng-i18next="lti_task_title"></div>
+    <div><ul>
+        <li ng-repeat="score in ltiScores">
+            {{ score.sTitle }} :
+            {{ score.iScore }}%
+            <i ng-show="score.iWeight != 1">(<span ng-i18next="lti_weight"></span> {{ score.iWeight }})</i>
+        </li>
+    </ul></div>
+    <div><b>
+        <span ng-i18next="total"></span> :
+        {{ ltiTotalScore }}%
+    </b></div>
+    <div>
+        <button class="btn btn-primary" ng-click="ltiSendScore();" ng-disabled="ltiSentScore" ng-i18next="lti_score_send"></button>
+        <span style="color: green;" ng-show="ltiSentScore"><b ng-i18next="lti_score_sent"></b></span>
+    </div>
+</div>

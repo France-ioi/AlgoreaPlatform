@@ -2,8 +2,8 @@
 
 angular.module('algorea')
 .controller('chapterController', [
-    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', 'loginService', 'pathService', 'tabsService',
-    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, loginService, pathService, tabsService) {
+    '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', '$http', 'loginService', 'pathService', 'tabsService',
+    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, $http, loginService, pathService, tabsService) {
         $scope.itemService = itemService;
         $scope.tabsService = tabsService;
         $scope.models = models;
@@ -50,6 +50,10 @@ angular.module('algorea')
                 tabsService.addTab({id: 'repository', title: 'chapterEditor_repository', order: 200});
             }
             $scope.setupSync();
+            $scope.itemItems = {};
+            angular.forEach($scope.item.children, function(itemItem) {
+                $scope.itemItems[itemItem.child.ID] = itemItem;
+            });
         }
         refresh();
 
@@ -151,7 +155,6 @@ angular.module('algorea')
             }
             ModelsManager.deleteRecord('items', item.ID);
         }
-
 
         $scope.addNewChapter = function() {
             $scope.creating = {
@@ -277,7 +280,7 @@ angular.module('algorea')
             var iChildOrder = {}
             $.each(parentItem.children, function(idx, itemItem) {
                 itemItem.iChildOrder = idx+1;
-                ModelsManager.updated('items_items', itemItem.ID);
+                $scope.setChanged(itemItem);
             });
         }
 
@@ -297,7 +300,7 @@ angular.module('algorea')
 
         $scope.toggleMore = function(item, force) {
             if(!$scope.canMore(item)) { return; }
-            if(!$scope.showMore[item.ID]) {
+            if(!$scope.showMore[item.ID] && force !== false) {
                 $scope.links[item.ID] = $scope.getLinks(item);
             }
             if(typeof force !== 'undefined') {
@@ -307,12 +310,31 @@ angular.module('algorea')
             }
         }
 
-        $scope.toggleMoreAll = function() {
-            // showMore[0] contains the chapter state
-            $scope.showMore[0] = !$scope.showMore[0];
+        $scope.toggleAll = function(obj, func) {
+            var toggleTarget = null;
             angular.forEach($scope.items, function(item) {
-                $scope.toggleMore(item, $scope.showMore[0]);
+                if(toggleTarget === null) {
+                    toggleTarget = !obj[item.ID];
+                } else if (toggleTarget != !obj[item.ID]) {
+                    toggleTarget = true;
+                }
                 });
+            angular.forEach($scope.items, function(item) {
+                func(item, toggleTarget);
+                });
+        }
+
+        $scope.toggleMoreAll = function() {
+            $scope.toggleAll($scope.showMore, $scope.toggleMore);
+        }
+
+        $scope.showWeight = {};
+        $scope.toggleWeight = function(childItem, force) {
+            $scope.showWeight[childItem.ID] = !$scope.showWeight[childItem.ID];
+        }
+
+        $scope.toggleWeightAll = function() {
+            $scope.toggleAll($scope.showWeight, $scope.toggleWeight);
         }
 
 
@@ -535,6 +557,38 @@ angular.module('algorea')
                 $scope.repositoryChan.notify({method: 'syncRepository'});
                 });
         };
+
+
+        // LTI
+        $scope.ltiGetScores = function() {
+            $scope.ltiError = null;
+            var parameters = {action: 'getScores', idItem: $scope.item.ID};
+            $http.post('/lti/ltiApi.php', parameters).success(function(res) {
+                if(!res.result) {
+                    $scope.ltiError = res.error;
+                    return;
+                }
+                $scope.ltiTotalScore = res.total_score;
+                $scope.ltiScores = res.scores;
+            });
+        }
+
+        $scope.ltiSendScore = function() {
+            $scope.ltiError = null;
+            var parameters = {action: 'sendScore', idItem: $scope.item.ID};
+            $http.post('/lti/ltiApi.php', parameters).success(function(res) {
+                if(!res.result) {
+                    $scope.ltiError = res.error;
+                    return;
+                }
+                $scope.ltiSentScore = true;
+            });
+        }
+
+        if(window.options.barebone) {
+            $scope.getEditMode = function() { return 'lti'; }
+            $scope.ltiGetScores();
+        }
     }
 ]);
 

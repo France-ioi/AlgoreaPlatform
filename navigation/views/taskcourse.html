@@ -1,4 +1,5 @@
-<div ng-controller="taskController" class="main-area main-area-task" id="main-area">
+<div ng-controller="taskController" class="main-area main-area-task" id="main-area main-area-fullscreen">
+   <div ng-include="templatesPrefix+'navigation/views/progress-popup.html'"></div>
    <div class="first-task" style="position: relative;">
      <div ng-include="templatesPrefix+'forum/thread.html'" ng-if="showForum" ng-controller="forumThreadController" class="forum-in-task" id="forum-in-task"></div>
      <div ng-include="templatesPrefix+'navigation/views/attempts.html'" ng-if="tabsService.isTab('attempts')"></div>

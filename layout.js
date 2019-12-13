@@ -124,6 +124,9 @@ angular.module('algorea')
     var taskMinWidth = 820;
     var nonTaskMinWidth = 400;
     var mapService = null;
+
+    $rootScope.barebone = window.options.barebone || /[\?&]barebone=/.test(window.location);
+
     if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
       mapService.setClickedCallback(function(path, lastItem) {
@@ -359,7 +362,7 @@ angular.module('algorea')
     // resizing on state change
     $rootScope.$on('$viewContentLoaded', function() {
        var hadSidebarLeft = $rootScope.hasSidebarLeft;
-       $rootScope.hasSidebarLeft = $state.current.name == 'contents';
+       $rootScope.hasSidebarLeft = !window.options.barebone && $state.current.name == 'contents';
        if(!hadSidebarLeft && $rootScope.hasSidebarLeft && !$rootScope.isMobileLayout) {$scope.layout.openSidebarLeft();}
        $timeout($scope.layout.refreshSizes, 0); // 100 works here, might have to be changed for slow computers
     });
