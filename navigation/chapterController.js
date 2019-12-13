@@ -330,7 +330,7 @@ angular.module('algorea')
 
         $scope.showWeight = {};
         $scope.toggleWeight = function(childItem, force) {
-            $scope.showWeight[childItem.ID] = !$scope.showWeight[childItem.ID];
+            $scope.showWeight[childItem.ID] = force !== undefined ? force : !$scope.showWeight[childItem.ID];
         }
 
         $scope.toggleWeightAll = function() {
