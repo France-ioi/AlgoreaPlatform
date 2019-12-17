@@ -85,6 +85,10 @@ angular.module('algorea')
             return pathService.getSref($scope.panel, typeof $scope.depth != 'undefined' ? $scope.depth + 1 : 0, $scope.pathParams, '-' + item.ID);
         };
 
+        $scope.setChanged = function(itemItem) {
+            ModelsManager.updated('items_items', itemItem.ID);
+        }
+
         // children items
 
         function createItem(sType, sTitle) {
