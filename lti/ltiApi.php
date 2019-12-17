@@ -30,8 +30,8 @@ function getScores($request) {
         FROM items_items
         JOIN items ON items_items.idItemChild = items.ID
         JOIN items_strings ON items_strings.idItem = items.ID
-        LEFT JOIN users_items ON users_items.idItem = items.ID
-        WHERE items_items.idItemParent = :idItem AND items.sType = 'Task' AND users_items.idUser = :idUser
+        LEFT JOIN users_items ON users_items.idItem = items.ID AND users_items.idUser = :idUser
+        WHERE items_items.idItemParent = :idItem AND items.sType = 'Task'
         GROUP BY items.ID
         ORDER BY items_items.iChildOrder ASC;
         ");
