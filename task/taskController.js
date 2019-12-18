@@ -452,14 +452,17 @@ angular.module('algorea')
    };
 
    // Progress popup
-   $scope.openProgressPopup = function() {
+   $scope.openProgressPopup = function(force) {
       // TODO :: a prettier popup, which isn't tied to LTI, and then we can
       // activate it everywhere
-      if(!window.options.barebone) { return; }
+      if(!force && !window.options.barebone) { return; }
 
-      var parentItemID = pathService.getPathParams('right').parentItemID;
-      if(parentItemID < 1) { parentItemID = $scope.item.ID; }
-      var parameters = {action: 'getScores', idItem: parentItemID};
+      var path = pathService.getPathParams('right').path;
+      if(path.length > 2) { var ancestorItemID = path[path.length-3]; }
+      if(path.length > 1) { var ancestorItemID = path[path.length-2]; }
+      var parentItemID = path.length > 1 ? path[path.length-2] : $scope.item.ID;
+      var ancestorItemID = path.length > 2 ? path[path.length-3] : parentItemID;
+      var parameters = {action: 'getScores', idItem: parentItemID, idItemParent: ancestorItemID};
       $http.post('/lti/ltiApi.php', parameters).success(function(res) {
          if(!res.result) {
             return;
@@ -471,6 +474,8 @@ angular.module('algorea')
                task_score.isCurrent = true;
             }
          });
+         $scope.progress.ancestor_title = itemService.getStrings(ancestorItemID).sTitle;
+         $scope.progress.parent_title = itemService.getStrings(parentItemID).sTitle;
       });
    }
 

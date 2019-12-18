@@ -548,9 +548,7 @@
     "lti_not_connected": "Your must be connected from the learning platform to use this feature.",
     "lti_send_failure": "Failed sending the score, please reload the page completely then try again.",
 
-    "progressPopup_task_title": "On this task :",
-    "progressPopup_chapter_title": "On this chapter :",
-    "progressPopup_total_score": "Total score :",
+    "progressPopup_area_title": "Tasks :",
 
     "models_filters_fields_idUser_label": "User ID",
     "models_filters_fields_sName_label": "Filter name",

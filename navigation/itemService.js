@@ -223,6 +223,9 @@ angular.module('algorea')
             ModelsManager.updated(model, ID, false);
          },
          getStrings: function(item) {
+            if(typeof item == 'number' || typeof item == 'string') {
+               item = ModelsManager.getRecord('items', item);
+            }
             if (!item || !item.strings) {
                return null;
             }

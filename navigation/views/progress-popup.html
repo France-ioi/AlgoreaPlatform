@@ -1,24 +1,40 @@
 <div class="progress-popup" ng-show="progress">
     <div class="popup-close" ng-click="closeProgressPopup();"><span class="material-icons">close</span></div>
-    <div><b ng-i18next="progress"></b></div>
-    <div>
-        <span ng-i18next="progressPopup_task_title"></span>
-        <uib-progressbar value="progress.score" type="success" ng-if="progress.score == 100">
-{{ progress.score }}%
-        </uib-progressbar>
-        <uib-progressbar value="progress.score" type="warning" ng-if="progress.score != 100">
-{{ progress.score }}%
-        </uib-progressbar>
-    </div>
-    <div>
-        <span ng-i18next="progressPopup_chapter_title"></span>
-        <div class="progress-area">
-            <div ng-repeat="task in progress.scores" class="progress-box" ng-class="getProgressClass(task)" uib-tooltip="{{ task.sTitle }}">
-                {{ task.iScore }}
-            </div>
+    <div class="progress-popup-wrapper progress-popup-ancestor">
+        <div style="margin-right: 16px;">
+            <b>{{ progress.ancestor_title }}</b>
+        </div>
+        <div style="flex-grow: 1;">
+            <uib-progressbar value="progress.parent_score" type="success" ng-if="progress.parent_score == 100">
+            {{ progress.parent_score }}%
+            </uib-progressbar>
+            <uib-progressbar value="progress.parent_score" type="info" ng-if="progress.parent_score != 100">
+            {{ progress.parent_score }}%
+            </uib-progressbar>
         </div>
     </div>
-    <div>
-        <b><span ng-i18next="progressPopup_total_score"></span> {{ progress.total_score }}</b>
+    <div class="progress-popup-wrapper">
+        <div class="progress-popup-wrapper" style="width: 49%;">
+            <div style="margin-right: 16px;">
+                {{ progress.parent_title }}
+            </div>
+            <div style="flex-grow: 1;">
+                <uib-progressbar value="progress.total_score" type="success" ng-if="progress.total_score == 100">
+                {{ progress.total_score }}%
+                </uib-progressbar>
+                <uib-progressbar value="progress.total_score" type="warning" ng-if="progress.total_score != 100">
+                {{ progress.total_score }}%
+                </uib-progressbar>
+            </div>
+        </div>
+
+        <div style="width: 49%; display: flex;">
+            <div ng-i18next="progressPopup_area_title"></div>
+            <div class="progress-area">
+                <div ng-repeat="task in progress.scores" class="progress-box" ng-class="getProgressClass(task)" uib-tooltip="{{ task.sTitle }}">
+                    {{ task.iScore }}
+                </div>
+            </div>
+        </div>
     </div>
 </div>

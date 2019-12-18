@@ -21,29 +21,33 @@ require_once __DIR__."/../shared/connect.php";
 require_once __DIR__.'/../vendor/autoload.php';
 
 
-function getScores($request) {
+function getChapterScore($idItem) {
     // Get grades, weights, and chapter grade
     global $db;
 
     $stmt = $db->prepare("
-        SELECT items_items.iWeight, items.ID AS idItem, IFNULL(users_items.iScore, 0) AS iScore, items_strings.sTitle AS sTitle
+        SELECT items_items.iWeight, items.ID AS idItem, items.sType AS sType, IFNULL(users_items.iScore, 0) AS iScore, items_strings.sTitle AS sTitle
         FROM items_items
         JOIN items ON items_items.idItemChild = items.ID
         JOIN items_strings ON items_strings.idItem = items.ID
         LEFT JOIN users_items ON users_items.idItem = items.ID AND users_items.idUser = :idUser
-        WHERE items_items.idItemParent = :idItem AND items.sType = 'Task'
+        WHERE items_items.idItemParent = :idItem AND (items.sType = 'Task' OR items.sType = 'Chapter')
         GROUP BY items.ID
         ORDER BY items_items.iChildOrder ASC;
         ");
-    $stmt->execute(['idItem' => $request['idItem'], 'idUser' => $_SESSION['login']['ID']]);
+    $stmt->execute(['idItem' => $idItem, 'idUser' => $_SESSION['login']['ID']]);
 
     $totalScore = 0;
     $totalWeight = 0;
     $scores = [];
 
     while($row = $stmt->fetch()) {
-        $scores[] = $row;
-        $totalScore += $row['iWeight'] * $row['iScore'];
+        if($row['sType'] == 'Task') {
+            $scores[] = $row;
+            $totalScore += $row['iWeight'] * $row['iScore'];
+        } elseif($row['sType'] == 'Chapter') {
+            $totalScore += $row['iWeight'] * getChapterScore($row['idItem'])['total_score'];
+        }
         $totalWeight += $row['iWeight'];
     }
 
@@ -53,6 +57,14 @@ function getScores($request) {
     }
 
     return ['result' => true, 'total_score' => $totalScore, 'scores' => $scores];
+}
+
+function getScores($request) {
+    $itemScores = getChapterScore($request['idItem']);
+    if(isset($request['idItemParent'])) {
+        $itemScores['parent_score'] = getChapterScore($request['idItemParent'])['total_score'];
+    }
+    return $itemScores;
 }
 
 

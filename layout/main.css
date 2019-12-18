@@ -289,12 +289,11 @@ iframe.task-auto-height {
 .progress-popup {
    position: fixed;
    bottom: 0px;
-   right: 16px;
+   left: 0px;
+   width: 100%;
    z-index: 100;
    background: #F1F2F7;
    padding: 16px;
-   min-width: 280px;
-   max-width: 60%;
    border: 1px solid #E0E0E1;
    border-bottom: none;
    border-top-left-radius: 10px;
@@ -309,11 +308,12 @@ iframe.task-auto-height {
 }
 
 .progress-popup > div {
-   margin-bottom: 16px;
+   margin-bottom: 8px;
 }
 
 .progress-area {
    display: flex;
+   flex-grow: 1;
    justify-content: center;
 }
 
@@ -339,4 +339,22 @@ iframe.task-auto-height {
 }
 .progress-box.progress-box-partial {
    background-color: #F29F24;
+}
+
+.progress-popup-wrapper {
+   display: flex;
+   width: 100%;
+   justify-content: space-between;
+}
+.progress-popup-wrapper.progress-popup-ancestor {
+   width: 60%;
+   min-width: 300px;
+}
+
+div.progress {
+   background-color: #FFF;
+}
+div.progress-bar {
+   color: #000;
+   text-shadow: white 0px 0px 10px;
 }

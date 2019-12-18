@@ -563,9 +563,7 @@
     "lti_not_connected": "Vous devez vous connecter depuis votre plateforme d'exercices pour utiliser cette fonctionnalité.",
     "lti_send_failure": "L'envoi a échoué, veuillez recharger la page complètement puis réessayer.",
 
-    "progressPopup_task_title": "Sur cet exercice :",
-    "progressPopup_chapter_title": "Sur ce chapitre :",
-    "progressPopup_total_score": "Score total :",
+    "progressPopup_area_title": "Exercices :",
 
     "models_filters_fields_idUser_label": "id de l'utilisateur",
     "models_filters_fields_sName_label": "Nom du filtre",
