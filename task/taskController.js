@@ -473,7 +473,6 @@ angular.module('algorea')
          });
       });
    }
-   $scope.openProgressPopup();
 
    $scope.closeProgressPopup = function() {
       $scope.progress = null;
