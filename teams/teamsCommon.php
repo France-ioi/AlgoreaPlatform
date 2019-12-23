@@ -231,7 +231,7 @@ function openContestTeam($idItem) {
    $req = checkRequirements($team, $idItem);
    if(!$req['result']) { return $req; }
 
-   $stmt = $db->prepare('select NOW() as now, items.*, users_items.*, TIME_TO_SEC(items.sDuration) as duration, max(groups_items.bCachedFullAccess) as fullAccess from items
+   $stmt = $db->prepare('select NOW() as now, items.*, users_items.*, TIME_TO_SEC(items.sDuration) as duration, max(groups_items.bCachedFullAccess) as fullAccess from items, DATE_ADD(items.sEndContestDate, INTERVAL 1 DAY) as contestEndDate
        left join users_items on users_items.idItem = items.ID and users_items.idUser = :idUser
        JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
        JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items.ID
@@ -247,7 +247,7 @@ function openContestTeam($idItem) {
    if ($contestData['sAccessOpenDate'] && !$contestData['fullAccess'] && $contestData['sAccessOpenDate'] > $contestData['now']) {
        return ['success' => false, 'error' => "le concours n'a pas encore commencé"];
    }
-   if ($contestData['sEndContestDate'] && !$contestData['fullAccess'] && $contestData['sEndContestDate'] < $contestData['now']) {
+   if ($contestData['sEndContestDate'] && !$contestData['fullAccess'] && $contestData['contestEndDate'] < $contestData['now']) {
        return ['success' => false, 'error' => "le concours est terminé"];
    }
 /*   if (isset($contestData['sContestStartDate']) && $contestData['sContestStartDate'] && !$reopen) {

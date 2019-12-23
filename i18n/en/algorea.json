@@ -138,6 +138,9 @@
     "contest_start": "Start contest",
     "contest_already_done": "You already participated in this contest.",
     "contest_ended": "The contest is finished!",
+    "contest_open_between": "Contest opening dates",
+    "contest_open_after": "Contest open after",
+    "contest_open_before": "Contest open until",
 
     "list_total_score": "Your score on that sequence:",
 

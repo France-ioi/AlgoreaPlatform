@@ -144,6 +144,9 @@
     "contest_start": "Commencer l'épreuve",
     "contest_already_done": "Vous avez déjà effectué cette épreuve.",
     "contest_ended": "L'épreuve est terminée !",
+    "contest_open_between": "Dates d'ouverture de l'épreuve",
+    "contest_open_after": "Épreuve ouverte après le",
+    "contest_open_before": "Épreuve ouverte jusqu'au",
 
     "list_total_score": "Votre score sur cette séquence :",
 

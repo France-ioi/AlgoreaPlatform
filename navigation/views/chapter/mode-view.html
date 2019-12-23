@@ -1,5 +1,18 @@
-<div ng-if="item.sDuration && !item.sTeamMode && !user_item.sContestStartDate"><button ng-click="openContest();" ng-i18next="contest_start"></button></div>
-<div ng-if="item.sDuration && !item.sTeamMode && user_item.sFinishDate" ng-i18next="contest_already_done"></div>
+<div ng-if="item.sDuration && (!user_item.sContestStartDate || user_item.sFinishDate)" class="well">
+    <div ng-if="!item.sTeamMode && !user_item.sContestStartDate">
+        <button class="btn btn-primary" ng-click="openContest();" ng-disabled="!contestWithinDates()" btn-icon-text="alarm_on,contest_start"></button>
+        <div ng-show="item.sAccessOpenDate && item.sEndContestDate">
+            <span ng-i18next="contest_open_between"></span> : {{ item.sAccessOpenDate|date }} &mdash; {{ item.sEndContestDate|date }}.
+        </div>
+        <div ng-show="item.sAccessOpenDate && !item.sEndContestDate">
+            <span ng-i18next="contest_open_between"></span> : {{ item.sAccessOpenDate|date }}.
+        </div>
+        <div ng-show="!item.sAccessOpenDate && item.sEndContestDate">
+            <span ng-i18next="contest_open_between"></span> : {{ item.sEndContestDate|date }}.
+        </div>
+    </div>
+    <div ng-if="!item.sTeamMode && user_item.sFinishDate" ng-i18next="contest_already_done"></div>
+</div>
 <div ng-bind-html="strings.sDescription"></div>
 <div ng-if="item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-tabs.html'"></div>
 <div ng-if="!item.bDisplayChildrenAsTabs" ng-include="templatesPrefix+'navigation/views/children-list.html'"></div>
