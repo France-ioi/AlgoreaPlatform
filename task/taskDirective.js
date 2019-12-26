@@ -79,6 +79,7 @@ angular.module('algorea')
       if(!scope.item.sUrl) {
          scope.setTabs({}, true);
          scope.taskLoaded = true;
+         scope.$apply();
          return;
       }
       scope.loadingError = false;
@@ -90,6 +91,7 @@ angular.module('algorea')
       if (!scope.item.bUsesAPI) {
          elem.addClass('fullscreen-iframe');
          scope.taskLoaded = true;
+         scope.$apply();
          return;
       }
       var currentId = scope.currentId;
