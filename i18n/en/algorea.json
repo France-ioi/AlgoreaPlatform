@@ -336,6 +336,7 @@
     "groupAccountsManager_delete": "Delete users",
     "groupAccountsManager_delete_warning": "This will delete all users generated with this prefix and all their data. This action cannot be undone.",
     "groupAccountsManager_delete_success": "Accounts deleted",
+    "groupAccountsManager_no_prefixes": "No users have been created in this group through this tool.",
 
     "groupSubgroups": "Subgroups",
     "groupSubgroups_empty": "No subgroups",

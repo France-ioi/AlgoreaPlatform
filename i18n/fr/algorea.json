@@ -355,6 +355,7 @@
     "groupAccountsManager_delete": "Supprimer les utilisateurs",
     "groupAccountsManager_delete_warning": "Cela supprimera tous les utilisateurs créés avec ce préfixe et leurs données. Cette action est irréversible.",
     "groupAccountsManager_delete_success": "Utilisateurs supprimés",
+    "groupAccountsManager_no_prefixes": "Aucun ensemble d'utilisateurs n'a été créé dans ce groupe par cet outil.",
 
     "groupSubgroups": "Sous-groupes",
     "groupSubgroups_empty": "Aucun sous-groupe",
