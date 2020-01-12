@@ -981,28 +981,20 @@ angular.module('algorea')
               message: 'Please wait...',
               url: null
         };
-        $.ajax({
-              type: 'GET',
-              url: '/controllers/export_progress.php',
-              data: {
-                    itemId: itemId,
-                    groupId: groupId,
-                    target: target
-              },
-              success: function(res) {
-                    $scope.export[target].btn_disabled = false;
-                    if(res && res.file) {
-                          $scope.export[target].message = false;
-                          $scope.export[target].url = res.file;
-                    } else {
-                          $scope.export[target].message = res;
-                    }
-              },
-              error: function(request, status, err) {
-                    $scope.export[target].btn_disabled = false;
-                    $scope.export[target].message = err;
-              }
-        });
+        $http.get('/controllers/export_progress.php', {params: {itemId: itemId, groupId: groupId, target: target}})
+            .success(function(res) {
+                $scope.export[target].btn_disabled = false;
+                if(res && res.file) {
+                    $scope.export[target].message = false;
+                    $scope.export[target].url = res.file;
+                } else {
+                    $scope.export[target].message = res;
+                }
+            })
+            .error(function() {
+                $scope.export[target].btn_disabled = false;
+                $scope.export[target].message = err;
+            });
     }
 
     $scope.downloadData = function(target) {
