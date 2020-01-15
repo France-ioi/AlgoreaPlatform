@@ -43,15 +43,25 @@ angular.module('algorea')
       scope.currentView = null;
       // ID of the current instance, allows to avoid callbacks from old tasks
       scope.currentId = Math.random() * 1000000000;
-      if (scope.item.sUrl) {
-         if (scope.item.bUsesAPI) {
-            var itemUrl = scope.item.sUrl;
-            scope.taskUrl = $sce.trustAsResourceUrl(TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name, $rootScope.sLocale));
+      var itemUrl = scope.item.sUrl;
+      if(itemUrl) {
+         if(scope.item.bUsesAPI) {
+            var taskUrl = TaskProxyManager.getUrl(itemUrl, (scope.user_item ? scope.user_item.sToken : ''), 'http://algorea.pem.dev', name, $rootScope.sLocale);
             scope.itemUrl = itemUrl;
          } else {
-            scope.taskUrl = $sce.trustAsResourceUrl(scope.item.sUrl);
+            var taskUrl = itemUrl;
             scope.itemUrl = null; // Reload the iframe each time
          }
+
+         if(taskUrl && window.config && window.config.taskUrlArgs) {
+            if(taskUrl.indexOf('?') > -1) {
+               taskUrl = taskUrl + '&' + window.config.taskUrlArgs;
+            } else {
+               taskUrl = taskUrl + '?' + window.config.taskUrlArgs;
+            }
+         }
+
+         scope.taskUrl = $sce.trustAsResourceUrl(taskUrl);
 
          // Let a $digest happen before continuing
          $timeout(function() { initIframe(scope, elem, sameUrl); });
