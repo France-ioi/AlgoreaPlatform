@@ -15,7 +15,7 @@
 <div ng-if="!item.bDisplayDetailsInParent" class="clear: both;"></div>
 <div ng-click="" class="level-container" ng-show="item && item.bDisplayDetailsInParent">
 	<div class="level-image">
-        <img ng-show="strings.sImageUrl" ng-src="{{strings.sImageUrl}}"/>
+        <div ng-show="strings.sImageUrl" class="level-image-display" style="{{'background: url(' + strings.sImageUrl + ') no-repeat center center; background-size: contain;'}}"></div>
         <span ng-hide="strings.sImageUrl" class="material-icons {{mainIconClass}}" title="{{mainIconTitle}}">{{mainIconName}}</span>
     </div>
 	<div class="level-notimage">

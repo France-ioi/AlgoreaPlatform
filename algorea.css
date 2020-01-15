@@ -440,15 +440,16 @@ header {
 }
 
 .level-image {
-  padding-left:20px;
-  flex: 0 1 100px;
+  position: relative;
+  margin-left: 20px;
+  text-align: center;
   align-self: center;
+  height: 100px;
+  width: 100px;
 }
-
-.level-image img {
-  max-width: 128px;
-  max-height: 128px;
+.level-image .level-image-display {
   width: 100%;
+  height: 100%;
 }
 
 .level-image span {
