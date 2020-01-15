@@ -446,6 +446,7 @@ header {
   align-self: center;
   height: 100px;
   width: 100px;
+  flex-shrink: 0;
 }
 .level-image .level-image-display {
   width: 100%;
