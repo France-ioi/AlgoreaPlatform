@@ -295,6 +295,8 @@ angular.module('algorea')
       if ($rootScope.refreshSizes) {
          $rootScope.refreshSizes();
       }
+      // Restart syncHeight if needed
+      $scope.syncHeight();
    };
 
    $scope.apiRequest = function(action, parameters, callback, syncAfter, errorVar) {
@@ -334,7 +336,9 @@ angular.module('algorea')
    };
 
    $scope.userCreateAttempt = function() {
+      $scope.attempt_creating = true;
       $scope.createAttempt(function () {
+         $scope.attempt_creating = false;
          tabsService.selectTab('task');
          });
    };
@@ -356,7 +360,6 @@ angular.module('algorea')
          $scope.user_item.sAnswer = '';
       }
       $scope.user_item.idAttemptActive = attemptId;
-      $scope.showTask = true;
       ModelsManager.updated('users_items', $scope.user_item.ID, 'noSync');
       $scope.apiRequest('selectAttempt', {idAttempt: attemptId}, function(res) {
          $scope.getHistory();
@@ -376,7 +379,9 @@ angular.module('algorea')
       if(targetAttempt) {
          $scope.selectAttempt(targetAttempt.ID);
       } else {
+         $scope.setTabs({}, false);
          $scope.showView('attempts');
+         $scope.loading = false;
       }
    };
 
@@ -390,7 +395,9 @@ angular.module('algorea')
          // One non-manual refresh per 5 minutes
          return;
       }
+      $scope.history_refreshing = true;
       $scope.apiRequest('getHistory', {idAttempt: idAttempt}, function(res) {
+         $scope.history_refreshing = false;
          $scope.users_answers[idAttempt] = res.history;
          $scope.lastFetchedHistory[idAttempt] = new Date();
          });
@@ -416,12 +423,14 @@ angular.module('algorea')
       var state = $scope.user_item.sState;
       var answer = $scope.user_item.sAnswer;
       if($scope.lastSave.sState == state && $scope.lastSave.sAnswer == answer) { return; }
+      $scope.history_saving = true;
       $scope.apiRequest('keepState', {
          idAttempt: $scope.user_item.idAttemptActive,
          sState: state,
          sAnswer: answer,
          isCurrent: !!isCurrent},
          function() {
+            $scope.history_saving = false;
             if(!loadingAfter) {
                $scope.lastSave.sState = state;
                $scope.lastSave.sAnswer = answer;

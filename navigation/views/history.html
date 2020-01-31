@@ -1,16 +1,18 @@
 <div>
-  <p>Voici l'historique des sauvegardes et soumissions des membres de votre équipe, pour la tentative courante.</p>
+  <p ng-i18next="history_intro"></p>
   <div class="well">
-    <button class="btn btn-default" ng-disabled="manualSyncDisabled" ng-click="getHistory(true);">Rafraîchir l'historique</button>
-    <button class="btn btn-default" ng-disabled="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer" ng-click="keepState();">Sauvegarder la réponse courante</button> <i ng-show="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer">(aucune modification depuis la dernière sauvegarde)</i>
+    <button class="btn btn-default" ng-disabled="manualSyncDisabled" ng-click="getHistory(true);" btn-icon-text="refresh,history_refresh" btn-loading="history_refreshing"></button>
+    <button class="btn btn-default" ng-disabled="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer" ng-click="keepState();" btn-icon-text="save,history_save" btn-loading="history_saving"></button>
+    <i ng-show="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer" ng-i18next="history_no_modification"></i>
+
     <table class="table">
       <tr>
         <th>Date/heure</th>
-        <th>Type</th>
-        <th>Utilisateur</th>
+        <th ng-i18next="type"></th>
+        <th ng-i18next="user"></th>
         <th></th>
       <tr>
-      <tr ng-show="!users_answers[user_item.idAttemptActive]"><td colspan="4">(aucune réponse enregistrée pour cette tentative)</td></tr>
+      <tr ng-show="!users_answers[user_item.idAttemptActive]"><td colspan="4" ng-i18next="history_no_answer"></td></tr>
       <tr ng-repeat="answer in users_answers[user_item.idAttemptActive] | orderObjectBy:'sSubmissionDate':true">
         <td>{{ answer.sSubmissionDate|date:'short' }}</td>
         <td>
@@ -22,7 +24,7 @@
           {{ teamUsers[answer.idUser].sLogin }}
           <span ng-if="teamUsers[answer.idUser].sFirstName || teamUsers[answer.idUser].sLastName">({{ teamUsers[answer.idUser].sFirstName }} {{ teamUsers[answer.idUser].sLastName }})</span> 
         </td>
-        <td><button class="btn btn-default btn-sm" ng-click="loadAnswer(answer);">Recharger</button></td>
+        <td><button class="btn btn-default btn-sm" ng-click="loadAnswer(answer);" btn-icon-text="open_in_browser,reload"></button></td>
       </tr>
     </table>
   </div>

@@ -26,16 +26,16 @@
           <span ng-if="teamUsers[attempt.idUserCreator].sFirstName || teamUsers[attempt.idUserCreator].sLastName">({{ teamUsers[attempt.idUserCreator].sFirstName }} {{ teamUsers[attempt.idUserCreator].sLastName }})</span>
         </td>
         <td>
-          <button ng-hide="attempt.ID == user_item.idAttemptActive" class="btn btn-default btn-sm" ng-click="selectAttempt(attempt.ID);" ng-i18next="select"></button>
-          <button ng-show="attempt.ID == user_item.idAttemptActive" class="btn btn-primary" ng-click="selectTab('task');" ng-i18next="attempts_goto"></button>
+          <button ng-hide="attempt.ID == user_item.idAttemptActive" class="btn btn-default btn-sm" ng-click="selectAttempt(attempt.ID);" btn-icon-text="last_page,select"></button>
+          <button ng-show="attempt.ID == user_item.idAttemptActive" class="btn btn-primary" ng-click="tabsService.selectTab('task');" btn-icon-text="visibility,attempts_goto"></button>
         </td>
       </tr>
     </table>
   </div>
   <p ng-hide="item.groups_attempts|isEmptyObject">
-    <button class="btn btn-default" ng-click="userCreateAttempt();" ng-i18next="attempts_new"></button>
+    <button class="btn btn-default" ng-click="userCreateAttempt();" btn-icon-text="add_circle,attempts_new" btn-loading="attempt_creating"></button>
   </p>
   <p ng-show="item.groups_attempts|isEmptyObject" class="text-center">
-    <button class="btn btn-primary btn-lg" ng-click="userCreateAttempt();" ng-i18next="attempts_new_first"></button>
+    <button class="btn btn-primary btn-lg" ng-click="userCreateAttempt();" btn-icon-text="add_circle,attempts_new_first" btn-loading="attempt_creating"></button>
   </p>
 </div>

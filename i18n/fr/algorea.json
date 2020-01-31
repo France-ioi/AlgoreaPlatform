@@ -40,6 +40,7 @@
     "progress": "Progression",
     "reachable": "Accessible",
     "reject": "Refuser",
+    "reload": "Recharger",
     "remove": "Retirer",
     "reset": "Remettre à zéro",
     "restricted": "Restreint",
@@ -131,6 +132,12 @@
     "attempts_goto": "Accéder à l'énoncé",
     "attempts_new": "Démarrer une nouvelle tentative",
     "attempts_new_first": "Démarrer votre première tentative",
+
+    "history_intro": "Voici l'historique des sauvegardes et soumissions des membres de votre équipe, pour la tentative courante.",
+    "history_refresh": "Rafraîchir l'historique",
+    "history_save": "Sauvegarder la réponse courante",
+    "history_no_modification": "(aucune modification depuis la dernière sauvegarde)",
+    "history_no_answer": "(aucune réponse enregistrée pour cette tentative)",
 
     "login_loading": "Chargement...",
     "login_disconnect": "Se déconnecter",

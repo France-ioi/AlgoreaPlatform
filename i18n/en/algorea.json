@@ -40,6 +40,7 @@
     "progress": "Progress",
     "reachable": "Reachable",
     "reject": "Reject",
+    "reload": "Reload",
     "remove": "Remove",
     "reset": "Reset",
     "restricted": "Restricted",
@@ -125,6 +126,12 @@
     "attempts_goto": "Access task",
     "attempts_new": "Start a new attempt",
     "attempts_new_first": "Start your first attempt",
+
+    "history_intro": "This list is the history of saved answers and submissions of members of your team, for the current attempt.",
+    "history_refresh": "Refresh history",
+    "history_save": "Save current answer",
+    "history_no_modification": "(no modification since last save)",
+    "history_no_answer": "(no saved answer for this attempt)",
 
     "login_loading": "Loading...",
     "login_disconnect": "Logout",
