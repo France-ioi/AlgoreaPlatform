@@ -419,7 +419,7 @@ angular.module('algorea')
       }
    };
 
-   $scope.keepState = function(loadingAfter, isCurrent) {
+   $scope.keepState = function(loadingAfter, isCurrent, refreshHistory) {
       var state = $scope.user_item.sState;
       var answer = $scope.user_item.sAnswer;
       if($scope.lastSave.sState == state && $scope.lastSave.sAnswer == answer) { return; }
@@ -434,6 +434,9 @@ angular.module('algorea')
             if(!loadingAfter) {
                $scope.lastSave.sState = state;
                $scope.lastSave.sAnswer = answer;
+            }
+            if(refreshHistory) {
+               $scope.getHistory(true);
             }
          }, true);
    };

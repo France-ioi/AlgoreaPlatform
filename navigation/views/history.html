@@ -2,7 +2,7 @@
   <p ng-i18next="history_intro"></p>
   <div class="well">
     <button class="btn btn-default" ng-disabled="manualSyncDisabled" ng-click="getHistory(true);" btn-icon-text="refresh,history_refresh" btn-loading="history_refreshing"></button>
-    <button class="btn btn-default" ng-disabled="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer" ng-click="keepState();" btn-icon-text="save,history_save" btn-loading="history_saving"></button>
+    <button class="btn btn-default" ng-disabled="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer" ng-click="keepState(false, false, true);" btn-icon-text="save,history_save" btn-loading="history_saving"></button>
     <i ng-show="lastSave.sState == user_item.sState && lastSave.sAnswer == user_item.sAnswer" ng-i18next="history_no_modification"></i>
 
     <table class="table">
