@@ -474,6 +474,7 @@ angular.module('algorea')
                scope.task.unload(function() {
                   scope.taskLoaded = false;
                   scope.canGetState = false;
+                  scope.firstViewLoaded = false;
                   scope.task.unloaded = true;
                   if (!sameUrl) {
                      TaskProxyManager.deleteTaskProxy(scope.taskName);
@@ -488,6 +489,7 @@ angular.module('algorea')
                   // Failed
                   scope.taskLoaded = false;
                   scope.canGetState = false;
+                  scope.firstViewLoaded = false;
                   scope.task.unloaded = true;
                   TaskProxyManager.deleteTaskProxy(scope.taskName);
                   scope.taskUrl = '';
@@ -496,6 +498,7 @@ angular.module('algorea')
             } else {
                scope.taskLoaded = false;
                scope.canGetState = false;
+               scope.firstViewLoaded = false;
                scope.currentView = null;
                if (!sameUrl) {
                   TaskProxyManager.deleteTaskProxy(scope.taskName);
