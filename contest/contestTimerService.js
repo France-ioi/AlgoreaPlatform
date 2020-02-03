@@ -34,7 +34,6 @@ angular.module('algorea')
 	         this.prevTime = this.timeStart;
 	         this.updateTime();
 	         TimeManager.interval = setInterval(this.updateTime, 1000);
-	         console.error(TimeManager.interval);
 	      } else {
 	      	console.error('total time = '+this.totalTime);
 	      }
@@ -135,7 +134,7 @@ angular.module('algorea')
 			if (TimeManager.timeStart) {
 				TimeManager.endTimeCallback();
 				TimeManager.timeStart = null;
-				console.error('contest over!');
+				console.log('Contest over!');
 			}
 		}
 		previousData = contestData;
