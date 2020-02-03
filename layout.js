@@ -149,7 +149,7 @@ angular.module('algorea')
    $scope.gotoIndex = function() {
       var defaultPathStr = config.domains.current.defaultPath;
       if (defaultPathStr.substr(0, 10) == '/contents/') {
-         defaultPathStr = defaultPathStr.substr(10, defaultPathStr.length).replace('/', '');
+         defaultPathStr = defaultPathStr.substr(10, defaultPathStr.length).replace(/\/$/, '');
          var pathArray = defaultPathStr.split('-');
       }
       $state.go('contents', {path: defaultPathStr});
