@@ -85,10 +85,11 @@ angular.module('algorea')
       }
    };
    $scope.syncHeight = function () {
-      if ($scope.metaData.autoHeight)
+      if ($scope.metaData && $scope.metaData.autoHeight)
          return;
       if (!$scope.intervals.syncHeight) {
          $scope.intervals.syncHeight = $interval(function() {
+            if(!$scope.task) { return; } 
             $scope.task.getHeight(function(height) {
                // we set taskLoaded here to avoid scrollbar blinking at load
                $scope.updateHeight(height);
@@ -132,6 +133,8 @@ angular.module('algorea')
          $scope.syncState();
       }
       $scope.syncHeight();
+      // Restart syncHeight after 3s just in case
+      $timeout($scope.syncHeight, 3000);
    };
    $scope.saveStateAnswer = function(callback) {
       // Save the state and the answer
