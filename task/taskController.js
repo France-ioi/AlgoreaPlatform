@@ -368,6 +368,7 @@ angular.module('algorea')
          $scope.getHistory();
          $scope.user_item.sToken = res.sToken;
          $rootScope.$broadcast('algorea.attemptChanged');
+         $scope.setTabs({}, false);
          }, true);
    };
 
