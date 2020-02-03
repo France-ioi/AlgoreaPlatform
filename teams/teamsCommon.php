@@ -231,7 +231,7 @@ function openContestTeam($idItem) {
    $req = checkRequirements($team, $idItem);
    if(!$req['result']) { return $req; }
 
-   $stmt = $db->prepare('select NOW() as now, items.*, users_items.*, TIME_TO_SEC(items.sDuration) as duration, max(groups_items.bCachedFullAccess) as fullAccess from items, DATE_ADD(items.sEndContestDate, INTERVAL 1 DAY) as contestEndDate
+   $stmt = $db->prepare('select NOW() as now, items.*, users_items.*, TIME_TO_SEC(items.sDuration) as duration, max(groups_items.bCachedFullAccess) as fullAccess, DATE_ADD(items.sEndContestDate, INTERVAL 1 DAY) as contestEndDate from items
        left join users_items on users_items.idItem = items.ID and users_items.idUser = :idUser
        JOIN groups_ancestors as my_groups_ancestors ON my_groups_ancestors.idGroupChild = :idGroupSelf
        JOIN groups_items ON groups_items.idGroup = my_groups_ancestors.idGroupAncestor AND groups_items.idItem = items.ID
