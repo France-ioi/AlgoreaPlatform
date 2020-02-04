@@ -31,7 +31,7 @@ class LtiEntry {
 
 
     private static function doAuth() {
-        global $config;
+        global $config, $db;
         session_destroy();
         session_start();
 
@@ -51,6 +51,16 @@ class LtiEntry {
         }
         $_SESSION['lti'] = true;
         LoginTokenEntry::apply($token);
+        if(isset($_SESSION['login']['idGroupSelf'])) {
+            $stmt = $db->prepare('SELECT ID FROM groups WHERE sTextID = :sTextId;');
+            $stmt->execute(['sTextId' => 'lti_' . $config->shared->domains['current']->domain]);
+            $idLtiGroup = $stmt->fetchColumn();
+            if($idLtiGroup) {
+                $stmt = $db->prepare('INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild) VALUES(:idGroupParent, :idGroupChild);');
+                $stmt->execute(['idGroupParent' => $idLtiGroup, 'idGroupChild' => $_SESSION['login']['idGroupSelf']]);
+                Listeners::createNewAncestors($db, "groups", "Group");
+            }
+        }
 /*
         $_SESSION['ONLOGIN_REDIRECT_URL'] = $url;
         $auth_params = [
