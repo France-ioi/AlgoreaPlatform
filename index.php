@@ -61,9 +61,23 @@
         }
         echo 'var config = '.json_encode($config->shared).';';
 
-        $options = [
+        $queryString = [];
+        try {
+            parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $queryString);
+        } catch(Exception $e) {}
+
+        function getQueryStringParameter($name, $defaultValue = null) {
+            global $queryString;
+            if(isset($_GET[$name])) {
+                return $_GET[$name];
+            } else {
+                return isset($queryString[$name]) ? $queryString[$name] : $defaultValue;
+            }
+        }
+
+        $options = [ 
           'barebone' => isset($_SESSION['lti']) && $_SESSION['lti'],
-          'locale' => isset($_GET['sLocale']) ? $_GET['sLocale'] : null
+          'locale' => getQueryStringParameter('sLocale', null)
         ];
         echo 'var options = '.json_encode($options).';';
       ?>
