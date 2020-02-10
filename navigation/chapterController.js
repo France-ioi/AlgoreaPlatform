@@ -351,14 +351,47 @@ angular.module('algorea')
         }
 
 
-        if($scope.item.sRepositoryPath) {
-            // TODO :: something depending on the platform
-            $scope.repositoryUrl = $sce.trustAsResourceUrl('http://svnimport.mblockelet.info/import.php?path='+encodeURI($scope.item.sRepositoryPath)+'&recursive=1&display=frame');
+        function setImporterUrl() {
+            if(!$scope.item.sRepositoryPath) {
+                $scope.repositoryUrl = null;
+            }
+
+            var importerBaseUrl = 'http://svnimport.mblockelet.info/import.php';
+            var components = $scope.item.sRepositoryPath.split(';');
+            if(components[0] == 'git') {
+                $scope.repositoryIsGit = true;
+                var params = {
+                    type: 'git',
+                    repo: components[1],
+                    path: components[2],
+                    recursive: 1,
+                    display: 'frame',
+                    autostart: 1
+                    };
+            } else {
+                $scope.repositoryIsGit = false;
+                var params = {
+                    type: 'svn',
+                    path: $scope.item.sRepositoryPath,
+                    recursive: 1,
+                    display: 'frame',
+                    autostart: 1
+                    };
+            }
+            var urlParams = [];
+            for(var k in params) {
+                if(params.hasOwnProperty(k)) {
+                    urlParams.push(k + '=' + encodeURIComponent(params[k]));
+                }
+            }
+            $scope.repositoryUrl = $sce.trustAsResourceUrl(importerBaseUrl + '?' + urlParams.join('&'));
         }
+
         $scope.repositoryChan = null;
         $scope.bindRepository = function(callback) {
             // Bind to the repository editor
-            if(!$scope.repositoryUrl || $scope.repositoryChan) {
+            $scope.repositoryChan = null;
+            if(!$scope.repositoryUrl) {
                 if(callback) {
                     callback();
                 }
@@ -383,6 +416,16 @@ angular.module('algorea')
             }
         };
 
+        function pathToRepoPath(path) {
+            if($scope.repositoryIsGit) {
+                var components = path.split('/');
+                return 'git;' + components.slice(0, 5).join('/') + '/;' + components.slice(5).join('/');
+            } else {
+                return path;
+            }
+
+        }
+
         $scope.syncResults = [];
         $scope.syncStatus = {
             done: false,
@@ -393,7 +436,8 @@ angular.module('algorea')
             // Called when the repository sends a link
             if(!params.url || !params.task) { console.error(params); }
 
-            if(params.task.indexOf($scope.item.sRepositoryPath) != 0) {
+            var newPath = pathToRepoPath(params.task);
+            if(newPath.indexOf($scope.item.sRepositoryPath) != 0) {
                 // This task is not in a subfolder
                 $scope.syncResults.push({
                     icon: 'error',
@@ -405,8 +449,8 @@ angular.module('algorea')
 
             var item = null;
             var modified = false;
-            if($scope.itemsByPath[params.task]) {
-                item = $scope.itemsByPath[params.task];
+            if($scope.itemsByPath[newPath]) {
+                item = $scope.itemsByPath[newPath];
                 if(item.sUrl != params.url) {
                     item.sUrl = params.url;
                     ModelsManager.updated('items', item.ID);
@@ -420,7 +464,7 @@ angular.module('algorea')
             } else if($scope.itemsByUrl[params.url]) {
                 item = $scope.itemsByUrl[params.url];
                 // It's different, else we would have found it in the previous case
-                item.sRepositoryPath = params.task;
+                item.sRepositoryPath = newPath;
                 ModelsManager.updated('items', item.ID);
                 $scope.syncResults.push({
                     icon: 'library_books',
@@ -430,7 +474,7 @@ angular.module('algorea')
                 modified = true;
             }
 
-            var path = params.task.split('/');
+            var path = newPath.split('/');
             if(item) {
                 // Check item hierarchy
                 var lastParent = item;
@@ -459,7 +503,7 @@ angular.module('algorea')
             } else {
                 var name = path[path.length-1];
                 var item = createItem('Task', name);
-                item.sRepositoryPath = params.task;
+                item.sRepositoryPath = newPath;
                 item.sUrl = params.url;
                 ModelsManager.updated('items', item.ID);
                 $scope.setHierarchy(item);
@@ -469,6 +513,7 @@ angular.module('algorea')
                     params: params,
                     item: item});
             }
+            $scope.$apply();
         };
 
         $scope.setHierarchy = function(item, result) {
@@ -523,12 +568,14 @@ angular.module('algorea')
             $scope.syncStatus.done = true;
             $scope.syncStatus.icon = 'done';
             $scope.syncStatus.msg = 'done';
+            $scope.$apply();
         };
 
         $scope.syncError = function() {
             $scope.syncStatus.done = true;
             $scope.syncStatus.icon = 'error';
             $scope.syncStatus.msg = 'error';
+            $scope.$apply();
         }
 
         $scope.makeSyncItemLists = function() {
@@ -565,11 +612,14 @@ angular.module('algorea')
             $scope.syncStatus.msg = 'inprogress';
             $scope.syncStatus.nbGood = 0;
             $scope.syncResults = [];
-            $scope.bindRepository(function() {
-                $scope.makeSyncItemLists();
-                $scope.repositoryChan.notify({method: 'syncRepository'});
-                });
+            $scope.makeSyncItemLists();
+            $scope.repositoryUrl = null;
+            $timeout(function() {
+                setImporterUrl();
+                $scope.bindRepository();
+                }, 100);
         };
+        $scope.syncRepository();
 
 
         // LTI
