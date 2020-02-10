@@ -1,0 +1,7 @@
+<li ng-repeat="score in ltiScores">
+    {{ score.sTitle }} :
+    {{ score.iScore }}%
+    <i ng-show="score.iWeight != 1">(<span ng-i18next="lti_weight"></span> {{ score.iWeight }})</i>
+    <ul ng-if="score.children" ng-include="templatesPrefix+'/navigation/views/chapter/lti-list.html'" ng-init="ltiScores = score.children">
+    </ul>
+</li>

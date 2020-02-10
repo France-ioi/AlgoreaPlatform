@@ -42,12 +42,14 @@ function getChapterScore($idItem) {
     $scores = [];
 
     while($row = $stmt->fetch()) {
-        if($row['sType'] == 'Task') {
-            $scores[] = $row;
-            $totalScore += $row['iWeight'] * $row['iScore'];
-        } elseif($row['sType'] == 'Chapter') {
-            $totalScore += $row['iWeight'] * getChapterScore($row['idItem'])['total_score'];
+        if($row['sType'] == 'Chapter') {
+            $chapterScore = getChapterScore($row['idItem']);
+            if(count($chapterScore['scores']) == 0) { continue; }
+            $row['iScore'] = $chapterScore['total_score'];
+            $row['children'] = $chapterScore['scores'];
         }
+        $scores[] = $row;
+        $totalScore += $row['iWeight'] * $row['iScore'];
         $totalWeight += $row['iWeight'];
     }
 
