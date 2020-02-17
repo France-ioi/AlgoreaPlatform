@@ -174,6 +174,9 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
         function createHandler(handler) {
           return function(user, params) {
             popup && popup.close();
+            if(user.error) {
+               console.error(user.error);
+            }
             if(user.result) {
               handler(user);
               if(params && params['redirectPath']) {
@@ -182,8 +185,6 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
                   $state.go('contents', {path: params.redirectPath});
                 }
               }
-            } else {
-              console.error(user.error);
             }
           }
         }
