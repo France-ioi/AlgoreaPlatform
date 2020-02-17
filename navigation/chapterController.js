@@ -354,6 +354,7 @@ angular.module('algorea')
         function setImporterUrl() {
             if(!$scope.item.sRepositoryPath) {
                 $scope.repositoryUrl = null;
+                return;
             }
 
             var importerBaseUrl = 'http://svnimport.mblockelet.info/import.php';
