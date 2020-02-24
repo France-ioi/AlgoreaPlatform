@@ -10,7 +10,7 @@ function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
       $stm = $db->prepare('select ID from groups where `sTextId`=\'RootTemp\';');
       $stm->execute();
       $RootTempGroupId = $stm->fetchColumn();
-      $db->exec("lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = '$RootTempGroupId'),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values ($RootTempGroupId, '$userSelfGroupId', @maxIChildOrder+1); unlock tables;");
+      $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootTempGroupId, '$userSelfGroupId');");
    } else {
       $userAdminGroupId = getRandomID();
       $query = "insert into `groups` (`ID`, `sName`, `sDescription`, `sDateCreated`, `bOpened`, `sType`, `bSendEmails`) values ('".$userAdminGroupId."', '".$sLogin."-admin', '".$sLogin."-admin', NOW(), 0, 'UserAdmin', 0);";
@@ -19,13 +19,13 @@ function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
       $stm = $db->prepare('select ID from groups where `sType`=\'RootAdmin\';');
       $stm->execute();
       $RootAdminGroupId = $stm->fetchColumn();
-      $db->exec("lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = '$RootAdminGroupId'),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values ($RootAdminGroupId, '$userAdminGroupId', @maxIChildOrder+1); unlock tables;");
+      $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootAdminGroupId, '$userAdminGroupId');");
       $db->exec('unlock tables;'); // why again?
       // the Root group should be removed one day, but in the meantime, creating users in this group, so that admin interface works
       $stm = $db->prepare('select ID from groups where `sType`=\'RootSelf\';');
       $stm->execute();
       $RootGroupId = $stm->fetchColumn();
-      $db->exec("lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = '$RootGroupId'),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`) values ($RootGroupId, '$userSelfGroupId', @maxIChildOrder+1); unlock tables;");
+      $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootGroupId, '$userSelfGroupId');");
    }
    $db->exec('unlock tables;'); // why again?
    $stm = null;
@@ -93,7 +93,7 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
             $stmt = $db->prepare('insert into groups (ID, sName, sTextId, sDateCreated) values (:ID, :sName, :sTextId, NOW());');
             $stmt->execute(['ID' => $groupId, 'sName' => $groupName, 'sTextId' => $groupTextId]);
             if ($previousGroupId) {
-               $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`, `sStatusDate`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1, NOW()); unlock tables;');
+               $stmt = $db->prepare('insert into `groups_groups` (`idGroupParent`, `idGroupChild`, `sStatusDate`) values (:idGroupParent, :idGroupChild, NOW());');
                $stmt->execute(['idGroupParent' => $previousGroupId, 'idGroupChild' => $groupId]);
             }
          }
@@ -136,7 +136,7 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
       $stmt->execute($groupInfo);
       $groupGroupId = $stmt->fetchColumn();
       if (!$groupGroupId) {
-         $stmt = $db->prepare('lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroupParent),0); insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `iChildOrder`, `sStatusDate`) values (:idGroupParent, :idGroupChild, @maxIChildOrder+1, NOW()); unlock tables;');
+         $stmt = $db->prepare('insert ignore into `groups_groups` (`idGroupParent`, `idGroupChild`, `sStatusDate`) values (:idGroupParent, :idGroupChild, NOW());');
          $stmt->execute($groupInfo);
          $launchTriggers = true;
       }
