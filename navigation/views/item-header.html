@@ -1,4 +1,4 @@
-<div class="main-titlebar chapter-titlebar" ng-if="item.bTitleBarVisible" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
+<div class="main-titlebar chapter-titlebar" ng-if="item.bTitleBarVisible && !options.barebone" ng-include="templatesPrefix+'navigation/views/menubar.html'"></div>
 <div ng-include="templatesPrefix+'/navigation/views/tabs.html'"></div>
 <div ng-controller="editController">
     <div ng-if="tabsService.isTab('parameters')" ng-include="templatesPrefix+'/navigation/views/parameters.html'"></div>

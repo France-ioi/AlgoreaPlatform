@@ -12,7 +12,7 @@ angular.module('algorea')
                   '  <a ng-show="!active" ui-sref="{{getSref()}}" ng-include="viewsBaseUrl+\'item-menu.html\'"></a>' +
                   '</span>';
         } else if(attrs.from == 'main') {
-           return (window.options.barebone ? '' : '<div ng-include="viewsBaseUrl+\'item-header.html\'"></div>') +
+           return '<div ng-include="viewsBaseUrl+\'item-header.html\'"></div>' +
                   '<div ng-show="showItem" ng-include="getTemplate()"></div>';
         } else {
            /* This introduces an additional div in the DOM, it woud be good to make it differently,
@@ -31,6 +31,7 @@ angular.module('algorea')
             scope.visible = scope.item && !scope.item.bTransparentFolder;
             scope.active_tab=0;
             scope.showItem = true;
+            scope.options = window.options;
             scope.setItemIcon(scope.item);
             if (from == 'menu') {
                scope.lastClass = (scope.depth+1 == scope.pathParams.path.length) ? 'last' : 'not-last'; // IE8 doesn't support the :not(:last-child) selector...
