@@ -554,12 +554,13 @@
 
     "lti_task_title": "Results per task :",
     "lti_weight": "weight",
-    "lti_score_send": "Validate my score on this chapter",
+    "lti_scores": "Scores",
+    "lti_score_send": "Record my scores",
     "lti_score_sent": "Score saved!",
     "lti_not_connected": "Your must be connected from the learning platform to use this feature.",
     "lti_send_failure": "Failed sending the score, please reload the page completely then try again.",
 
-    "progressPopup_area_title": "Tasks :",
+    "progressPopup_area_title": "Activity scores :",
 
     "models_filters_fields_idUser_label": "User ID",
     "models_filters_fields_sName_label": "Filter name",
