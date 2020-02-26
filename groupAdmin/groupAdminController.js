@@ -708,7 +708,7 @@ angular.module('algorea')
             $scope.redirectionSelections[i] = ModelsManager.getRecord('items', pathIDs[i]);
             $scope.redirectionSelectionsIDs[i] = pathIDs[i];
          }
-         $scope.formValues.hasContest = !!$scope.redirectionSelections[$scope.redirectionSelections.length-1].sDuration;
+         $scope.formValues.hasContest = !!($scope.redirectionSelections.length && $scope.redirectionSelections[$scope.redirectionSelections.length-1].sDuration);
          $scope.formValues.selectedBaseRedirection = $scope.redirectionSelections[0];
       }
       $scope.usersSelected = {};
