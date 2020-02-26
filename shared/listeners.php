@@ -331,10 +331,10 @@ class Listeners {
        "  CONCAT('From ancestor group(s) ', GROUP_CONCAT(`parent`.`sAccessReason`, ', ')) AS `sAccessReasonAncestors` ".
        "  FROM `groups_items`  `child` ".
        "  JOIN `items_items` ON (`items_items`.`idItemChild` = `child`.`idItem`) ".
-       "  LEFT JOIN `groups_items_propagate` ON (`groups_items_propagate`.`ID` = `child`.`ID`) ".
+       "  JOIN `groups_items_propagate` ON (`groups_items_propagate`.`ID` = `child`.`ID`) ".
        "  JOIN `groups_items` `parent` ON (`items_items`.`idItemParent` = `parent`.`idItem` AND `parent`.`idGroup` = `child`.`idGroup`) ".
        "  WHERE  ".
-       "  (`groups_items_propagate`.`sPropagateAccess` = 'self' OR `groups_items_propagate`.`ID` IS NULL) AND ".
+       "  `groups_items_propagate`.`sPropagateAccess` = 'self' AND ".
        "  (`parent`.`sCachedFullAccessDate` IS NOT NULL OR `parent`.`sCachedPartialAccessDate` IS NOT NULL OR `parent`.`sCachedAccessSolutionsDate` IS NOT NULL OR ".
        "`parent`.`sFullAccessDate` IS NOT NULL  OR `parent`.`sPartialAccessDate` IS NOT NULL OR `parent`.`sAccessSolutionsDate` IS NOT NULL  OR `parent`.`bManagerAccess` != 0)   GROUP BY `child`.`ID`  ".
        "  ) AS `new_data` ".
