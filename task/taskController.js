@@ -499,6 +499,14 @@ angular.module('algorea')
       $scope.progress = null;
    }
 
+   $scope.initialProgressPopup = function() {
+      if(!window.options.barebone) { return; }
+      if$scope.user_item && $scope.user_item.iScore > 0) {
+         $scope.openProgressPopup();
+      }
+   }
+   $scope.initialProgressPopup(); 
+
    $scope.getProgressClass = function(task) {
       var cls = '';
       if(task.isCurrent) {
