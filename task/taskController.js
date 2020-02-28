@@ -501,7 +501,7 @@ angular.module('algorea')
 
    $scope.initialProgressPopup = function() {
       if(!window.options.barebone) { return; }
-      if$scope.user_item && $scope.user_item.iScore > 0) {
+      if($scope.user_item && $scope.user_item.iScore > 0) {
          $scope.openProgressPopup();
       }
    }
