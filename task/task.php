@@ -532,7 +532,7 @@ function selectAttempt($request, $db) {
    // Select an attempt
    global $config;
    updateLastActivity();
-   $stmt = $db->prepare("UPDATE users_items JOIN groups_attempts ON groups_attempts.ID = :idAttempt SET users_items.idAttemptActive = :idAttempt, users_items.sHintsRequested = groups_attempts.sHintsRequested, users_items.nbHintsCached = groups_attempts.nbHintsCached WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem;");
+   $stmt = $db->prepare("UPDATE users_items JOIN groups_attempts ON groups_attempts.ID = :idAttempt SET users_items.idAttemptActive = :idAttempt, users_items.sHintsRequested = groups_attempts.sHintsRequested, users_items.nbHintsCached = groups_attempts.nbHintsCached, users_items.sAnswer = '', users_items.sState = '' WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem;");
    $stmt->execute(['idAttempt' => $request['idAttempt'], 'idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
    Listeners::computeAllUserItems($db);
 
