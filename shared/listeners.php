@@ -225,11 +225,14 @@ class Listeners {
 
          // We mark as "todo" all direct descendants of objects marked as "processing"
          $query = "INSERT IGNORE INTO `".$tablePrefix.$objectName."_propagate` (`ID`, `sAncestorsComputationState`)
-                   (SELECT groups_groups.idGroupChild as ID, 'todo' AS sAncestorsComputationState
-                    FROM groups_groups
-                    JOIN `".$tablePrefix.$objectName."_propagate` AS old_propagate ON old_propagate.ID = groups_groups.idGroupParent
-                    WHERE old_propagate.sAncestorsComputationState = 'processing' AND (`groups_groups`.`sType` = 'invitationAccepted' or  `groups_groups`.`sType` = 'requestAccepted' or `groups_groups`.`sType` = 'direct'))
-                   ON DUPLICATE KEY UPDATE sAncestorsComputationState = 'todo';";
+                   (SELECT `".$baseTablePrefix.$objectName."_".$objectName."`.id".$upObjectName."Child as ID, 'todo' AS sAncestorsComputationState
+                    FROM `".$baseTablePrefix.$objectName."_".$objectName."`
+                    JOIN `".$tablePrefix.$objectName."_propagate` AS old_propagate ON old_propagate.ID = `".$baseTablePrefix.$objectName."_".$objectName."`.id".$upObjectName."Parent
+                    WHERE old_propagate.sAncestorsComputationState = 'processing'";
+         if($objectName == 'groups') {
+            $query .= " AND (`groups_groups`.`sType` = 'invitationAccepted' or  `groups_groups`.`sType` = 'requestAccepted' or `groups_groups`.`sType` = 'direct')";
+         }
+         $query .= ") ON DUPLICATE KEY UPDATE sAncestorsComputationState = 'todo';";
          $db->exec($query);
 
          // Objects marked as 'processing' are now marked as 'done'
