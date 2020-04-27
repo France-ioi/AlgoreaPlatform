@@ -99,6 +99,15 @@ angular.module('algorea')
         }
 
         // children items
+        function isAncestorOf(parentItem, childItem) {
+            if(parentItem.ID == childItem.ID) { return true; }
+            for(var i = 0; i < parentItem.children.length; i++) {
+                if(isAncestorOf(parentItem.children[i].child, childItem)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         function createItem(sType, sTitle) {
             var item = ModelsManager.createRecord("items");
@@ -134,6 +143,10 @@ angular.module('algorea')
         function addItem(item, parentItem) {
             // Add an item to a parent
             if(!parentItem) { parentItem = $scope.item; }
+            if(isAncestorOf(item, parentItem)) {
+                console.error('Tried to add item ID ' + item.ID + ' to ' + parentItem.ID + ' it is an ancestor of!');
+                return;
+            }
             var itemItem = ModelsManager.createRecord("items_items");
             itemItem.idItemParent = parentItem.ID;
             itemItem.idItemChild = item.ID;
