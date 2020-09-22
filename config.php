@@ -66,6 +66,7 @@ $config = (object) array(
             "CustomContestRootItemId" => "41",
             "OfficialContestRootItemId" => "42",
             "additionalLoginArgs" => "",
+            "disableGroupsAttemptsSync" => false
          )
       )
    )

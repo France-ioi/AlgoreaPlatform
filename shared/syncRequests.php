@@ -605,7 +605,7 @@ function algoreaCustomRequest($params, &$requests, $db, $minServerVersion) {
 }
 
 function getSyncRequests($params, $minServerVersion) {
-   global $db, $contestData;
+   global $config, $db, $contestData;
    if (session_status() === PHP_SESSION_NONE){session_start();}
    $contestData = adjustContestAndGetData();
    //echo json_encode($contestData);
@@ -621,5 +621,11 @@ function getSyncRequests($params, $minServerVersion) {
    //var_export($requests);
    algoreaCustomRequest($params, $requests, $db, $minServerVersion);
    //var_export($requests);
+
+   // Disable groups_attempts sync
+   if(isset($config->shared->domains['current']->disableGroupsAttemptsSync) && $config->shared->domains['current']->disableGroupsAttemptsSync) {
+      unset($request['groups_attempts']);
+   }
+
    return $requests;
 }
