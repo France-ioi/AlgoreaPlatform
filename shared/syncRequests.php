@@ -624,7 +624,7 @@ function getSyncRequests($params, $minServerVersion) {
 
    // Disable groups_attempts sync
    if(isset($config->shared->domains['current']->disableGroupsAttemptsSync) && $config->shared->domains['current']->disableGroupsAttemptsSync) {
-      unset($request['groups_attempts']);
+      unset($requests['groups_attempts']);
    }
 
    return $requests;
