@@ -176,6 +176,7 @@ angular.module('algorea')
    });
    $scope.$on('task-answers.openAnswer', function(event, answer) {
       $scope.task.reloadAnswer(answer, function() {});
+      $scope.task.showViews({task: true, editor: true}, function() {});
    });
 
    $scope.taskLoaded = false;
