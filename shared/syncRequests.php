@@ -409,7 +409,8 @@ function setupExpandedItemsRequests($params, &$requests) {
    // all these items are fetched in the first sync to make user experience smoother
    // TODO: do not sync them after first sync
    $default_expanded_items = array($config->shared->RootItemId);
-   foreach ($config->shared->domains as $_ => $domainData) {
+   $domainData = $config->shared->domains['current'];
+//   foreach ($config->shared->domains as $_ => $domainData) {
       $default_expanded_items[] = $domainData->ProgressRootItemId;
       $default_expanded_items[] = $domainData->PlatformItemId;
       $default_expanded_items[] = $domainData->OfficialProgressItemId;
@@ -417,7 +418,7 @@ function setupExpandedItemsRequests($params, &$requests) {
       $default_expanded_items[] = $domainData->ContestRootItemId;
       $default_expanded_items[] = $domainData->CustomContestRootItemId;
       $default_expanded_items[] = $domainData->OfficialContestRootItemId;
-   }
+//   }
 
    if (isset($params["requests"]) && isset($params["requests"]["expandedItems"])) {
       foreach ($params["requests"]["expandedItems"] as $ID => $expandedItem) {
