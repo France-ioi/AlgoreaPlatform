@@ -28,7 +28,7 @@ angular.module('algorea')
       SyncQueue.planToSend(0);
       setSyncInterval();
       function syncStartListener(data) {
-         SyncQueue.requestSets['groupsItemsAncestors'] = {name: 'groupsItemsAncestors'};
+//         SyncQueue.requestSets['groupsItemsAncestors'] = {name: 'groupsItemsAncestors'};
          if (!lastSyncLogin && data && data.changes && data.changes.loginData && data.changes.loginData.sLogin) {
             // case of the first sync, before any login is done, this relies on the local session
             lastSyncLogin = data.changes.loginData.sLogin;

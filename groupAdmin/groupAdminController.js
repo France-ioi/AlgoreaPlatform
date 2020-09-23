@@ -643,6 +643,7 @@ angular.module('algorea')
    $scope.startSync = function(groupId, itemId, callback) {
       $scope.syncing = true;
       SyncQueue.requestSets.groupAdmin = {name: "groupAdmin", groupId: groupId, itemId: itemId, minVersion: 0};
+      SyncQueue.requestSets.groupsItemsAncestors = {name: 'groupsItemsAncestors'};
       // yeah...
       SyncQueue.addSyncEndListeners('groupAdminController', function() {
          $scope.loading = false;

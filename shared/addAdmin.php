@@ -57,3 +57,12 @@ addUserAsAdmin($idGroupSelf, $domainConfig->DiscoverRootItemId);
 Listeners::groupsGroupsAfter($db);
 Listeners::groupsItemsAfter($db);
 Listeners::computeAllAccess($db);
+
+$stmt = $db->prepare("
+    UPDATE users
+    JOIN groups_ancestors ON groups_ancestors.idGroupChild = users.idGroupSelf
+    JOIN groups_items ON groups_items.idGroup = groups_ancestors.idGroupAncestor
+    SET users.bIsAdmin = 1
+    WHERE users.bIsAdmin = 0 AND groups_items.bOwnerAccess = 1 OR groups_items.bManagerAccess = 1;
+    ");
+$stmt->execute();
