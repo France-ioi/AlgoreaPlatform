@@ -29,7 +29,7 @@ angular.module('algorea')
             itemService.syncWithNewLogin(data.sLogin, data.loginData);
          }
          $scope.hideFrame();
-         if(data.loginData && data.loginData.bIsAdmin) {
+         if(data.loginData && data.loginData.bIsAdmin == 1) {
             SyncQueue.requestSets.groupsItemsAncestors = {name: 'groupsItemsAncestors'};
             SyncQueue.planToSend(0);
          }
