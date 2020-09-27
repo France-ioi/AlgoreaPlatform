@@ -491,12 +491,15 @@ function getUserTeam($idItem, $idUserSelf, $db) {
 
 function startItem($request, $db) {
     // Set the start date on an item
+    global $config;
     updateLastActivity();
     $stmt = $db->prepare('UPDATE users_items SET sStartDate = IFNULL(sStartDate, NOW()) WHERE idUser = :idUser AND idItem = :idItem;');
     $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
 
-    $stmt = $db->prepare('UPDATE groups_attempts JOIN users_items ON users_items.idAttemptActive = groups_attempts.ID SET groups_attempts.sStartDate = IFNULL(groups_attempts.sStartDate, NOW()) WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem;');
-    $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
+    if(!isset($config->shared->domains['current']->disableGroupsAttemptsSync) || !$config->shared->domains['current']->disableGroupsAttemptsSync) {
+       $stmt = $db->prepare('UPDATE groups_attempts JOIN users_items ON users_items.idAttemptActive = groups_attempts.ID SET groups_attempts.sStartDate = IFNULL(groups_attempts.sStartDate, NOW()) WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem;');
+       $stmt->execute(['idUser' => $_SESSION['login']['ID'], 'idItem' => $request['idItem']]);
+    }
 
     return ['result' => true];
 }

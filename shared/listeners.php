@@ -3,6 +3,8 @@
 class Listeners {
    public static function computeAllUserItems($db) {
       // Use a lock so that we don't execute the listener multiple times in parallel
+      global $config;
+
       $stmt = $db->query("SELECT GET_LOCK('listener_computeAllUserItems', 1);");
       if($stmt->fetchColumn() != 1) { return; }
 
@@ -49,7 +51,9 @@ class Listeners {
             JOIN groups_attempts ON groups_attempts.ID = users_items.idAttemptActive
             SET users_items.sHintsRequested = groups_attempts.sHintsRequested
             WHERE users_items.sAncestorsComputationState = 'processing';";
-         $db->exec($updateActiveAttemptQuery);
+         if(!isset($config->shared->domains['current']->disableGroupsAttemptsSync) || !$config->shared->domains['current']->disableGroupsAttemptsSync) {
+            $db->exec($updateActiveAttemptQuery);
+         }
 
          $stmtUpdateStr = 'update `users_items`
                            join
@@ -138,6 +142,12 @@ class Listeners {
       // We use WRITE locks everywhere as MySQL doesn't propagate locks to
       // triggers unless it's WRITE (even though the documentation says the
       // opposite)
+      global $config;
+
+      if(isset($config->shared->domains['current']->disableGroupsAttemptsSync) && $config->shared->domains['current']->disableGroupsAttemptsSync) {
+         return;
+      }
+
       $db->exec("LOCK TABLES
          users_items WRITE,
          users AS attempt_user READ,
