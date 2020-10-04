@@ -22,6 +22,7 @@
     <base href="<?=$base_href?>">
       <script type="text/javascript">
       <?php
+        echo "if(!document.cookie) { window.phpsessid = '" . session_id() . "'; }\n";
         $assetsBaseUrl = '';
         $urlArgs = '';
         $compiledMode = false;

@@ -3,6 +3,9 @@
 $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 
+if(isset($request['PHPSESSID'])) {
+   session_id($request['PHPSESSID']);
+}
 if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 

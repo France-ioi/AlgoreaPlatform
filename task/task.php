@@ -15,6 +15,9 @@ if(empty($request)) {
 
 require_once __DIR__.'/../config.php';
 
+if(isset($request['PHPSESSID'])) {
+    session_id($request['PHPSESSID']);
+}
 if (session_status() === PHP_SESSION_NONE){session_start();}
 header('Content-Type: application/json');
 

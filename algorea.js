@@ -17,6 +17,10 @@ app.factory('preventTemplateCache', function($injector) {
       if(cfg.url.indexOf('.html') !== -1 && cfg.url.indexOf('uib/') === -1 && cfg.url.substr(0, 4) != 'mem/') {
         cfg.url += (window.config.domains.current.urlArgs || '');
       }
+      if(window.phpsessid && cfg.url.indexOf('.php') !== -1) {
+        if(!cfg.data) { cfg.data = {}; }
+        cfg.data['PHPSESSID'] = window.phpsessid;
+      }
       return cfg;
     }
   }

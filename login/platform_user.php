@@ -27,6 +27,9 @@ if (!$request || !is_array($request) || !$request['action']) {
 
 $action = $request['action'];
 
+if(isset($request['PHPSESSID'])) {
+    session_id($request['PHPSESSID']);
+}
 if (session_status() === PHP_SESSION_NONE){session_start();}
 if (!isset($_SESSION['login'])) { $_SESSION['login'] = array(); };
 
