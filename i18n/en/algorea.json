@@ -646,6 +646,7 @@
     "models_items_fields_bDisplayDetailsInParent_label":"Display details in parent",
     "models_items_fields_groupCodeEnter_label": "Offer users to enter through a group code",
     "models_items_fields_sTextId_label": "TextID",
+    "models_items_fields_sOptions_label": "Options (JSON)",
     "models_items_fields_sType_values_Root_label": "Root",
     "models_items_fields_sType_values_Level_label": "Level",
     "models_items_fields_sType_values_Chapter_label": "Chapter",

@@ -131,13 +131,22 @@ angular.module('algorea')
          if(scope.currentId != currentId) { return; }
          scope.grader = grader;
       });
+
+      var taskOptions = {};
+      if(scope.item.sOptions) {
+         try {
+            taskOptions = JSON.parse(scope.item.sOptions);
+            if(typeof taskOptions != 'object') { taskOptions = {}; }
+         } catch(e) {}
+      }
+
       scope.taskParams = {
          minScore: 0,
          maxScore: 100,
          noScore: 0,
          readOnly: !!scope.readOnly,
          randomSeed: scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser,
-         options: {},   
+         options: taskOptions,
          returnUrl: config.domains.current.baseUrl+'/task/task.php'
          };
 

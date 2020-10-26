@@ -663,6 +663,7 @@
     "models_items_fields_bDisplayDetailsInParent_label": "Afficher les détails dans le chapitre parent",
     "models_items_fields_groupCodeEnter_label": "Permettre aux utilisateurs d'entrer avec un code de groupe",
     "models_items_fields_sTextId_label": "TextID",
+    "models_items_fields_sOptions_label": "Options (JSON)",
     "models_items_fields_sType_values_Root_label": "Racine",
     "models_items_fields_sType_values_Category_label": "Catégorie",
     "models_items_fields_sType_values_Level_label": "Niveau",
