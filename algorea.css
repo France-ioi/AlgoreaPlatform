@@ -256,13 +256,18 @@ header {
 }
 .iframe-course {
    width: 100%;
-   min-width:600px;
    margin: auto;
    border: 0px;
    display: block;
    overflow:auto;
    height: calc(100vh - 170px);
 }
+@media screen and (min-width: 640px) {
+   .iframe-course {
+      min-width: 600px;
+   }
+}
+
 .tabset-task {
    width: 800px;
    margin: auto;
