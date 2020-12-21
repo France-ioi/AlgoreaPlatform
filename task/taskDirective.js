@@ -233,6 +233,8 @@ angular.module('algorea')
             scope.task.reloadAnswer('', success, error);
          } else if (mode == 'nextImmediate') {
             scope.moveToNextImmediate();
+         } else if (mode == 'top') {
+            scope.moveToTop();
          } else {
             if (!scope.canGetState) {
                console.log('Warning: canGetState = false');
@@ -311,6 +313,11 @@ angular.module('algorea')
       scope.moveToNext = function() {
          if(window.options.barebone) { return; }
          scope.goRightLink();
+      };
+      // move back to chapter
+      scope.moveToTop = function() {
+         if(window.options.barebone) { return; }
+         scope.goTopLink();
       };
 
       scope.curAttemptId = scope.user_item.attempt ? scope.user_item.attempt.ID : null;
