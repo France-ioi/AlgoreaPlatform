@@ -233,8 +233,6 @@ angular.module('algorea')
             scope.task.reloadAnswer('', success, error);
          } else if (mode == 'nextImmediate') {
             scope.moveToNextImmediate();
-         } else if (mode == 'top') {
-            scope.moveToTop();
          } else {
             if (!scope.canGetState) {
                console.log('Warning: canGetState = false');
@@ -265,6 +263,9 @@ angular.module('algorea')
                         if (success) { success(); }
                         if (validated && mode == 'next') {
                            scope.moveToNext();
+                        } else if (mode == 'top') {
+                           // No need for a validated task to move
+                           scope.moveToTop();
                         }
                      }, error);
                   }
