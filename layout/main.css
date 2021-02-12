@@ -275,6 +275,7 @@ body {
 iframe.task-auto-height {
    height: 80vh;
    height: calc(100vh - 160px);
+   height: calc(100vh - 180px);
 }
 
 .fullscreen-iframe {
