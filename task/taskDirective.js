@@ -201,6 +201,14 @@ angular.module('algorea')
          }
          if(success) { success(); }
       };
+      scope.platform.log = function(data, success, error) {
+         try {
+            if(data[0] == 'error') {
+               ErrorLogger.logTaskError(scope.item.sUrl, data);
+            }
+            if(success) { success(); }
+         } catch(e) {};
+      };
       scope.platform.askHint = function(hintToken, success, error) {
          $rootScope.$broadcast('algorea.itemTriggered', scope.item.ID);
          scope.askHintUserItemID = scope.user_item.ID;
