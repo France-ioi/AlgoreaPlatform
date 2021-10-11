@@ -48,9 +48,11 @@ angular.module('algorea')
 //         var oldIds = idsToSync;
 //         var newIds =
 //      });
-      function syncEndListener () {
+      function syncEndListener(data) {
          if (firstSyncFailed) { return; }
-         if (lastSyncLogin == newLogin || !lastSyncLogin) {
+         var loginData = data && data.changes && data.changes.loginData;
+         var receivedLogin = loginData ? loginData.sLogin : null;
+         if ((lastSyncLogin == newLogin && lastSyncLogin == receivedLogin) || !lastSyncLogin) {
             lastSyncLogin = newLogin;
             if (!firstSyncDone) {
                // we don't want just new descendants, but all descendants:
@@ -80,6 +82,13 @@ angular.module('algorea')
             }
             $rootScope.$apply();
             $timeout(function() {$timeout($rootScope.refreshSizes);}, 300); // see layout.js. 300 is a more or less random value...
+         } else if(receivedLogin && lastSyncLogin == newLogin) {
+            // We received a different login than the one we're supposed to
+            // have (session expired or changed in another tab)
+            console.log("Received different login from sync!");
+            newLogin = receivedLogin;
+            var broadcastArg = {login: loginData.sLogin, tempUser: loginData.tempUser, loginData: loginData};
+            $rootScope.$broadcast('login.login', broadcastArg);
          } else {
             lastSyncLogin = newLogin;
             ModelsManager.init(models);
