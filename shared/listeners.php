@@ -148,44 +148,80 @@ class Listeners {
          return;
       }
 
-      $db->exec("LOCK TABLES
-         users_items WRITE,
-         users AS attempt_user READ,
-         groups_attempts AS attempts WRITE,
-         groups_groups AS attempt_group WRITE,
-         groups_attempts WRITE,
-         groups_groups WRITE,
-         users WRITE
-         ");
-      $queryPropagate = "
-         UPDATE users_items
-         JOIN groups_attempts ON groups_attempts.idItem = users_items.idItem
-         JOIN groups_groups ON groups_groups.idGroupParent = groups_attempts.idGroup
-         JOIN users ON users.ID = users_items.idUser AND users.idGroupSelf = groups_groups.idGroupChild
-         SET users_items.sAncestorsComputationState = 'todo'
-         WHERE groups_attempts.sAncestorsComputationState = 'todo';";
-      $db->exec($queryPropagate);
+      $stmt = $db->query("SELECT GET_LOCK('listener_propagateAttempts', 2);");
+      if($stmt->fetchColumn() != 1) { return; }
 
-      $updateAttemptsQuery = "
-         UPDATE users_items
-         JOIN
-         (select attempt_user.ID as idUser, attempts.idItem as idItem, MAX(attempts.iScore) as iScore, MAX(attempts.bValidated) as bValidated
-            from users AS attempt_user
-            join groups_attempts AS attempts
-            join groups_groups AS attempt_group ON attempts.idGroup = attempt_group.idGroupParent AND attempt_user.idGroupSelf = attempt_group.idGroupChild
-            WHERE attempts.sAncestorsComputationState = 'todo'
-            GROUP BY attempt_user.ID, attempts.idItem
-         ) AS attempts_data ON attempts_data.idUser = users_items.idUser AND attempts_data.idItem = users_items.idItem
-         SET users_items.iScore = GREATEST(users_items.iScore, IFNULL(attempts_data.iScore, 0)),
-             users_items.bValidated = GREATEST(users_items.bValidated, IFNULL(attempts_data.bValidated, 0));";
-      $db->exec($updateAttemptsQuery);
+      $stmt = $db->prepare("SELECT ID, idGroup, idItem FROM groups_attempts WHERE sAncestorsComputationState = 'todo';");
+      $stmt->execute();
+      $results = [];
+      $idList = [];
+      while($res = $stmt->fetch()) {
+         $results[] = $res;
+         $idList[] = $res['ID'];
+      }
+      $stmt = null;
 
-      $queryEndPropagate = "
+      if(count($results) == 0) {
+         $db->query("SELECT RELEASE_LOCK('listener_propagateAttempts');")->fetchColumn();
+         return;
+      }
+
+      $db->query("
+         UPDATE groups_attempts
+         SET sAncestorsComputationState = 'processing'
+         WHERE ID IN (" . implode(',', $idList) . ");");
+
+      $db->query("SELECT RELEASE_LOCK('listener_propagateAttempts');")->fetchColumn();
+
+      $stmt = $db->prepare("
+         SELECT attempt_user.ID as idUser, attempts.idItem as idItem, MAX(attempts.iScore) as iScore, MAX(attempts.bValidated) as bValidated
+            FROM users AS attempt_user
+            JOIN groups_attempts AS attempts
+            JOIN groups_groups AS attempt_group ON attempts.idGroup = attempt_group.idGroupParent AND attempt_user.idGroupSelf = attempt_group.idGroupChild
+            WHERE attempts.idGroup = :idGroup AND attempts.idItem = :idItem
+            GROUP BY attempt_user.ID;");
+      $userScores = [];
+      foreach($results as $res) {
+         $stmt->execute(['idGroup' => $res['idGroup'], 'idItem' => $res['idItem']]);
+         while($res2 = $stmt->fetch()) {
+            $userScores[] = $res2;
+         }
+      }
+
+      $userUpdates = [];
+      $stmt = $db->prepare("
+         SELECT iScore, bValidated
+         FROM users_items
+         WHERE users_items.idUser = :idUser AND users_items.idItem = :idItem");
+      foreach($userScores as $userScore) {
+         $stmt->execute(['idUser' => $userScore['idUser'], 'idItem' => $userScore['idItem']]);
+         if(($res = $stmt->fetch()) && ($res['iScore'] < $userScore['iScore'] || $res['bValidated'] < $userScore['bValidated'])) {
+            $userUpdates[] = $userScore;
+         }
+      }
+
+      $stmt = $db->prepare("
+         UPDATE users_items
+         SET iScore = GREATEST(users_items.iScore, IFNULL(:iScore, 0)),
+             bValidated = GREATEST(users_items.bValidated, IFNULL(:bValidated, 0)),
+             sAncestorsComputationState = 'todo'
+         WHERE idUser = :idUser AND idItem = :idItem;");
+      foreach($userUpdates as $userUpdate) {
+         $stmt->execute([
+            'iScore' => $userUpdate['iScore'],
+            'bValidated' => $userUpdate['bValidated'],
+            'idUser' => $userUpdate['idUser'],
+            'idItem' => $userUpdate['idItem']
+            ]);
+      }
+      $stmt = null;
+
+      $db->query("
          UPDATE groups_attempts
          SET sAncestorsComputationState = 'done'
-         WHERE sAncestorsComputationState = 'todo';";
-      $db->exec($queryEndPropagate);
-      $db->exec("UNLOCK TABLES");
+         WHERE sAncestorsComputationState = 'processing' AND ID IN (" . implode(',', $idList) . ");");
+
+      Listeners::computeAllUserItems($db);
    }
 
    public static function UserItemsAfter($db) {
@@ -200,7 +236,6 @@ class Listeners {
       syncDebug('GroupsAttemptsAfter', 'begin');
       // same as above: task.php handles it
       Listeners::propagateAttempts($db);
-      Listeners::computeAllUserItems($db);
       syncDebug('GroupsAttemptsAfter', 'end');
    }
 
