@@ -422,23 +422,46 @@ class Listeners {
                 "SET `sPropagateAccess` = 'children' ".
                 "WHERE `sPropagateAccess` = 'self';";
 
+
+      // Limit number of executions
+      $stmt = $db->query("SELECT increment FROM listeners WHERE name = 'computeAllAccess';");
+      $listenerIncr = $stmt->fetchColumn();
+
+      // Get listener lock
+      $stmt = $db->query("SELECT GET_LOCK('listener_computeAllAccess', -1);");
+
+      // Check it hasn't already been executed on our data
+      $stmt = $db->query("SELECT increment FROM listeners WHERE name = 'computeAllAccess';");
+      if($stmt->fetchColumn() > $listenerIncr + 1) {
+         $db->exec("SELECT RELEASE_LOCK('listener_computeAllAccess');");
+         return;
+      }
+
       $hasChanges = true;
       while ($hasChanges) {
          $db->exec($queryLockTables);
-         $res = $db->exec($queryInsertMissingChildren);
-         $res = $db->exec($queryInsertMissingPropagate);
-         $res = $db->exec($queryUpdatePropagateAccess);
-         $res = $db->exec($queryMarkDoNotPropagate);
-         $res = $db->exec($queryMarkExistingChildren);
-         $res = $db->exec($queryMarkFinishedItems);
-         $res = $db->exec($queryUpdateGroupItems);
-         $res = $db->exec($queryUpdateCached);
+         $db->exec($queryInsertMissingChildren);
+         $db->exec($queryInsertMissingPropagate);
+         $db->exec($queryUpdatePropagateAccess);
+         $db->exec($queryMarkDoNotPropagate);
+         $db->exec($queryMarkExistingChildren);
+         $db->exec($queryMarkFinishedItems);
+         $db->exec($queryUpdateGroupItems);
+         $db->exec($queryUpdateCached);
          $hasChanges = $db->exec($queryMarkChildrenItems);
          $db->exec($queryUnlockTables);
       }
+
+      // Increment number of executions
+      $db->exec("UPDATE listeners SET increment = increment + 1 WHERE name = 'computeAllAccess';");
+
+      // Clear lock
+      $db->query("SELECT RELEASE_LOCK('listener_computeAllAccess');");
+
+
       // remove default groups_items (veeeery slow)
       // TODO :: maybe move to some cleaning cron
-      $queryDeleteDefaultGI = "delete from `groups_items` where ".
+/*      $queryDeleteDefaultGI = "delete from `groups_items` where ".
                               "    `sCachedAccessSolutionsDate` is null ".
                               "and `sCachedPartialAccessDate` is null ".
                               "and `sCachedFullAccessDate` is null ".
@@ -451,6 +474,7 @@ class Listeners {
                               "and `bManagerAccess` = 0 ".
                               "and `bOwnerAccess` = 0 ".
                               "and `sAccessReason` = '';";
+*/
       //$db->exec($queryDeleteDefaultGI);
    }
 
