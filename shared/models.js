@@ -358,6 +358,7 @@ var models = {
          sImageUrl: {type: "string", label: "models_items_strings_fields_sImageUrl_label", defaultValue: null},
          sSubtitle: {type: "string", label: "models_items_strings_fields_sSubtitle_label", defaultValue: ''},
          sDescription: {type: "text", label: "models_items_strings_fields_sDescription_label", defaultValue: ''},
+         sFooter: { type: "text", label: "models_items_strings_fields_sFooter_label", defaultValue: '' },
          sEduComment: {type: "text", label: "models_items_strings_fields_sEduComment_label", defaultValue: ''},
          sRankingComment: {type: "text", label: "models_items_strings_fields_sRankingComment_label", defaultValue: ''}
       }

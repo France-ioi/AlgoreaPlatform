@@ -19,6 +19,8 @@
 <div ng-if="item.sTeamMode" style="height: 48px;"></div>
 <div ng-if="item.sTeamMode" ng-include="templatesPrefix+'teams/teams.html'"></div>
 <div ng-if="item.groupCodeEnter" ng-include="templatesPrefix+'groupCodePrompt/dialog.html'"></div>
+<div ng-if="strings.sFooter" style="height: 48px;"></div>
+<div ng-bind-html="strings.sFooter"></div>
 <div ng-if="editable()">
     <hr />
     <button class="btn btn-default" ng-click="setEditMode('edit')" ng-if="isEditMode('view')">

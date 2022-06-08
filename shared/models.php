@@ -153,6 +153,7 @@ $tablesModels = array (
          "sImageUrl" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sSubtitle" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sDescription" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
+         "sFooter" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sEduComment" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sRankingComment" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
       )
@@ -677,6 +678,7 @@ $viewsModels = array(
          "sImageUrl"       => array(),
          "sSubtitle"       => array(),
          "sDescription"    => array(),
+         "sFooter"         => array(),
          "sEduComment"     => array(),
          "sRankingComment" => array(),
       ),

@@ -719,6 +719,7 @@
     "models_items_strings_fields_sImageUrl_label": "Image URL",
     "models_items_strings_fields_sSubtitle_label": "Subtitle",
     "models_items_strings_fields_sDescription_label": "Description",
+    "models_items_strings_fields_sFooter_label": "Footer",
     "models_items_strings_fields_sEduComment_label": "Educational comment",
     "models_items_strings_fields_sRankingComment_label": "Ranking comment",
     "models_items_ancestors_fields_idItemAncestor_label": "Ancestor item",

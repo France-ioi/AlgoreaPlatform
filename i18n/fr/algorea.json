@@ -737,6 +737,7 @@
     "models_items_strings_fields_sImageUrl_label": "URL de l'image",
     "models_items_strings_fields_sSubtitle_label": "Sous-titre",
     "models_items_strings_fields_sDescription_label": "Description",
+    "models_items_strings_fields_sFooter_label": "Pied de page",
     "models_items_strings_fields_sEduComment_label": "Commentaire pédagogique",
     "models_items_strings_fields_sRankingComment_label": "Commentaire classement",
     "models_items_ancestors_fields_idItemAncestor_label": "Item ancêtre",
