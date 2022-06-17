@@ -92,8 +92,19 @@ function openContest($idItem, $idUser, $idGroupSelf, $reopen = false) {
 	$stmt->execute(['idUser' => $idUser, 'idItem' => $idItem]);
 	$stmt = $db->prepare('insert into groups_items (idGroup, idItem, sPartialAccessDate, sCachedPartialAccessDate, bCachedPartialAccess) values (:idGroupSelf, :idItem, NOW(), NOW(), 1) on duplicate key update sPartialAccessDate = NOW(), sCachedPartialAccessDate = NOW(), bCachedPartialAccess = 1;');
 	$stmt->execute(['idItem' => $idItem, 'idGroupSelf' => $idGroupSelf]);
+
+    // Recompute all children user items in case it was a reset participation
+    $stmt = $db->prepare("
+        UPDATE users_items
+        LEFT JOIN items_ancestors ON items_ancestors.idItemChild = users_items.idItem
+        SET users_items.sAncestorsComputationState = 'todo'
+        WHERE (items_ancestors.idItemAncestor = :idItem OR users_items.idItem = :idItem) AND users_items.idUser = :idUser");
+    $stmt->execute(['idUser' => $idUser, 'idItem' => $idItem]);
+
 	require_once __DIR__.'/../shared/listeners.php';
 	Listeners::groupsItemsAfter($db);
+    Listeners::computeAllUserItems($db);
+
 	$endTime = getContestEndTime($contestData['now'], $contestData['duration']);
 	$startTime = new DateTime($contestData['now']);
 	return ['success' => true, 'endTime' => $endTime->getTimestamp(), 'startTime' => $startTime->getTimestamp(), 'duration' => $contestData['duration']];
