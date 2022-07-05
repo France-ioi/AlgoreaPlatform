@@ -120,10 +120,11 @@ angular.module('algorea')
 
 angular.module('algorea')
    .controller('groupAdminController', ['$scope', '$stateParams', 'itemService', '$uibModal', '$http', '$rootScope', '$state', '$timeout', '$filter', '$i18next', 'tabsService',
-   function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter, $i18next, tabsService) {
+   function ($scope, $stateParams, itemService, $uibModal, $http, $rootScope, $state, $timeout, $filter, $i18next, globalTabsService) {
    'use strict';
 
    $scope.error = null;
+   var tabsService = globalTabsService.getTabsService('groupAdmin');
    $scope.tabsService = tabsService;
 
    $scope.layout.isOnePage(true);

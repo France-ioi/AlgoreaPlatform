@@ -3,8 +3,9 @@
 angular.module('algorea')
 .controller('chapterController', [
     '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', '$http', 'loginService', 'pathService', 'tabsService',
-    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, $http, loginService, pathService, tabsService) {
+    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, $http, loginService, pathService, globalTabsService) {
         $scope.itemService = itemService;
+        var tabsService = globalTabsService.getTabsService('item');
         $scope.tabsService = tabsService;
         $scope.models = models;
         $scope.tab = 'content';

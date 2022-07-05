@@ -1,6 +1,6 @@
 <div class="groupRequest">
     <div ng-if="tempUser && !loading" class="alert alert-warning" ng-i18next="profile_not_logged"></div>
-    <div ng-include="templatesPrefix+'/navigation/views/tabs.html'"></div>
+    <display-tabs name="profile"></display-tabs>
     <div ng-if="tabsService.isTab('myAccount')" ng-include="templatesPrefix+'/profile/myAccount.html'"></div>
     <div ng-if="tabsService.isTab('groupsMember')" ng-include="templatesPrefix+'/profile/groupsMember.html'"></div>
     <div ng-if="tabsService.isTab('groupsOwner')" ng-include="templatesPrefix+'/profile/groupsOwner.html'"></div>

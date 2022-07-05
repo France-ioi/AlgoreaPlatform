@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('algorea')
-    .controller('profileController', ['$scope', '$state', '$stateParams', 'loginService', 'itemService', 'tabsService', function ($scope, $state, $stateParams, loginService, itemService, tabsService) {
+    .controller('profileController', ['$scope', '$state', '$stateParams', 'loginService', 'itemService', 'tabsService', function ($scope, $state, $stateParams, loginService, itemService, globalTabsService) {
 
     $scope.layout.isOnePage(true);
     $scope.layout.hasMap('never');
 
     $scope.user = null;
     $scope.loading = true;
+    var tabsService = globalTabsService.getTabsService('profile');
     $scope.tabsService = tabsService;
 
     function validateSection(section) {

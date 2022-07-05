@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce','$injector','$timeout', 'contestTimerService', '$http', '$i18next', 'tabsService', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http, $i18next, tabsService) {
+   .controller('navigationController', ['$rootScope', '$scope', 'itemService', 'pathService', '$state', '$filter', '$sce', '$injector', '$timeout', 'contestTimerService', '$http', '$i18next', 'tabsService', function ($rootScope, $scope, itemService, pathService, $state, $filter, $sce, $injector, $timeout, contestTimerService, $http, $i18next, globalTabsService) {
       $scope.domainTitle = config.domains.current.title;
       $scope.config = config;
       $scope.viewsBaseUrl = $rootScope.templatesPrefix+'navigation/views/';
       $scope.itemService = itemService;
       var mapService = null;
+      var tabsService = globalTabsService.getTabsService('item');
       if (config.domains.current.useMap) {
          mapService = $injector.get('mapService');
       }

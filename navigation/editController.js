@@ -1,8 +1,9 @@
 angular.module('algorea')
 .controller('editController', [
     '$rootScope', '$scope', 'itemService', '$state', '$i18next', '$uibModal', '$sce', '$timeout', '$interval', 'loginService', 'pathService', 'tabsService',
-    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, loginService, pathService, tabsService) {
+    function ($rootScope, $scope, itemService, $state, $i18next, $uibModal, $sce, $timeout, $interval, loginService, pathService, globalTabsService) {
         $scope.itemService = itemService;
+        var tabsService = globalTabsService.getTabsService('item');
         $scope.tabsService = tabsService;
         $scope.models = window.models;
 

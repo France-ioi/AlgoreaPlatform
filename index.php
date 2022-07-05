@@ -212,7 +212,7 @@ if (location.pathname=='/' && config.domains.current.animationHtmlFile) startAni
   <script src="<?= includeFile('navigation/itemService.js') ?>"></script>
   <script src="<?= includeFile('navigation/navControllers.js') ?>"></script>
   <script src="<?= includeFile('navigation/tabsService.js') ?>"></script>
-  <script src="<?= includeFile('navigation/tabsController.js') ?>"></script>
+  <script src="<?= includeFile('navigation/tabsDirective.js') ?>"></script>
   <script src="<?= includeFile('navigation/chapterController.js') ?>"></script>
   <script src="<?= includeFile('navigation/editController.js') ?>"></script>
   <script src="<?= includeFile('navigation/navDirectives.js') ?>"></script>

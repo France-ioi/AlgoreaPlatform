@@ -26,8 +26,9 @@ angular.module('algorea')
 });
 
 angular.module('algorea')
-  .directive('buildTask', ['$sce', '$http', '$timeout', '$rootScope', '$interval', '$injector', '$i18next', 'itemService', 'pathService', 'tabsService', function ($sce, $http, $timeout, $rootScope, $interval, $injector, $i18next, itemService, pathService, tabsService) {
+  .directive('buildTask', ['$sce', '$http', '$timeout', '$rootScope', '$interval', '$injector', '$i18next', 'itemService', 'pathService', 'tabsService', function ($sce, $http, $timeout, $rootScope, $interval, $injector, $i18next, itemService, pathService, globalTabsService) {
    var mapService = null;
+   var tabsService = globalTabsService.getTabsService('item');
    if (config.domains.current.useMap) {
       mapService = $injector.get('mapService');
    }

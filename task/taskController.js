@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('algorea')
-   .controller('taskController', ['$scope', '$rootScope', '$window', '$location', '$interval', '$injector', '$http', '$timeout', '$i18next', 'pathService', 'tabsService', function ($scope, $rootScope, $window, $location, $interval, $injector, $http, $timeout, $i18next, pathService, tabsService) {
+   .controller('taskController', ['$scope', '$rootScope', '$window', '$location', '$interval', '$injector', '$http', '$timeout', '$i18next', 'pathService', 'tabsService', function ($scope, $rootScope, $window, $location, $interval, $injector, $http, $timeout, $i18next, pathService, globalTabsService) {
    var itemService, $state;
    if ($injector.has('itemService')) {
       itemService = $injector.get('itemService');
@@ -9,6 +9,7 @@ angular.module('algorea')
    if ($injector.has('$state')) {
       $state = $injector.get('$state');
    }
+   var tabsService = globalTabsService.getTabsService('item');
    $scope.tabsService = tabsService;
    tabsService.resetTabs($scope.getEditMode && $scope.getEditMode() == 'edit');
    $scope.showForum = false;
@@ -253,6 +254,7 @@ angular.module('algorea')
 
       $scope.askedView = $scope.currentView;
       if($scope.isDisabled($scope.askedView)) { $scope.askedView = null; }
+      var allTabIds = [];
       angular.forEach(platformViews, function(platformView, platformViewName) {
          var newTab = {
             id:       platformViewName,
@@ -262,7 +264,9 @@ angular.module('algorea')
             callback: $scope.tabSelect.bind($scope)
          };
          tabsService.addTab(newTab);
+         allTabIds.push(platformViewName);
       });
+      tabsService.removeTabsNotInList(allTabIds);
 
       if(!tabsService.getCurTabId()) {
          // No tab was selected
