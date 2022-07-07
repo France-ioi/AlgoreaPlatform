@@ -8,7 +8,6 @@ angular.module('algorea')
                 var tabsService = globalTabsService.getTabsService(attrs.name);
                 scope.displayedTabs = tabsService.displayedTabs;
                 scope.selectTab = tabsService.selectTab;
-                scope.getClass = tabsService.getClass;
             }
         };
     }]);
