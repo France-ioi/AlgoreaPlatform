@@ -286,13 +286,21 @@ class Listeners {
 
          $nbLoops += 1;
       }
+      if($nbLoops >= 30) {
+         error_log("Reached max loops on createNewAncestors for $objectName!");
+      }
 
       // Release the lock
       $db->query("SELECT RELEASE_LOCK('listener_createNewAncestors_".$tablePrefix.$objectName."');")->fetchColumn();
    }
 
+   public static function itemsItemsCheckSelf($db) {
+      $db->query("DELETE FROM items_items WHERE idItemParent = idItemChild;");
+   }
+
    public static function itemsItemsAfter($db) {
       syncDebug('itemsItemsAfter', 'begin');
+      Listeners::itemsItemsCheckSelf($db);
       Listeners::createNewAncestors($db, "items", "Item");
       Listeners::computeAllAccess($db);
       syncDebug('itemsItemsAfter', 'end');
@@ -428,7 +436,11 @@ class Listeners {
       $listenerIncr = $stmt->fetchColumn();
 
       // Get listener lock
-      $stmt = $db->query("SELECT GET_LOCK('listener_computeAllAccess', -1);");
+      $stmt = $db->query("SELECT GET_LOCK('listener_computeAllAccess', 30);");
+      if($stmt->fetchColumn() != 1) {
+         // The database is busy, we're sending possibly outdated data but it will eventually be correct
+         return;
+      }
 
       // Check it hasn't already been executed on our data
       $stmt = $db->query("SELECT increment FROM listeners WHERE name = 'computeAllAccess';");
@@ -438,7 +450,8 @@ class Listeners {
       }
 
       $hasChanges = true;
-      while ($hasChanges) {
+      $nbLoops = 0;
+      while ($hasChanges && $nbLoops < 20) {
          $db->exec($queryLockTables);
          $db->exec($queryInsertMissingChildren);
          $db->exec($queryInsertMissingPropagate);
@@ -450,7 +463,12 @@ class Listeners {
          $db->exec($queryUpdateCached);
          $hasChanges = $db->exec($queryMarkChildrenItems);
          $db->exec($queryUnlockTables);
+         $nbLoops++;
       }
+      if($hasChanges) {
+         error_log("Reached max loops on computeAllAccess!");
+      }
+
 
       // Increment number of executions
       $db->exec("UPDATE listeners SET increment = increment + 1 WHERE name = 'computeAllAccess';");
