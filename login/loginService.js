@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
-     .service('loginService', ['$injector', '$http', '$rootScope', '$sce', '$uibModal', function ($injector, $http, $rootScope, $sce, $uibModal) {
+   .service('loginService', ['$injector', '$http', '$rootScope', '$sce', '$uibModal', '$timeout', function ($injector, $http, $rootScope, $sce, $uibModal, $timeout) {
         var state = 'not-ready';
         var tempUser = false;
         var userID = null;
@@ -69,7 +69,9 @@ angular.module('franceIOILogin', ['jm.i18next', 'ui.bootstrap'])
                 return;
              }
              if (typeof cbData.callback === 'function') {
-                cbData.callback(type);
+                $timeout(function () {
+                   cbData.callback(type);
+                });
              }
           });
         }

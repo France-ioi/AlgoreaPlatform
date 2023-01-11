@@ -16,12 +16,12 @@ angular.module('algorea')
     }
     $scope.section = validateSection($stateParams.section);
 
-    tabsService.resetTabs();
     function loadUser() {
         $scope.loading = true;
         loginService.getLoginData(function(data) {
             $scope.tempUser = data.tempUser;
             $scope.loading = false;
+            tabsService.resetTabs();
             if(!$scope.tempUser) {
                 tabsService.addTab({id: 'myAccount', 'title': 'groupRequests_title_account', order: 10});
                 if(!config.domains.current.hideGroupsInterfaces) {
