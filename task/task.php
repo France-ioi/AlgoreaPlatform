@@ -216,10 +216,32 @@ function askValidation($request, $db) {
    $query = "INSERT INTO `users_answers` (`ID`, `idUser`, `idItem`, `idAttempt`, `sAnswer`, `sSubmissionDate`, `bValidated`) VALUES (:ID, :idUser, :idItem, :idAttempt, :sAnswer, NOW(), 0);";
    $stmt = $db->prepare($query);
    $stmt->execute(array('ID' => $ID, 'idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'idAttempt' => $params['idAttempt'], 'sAnswer' => $request['sAnswer']));
+
    $query = "SELECT sHintsRequested, nbHintsCached FROM `users_items` WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
    $hintsInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+
+   if($params['idAttempt']) {
+      $query = "SELECT sHintsRequested, nbHintsCached FROM `groups_attempts` WHERE ID = :idAttempt;";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array('idAttempt' => $params['idAttempt']));
+      $hintsInfo2 = $stmt->fetch(PDO::FETCH_ASSOC);
+      try {
+         $nbHintsRequested1 = count(json_decode($hintsInfo1['sHintsRequested'], true));
+      } catch(Exception $e) {
+         $nbHintsRequested1 = 0;
+      }
+      try {
+         $nbHintsRequested2 = count(json_decode($hintsInfo2['sHintsRequested'], true));
+      } catch(Exception $e) {
+         $nbHintsRequested2 = 0;
+      }
+      if($nbHintsRequested2 > $nbHintsRequested1) {
+         $hintsInfo = $hintsInfo2;
+      }
+   }
+
    $query = "UPDATE `users_items` SET nbSubmissionsAttempts = nbSubmissionsAttempts + 1 WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($query);
    $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal']));
@@ -291,12 +313,13 @@ function askHint($request, $db) {
    }
 
    // Update users_items with the hint request
-   $query = "UPDATE `users_items` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idUser = :idUser AND idItem = :idItem";
+   $query = "UPDATE `users_items` SET sHintsRequested = :hintsRequested, nbHintsCached = :nbHints, nbTasksWithHelp = 1, sAncestorsComputationState = 'todo', sLastActivityDate = NOW(), sLastHintDate = NOW() WHERE idItem = :idItem";
    if($params['idAttempt']) {
       $query .= " AND idAttemptActive = :idAttempt";
       $stmt = $db->prepare($query);
-      $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested), 'idAttempt' => $params['idAttempt']));
+      $stmt->execute(array('idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested), 'idAttempt' => $params['idAttempt']));
    } else {
+      $query .= " AND idUser = :idUser";
       $stmt = $db->prepare($query);
       $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'hintsRequested' => json_encode($hintsRequested), 'nbHints' => count($hintsRequested)));
    }
