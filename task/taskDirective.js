@@ -147,6 +147,7 @@ angular.module('algorea')
          noScore: 0,
          readOnly: !!scope.readOnly,
          randomSeed: scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser,
+         supportsTabs: true,
          options: taskOptions,
          returnUrl: config.domains.current.baseUrl+'/task/task.php'
          };
