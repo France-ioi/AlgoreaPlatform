@@ -390,7 +390,12 @@ function graderResult($request, $db) {
          $baseQueryArgs['bKeyObtained'] = 1;
       }
    }
-   if($score > 0 && $params['idAttempt']) {
+
+   $stmt = $db->prepare("SELECT idAttempt FROM users_answers WHERE ID = :idUserAnswer;");
+   $stmt->execute(['idUserAnswer' => $idUserAnswer]);
+   $idAttempt = $stmt->fetchColumn();
+
+   if($score > 0 && $idAttempt) {
       // Always propagate attempts if the score was non-zero
       $baseQueryArgs['sAncestorsComputationState'] = "'todo'";
    }
@@ -402,10 +407,10 @@ function graderResult($request, $db) {
    $userItemQuery = "UPDATE `users_items` " . $baseQuery . " WHERE idUser = :idUser AND idItem = :idItem;";
    $stmt = $db->prepare($userItemQuery);
    $res = $stmt->execute(array('idUser' => $params['idUser'], 'idItem' => $params['idItemLocal'], 'iScore' => $score));
-   if($params['idAttempt']) {
+   if($idAttempt) {
       $attemptQuery = "UPDATE `groups_attempts` " . $baseQuery . " WHERE ID = :id;";
       $stmt = $db->prepare($attemptQuery);
-      $res = $stmt->execute(array('id' => $params['idAttempt'], 'iScore' => $score));
+      $res = $stmt->execute(array('id' => $idAttempt, 'iScore' => $score));
    }
    $stmt = null;
    if ($bValidated || $bKeyObtained) {
