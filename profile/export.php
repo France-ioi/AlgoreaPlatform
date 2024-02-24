@@ -45,7 +45,7 @@ function exportGroups() {
     $q = '
         SELECT g.*
         FROM groups_ancestors as ga
-        JOIN groups as g
+        JOIN `groups` as g
         ON ga.idGroupChild = g.ID
         WHERE ga.idGroupAncestor = :idGroupOwned
     ';
@@ -59,7 +59,7 @@ function exportGroups() {
     $q = '
         SELECT g.sName
         FROM groups_ancestors as ga
-        JOIN groups as g
+        JOIN `groups` as g
         ON ga.idGroupAncestor = g.ID
         WHERE ga.idGroupChild = :idGroupSelf
     ';

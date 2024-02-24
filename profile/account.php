@@ -21,7 +21,7 @@ function getLocks() {
         FROM
             groups_ancestors as ga
         JOIN
-            groups as g
+            `groups` as g
         ON
             ga.idGroupAncestor = g.ID
         WHERE

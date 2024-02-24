@@ -29,7 +29,7 @@ function getGroupsMathing($request, $db) {
       echo json_encode(array('result' => false, 'error' => 'missing arguments in request'));
       return;
    }
-   $query = 'select groups.ID as ID, bOpened, bFreeAccess, groups.sType as sType, sName, sDescription, groups_groups.sType as relationType, IF(STRCMP(\'\', sPassword),1,0) as hasPassword from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.sName like :lookupString and groups.bOpened = 1 and groups.sType != \'UserSelf\' and groups.sType != \'UserAdmin\' and groups.sType != \'RootAdmin\' and groups.sType != \'Root\' and groups.sType != \'RootSelf\' group by groups.ID;';
+   $query = 'select `groups`.ID as ID, bOpened, bFreeAccess, `groups`.sType as sType, sName, sDescription, `groups_groups`.sType as relationType, IF(STRCMP(\'\', sPassword),1,0) as hasPassword from `groups` left join groups_groups on `groups`.ID = `groups_groups`.idGroupParent and `groups_groups`.idGroupChild = :idGroupSelf where `groups`.sName like :lookupString and `groups`.bOpened = 1 and `groups`.sType != \'UserSelf\' and `groups`.sType != \'UserAdmin\' and `groups`.sType != \'RootAdmin\' and `groups`.sType != \'Root\' and `groups`.sType != \'RootSelf\' group by `groups`.ID;';
    $values = array('lookupString' => '%'.$request['lookupString'].'%', 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
    $stmt = $db->prepare($query);
    $stmt->execute($values);
@@ -50,10 +50,10 @@ function joinGroup($request, $db) {
       return;
    }
    if (isset($request['ID'])) {
-      $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.ID = :ID group by groups.ID;';
+      $query = 'select `groups`.*, `groups_groups`.sType as ggsType, `groups_groups`.ID as ggID from groups left join groups_groups on `groups`.ID = `groups_groups`.idGroupParent and `groups_groups`.idGroupChild = :idGroupSelf where `groups`.ID = :ID group by `groups`.ID;';
       $values = array('ID' => $request['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
    } else {
-      $query = 'select groups.*, groups_groups.sType as ggsType, groups_groups.ID as ggID from groups left join groups_groups on groups.ID = groups_groups.idGroupParent and groups_groups.idGroupChild = :idGroupSelf where groups.sPassword = :password group by groups.ID;';
+      $query = 'select `groups`.*, `groups_groups`.sType as ggsType, `groups_groups`.ID as ggID from groups left join groups_groups on `groups`.ID = `groups_groups`.idGroupParent and `groups_groups`.idGroupChild = :idGroupSelf where `groups`.sPassword = :password group by `groups`.ID;';
       $values = array('password' => $request['password'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf']);
    }
    $stmt = $db->prepare($query);
@@ -84,7 +84,7 @@ function joinGroup($request, $db) {
       $groupGroupID = getRandomID();
    }
    $version = syncGetVersion($db);
-   $query = "lock tables groups_groups write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0); insert into `groups_groups` (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion) values (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, :groupGroupType, NOW(), :version) on duplicate key update sType=VALUES(sType), sStatusDate=VALUES(sStatusDate); unlock tables;";
+   $query = "lock tables `groups_groups` write; set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0); insert into `groups_groups` (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion) values (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, :groupGroupType, NOW(), :version) on duplicate key update sType=VALUES(sType), sStatusDate=VALUES(sStatusDate); unlock tables;";
    $values = array('ID' => $groupGroupID, 'idGroup' => $result['ID'], 'idGroupSelf' => $_SESSION['login']['idGroupSelf'], 'version' => $version, 'groupGroupType' => $groupGroupType);
    $stmt = $db->prepare($query);
    $stmt->execute($values);
