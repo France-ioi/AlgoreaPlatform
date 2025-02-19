@@ -106,6 +106,7 @@ $tablesModels = array (
          "idTeamInGroup" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "iTeamMaxMembers" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "bHasAttempts" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
+         "bSoloTeams" => array("type" => "int", "access" => array("write" => array("user"), "read" => array("user"))),
          "sAccessOpenDate" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sDuration" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
          "sEndContestDate" => array("type" => "string", "access" => array("write" => array("user"), "read" => array("user"))),
@@ -587,6 +588,7 @@ $viewsModels = array(
          "idTeamInGroup" => array(),
          "iTeamMaxMembers" => array(),
          "bHasAttempts" => array(),
+         "bSoloTeams" => array(),
          "sAccessOpenDate" => array(),
          "sDuration" => array(),
          "sEndContestDate" => array(),
@@ -698,12 +700,12 @@ $viewsModels = array(
       "mainTable" => "groups_attempts",
       "adminOnly" => false,
       "joins" => array(
-         "groups_items" =>  array("srcTable" => "groups_attempts", "srcField" => "idItem", "dstField" => "idItem"),
+         "groups_items" => array("srcTable" => "groups_attempts", "srcField" => "idItem", "dstField" => "idItem"),
          "items_ancestors" => array("srcTable" => "groups_attempts", "srcField" => "idItem", "dstField" => "idItemChild"),
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfGroupDescendants" => array("srcTable" => "groups_attempts", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupChild"),
          "itemsDescendants" => array("srcTable" => "groups_attempts", "dstTable" => "items_ancestors", "srcField" => "idItem", "dstField" => "idItemChild"),
-         "team" => array("srcTable" => "groups_attempts", "dstTable" => "groups_groups", "srcField" => "idGroup", "dstField" => "idGroupParent")
+         "team" => array("type" => "LEFT", "srcTable" => "groups_attempts", "dstTable" => "groups_groups", "srcField" => "idGroup", "dstField" => "idGroupParent")
       ),
       "fields" => array(
           "idGroup"               => array('insertOnly' => true),
@@ -748,13 +750,13 @@ $viewsModels = array(
             "joins" => array("selfGroupDescendants", "users"),
             "condition"  => '`[PREFIX]selfGroupDescendants`.`idGroupAncestor` = :[PREFIX_FIELD]idGroup',
          ),
-          "itemsDescendants" => array(
+         "itemsDescendants" => array(
             "joins" => array("itemsDescendants"),
             "condition"  => '`[PREFIX]itemsDescendants`.`idItemAncestor` = :[PREFIX_FIELD]idItem',
          ),
          "idGroup" => array(
             "joins" => array("team"),
-            "condition" => '`[PREFIX]team`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf',
+            "condition" => '`[PREFIX]groups_attempts`.`idGroup` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]team`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf',
          ),
          "idItem" => array(
             "condition" => "`[PREFIX]groups_attempts`.`idItem` = :[PREFIX_FIELD]idItem"

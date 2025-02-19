@@ -2,6 +2,7 @@
   <div ng-show="isLogged" class="panel-body">
     <div ng-hide="collapse">
       <p ng-i18next="teams_intro"></p>
+      <p ng-show="item.bSoloTeams && !team" ng-i18next="teams_solo_available"></p>
       <p ng-show="!item.bTeamsEditable" ng-i18next="teams_not_editable"></p>
       <p ng-show="item.bTeamsEditable"><span ng-i18next="teams_conditions_intro"></span></p>
       <ul ng-show="item.bTeamsEditable">

@@ -82,7 +82,7 @@ function createTeam($request) {
 
    // Create new team
    $idGroup = getRandomID();
-   $stmt = $db->prepare("INSERT INTO groups (ID, sName, sDateCreated, sPassword, sType, idTeamItem) VALUES(:id, :name, NOW(), :password, 'Team', :idItem);");
+   $stmt = $db->prepare("INSERT INTO `groups` (ID, sName, sDateCreated, sPassword, sType, idTeamItem) VALUES(:id, :name, NOW(), :password, 'Team', :idItem);");
    $res = $stmt->execute(['id' => $idGroup, 'name' => $request['name'], 'password' => $request['password'], 'idItem' => $request['idItem']]);
    if(!$res) {
       return ['result' => false, 'error' => 'teams_creation_error'];
@@ -95,6 +95,14 @@ function createTeam($request) {
    // Add user as member too
    $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
    $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $idGroup]);
+
+   // Merge attempts from the user into the team
+   $stmt = $db->prepare("
+      UPDATE groups_attempts
+      JOIN items_ancestors ON groups_attempts.idItem = items_ancestors.idItemChild
+      SET idGroup = :idGroup
+      WHERE idGroup = :idGroupSelf AND items_ancestors.idItemAncestor = :idItem;");
+   $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $idGroup, 'idItem' => $item['ID']]);
 
    Listeners::groupsGroupsAfter($db);
 
@@ -124,7 +132,7 @@ function joinTeam($request) {
    }
 
    // Get team
-   $stmt = $db->prepare("SELECT ID FROM groups WHERE idTeamItem = :idItem AND sPassword = :password;");
+   $stmt = $db->prepare("SELECT ID FROM `groups` WHERE idTeamItem = :idItem AND sPassword = :password;");
    $stmt->execute(["idItem" => $request['idItem'], "password" => $request['password']]);
    $res = $stmt->fetch();
 
@@ -139,6 +147,14 @@ function joinTeam($request) {
       // Add user as member
       $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
       $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $team['ID']]);
+
+      // Merge attempts from the user into the team
+      $stmt = $db->prepare("
+         UPDATE groups_attempts
+         JOIN items_ancestors ON groups_attempts.idItem = items_ancestors.idItemChild
+         SET idGroup = :idGroup
+         WHERE idGroup = :idGroupSelf AND items_ancestors.idItemAncestor = :idItem;");
+      $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $idGroup, 'idItem' => $item['ID']]);
 
       Listeners::groupsGroupsAfter($db);
 
@@ -178,7 +194,7 @@ function startItem($request) {
    Listeners::groupsItemsAfter($db);
 
    // Update team participation status
-   $stmt = $db->prepare('UPDATE groups SET iTeamParticipating = 1 WHERE ID = :id;');
+   $stmt = $db->prepare('UPDATE `groups` SET iTeamParticipating = 1 WHERE ID = :id;');
    $stmt->execute(['id' => $team['ID']]);
    $team['iTeamParticipating'] = 1;
 
@@ -213,7 +229,7 @@ function changeTeamPassword($request) {
 
    $password = (isset($request['password']) && $request['password']) ? $request['password'] : null;
 
-   $stmt = $db->prepare("UPDATE groups SET sPassword = :password WHERE ID = :id;");
+   $stmt = $db->prepare("UPDATE `groups` SET sPassword = :password WHERE ID = :id;");
    $res = $stmt->execute(['password' => $password, 'id' => $team['ID']]);
    $team['sPassword'] = $password;
    return ['result' => $res, 'team' => $team];
@@ -370,7 +386,7 @@ function leaveTeam($request) {
 
    if($deleteGroupAfter) {
       // Delete team
-      $stmt = $db->prepare("DELETE FROM groups WHERE ID = :id;");
+      $stmt = $db->prepare("DELETE FROM `groups` WHERE ID = :id;");
       $stmt->execute(['id' => $team['ID']]);
    } else {
       // Unlink data from us

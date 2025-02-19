@@ -340,7 +340,7 @@ angular.module('algorea')
       $scope.apiRequest('createAttempt', {}, function(res) {
          $scope.selectAttempt(res.attemptId);
          if(callback) { callback(); }
-         });
+      }, false, 'attemptsError');
    };
 
    $scope.userCreateAttempt = function() {
@@ -352,6 +352,7 @@ angular.module('algorea')
    };
 
    $scope.selectAttempt = function(attemptId, loadingState) {
+      $scope.attempt_creating = false;
       if(!$scope.user_item) {
          console.error('no user_item');
          return;
@@ -374,7 +375,7 @@ angular.module('algorea')
          $scope.user_item.sToken = res.sToken;
          $rootScope.$broadcast('algorea.attemptChanged');
          $scope.setTabs({}, false);
-         }, true);
+      }, true, 'attemptsError');
    };
 
    $scope.autoSelectAttempt = function() {

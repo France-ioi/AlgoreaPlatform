@@ -261,6 +261,7 @@ var models = {
          idTeamInGroup: {type: "int", label: "models_items_fields_idTeamInGroup_label", refModel: "groups", link: "teamInGroup", defaultValue: null},
          iTeamMaxMembers: {type: "int", label: "models_items_fields_iTeamMaxMembers_label"},
          bHasAttempts: {type: "boolean", label: "models_items_fields_bHasAttempts_label", defaultValue: false},
+         bSoloTeams: { type: "boolean", label: "models_items_fields_bSoloTeams_label", defaultValue: false },
          sAccessOpenDate: {type: "jsdate", label: "models_items_fields_sAccessOpenDate_label"},
          sDuration: {type: "duration", label: "models_items_fields_sDuration_label", defaultValue: null},
          sEndContestDate: {type: "jsdate", label: "models_items_fields_sEndContestDate_label"},

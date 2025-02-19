@@ -72,7 +72,8 @@
 
     "teams_intro": "This contest is done with teams.",
     "teams_not_logged": "Before joining or creating a team, you must log in.",
-    "teams_conditions_intro": "To access this contest, you must make a team :",
+    "teams_solo_available": "You can solve the exercises individually while waiting to form or join a team.",
+    "teams_conditions_intro": "For this contest, you must make a team :",
     "teams_conditions_max": "it must contain between 1 and",
     "teams_conditions_members": "members",
     "teams_conditions_one": "at least one member must be qualified",
@@ -126,6 +127,8 @@
     "attempts_goto": "Access task",
     "attempts_new": "Start a new attempt",
     "attempts_new_first": "Start your first attempt",
+    "attempts_error_noattempts": "This item doesn't support attempts.",
+    "attempts_error_noteam": "You cannot participate in this item without a team.",
 
     "history_intro": "This list is the history of saved answers and submissions of members of your team, for the current attempt.",
     "history_refresh": "Refresh history",

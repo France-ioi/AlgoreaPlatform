@@ -516,7 +516,17 @@ function getUserTeam($idItem, $idUserSelf, $db) {
          AND groups_groups.idGroupChild = :idUserSelf
          AND (items_ancestors.idItemChild = :idItem OR groups.idTeamItem = :idItem);");
    $stmt->execute(['idUserSelf' => $idUserSelf, 'idItem' => $idItem]);
-   return $stmt->fetchColumn();
+   $team = $stmt->fetchColumn();
+   if(!$team) {
+      $stmt = $db->prepare("
+         SELECT items.ID FROM items
+         JOIN items_ancestors ON items_ancestors.idItemAncestor = items.ID
+         WHERE items.bSoloTeams = 1 AND items_ancestors.idItemChild = :idItem;");
+      $stmt->execute(['idItem' => $idItem]);
+      if($stmt->fetchColumn()) {
+         return $_SESSION['login']['idGroupSelf'];
+      }
+   }
 }
 
 
@@ -544,13 +554,13 @@ function createAttempt($request, $db) {
    $stmt = $db->prepare('SELECT bHasAttempts FROM items WHERE ID = :id;');
    $stmt->execute(['id' => $request['idItem']]);
    if(!$stmt->fetchColumn()) {
-      return ['result' => false, 'error' => "This item doesn't support attempts."];
+      return ['result' => false, 'error' => "attempts_error_noattempts"];
    }
 
    // Find the user's team for this item
    $idGroup = getUserTeam($request['idItem'], $_SESSION['login']['idGroupSelf'], $db);
    if(!$idGroup) {
-      return ['result' => false, 'error' => "No team found for this user"];
+      return ['result' => false, 'error' => "attempts_error_noteam"];
    }
 
    // Create the attempt
@@ -632,17 +642,21 @@ function getHistory($request, $db) {
 function getTeamUsers($request, $db) {
    // Get users belonging to a team in common
    updateLastActivity();
+   $users = [];
    $stmt = $db->prepare("
       SELECT users.ID, users.sLogin, users.sFirstName, users.sLastName
       FROM users
       JOIN groups_groups ON groups_groups.idGroupChild = users.idGroupSelf
-      JOIN (SELECT gt.ID FROM groups AS gt JOIN groups_groups AS ggteams ON gt.ID = ggteams.idGroupParent WHERE ggteams.idGroupChild = :idGroupSelf AND gt.sType = 'Team') AS teams ON teams.ID = groups_groups.idGroupParent");
+      JOIN (SELECT gt.ID FROM `groups` AS gt JOIN groups_groups AS ggteams ON gt.ID = ggteams.idGroupParent WHERE ggteams.idGroupChild = :idGroupSelf AND gt.sType = 'Team') AS teams ON teams.ID = groups_groups.idGroupParent");
    $stmt->execute(['idGroupSelf' => $_SESSION['login']['idGroupSelf']]);
-
-   $users = [];
    while($user = $stmt->fetch()) {
       $users[$user['ID']] = $user;
    }
+
+   $stmt = $db->prepare("SELECT users.ID, users.sLogin, users.sFirstName, users.sLastName FROM users WHERE ID = :idUser;");
+   $stmt->execute(['idUser' => $_SESSION['login']['ID']]);
+   $users[$_SESSION['login']['ID']] = $stmt->fetch();
+
    return ['result' => true, 'teamUsers' => $users];
 }
 

@@ -33,9 +33,12 @@
     </table>
   </div>
   <p ng-hide="item.groups_attempts|isEmptyObject">
-    <button class="btn btn-default" ng-click="userCreateAttempt();" btn-icon-text="add_circle,attempts_new" btn-loading="attempt_creating"></button>
+    <button class="btn btn-default" ng-click="userCreateAttempt();" btn-icon-text="add_circle,attempts_new" btn-loading="attempt_creating && !attemptsError"></button>
   </p>
   <p ng-show="item.groups_attempts|isEmptyObject" class="text-center">
-    <button class="btn btn-primary btn-lg" ng-click="userCreateAttempt();" btn-icon-text="add_circle,attempts_new_first" btn-loading="attempt_creating"></button>
+    <button class="btn btn-primary btn-lg" ng-click="userCreateAttempt();" btn-icon-text="add_circle,attempts_new_first" btn-loading="attempt_creating && !attemptsError"></button>
+  </p>
+  <p ng-show="attemptsError" style="color: red;">
+    <span ng-i18next="{{ attemptsError }}"></span>
   </p>
 </div>

@@ -72,7 +72,8 @@
 
     "teams_intro": "Cette épreuve s'effectue par équipes.",
     "teams_not_logged": "Avant de pouvoir rejoindre ou créer une équipe, vous devez vous connecter.",
-    "teams_conditions_intro": "Pour pouvoir accéder à cette épreuve, vous devez former une équipe :",
+    "teams_solo_available": "Vous pouvez résoudre les exercices individuellement en attendant de former ou rejoindre une équipe.",
+    "teams_conditions_intro": "Pour cette épreuve, vous devez former une équipe :",
     "teams_conditions_max": "elle doit contenir entre 1 et",
     "teams_conditions_members": "membres",
     "teams_conditions_one": "au moins un membre doit être qualifié",
@@ -132,6 +133,8 @@
     "attempts_goto": "Accéder à l'énoncé",
     "attempts_new": "Démarrer une nouvelle tentative",
     "attempts_new_first": "Démarrer votre première tentative",
+    "attempts_error_noattempts": "Cet item ne supporte pas les tentatives.",
+    "attempts_error_noteam": "Vous ne pouvez pas participer à cet item sans une équipe.",
 
     "history_intro": "Voici l'historique des sauvegardes et soumissions des membres de votre équipe, pour la tentative courante.",
     "history_refresh": "Rafraîchir l'historique",
