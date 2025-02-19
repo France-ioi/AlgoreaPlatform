@@ -7,7 +7,7 @@ function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
    $db->exec($query);
    $userAdminGroupId = null;
    if ($isTempUser) {
-      $stm = $db->prepare('select ID from groups where `sTextId`=\'RootTemp\';');
+      $stm = $db->prepare('select ID from `groups` where `sTextId`=\'RootTemp\';');
       $stm->execute();
       $RootTempGroupId = $stm->fetchColumn();
       $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootTempGroupId, '$userSelfGroupId');");
@@ -16,13 +16,13 @@ function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
       $query = "insert into `groups` (`ID`, `sName`, `sDescription`, `sDateCreated`, `bOpened`, `sType`, `bSendEmails`) values ('".$userAdminGroupId."', '".$sLogin."-admin', '".$sLogin."-admin', NOW(), 0, 'UserAdmin', 0);";
       $db->exec($query);
       // due to restrictions on triggers, we cannot get the root group id from inside an insert, so we fetch it in another request
-      $stm = $db->prepare('select ID from groups where `sType`=\'RootAdmin\';');
+      $stm = $db->prepare('select ID from `groups` where `sType`=\'RootAdmin\';');
       $stm->execute();
       $RootAdminGroupId = $stm->fetchColumn();
       $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootAdminGroupId, '$userAdminGroupId');");
       $db->exec('unlock tables;'); // why again?
       // the Root group should be removed one day, but in the meantime, creating users in this group, so that admin interface works
-      $stm = $db->prepare('select ID from groups where `sType`=\'RootSelf\';');
+      $stm = $db->prepare('select ID from `groups` where `sType`=\'RootSelf\';');
       $stm->execute();
       $RootGroupId = $stm->fetchColumn();
       $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootGroupId, '$userSelfGroupId');");
@@ -74,11 +74,11 @@ function addUserToGroupHierarchy($idGroupSelf, $idGroupOwned, $groupHierarchy, $
          // Search for a child group matching, create it if it doesn't exist
          $groupId = null;
          if (!$previousGroupId) {
-            $stmt = $db->prepare('select ID from groups where sTextId = :groupTextId;');
+            $stmt = $db->prepare('select ID from `groups` where sTextId = :groupTextId;');
             $stmt->execute(['groupTextId' => $groupTextId]);
             $groupId = $stmt->fetchColumn();
          } else {
-            $stmt = $db->prepare('select groups.ID from groups join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sTextId = :groupTextId and groups_groups.idGroupParent = :previousGroupId;');
+            $stmt = $db->prepare('select groups.ID from `groups` join groups_groups on groups_groups.idGroupChild = groups.ID where groups.sTextId = :groupTextId and groups_groups.idGroupParent = :previousGroupId;');
             $stmt->execute(['groupTextId' => $groupTextId, 'previousGroupId' => $previousGroupId]);
             $groupId = $stmt->fetchColumn();
          }

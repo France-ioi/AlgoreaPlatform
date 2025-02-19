@@ -62,7 +62,7 @@ function getRandomPass() {
 function refreshCode($idGroup) {
    global $db;
    $newPass = getRandomPass();
-   $query = 'update groups set sPassword = :newPass where ID = :idGroup';
+   $query = 'update `groups` set sPassword = :newPass where ID = :idGroup';
    $stmt = $db->prepare($query);
    $stmt->execute(['newPass' => $newPass, 'idGroup' => $idGroup]);
    echo json_encode(array('success' => true, 'newPass' => $newPass));
@@ -164,7 +164,7 @@ function deleteGroup($idGroup) {
    global $db;
    $stmt = $db->prepare('delete from groups_groups where idGroupParent = :idGroup or idGroupChild = :idGroup;');
    $stmt->execute(['idGroup' => $idGroup]);
-   $stmt = $db->prepare('delete from groups where ID = :idGroup;');
+   $stmt = $db->prepare('delete from `groups` where ID = :idGroup;');
    $stmt->execute(['idGroup' => $idGroup]);
    Listeners::groupsGroupsAfter($db);
    echo json_encode(array('success' => true));
@@ -172,11 +172,13 @@ function deleteGroup($idGroup) {
 
 function createGroup($idGroup, $sName) {
    global $db;
+   print_r($_SESSION['login']);
+   die();
    if (!$sName) {$sName = 'Nouveau groupe';}
    if (!$idGroup) {
       $idGroup = getRandomID();
    }
-   $stmt = $db->prepare('insert into groups (ID, sName, sDateCreated, sType) values (:idGroup, :sName, NOW(), \'Class\');');
+   $stmt = $db->prepare('insert into `groups` (ID, sName, sDateCreated, sType) values (:idGroup, :sName, NOW(), \'Class\');');
    $stmt->execute(['idGroup' => $idGroup, 'sName' => $sName]);
    $stmt = $db->prepare('insert into groups_groups (idGroupChild, idGroupParent, sRole) values (:idGroup, :idGroupOwned, \'owner\');');
    $stmt->execute(['idGroup' => $idGroup, 'idGroupOwned' => $_SESSION['login']['idGroupOwned']]);
