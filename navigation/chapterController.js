@@ -93,9 +93,11 @@ angular.module('algorea')
         $scope.contestWithinDates = function() {
             var d = new Date();
             if($scope.item.sAccessOpenDate && d < $scope.item.sAccessOpenDate) { return false; }
-            var endDate = new Date($scope.item.sEndContestDate.valueOf());
-            endDate.setDate(endDate.getDate() + 1);
-            if($scope.item.sEndContestDate && d > endDate) { return false; }
+            if ($scope.item.sEndContestDate) {
+                var endDate = new Date($scope.item.sEndContestDate.valueOf());
+                endDate.setDate(endDate.getDate() + 1);
+                if (d > endDate) { return false; }
+            }
             return true;
         }
 
