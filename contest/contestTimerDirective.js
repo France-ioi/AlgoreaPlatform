@@ -7,17 +7,16 @@ angular.module('algorea')
       template: '<span class="contestTimer">{{timerStr}}</span>',
       link: function(scope, elem, attrs){
       	scope.timerStr = '';
-      	var updateCallback = function(minutesOrType, seconds) {
+        var updateCallback = function (minutes, seconds, synchronizing) {
       		var newTimerStr = '';
-      		if (minutesOrType == 'sync') {
-      			newTimerStr = 'synchronisation...';
-      		} else {
-      			if (minutesOrType == '0' && seconds == '00') {
-      				newTimerStr = '';
-      			} else {
-      				newTimerStr = minutesOrType+':'+seconds;
-      			}
-      		}
+          if (minutes == '0' && seconds == '00') {
+            newTimerStr = '';
+          } else {
+            newTimerStr = minutes + ':' + seconds;
+          }
+          if (synchronizing) {
+            newTimerStr = '~' + newTimerStr;
+          }
       		scope.$applyAsync(function() {scope.timerStr = newTimerStr;});
       	};
       	var contestOverCallback = function() {

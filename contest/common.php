@@ -3,14 +3,12 @@
 require_once __DIR__.'/../shared/connect.php';
 
 function getRemainingTime() {
-	if (!isset($_SESSION['contest'])) {
-		return ['success' => true, 'remainingTime' => 0];
-	}
-	$now = new DateTime();
-	$endTime = $_SESSION['contest']['endTime'];
-	$diff = $endTime->getTimestamp() - $now->getTimestamp();
-	if ($diff < 0) $diff = 0;
-	return ['success' => true, 'remainingTime' => $diff, 'endTime' => $endTime, 'now' => $now];
+    $data = adjustContestAndGetData();
+    if (!$data) {
+        return ['success' => true, 'remainingTime' => 0];
+    }
+    $data['success'] = true;
+    return $data;
 }
 
 function adjustContestAndGetData() {
