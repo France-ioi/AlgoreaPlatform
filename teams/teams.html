@@ -84,7 +84,7 @@
         </tr>
       </table>
       <div>
-        <span ng-show="team.checkRequirements.result">
+        <span ng-show="team.checkRequirements.result && !item.bSoloTeams">
           <b ng-show="team.iTeamParticipating == 0" class="text-success" ng-i18next="teams_requirements_yes"></b>
           <button ng-show="team.iTeamParticipating == 0" class="btn btn-primary" ng-click="startItem();" ng-i18next="teams_start"></button>
           <b ng-show="item.sDuration && team.iTeamParticipating == 0" class="text-warning" ng-i18next="teams_time_limit"></b>
