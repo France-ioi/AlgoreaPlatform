@@ -109,7 +109,6 @@ angular.module('algorea')
 				TimeManager.endTime = null;
 			}
 		};
-		console.log(TimeManager);
 
 		SyncQueue.addSyncStartListeners('contestTimerService', function (data) {
 			var contestData = data.changes.contestData;
