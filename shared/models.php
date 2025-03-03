@@ -705,7 +705,7 @@ $viewsModels = array(
          "selfGroupAncestors" => array("srcTable" => "groups_items", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor"),
          "selfGroupDescendants" => array("srcTable" => "groups_attempts", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupChild"),
          "itemsDescendants" => array("srcTable" => "groups_attempts", "dstTable" => "items_ancestors", "srcField" => "idItem", "dstField" => "idItemChild"),
-         "team" => array("type" => "LEFT", "srcTable" => "groups_attempts", "dstTable" => "groups_groups", "srcField" => "idGroup", "dstField" => "idGroupParent")
+         "teams" => array("srcTable" => "groups_attempts", "dstTable" => "groups_ancestors", "srcField" => "idGroup", "dstField" => "idGroupAncestor")
       ),
       "fields" => array(
           "idGroup"               => array('insertOnly' => true),
@@ -755,8 +755,8 @@ $viewsModels = array(
             "condition"  => '`[PREFIX]itemsDescendants`.`idItemAncestor` = :[PREFIX_FIELD]idItem',
          ),
          "idGroup" => array(
-            "joins" => array("team"),
-            "condition" => '`[PREFIX]groups_attempts`.`idGroup` = :[PREFIX_FIELD]idGroupSelf OR `[PREFIX]team`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf',
+            "joins" => array("teams"),
+            "condition" => '`[PREFIX]teams`.`idGroupChild` = :[PREFIX_FIELD]idGroupSelf',
          ),
          "idItem" => array(
             "condition" => "`[PREFIX]groups_attempts`.`idItem` = :[PREFIX_FIELD]idItem"
