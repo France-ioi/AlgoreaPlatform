@@ -527,6 +527,7 @@ function getUserTeam($idItem, $idUserSelf, $db) {
          return $_SESSION['login']['idGroupSelf'];
       }
    }
+   return $team;
 }
 
 
