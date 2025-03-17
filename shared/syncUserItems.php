@@ -65,7 +65,7 @@ function createMissingUserItems($db, &$serverChanges, $type) {
 }
 
 function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
-  global $config;
+  global $config, $db;
    static $token_fields = array(
       'bHasAccessCorrection' => null,
       'bAccessSolutions'     => null,
@@ -112,6 +112,16 @@ function generateUserItemToken(&$userItem, $tokenGenerator, $item) {
 
       $params['randomSeed'] = $userItem['data']->idAttemptActive ? $userItem['data']->idAttemptActive : $userItem['data']->idUser;
       $params['platformName'] = $config->platform->name;
+
+      if($item['data']->ID == '576733918320192006' && $userItem['data']->idAttemptActive) {
+         $stmt = $db->prepare("SELECT sStartDate >= '2025-03-18 00:00:00' FROM groups_attempts WHERE ID = :idAttempt;");
+         $stmt->execute(['idAttempt' => $userItem['data']->idAttemptActive]);
+         $isNewAttempt = $stmt->fetchColumn() == 1;
+
+         if($isNewAttempt) {
+             $params['randomSeed'] = $params['randomSeed'] % 1000;
+         }
+      }
 
       $token = $tokenGenerator->encodeJWS($params);
       $userItem['data']->sToken = $token;

@@ -141,12 +141,16 @@ angular.module('algorea')
          } catch(e) {}
       }
 
+      var randomSeed = scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser;
+      if (scope.user_item.idItem == '576733918320192006' && scope.user_item.attempt && scope.user_item.attempt.sStartDate && scope.user_item.attempt.sStartDate.getTime() > 1742256000000) {
+         randomSeed = randomSeed % 1000;
+      }
       scope.taskParams = {
          minScore: 0,
          maxScore: 100,
          noScore: 0,
          readOnly: !!scope.readOnly,
-         randomSeed: scope.user_item.attempt ? scope.user_item.attempt.ID : scope.user_item.idUser,
+         randomSeed: randomSeed,
          supportsTabs: true,
          options: taskOptions,
          returnUrl: config.domains.current.baseUrl+'/task/task.php'
