@@ -283,8 +283,8 @@ class Listeners {
          // Attach attempts from users joining groups
          if($objectName == "groups" && (!isset($config->shared->domains['current']->disableGroupsAttemptsSync) || !$config->shared->domains['current']->disableGroupsAttemptsSync)) {
             $query = "UPDATE `groups_attempts`
+               JOIN `groups_propagate` ON `groups_attempts`.`idGroup` = `groups_propagate`.`ID`
                JOIN `groups_groups` ON `groups_groups`.`idGroupChild` = `groups_attempts`.`idGroup`
-               JOIN `groups_propagate` ON `groups_groups`.`ID` = `groups_propagate`.`ID`
                JOIN `groups` ON `groups`.`ID` = `groups_groups`.`idGroupParent`
                JOIN `items_ancestors` ON `groups_attempts`.`idItem` = `items_ancestors`.`idItemChild`
                JOIN `users` ON `groups_attempts`.`idGroup` = `users`.`idGroupSelf`
