@@ -280,6 +280,21 @@ class Listeners {
          $query .= ") ON DUPLICATE KEY UPDATE sAncestorsComputationState = 'todo';";
          $db->exec($query);
 
+         // Attach attempts from users joining groups
+         if($objectName == "groups" && (!isset($config->shared->domains['current']->disableGroupsAttemptsSync) || !$config->shared->domains['current']->disableGroupsAttemptsSync)) {
+            $query = "UPDATE `groups_attempts`
+               JOIN `groups_groups` ON `groups_groups`.`idGroupChild` = `groups_attempts`.`idGroup`
+               JOIN `groups_propagate` ON `groups_groups`.`ID` = `groups_propagate`.`ID`
+               JOIN `groups` ON `groups`.`ID` = `groups_groups`.`idGroupParent`
+               JOIN `items_ancestors` ON `groups_attempts`.`idItem` = `items_ancestors`.`idItemChild`
+               JOIN `users` ON `groups_attempts`.`idGroup` = `users`.`idGroupSelf`
+               SET `groups_attempts`.`idGroup` = `groups`.`ID`
+               WHERE `groups_propagate`.`sAncestorsComputationState` = 'processing'
+               AND `items_ancestors`.`idItemAncestor` = `groups`.`idTeamItem`
+               AND (`groups_groups`.`sType` = 'invitationAccepted' or  `groups_groups`.`sType` = 'requestAccepted' or `groups_groups`.`sType` = 'direct')";
+            $db->exec($query);
+         }
+
          // Objects marked as 'processing' are now marked as 'done'
          $query = "UPDATE `".$tablePrefix.$objectName."_propagate` SET `sAncestorsComputationState` = 'done' WHERE `sAncestorsComputationState` = 'processing'";
          $db->exec($query);

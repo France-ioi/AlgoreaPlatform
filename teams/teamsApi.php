@@ -96,14 +96,6 @@ function createTeam($request) {
    $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
    $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $idGroup]);
 
-   // Merge attempts from the user into the team
-   $stmt = $db->prepare("
-      UPDATE groups_attempts
-      JOIN items_ancestors ON groups_attempts.idItem = items_ancestors.idItemChild
-      SET idGroup = :idGroup
-      WHERE idGroup = :idGroupSelf AND items_ancestors.idItemAncestor = :idItem;");
-   $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $idGroup, 'idItem' => $item['ID']]);
-
    Listeners::groupsGroupsAfter($db);
 
    return ['result' => true, 'team' => getUserTeam($request['idItem'], true)];
@@ -148,15 +140,8 @@ function joinTeam($request) {
       $stmt = $db->prepare("INSERT IGNORE INTO groups_groups (idGroupParent, idGroupChild, iChildOrder, sType, sRole, sStatusDate) VALUES(:idGroup, :idGroupSelf, 0, 'direct', 'member', NOW());");
       $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $team['ID']]);
 
-      // Merge attempts from the user into the team
-      $stmt = $db->prepare("
-         UPDATE groups_attempts
-         JOIN items_ancestors ON groups_attempts.idItem = items_ancestors.idItemChild
-         SET idGroup = :idGroup
-         WHERE idGroup = :idGroupSelf AND items_ancestors.idItemAncestor = :idItem;");
-      $stmt->execute(['idGroupSelf' => $loginData['idGroupSelf'], 'idGroup' => $idGroup, 'idItem' => $item['ID']]);
-
       Listeners::groupsGroupsAfter($db);
+      Listeners::groupsAttemptsAfter($db);
 
       generateUserItems($team);
 
