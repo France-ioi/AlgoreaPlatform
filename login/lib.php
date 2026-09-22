@@ -20,14 +20,12 @@ function createGroupsFromLogin($db, $sLogin, $isTempUser=0) {
       $stm->execute();
       $RootAdminGroupId = $stm->fetchColumn();
       $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootAdminGroupId, '$userAdminGroupId');");
-      $db->exec('unlock tables;'); // why again?
       // the Root group should be removed one day, but in the meantime, creating users in this group, so that admin interface works
       $stm = $db->prepare('select ID from `groups` where `sType`=\'RootSelf\';');
       $stm->execute();
       $RootGroupId = $stm->fetchColumn();
       $db->exec("insert into `groups_groups` (`idGroupParent`, `idGroupChild`) values ($RootGroupId, '$userSelfGroupId');");
    }
-   $db->exec('unlock tables;'); // why again?
    $stm = null;
    Listeners::createNewAncestors($db, "groups", "Group");
    return array($userAdminGroupId, $userSelfGroupId);

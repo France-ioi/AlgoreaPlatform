@@ -37,14 +37,12 @@ class UserHelperClass {
 
     public function addUserToGroup($idGroupUser, $idGroup) {
         $query = "
-            lock tables groups_groups write;
             set @maxIChildOrder = IFNULL((select max(iChildOrder) from `groups_groups` where `idGroupParent` = :idGroup),0);
             insert ignore into
                 `groups_groups`
                 (`ID`, `idGroupParent`, `idGroupChild`, `iChildOrder`, sType, sStatusDate, iVersion)
             values
-                (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, 'direct', NOW(), :version);
-            unlock tables;";
+                (:ID, :idGroup, :idGroupSelf, @maxIChildOrder+1, 'direct', NOW(), :version);";
         $values = array(
             'ID' => getRandomID(),
             'idGroup' => $idGroup,
